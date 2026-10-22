@@ -48,7 +48,7 @@ Luồng: chọn nền tảng + mô hình → app soạn **prompt chuẩn** (dữ
 | Offline | bộ sinh nội dung bằng template, luôn chạy |
 
 **Đã bỏ Gemini Spark** (chưa có ở Việt Nam, ít phổ biến). Cách chính đã chốt: **phương án dự phòng copy prompt + mở tab**.
-Có thể làm sẵn **Custom GPT / Gemini Gem** nạp sẵn hướng dẫn + schema để người dùng chỉ cần dán thông tin sự kiện.
+Cô nhận định: với ChatGPT và Gemini, copy prompt rồi yêu cầu tạo landing page là dễ, không bị khoá gì.
 
 Gợi ý mô hình theo nhu cầu (nhanh/rẻ — viết hay — agent), cấu hình trong `ai-providers.js`.
 
