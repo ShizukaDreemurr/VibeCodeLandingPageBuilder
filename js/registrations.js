@@ -13,9 +13,9 @@
     return S.read(key(eventId), []);
   }
 
-  // Chỉ tính người đã có chỗ, không tính danh sách chờ
+  // Chỉ tính người đã có chỗ (không tính danh sách chờ, bản ghi trùng trên Sheet)
   function confirmedCount(eventId) {
-    return list(eventId).filter(function (r) { return r.status !== 'waitlist'; }).length;
+    return list(eventId).filter(function (r) { return r.status === 'new'; }).length;
   }
 
   function findDuplicate(regs, phone, email) {
@@ -23,7 +23,8 @@
   }
 
   // Trả về { ok, errors, duplicate, waitlist, record }
-  function register(ev, input, now) {
+  // count: số đã đăng ký dùng để tính chỗ (khi có Google Sheet thì là số chung mọi thiết bị)
+  function register(ev, input, now, count) {
     var errors = V.validateRegistration(input);
     if (Object.keys(errors).length) return { ok: false, errors: errors };
 
@@ -35,7 +36,7 @@
       return { ok: false, duplicate: true, errors: { form: 'Bạn đã đăng ký rồi bằng số điện thoại hoặc email này.' } };
     }
 
-    var status = root.EP.eventStatus.getStatus(ev, confirmedCount(ev.id), now);
+    var status = root.EP.eventStatus.getStatus(ev, count != null ? count : confirmedCount(ev.id), now);
     if (!status.canRegister) {
       return { ok: false, errors: { form: 'Sự kiện đã diễn ra, không thể đăng ký thêm.' } };
     }
@@ -46,7 +47,8 @@
       phone: phone,
       email: email,
       status: status.waitlist ? 'waitlist' : 'new',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      synced: !ev.sheetUrl // chưa gửi lên Google Sheet
     };
     regs.push(record);
     if (!S.write(key(ev.id), regs)) {
@@ -55,12 +57,24 @@
     return { ok: true, waitlist: status.waitlist, record: record };
   }
 
+  function update(eventId, recordId, patch) {
+    var regs = list(eventId);
+    regs.forEach(function (r) { if (r.id === recordId) Object.assign(r, patch); });
+    S.write(key(eventId), regs);
+  }
+
+  function unsynced(eventId) {
+    return list(eventId).filter(function (r) { return r.synced === false; });
+  }
+
   function removeAll(eventId) { S.remove(key(eventId)); }
 
   root.EP.registrations = {
     list: list,
     confirmedCount: confirmedCount,
     register: register,
+    update: update,
+    unsynced: unsynced,
     removeAll: removeAll,
     storageKey: key
   };

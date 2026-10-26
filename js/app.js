@@ -13,6 +13,8 @@
   var state = S.read('current', null); // { event, content, tone }
   var renderer = null;
   var regenSeed = 0;
+  var remoteCount = null; // số đăng ký trên Google Sheet (null = chưa lấy được)
+  var SYNC_INTERVAL_MS = 15000;
 
   // ---------- Đọc / ghi form ----------
   function parseLines(text, mapper) {
@@ -36,7 +38,8 @@
       speakers: parseLines(f.speakers.value, function (l) { var p = splitDash(l); return { name: p[0], title: p[1] }; }),
       agenda: parseLines(f.agenda.value, function (l) { var p = splitDash(l); return { time: p[0], title: p[1] || p[0] }; }),
       earlyBird: V.clean(f.earlyBird.value),
-      earlyBirdUntil: f.earlyBirdUntil.value
+      earlyBirdUntil: f.earlyBirdUntil.value,
+      sheetUrl: V.clean(f.sheetUrl.value)
     };
   }
 
@@ -50,6 +53,7 @@
     f.agenda.value = (ev.agenda || []).map(function (a) { return a.time === a.title ? a.time : a.time + ' - ' + a.title; }).join('\n');
     f.earlyBird.value = ev.earlyBird || '';
     f.earlyBirdUntil.value = ev.earlyBirdUntil || '';
+    f.sheetUrl.value = ev.sheetUrl || '';
   }
 
   function showErrors(errors) {
@@ -84,21 +88,121 @@
       event: state.event,
       content: state.content,
       now: function () { return new Date(); },
-      getCount: function () { return EP.registrations.confirmedCount(state.event.id); },
+      getCount: currentCount,
       onRegister: function (data) {
-        var r = EP.registrations.register(state.event, data, new Date());
-        if (r.ok) toast(r.waitlist ? 'Đã thêm vào danh sách chờ.' : 'Có thêm 1 người đăng ký!');
-        else if (r.duplicate) toast('Bạn đã đăng ký rồi bằng số điện thoại hoặc email này.');
-        return r;
+        var r = EP.registrations.register(state.event, data, new Date(), currentCount());
+        if (!r.ok) {
+          if (r.duplicate) toast('Bạn đã đăng ký rồi bằng số điện thoại hoặc email này.');
+          return r;
+        }
+        if (!state.event.sheetUrl) {
+          toast(r.waitlist ? 'Đã thêm vào danh sách chờ.' : 'Có thêm 1 người đăng ký!');
+          return r;
+        }
+        // Có Google Sheet: chờ Sheet xác nhận (kiểm tra trùng trên mọi thiết bị, số chỗ chung)
+        return syncRecord(r.record).then(function (data) {
+          if (data.duplicate) {
+            return { ok: false, duplicate: true, errors: { form: 'Bạn đã đăng ký rồi bằng số điện thoại hoặc email này.' } };
+          }
+          var waitlist = data.status === 'waitlist';
+          toast(waitlist ? 'Đã thêm vào danh sách chờ.' : 'Có thêm 1 người đăng ký!');
+          return { ok: true, waitlist: waitlist, record: r.record };
+        }, function () {
+          // Mất kết nối: vẫn nhận đăng ký, lưu trên máy và tự gửi lại sau
+          toast('Đã lưu đăng ký. Sẽ tự gửi lên Google Sheet khi có kết nối.');
+          return r;
+        });
       }
     });
     $('#btn-regenerate').disabled = false;
   }
 
+  // ---------- Đồng bộ Google Sheet ----------
+  function currentCount() {
+    var id = state.event.id;
+    var local = EP.registrations.confirmedCount(id);
+    if (!state.event.sheetUrl || remoteCount == null) return local;
+    // Số trên Sheet + những người vừa đăng ký trên máy này nhưng chưa gửi được
+    var pending = EP.registrations.unsynced(id).filter(function (r) { return r.status === 'new'; }).length;
+    return remoteCount + pending;
+  }
+
+  function setSheetStatus(text, kind) {
+    var el = $('#sheet-status');
+    el.hidden = !text;
+    el.textContent = text || '';
+    el.className = 'sheet-status' + (kind ? ' is-' + kind : '');
+  }
+
+  function syncedNow() {
+    return 'Google Sheet: đã đồng bộ lúc ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function syncRecord(record) {
+    var ev = state.event;
+    return EP.sheetSync.send(ev.sheetUrl, ev, record).then(function (data) {
+      if (data.duplicate) {
+        EP.registrations.update(ev.id, record.id, { synced: true, status: 'duplicate' });
+      } else {
+        EP.registrations.update(ev.id, record.id, { synced: true, status: data.status });
+      }
+      if (typeof data.count === 'number') remoteCount = data.count;
+      setSheetStatus(syncedNow(), 'ok');
+      if (renderer) renderer.update();
+      return data;
+    }, function (e) {
+      setSheetStatus('Google Sheet: chưa gửi được (đã lưu trên máy, sẽ tự gửi lại). ' + e.message, 'error');
+      throw e;
+    });
+  }
+
+  // Gửi lại các bản ghi chưa đồng bộ, rồi lấy số đăng ký chung
+  function syncAll() {
+    if (!state || !state.event.sheetUrl) return Promise.resolve();
+    var ev = state.event;
+    var chain = Promise.resolve();
+    EP.registrations.unsynced(ev.id).forEach(function (r) {
+      chain = chain.then(function () { return syncRecord(r); });
+    });
+    return chain.then(function () {
+      return EP.sheetSync.getCount(ev.sheetUrl, ev.id);
+    }).then(function (data) {
+      if (!state || state.event.id !== ev.id) return;
+      remoteCount = data.count;
+      setSheetStatus(syncedNow(), 'ok');
+      if (renderer) renderer.update();
+      if (!$('#view-admin').hidden) renderAdmin();
+    }).catch(function (e) {
+      setSheetStatus('Google Sheet: mất kết nối, đang dùng dữ liệu trên máy. ' + e.message, 'error');
+    });
+  }
+
+  function testSheet() {
+    var url = V.clean(form.elements.sheetUrl.value);
+    var msg = $('#sheet-msg');
+    msg.className = 'form-msg';
+    if (!url) { msg.textContent = 'Hãy dán đường dẫn Apps Script trước.'; msg.classList.add('is-error'); return; }
+    if (!EP.sheetSync.isValidUrl(url)) {
+      msg.textContent = 'Đường dẫn phải có dạng https://script.google.com/macros/s/.../exec';
+      msg.classList.add('is-error');
+      return;
+    }
+    msg.textContent = 'Đang kiểm tra…';
+    EP.sheetSync.ping(url).then(function () {
+      msg.textContent = 'Kết nối thành công! Bấm "Tạo landing page" để lưu cấu hình.';
+      msg.classList.add('is-success');
+    }, function (e) {
+      msg.textContent = e.message + ' Kiểm tra lại bước "Triển khai" với quyền "Bất kỳ ai".';
+      msg.classList.add('is-error');
+    });
+  }
+
   function saveAndRender(ev, content, tone) {
+    if (!state || state.event.sheetUrl !== ev.sheetUrl) { remoteCount = null; setSheetStatus(''); }
     state = { event: ev, content: content, tone: tone };
     if (!S.write('current', state)) setMsg('Không lưu được dữ liệu vào trình duyệt.', 'error');
     renderLanding();
+    syncAll();
   }
 
   // ---------- Sinh nội dung theo chế độ AI ----------
@@ -196,25 +300,30 @@
   }
 
   // ---------- Danh sách đăng ký (quản trị) ----------
-  var STATUS_TEXT = { new: 'Đã đăng ký', waitlist: 'Danh sách chờ' };
+  var STATUS_TEXT = { new: 'Đã đăng ký', waitlist: 'Danh sách chờ', duplicate: 'Trùng (đã có trên Sheet)' };
+
+  function syncText(r) {
+    if (!state.event.sheetUrl) return '—';
+    return r.synced === false ? 'Chờ gửi' : 'Đã gửi';
+  }
 
   function renderAdmin() {
     var tbody = $('#admin-rows');
     tbody.innerHTML = '';
     if (!state) {
       $('#admin-title').textContent = 'Danh sách đăng ký';
-      tbody.innerHTML = '<tr><td colspan="6" class="empty">Chưa có sự kiện nào. Hãy tạo landing page trước.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="empty">Chưa có sự kiện nào. Hãy tạo landing page trước.</td></tr>';
       return;
     }
     var regs = EP.registrations.list(state.event.id);
     $('#admin-title').textContent = 'Danh sách đăng ký – ' + state.event.name + ' (' + EP.registrations.confirmedCount(state.event.id) + ' người)';
     if (!regs.length) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty">Chưa có ai đăng ký.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="empty">Chưa có ai đăng ký.</td></tr>';
       return;
     }
     regs.forEach(function (r, i) {
       var tr = document.createElement('tr');
-      [i + 1, r.name, r.phone, r.email, new Date(r.createdAt).toLocaleString('vi-VN'), STATUS_TEXT[r.status] || r.status]
+      [i + 1, r.name, r.phone, r.email, new Date(r.createdAt).toLocaleString('vi-VN'), STATUS_TEXT[r.status] || r.status, syncText(r)]
         .forEach(function (v) { var td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
       tbody.appendChild(tr);
     });
@@ -248,6 +357,9 @@
     S.remove('current');
     state = null;
     renderer = null;
+    remoteCount = null;
+    setSheetStatus('');
+    $('#sheet-msg').textContent = '';
     regenSeed = 0;
     form.reset();
     syncModeBoxes(); // form.reset() không phát sự kiện change cho radio
@@ -312,6 +424,7 @@
   $('#btn-regenerate').addEventListener('click', function () { generate(true); });
   $('#btn-new').addEventListener('click', resetAll);
   $('#btn-sample').addEventListener('click', fillSample);
+  $('#btn-sheet-test').addEventListener('click', testSheet);
   $('#btn-export').addEventListener('click', exportCsv);
   $('#btn-clear-regs').addEventListener('click', function () {
     if (!state) return;
@@ -336,7 +449,10 @@
     fillForm(state.event);
     if (state.tone) form.elements.tone.value = state.tone;
     renderLanding();
+    syncAll();
   }
+
+  setInterval(syncAll, SYNC_INTERVAL_MS);
 
   // Đếm ngược mỗi giây + cập nhật khi tab khác có người đăng ký
   setInterval(function () { if (renderer) renderer.update(); }, 1000);

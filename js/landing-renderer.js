@@ -120,7 +120,14 @@
         name: form.elements.name.value, phone: form.elements.phone.value,
         email: form.elements.email.value, consent: form.elements.consent.checked
       };
-      var result = opts.onRegister(data);
+      submitBtn.textContent = 'Đang gửi…';
+      // onRegister có thể trả kết quả ngay hoặc Promise (khi chờ Google Sheet)
+      Promise.resolve(opts.onRegister(data)).then(showResult, function () {
+        showResult({ ok: false, errors: { form: 'Có lỗi xảy ra, vui lòng thử lại.' } });
+      });
+    });
+
+    function showResult(result) {
       form.querySelectorAll('[data-error-for]').forEach(function (p) { p.textContent = ''; });
       form.querySelectorAll('input').forEach(function (i) { i.removeAttribute('aria-invalid'); });
       formMsg.className = 'lp-form-msg';
@@ -139,7 +146,7 @@
       }
       update();
       submitBtn.disabled = !ES.getStatus(ev, opts.getCount(), opts.now()).canRegister;
-    });
+    }
 
     var register = h('section', { class: 'lp-section lp-register', id: 'lp-register' }, [
       h('h2', { text: 'Đăng ký tham gia' }), form, formClosed

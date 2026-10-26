@@ -56,6 +56,9 @@
     if (ev.earlyBirdUntil && ev.startAt && new Date(ev.earlyBirdUntil) > new Date(ev.startAt)) {
       errors.earlyBirdUntil = 'Hạn ưu đãi phải trước giờ bắt đầu sự kiện.';
     }
+    if (ev.sheetUrl && root.EP.sheetSync && !root.EP.sheetSync.isValidUrl(ev.sheetUrl)) {
+      errors.sheetUrl = 'Đường dẫn phải có dạng https://script.google.com/macros/s/.../exec';
+    }
     return errors;
   }
 

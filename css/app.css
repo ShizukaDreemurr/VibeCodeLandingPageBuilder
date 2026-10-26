@@ -57,6 +57,12 @@ code { background: var(--lp-surface); padding: 0 4px; border-radius: 4px; }
 
 .preview-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; position: sticky; top: 76px; max-height: calc(100vh - 96px); display: flex; flex-direction: column; }
 .preview-bar { display: flex; justify-content: space-between; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-muted); }
+.sheet-box { background: var(--bg); border-radius: var(--radius-small); padding: 10px 12px; margin-bottom: 12px; }
+.sheet-box summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+.sheet-box[open] summary { margin-bottom: 10px; }
+.sheet-status { margin-right: auto; margin-left: 12px; }
+.sheet-status.is-ok { color: var(--success); }
+.sheet-status.is-error { color: var(--danger); }
 .mock-note { color: var(--warn); font-weight: 600; }
 .landing { overflow: auto; }
 .empty-state { padding: 80px 24px; text-align: center; color: var(--text-muted); }
