@@ -1,6 +1,6 @@
 # Kế hoạch — Landing Page Sự Kiện trong 5 phút (Đề 8, VIBE-CODING 2026)
 
-> Trạng thái: **đã chốt kế hoạch, chưa code.** Cập nhật: 2026-10-22.
+> Trạng thái: **đang code — đã xong lõi 5 tính năng (chưa làm giao diện chi tiết).** Cập nhật: 2026-10-26.
 
 ## 0. Khách hàng mục tiêu (chốt với cô)
 - **Marketer chuyên tổ chức sự kiện.** Cần nghiên cứu: độ tuổi, gu thẩm mỹ, thói quen dùng công cụ → làm căn cứ chọn giao diện, template, phong cách, phông chữ.
@@ -11,6 +11,8 @@
 3. Render landing page: hero, đếm ngược giờ G, agenda, form đăng ký.
 4. Form đăng ký lưu localStorage + hiển thị số người đã đăng ký theo thời gian thực.
 5. Nút "Tạo trang mới".
+
+## 0b. Bảng thi: **Bảng B — Kinh tế** (đã chốt)
 
 ## 2. Kiến trúc
 - **Page = JSON**: `template + dữ liệu form + nội dung (offline/AI) → engine render`.
