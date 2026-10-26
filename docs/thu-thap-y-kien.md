@@ -117,7 +117,7 @@ Lý do: hỏi như người mới vào nghề xin kinh nghiệm thì người đ
 ### Cách tổng hợp để đưa vào bài thi
 1. Đếm số người nhắc mỗi mã P1–P9 → biểu đồ cột "Nỗi đau phổ biến nhất".
 2. Chọn 3–5 trích dẫn nguyên văn hay nhất (ẩn danh) cho slide/README.
-3. Đối chiếu: mỗi nỗi đau phổ biến → tính năng nào của EventPage AI giải quyết.
+3. Đối chiếu: mỗi nỗi đau phổ biến → tính năng nào của Xclipse giải quyết.
 4. Ghi trung thực số lượng: "N người trả lời, từ X group, ngày…" — không suy rộng thành "đa số marketer Việt Nam".
 
 **Thời hạn đề xuất:** đăng trong 26–27/10, thu thập đến 01/11, tổng hợp xong 03/11 (trước hạn nộp 09/11).

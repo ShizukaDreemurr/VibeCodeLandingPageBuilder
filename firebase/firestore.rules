@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// EventPage AI — quy tắc bảo mật Firestore
+// Xclipse — quy tắc bảo mật Firestore
 // - Ai cũng xem được nội dung landing page và SỐ người đăng ký (không kèm tên/SĐT/email).
 // - Khách chỉ được GỬI đăng ký, không đọc được danh sách.
 // - Chỉ chủ sự kiện (đăng nhập Google) mới đọc/sửa/xoá danh sách đăng ký.
