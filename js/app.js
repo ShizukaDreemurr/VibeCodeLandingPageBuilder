@@ -106,6 +106,8 @@
     $('#tpl-name').textContent = t.name;
     $('#tpl-swatch').style.background = 'linear-gradient(135deg, ' + t.theme.primary + ' 50%, ' + t.theme.accent + ' 50%)';
     $('#studio-box').hidden = !t.wedding;
+    $('#tpl-name-2').textContent = t.name;
+    $('#tpl-swatch-2').style.background = $('#tpl-swatch').style.background;
   }
 
   function buildTemplateFilters() {
@@ -358,6 +360,11 @@
     toast('Đã lưu chỉnh sửa.');
   }
 
+  var device = 'desktop';
+  function applyDevice() {
+    ['desktop', 'tablet', 'mobile'].forEach(function (d) { landingEl.classList.toggle('device-' + d, d === device); });
+  }
+
   function renderLanding() {
     if (!state) return;
     $('#mock-note').hidden = state.content.source !== 'mock';
@@ -399,6 +406,7 @@
         });
       }
     });
+    applyDevice();
     $('#btn-regenerate').disabled = false;
     updatePublishUi();
   }
@@ -649,6 +657,7 @@
     if (!saveState()) setMsg('Không lưu được dữ liệu vào trình duyệt.', 'error');
     renderLanding();
     syncAll();
+    switchTab('editor');
     // Trang đã xuất bản: tự cập nhật bản công khai
     if (isCloudEvent() && C.currentUser()) {
       C.publishEvent(ev, content, false).then(function () { toast('Đã cập nhật trang công khai.'); }, function (e) { toast('Chưa cập nhật được trang công khai: ' + e.message); });
@@ -908,7 +917,6 @@
     simState = '';
     $('#sim-state').value = '';
     $('#sim-wrap').hidden = true;
-    $('#layout-box').hidden = true;
     if ($('#sim-banner')) $('#sim-banner').hidden = true;
     setSheetStatus('');
     $('#sheet-msg').textContent = '';
@@ -938,7 +946,7 @@
     if (isCloudEvent()) startWatch(state.event.id);
     renderLanding();
     syncAll();
-    switchTab('builder');
+    switchTab('editor');
   }
 
   function duplicateEvent(saved) {
@@ -1047,6 +1055,7 @@
       t.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     $('#view-builder').hidden = name !== 'builder';
+    $('#view-editor').hidden = name !== 'editor';
     $('#view-admin').hidden = name !== 'admin';
     $('#view-events').hidden = name !== 'events';
     if (name === 'admin') renderAdmin();
@@ -1061,6 +1070,16 @@
   // ---------- Khởi động ----------
   form.addEventListener('submit', function (e) { e.preventDefault(); generate(false); });
   $('#btn-regenerate').addEventListener('click', function () { generate(true); });
+  $('#btn-regenerate-2').addEventListener('click', function () { generate(true); });
+  $('#btn-tpl-2').addEventListener('click', openTemplates);
+  $('#btn-back-info').addEventListener('click', function () { switchTab('builder'); });
+  document.querySelectorAll('.device-toggle [data-device]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      device = b.getAttribute('data-device');
+      document.querySelectorAll('.device-toggle [data-device]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      applyDevice();
+    });
+  });
   $('#btn-new').addEventListener('click', resetAll);
   $('#btn-new-2').addEventListener('click', function () { resetAll(true); });
   $('#btn-sample').addEventListener('click', fillSample);

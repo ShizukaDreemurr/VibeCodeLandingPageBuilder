@@ -1,5 +1,5 @@
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
-(async()=>{const b=await chromium.launch();const errs=[];const log=(k,v)=>console.log(k.padEnd(32),v);
+(async()=>{const b=require('./auto-tab.cjs')(await chromium.launch());const errs=[];const log=(k,v)=>console.log(k.padEnd(32),v);
  const page=async()=>{const c=await b.newContext();const p=await c.newPage();p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});return p;};
  const reg=async(p,n,ph,em)=>{await p.fill('#lp-name',n);await p.fill('#lp-phone',ph);await p.fill('#lp-email',em);await p.check('.lp-consent input');await p.click('.lp-submit');await p.waitForFunction(()=>document.querySelector('.lp-form-msg')?.textContent||document.querySelector('.lp-form')?.hidden,null,{timeout:15000}).catch(()=>{});await p.waitForTimeout(800);};
  const O=await page();await O.goto('http://localhost:8000/?emulator=1');

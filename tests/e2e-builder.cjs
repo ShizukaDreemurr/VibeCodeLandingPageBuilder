@@ -1,5 +1,5 @@
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
-(async()=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:1400,height:900}})).newPage();const errs=[];
+(async()=>{const b=require('./auto-tab.cjs')(await chromium.launch());const p=await (await b.newContext({viewport:{width:1400,height:900}})).newPage();const errs=[];
  p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));const log=(k,v)=>console.log(k.padEnd(30),v);
  await p.goto('file:///home/user/VibeCodeLandingPageBuilder/index.html');
  await p.click('#btn-sample');await p.click('#btn-generate');

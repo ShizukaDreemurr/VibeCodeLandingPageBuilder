@@ -1,6 +1,6 @@
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
 (async () => {
-  const b = await chromium.launch();
+  const b = require('./auto-tab.cjs')(await chromium.launch());
   const ctx = await b.newContext({ viewport: { width: 1400, height: 900 } });
   const p = await ctx.newPage();
   const errs = [];
@@ -63,7 +63,7 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
   // new page
   p.on('dialog', d=>d.accept());
   await p.click('#btn-new');
-  log('empty after new', await p.isVisible('.empty-state'));
+  log('empty after new', await p.locator('#landing .empty-state').count() === 1);
   // mobile
   await p.setViewportSize({width:390,height:844}); await p.click('#btn-sample'); await p.check('input[value="mock"]'); await p.click('#btn-generate');
   log('h-scroll', await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth));

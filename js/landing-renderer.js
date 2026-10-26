@@ -274,18 +274,44 @@
       var status = ES.getStatus(ev, count, now);
       statusBadge.textContent = status.label;
       statusBadge.className = 'lp-badge is-' + status.code;
+      if (lastCount != null && count > lastCount) retrigger(countText, 'bump');
+      lastCount = count;
       countText.textContent = count.toLocaleString('vi-VN');
 
       var cd = ES.countdown(ev, now);
       countdownEl.hidden = !cd;
       endedEl.hidden = !!cd;
-      if (cd) Object.keys(cd).forEach(function (u) { cdBoxes[u].textContent = pad(cd[u]); });
+      if (cd) Object.keys(cd).forEach(function (u) {
+        var v = pad(cd[u]);
+        if (cdBoxes[u].textContent && cdBoxes[u].textContent !== v) retrigger(cdBoxes[u], 'tick');
+        cdBoxes[u].textContent = v;
+      });
 
       if (offer) offer.hidden = !ES.isEarlyBirdActive(ev, now);
       form.hidden = !status.canRegister;
       formClosed.hidden = status.canRegister;
       if (!submitBtn.disabled || submitBtn.textContent !== 'Đang gửi…') {
         submitBtn.textContent = status.waitlist ? 'Vào danh sách chờ' : L.submit;
+      }
+    }
+
+    // Hiệu ứng: chỉ ở trang xem (không làm phiền khi đang soạn)
+    var lastCount = null;
+    function retrigger(el, cls) {
+      el.classList.remove(cls);
+      void el.offsetWidth; // ép trình duyệt chạy lại animation
+      el.classList.add(cls);
+    }
+    if (!editable) {
+      var revealEls = Array.prototype.slice.call(container.children).filter(function (el) { return el !== hero; });
+      revealEls.forEach(function (el) { el.classList.add('lp-reveal'); });
+      if (typeof IntersectionObserver === 'function') {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } });
+        }, { threshold: 0.12 });
+        revealEls.forEach(function (el) { io.observe(el); });
+      } else {
+        revealEls.forEach(function (el) { el.classList.add('is-in'); });
       }
     }
 

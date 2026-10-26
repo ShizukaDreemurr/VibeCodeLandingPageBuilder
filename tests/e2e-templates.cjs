@@ -1,6 +1,6 @@
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
 const S=process.argv[2];
-(async()=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:1400,height:900}})).newPage();const errs=[];
+(async()=>{const b=require('./auto-tab.cjs')(await chromium.launch());const p=await (await b.newContext({viewport:{width:1400,height:900}})).newPage();const errs=[];
  p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));const log=(k,v)=>console.log(k.padEnd(30),v);
  await p.goto('file:///home/user/VibeCodeLandingPageBuilder/index.html');
  log('default tpl',await p.textContent('#tpl-name'));
@@ -29,5 +29,5 @@ const S=process.argv[2];
  await p.reload();await p.click('[data-tab="builder"]');log('images persist after reload',await p.locator('.lp-gallery-item img').count()+' '+(await p.getAttribute('.lp-hero','class')));
  await p.fill('#f-studioUrl','javascript:alert(1)');await p.click('#btn-generate');log('bad studio url',await p.textContent('[data-error-for="studioUrl"]'));
  await p.screenshot({path:S+'/wedding.png',fullPage:false});
- await p.locator('#landing').screenshot({path:S+'/wedding-landing.png'});
+ await p.click('[data-tab="editor"]');await p.locator('#landing').screenshot({path:S+'/wedding-landing.png'});
  log('ERRORS',errs);await b.close();})();

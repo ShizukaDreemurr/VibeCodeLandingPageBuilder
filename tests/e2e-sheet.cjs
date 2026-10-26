@@ -1,6 +1,6 @@
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
 const URL='file:///home/user/VibeCodeLandingPageBuilder/index.html';
-(async()=>{const b=await chromium.launch();const errs=[];
+(async()=>{const b=require('./auto-tab.cjs')(await chromium.launch());const errs=[];
  const mk=async()=>{const c=await b.newContext();const p=await c.newPage();p.on('pageerror',e=>errs.push(e.message));await p.goto(URL);return p;};
  const log=(k,v)=>console.log(k.padEnd(30),v);
  const reg=async(p,n,ph,em)=>{await p.fill('#lp-name',n);await p.fill('#lp-phone',ph);await p.fill('#lp-email',em);await p.check('.lp-consent input');await p.click('.lp-submit');await p.waitForTimeout(700);};

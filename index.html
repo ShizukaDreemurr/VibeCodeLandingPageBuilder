@@ -15,7 +15,8 @@
     <div class="brand">X<span>clipse</span></div>
     <nav class="tabs" role="tablist">
       <button type="button" class="tab" data-tab="events" role="tab" aria-selected="false">Sự kiện của tôi</button>
-      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Tạo / sửa trang</button>
+      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">1. Thông tin &amp; nội dung</button>
+      <button type="button" class="tab" data-tab="editor" role="tab" aria-selected="false">2. Thiết kế trang</button>
       <button type="button" class="tab" data-tab="admin" role="tab" aria-selected="false">Danh sách đăng ký</button>
     </nav>
     <span class="user-email" id="user-email" hidden></span>
@@ -23,8 +24,8 @@
     <button type="button" class="btn btn-accent" id="btn-new">+ Tạo trang mới</button>
   </header>
 
-  <main id="view-builder" class="workspace">
-    <!-- CỘT TRÁI: FORM NHẬP + AI -->
+  <main id="view-builder" class="workspace-form view">
+    <!-- BƯỚC 1: FORM NHẬP + AI -->
     <aside class="panel">
       <form id="event-form" novalidate>
         <div class="tpl-bar">
@@ -165,20 +166,54 @@
           <button type="submit" class="btn btn-primary" id="btn-generate">✨ Tạo landing page</button>
           <button type="button" class="btn btn-ghost" id="btn-regenerate" disabled>↻ Viết lại</button>
         </div>
+        <p class="hint">Tạo xong, bạn sẽ được chuyển sang bước <strong>2. Thiết kế trang</strong> để chỉnh bố cục, ảnh và xuất bản.</p>
 
-        <div class="layout-box" id="layout-box" hidden>
-          <h2 class="panel-title">3. Bố cục trang</h2>
+      </form>
+    </aside>
+  </main>
+
+  <main id="view-editor" class="editor view" hidden>
+    <!-- TRÁI: MẪU + BỐ CỤC -->
+    <aside class="panel editor-side">
+      <button type="button" class="btn btn-ghost btn-small" id="btn-back-info">← Sửa thông tin &amp; nội dung</button>
+      <div class="tpl-bar">
+        <span class="tpl-swatch" id="tpl-swatch-2" aria-hidden="true"></span>
+        <div class="tpl-bar-text"><span class="hint">Mẫu trang</span><strong id="tpl-name-2">Tech Workshop</strong></div>
+        <button type="button" class="btn btn-ghost btn-small" id="btn-tpl-2">Đổi mẫu</button>
+      </div>
+        <div class="layout-box" id="layout-box">
+          <h2 class="panel-title">Bố cục trang</h2>
           <p class="hint">Kéo thả hoặc dùng mũi tên để đổi thứ tự, bỏ tick để ẩn. Phần có 🔒 là bắt buộc. Bấm trực tiếp vào chữ trên trang để sửa.</p>
           <ol class="section-list" id="section-list"></ol>
         </div>
-      </form>
+      <button type="button" class="btn btn-ghost btn-small" id="btn-regenerate-2">↻ AI viết lại nội dung</button>
     </aside>
 
-    <!-- CỘT PHẢI: XEM TRƯỚC LANDING PAGE -->
+    <!-- GIỮA: KHUNG TRANG -->
     <section class="preview-wrap" aria-label="Xem trước landing page">
       <div class="preview-bar">
-        <span>Xem trước</span>
-        <label class="sim-label" id="sim-wrap" hidden>⏱ Xem thử
+        <div class="device-toggle" role="group" aria-label="Kích thước màn hình">
+          <button type="button" class="is-active" data-device="desktop" title="Máy tính">🖥 Desktop</button>
+          <button type="button" data-device="tablet" title="Máy tính bảng">Tablet</button>
+          <button type="button" data-device="mobile" title="Điện thoại">📱 Mobile</button>
+        </div>
+        <span class="sheet-status" id="sheet-status" hidden></span>
+        <span class="mock-note" id="mock-note" hidden>Bản demo vòng loại – Dữ liệu mô phỏng AI</span>
+      </div>
+      <div id="landing" class="landing">
+        <div class="empty-state">
+          <p class="empty-title">Landing page sẽ hiện ở đây</p>
+          <p>Vào bước <strong>1. Thông tin &amp; nội dung</strong> rồi bấm <strong>✨ Tạo landing page</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẢI: XEM THỬ + XUẤT BẢN -->
+    <aside class="panel editor-side">
+      <h2 class="panel-title">Ảnh</h2>
+      <p class="hint">Bấm nút <strong>🖼 / + Ảnh</strong> ngay trên trang để thay ảnh bìa, ảnh diễn giả, album. Bấm vào chữ để sửa trực tiếp.</p>
+      <h2 class="panel-title">Xem thử trạng thái</h2>
+        <label class="sim-label" id="sim-wrap" hidden>⏱
           <select id="sim-state" aria-label="Xem thử trạng thái trang">
             <option value="">Hiện tại</option>
             <option value="almost">Sắp hết chỗ</option>
@@ -187,10 +222,10 @@
             <option value="ended">Sự kiện đã diễn ra</option>
           </select>
         </label>
-        <span class="sheet-status" id="sheet-status" hidden></span>
-        <span class="mock-note" id="mock-note" hidden>Bản demo vòng loại – Dữ liệu mô phỏng AI</span>
-        <button type="button" class="btn btn-primary btn-small" id="btn-publish" hidden disabled>Xuất bản &amp; chia sẻ</button>
-      </div>
+
+      <h2 class="panel-title">Xuất bản</h2>
+      <p class="hint">Xuất bản để có link + mã QR; khách đăng ký từ mọi thiết bị.</p>
+      <button type="button" class="btn btn-primary" id="btn-publish" hidden disabled>Xuất bản &amp; chia sẻ</button>
       <div class="share-box" id="share-box" hidden>
         <div class="share-info">
           <p class="share-title">Trang đã xuất bản – gửi link hoặc mã QR cho khách</p>
@@ -203,16 +238,10 @@
         </div>
         <div class="share-qr" id="share-qr" aria-label="Mã QR của trang"></div>
       </div>
-      <div id="landing" class="landing">
-        <div class="empty-state">
-          <p class="empty-title">Landing page sẽ hiện ở đây</p>
-          <p>Nhập thông tin sự kiện bên trái rồi bấm <strong>✨ Tạo landing page</strong>.</p>
-        </div>
-      </div>
-    </section>
+    </aside>
   </main>
 
-  <main id="view-events" class="admin" hidden>
+  <main id="view-events" class="admin view" hidden>
     <div class="admin-head">
       <h2>Sự kiện của tôi</h2>
       <button type="button" class="btn btn-accent" id="btn-new-2">+ Tạo sự kiện mới</button>
@@ -227,7 +256,7 @@
     </div>
   </main>
 
-  <main id="view-admin" class="admin" hidden>
+  <main id="view-admin" class="admin view" hidden>
     <div class="admin-head">
       <h2 id="admin-title">Danh sách đăng ký</h2>
       <div class="actions">

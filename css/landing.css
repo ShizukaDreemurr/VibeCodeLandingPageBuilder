@@ -93,3 +93,49 @@ img.lp-avatar { object-fit: cover; }
 .is-editable [contenteditable="true"] { outline: 1px dashed transparent; outline-offset: 4px; border-radius: 4px; cursor: text; }
 .is-editable [contenteditable="true"]:hover { outline-color: currentColor; }
 .is-editable [contenteditable="true"]:focus { outline: 2px solid var(--lp-accent); }
+
+/* ---------- Animation landing page (tắt khi giảm chuyển động) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hiện dần khi cuộn tới */
+  .lp-reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .lp-reveal.is-in { opacity: 1; transform: none; }
+  .lp-reveal .lp-benefits li, .lp-reveal .lp-speaker, .lp-reveal .lp-agenda li, .lp-reveal .lp-gallery-item { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .lp-reveal.is-in .lp-benefits li, .lp-reveal.is-in .lp-speaker, .lp-reveal.is-in .lp-agenda li, .lp-reveal.is-in .lp-gallery-item { opacity: 1; transform: none; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(2) { transition-delay: 0.1s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(3) { transition-delay: 0.2s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(n+4) { transition-delay: 0.3s; }
+
+  /* Hero xuất hiện lần lượt */
+  .lp-hero > * { animation: lpUp 0.7s ease both; }
+  .lp-hero > :nth-child(2) { animation-delay: 0.08s; }
+  .lp-hero > :nth-child(3) { animation-delay: 0.16s; }
+  .lp-hero > :nth-child(4) { animation-delay: 0.24s; }
+  .lp-hero > :nth-child(n+5) { animation-delay: 0.32s; }
+  .lp-hero.has-image { background-size: auto, 110%, auto; animation: lpKen 18s ease-in-out infinite alternate; }
+
+  /* Nút chính: nhịp nhẹ thu hút, nổi lên khi rê chuột */
+  .lp-cta { animation: lpUp 0.7s ease 0.32s both, lpPulse 2.6s ease-in-out 2s infinite; }
+  .lp-cta, .lp-submit, .lp-credit-cta { transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
+  .lp-cta:hover, .lp-submit:not(:disabled):hover, .lp-credit-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18); filter: brightness(1.05); }
+
+  /* Đếm ngược: số lật khi đổi; số đăng ký nảy lên khi tăng */
+  .lp-cd-num.tick { animation: lpTick 0.4s ease; }
+  .lp-count { display: inline-block; }
+  .lp-count.bump { animation: lpBump 0.7s ease; }
+  .lp-badge { transition: background-color 0.3s ease, color 0.3s ease; }
+  .lp-badge.is-almost, .lp-badge.is-full { animation: lpBlink 1.6s ease-in-out 3; }
+
+  .lp-speaker .lp-avatar { transition: transform 0.25s ease; }
+  .lp-speaker:hover .lp-avatar { transform: scale(1.07); }
+  .lp-gallery-item img { transition: transform 0.5s ease; }
+  .lp-gallery-item:hover img { transform: scale(1.05); }
+  .lp-form-msg.is-success, .lp-form-msg.is-error { animation: lpUp 0.4s ease both; }
+  .lp-field input { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+  .lp-field input:focus { outline: none; border-color: var(--lp-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-accent) 25%, transparent); }
+}
+@keyframes lpUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes lpPulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--lp-accent) 45%, transparent); } 50% { box-shadow: 0 0 0 10px transparent; } }
+@keyframes lpTick { 0% { transform: translateY(-35%); opacity: 0.3; } 100% { transform: none; opacity: 1; } }
+@keyframes lpBump { 0% { transform: scale(1); } 30% { transform: scale(1.45); } 100% { transform: scale(1); } }
+@keyframes lpBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes lpKen { from { background-position: center, 50% 40%, center; } to { background-position: center, 50% 60%, center; } }

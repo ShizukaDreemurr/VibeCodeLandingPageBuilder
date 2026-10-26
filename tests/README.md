@@ -11,3 +11,5 @@
 | `../firebase/rules.test.mjs` | 21 ca quy tắc bảo mật Firestore | xem `firebase/README.md` |
 
 Ghi chú: các test Firebase chạy trên **Firebase Emulator** (`?emulator=1`), không đụng dữ liệu thật.
+
+`auto-tab.cjs`: ứng dụng chia tab (Thông tin / Thiết kế trang / Quản lý); helper này tự mở đúng tab trước khi test click/điền vào một phần tử.

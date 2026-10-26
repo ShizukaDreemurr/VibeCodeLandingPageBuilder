@@ -154,3 +154,50 @@ body.is-public .topbar, body.is-public #view-builder, body.is-public #view-admin
 .checklist li.is-block::before { content: '✕ '; color: var(--danger); font-weight: 800; }
 .check-dialog { width: min(560px, calc(100vw - 32px)); }
 .check-dialog h2 { margin: 0; color: var(--primary); }
+
+/* ---------- Bước 1: form (một cột, căn giữa) ---------- */
+.workspace-form { max-width: 760px; margin: 0 auto; padding: 20px; }
+
+/* ---------- Bước 2: page builder 3 cột ---------- */
+.editor { display: grid; grid-template-columns: 280px minmax(0, 1fr) 300px; gap: 16px; padding: 16px; align-items: start; }
+.editor-side { position: sticky; top: 76px; max-height: calc(100vh - 92px); overflow: auto; display: flex; flex-direction: column; gap: 10px; padding: 16px; }
+.editor-side .panel-title { margin: 6px 0 0; padding: 0; border: 0; font-size: 15px; }
+.editor .preview-wrap { position: static; max-height: none; background: var(--bg); }
+.editor .landing { margin: 0 auto; width: 100%; max-width: 100%; transition: max-width 0.35s ease; background: var(--lp-bg); box-shadow: var(--shadow); }
+.editor .landing.device-tablet { max-width: 768px; }
+.editor .landing.device-mobile { max-width: 390px; }
+.editor .preview-wrap > .landing { min-height: 70vh; }
+.editor .share-box { flex-direction: column; align-items: stretch; padding: 12px; border-radius: var(--radius-small); border: 1px solid var(--border); }
+.editor .share-qr { align-self: center; }
+.editor .sim-label select { width: 100%; }
+.device-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--surface); }
+.device-toggle button { font: inherit; font-size: 13px; border: 0; background: none; padding: 5px 12px; cursor: pointer; color: var(--text-muted); }
+.device-toggle button.is-active { background: var(--primary); color: var(--primary-contrast); }
+@media (max-width: 1100px) {
+  .editor { grid-template-columns: 1fr; }
+  .editor-side { position: static; max-height: none; }
+}
+
+/* ---------- Animation (tắt khi người dùng chọn giảm chuyển động) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .view:not([hidden]) { animation: xcViewIn 0.35s ease both; }
+  .btn { transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease; }
+  .btn:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(22, 25, 58, 0.12); }
+  .btn:not(:disabled):active { transform: translateY(0); }
+  .event-card, .tpl-card, .metric { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+  .event-card:hover, .tpl-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .toast:not([hidden]) { animation: xcToastIn 0.3s ease both; }
+  dialog[open] { animation: xcDialogIn 0.25s ease both; }
+  dialog[open]::backdrop { animation: xcFade 0.25s ease both; }
+  .section-item { transition: background-color 0.2s ease, opacity 0.2s ease; }
+  .checklist li { animation: xcViewIn 0.3s ease both; }
+  .checklist li:nth-child(2) { animation-delay: 0.05s; } .checklist li:nth-child(3) { animation-delay: 0.1s; }
+  .checklist li:nth-child(4) { animation-delay: 0.15s; } .checklist li:nth-child(5) { animation-delay: 0.2s; }
+  .checklist li:nth-child(n+6) { animation-delay: 0.25s; }
+  .btn.is-loading::after { content: ''; display: inline-block; width: 12px; height: 12px; margin-left: 8px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; vertical-align: -2px; animation: xcSpin 0.7s linear infinite; }
+}
+@keyframes xcViewIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes xcToastIn { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes xcDialogIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes xcFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes xcSpin { to { transform: rotate(360deg); } }
