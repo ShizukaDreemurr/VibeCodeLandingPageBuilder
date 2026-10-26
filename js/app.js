@@ -82,7 +82,7 @@
     t.textContent = text;
     t.hidden = false;
     clearTimeout(toast.timer);
-    toast.timer = setTimeout(function () { t.hidden = true; }, 3500);
+    toast.timer = setTimeout(function () { t.hidden = true; }, Math.max(3500, text.length * 60));
   }
 
   // ---------- Dựng landing page ----------
@@ -215,6 +215,7 @@
       }).then(updatePublishUi);
     };
     if (C.currentUser()) return go();
+    toast('Đang mở cửa sổ đăng nhập Google…');
     C.signIn().then(go, function (e) { toast(e.message); });
   }
 
@@ -590,8 +591,9 @@
 
   $('#btn-publish').addEventListener('click', publish);
   $('#btn-auth').addEventListener('click', function () {
-    if (C.currentUser()) C.signOut();
-    else C.signIn().catch(function (e) { toast(e.message); });
+    if (C.currentUser()) { C.signOut(); return; }
+    toast('Đang mở cửa sổ đăng nhập Google…');
+    C.signIn().then(function () { toast('Đã đăng nhập.'); }, function (e) { toast(e.message); });
   });
   $('#btn-copy-link').addEventListener('click', function () {
     copyText($('#share-url').value).then(function () { toast('Đã copy link.'); }, function () { $('#share-url').select(); });

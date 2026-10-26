@@ -54,7 +54,23 @@
     if (root.location.protocol === 'file:') {
       return Promise.reject(new Error('Đăng nhập Google cần mở app qua đường dẫn web (GitHub Pages hoặc localhost), không mở trực tiếp file.'));
     }
-    return auth.signInWithPopup(new fb.auth.GoogleAuthProvider());
+    var provider = new fb.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    return auth.signInWithPopup(provider).catch(function (e) { throw new Error(authMessage(e)); });
+  }
+
+  // Dịch lỗi đăng nhập sang hướng dẫn dễ hiểu
+  function authMessage(e) {
+    var map = {
+      'auth/popup-blocked': 'Trình duyệt đã chặn cửa sổ đăng nhập. Bấm biểu tượng chặn popup trên thanh địa chỉ, chọn "Luôn cho phép", rồi bấm lại.',
+      'auth/popup-closed-by-user': 'Bạn đã đóng cửa sổ đăng nhập trước khi hoàn tất. Hãy bấm lại.',
+      'auth/cancelled-popup-request': 'Đang có một cửa sổ đăng nhập khác mở. Hãy hoàn tất cửa sổ đó.',
+      'auth/unauthorized-domain': 'Tên miền này chưa được cho phép đăng nhập. Thêm tên miền vào Firebase → Authentication → Settings → Authorized domains.',
+      'auth/operation-not-allowed': 'Đăng nhập Google chưa được bật trong Firebase (Authentication → Sign-in method).',
+      'auth/network-request-failed': 'Mất kết nối mạng khi đăng nhập. Kiểm tra mạng rồi thử lại.',
+      'auth/internal-error': 'Google từ chối đăng nhập trên trình duyệt này. Hãy thử trình duyệt Chrome thông thường (không phải trình duyệt tự động).'
+    };
+    return (e && map[e.code]) || ('Không đăng nhập được: ' + ((e && e.message) || 'lỗi không xác định') + '.');
   }
 
   function signOut() { return available ? auth.signOut() : Promise.resolve(); }
