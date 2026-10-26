@@ -33,3 +33,19 @@ AI thật hoặc mock minh bạch đều có thể đạt 100. Đi tiếp: tổn
 - Bấm đăng ký 2 lần / trùng → chỉ ghi nhận 1 lần.
 - localStorage chỉ lưu trên một máy — ghi rõ giới hạn.
 - API key: nhập qua ô riêng trên app, hiển thị dạng ***, không đưa vào code/chat.
+
+## Giải thích Đề 8 chính thức của BTC (thư viện đề bài)
+- Landing page hiển thị ngay trong app (dưới form hoặc trang xem trước), **không cần tạo URL riêng**.
+- Thời gian sự kiện đã qua → hiển thị **"Sự kiện đã diễn ra"** thay vì đếm ngược số âm.
+- Danh sách đăng ký lưu localStorage, hiển thị công khai số người đã đăng ký trên trang.
+- Các đề khác cho phép AI mock nếu ghi chú trong app và README.
+
+## Trùng lặp với đề khác — tránh làm thành tính năng chính
+- Đề 2 (caption), Đề 6 (email marketing): không làm bài đăng/email.
+- Đề 5 (chấm điểm website /100): "coach chấm điểm" chỉ làm dạng **checklist trước xuất bản** cho trang của chính mình, không làm công cụ chấm điểm URL.
+- Đề 7 (dashboard KPI): thống kê chỉ ở mức tối thiểu cho trang (lượt xem, đăng ký, tỉ lệ).
+
+## Ghi chú từ báo cáo UX (docs/bao-cao-ux-landing-page-su-kien.docx)
+- Persona chính (giả thuyết): marketer in-house SME; chủ cơ sở đào tạo/trainer.
+- MVP: AI tạo bản nháp từ brief (không bịa thông tin ngoài brief, đánh dấu phần cần xác nhận) · section editor + undo + preview mobile/desktop · form chống gửi lặp + xuất dữ liệu · checklist trước xuất bản · analytics tối thiểu (view, bắt đầu điền form, gửi thành công, tỉ lệ) · thông báo thu thập dữ liệu, xoá/tải dữ liệu.
+- Không dùng khan hiếm giả; countdown/số chỗ chỉ khi phản ánh trạng thái thật.
