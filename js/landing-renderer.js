@@ -257,7 +257,7 @@
     var byKey = { countdown: countdownSection, about: about, benefits: benefits, speakers: speakers, gallery: gallery, agenda: agenda, offer: offer, register: register };
     container.appendChild(hero);
     normalizeSections(ev.sections).forEach(function (s) {
-      if (s.visible && byKey[s.key]) container.appendChild(byKey[s.key]);
+      if (s.visible && byKey[s.key]) { byKey[s.key].setAttribute('data-section', s.key); container.appendChild(byKey[s.key]); }
     });
     container.appendChild(footer);
 

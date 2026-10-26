@@ -297,13 +297,117 @@
   // ---------- Bố cục: thứ tự / ẩn hiện các phần ----------
   function currentSections() { return EP.landingRenderer.normalizeSections(state.event.sections); }
 
+  var reduceMotion = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var flashKey = null; // phần vừa đổi → nháy sáng trên bản xem trước
+
   function moveSection(from, to) {
     var list = currentSections();
     if (to < 0 || to >= list.length) return;
     var item = list.splice(from, 1)[0];
     list.splice(to, 0, item);
     state.event.sections = list;
+    flashKey = item.key;
     persist();
+  }
+
+  // Đặt lại thứ tự theo danh sách chỉ số đang hiển thị (phần bị ẩn khỏi danh sách giữ nguyên chỗ)
+  function reorderSections(shownOrder) {
+    var list = currentSections();
+    var slots = shownOrder.slice().sort(function (a, b) { return a - b; });
+    var next = list.slice();
+    slots.forEach(function (slot, k) { next[slot] = list[shownOrder[k]]; });
+    state.event.sections = next;
+    persist();
+  }
+
+  // FLIP: ghi vị trí cũ → đổi DOM → trượt từ vị trí cũ về vị trí mới
+  function rectsOf(ol) {
+    var r = {};
+    Array.prototype.forEach.call(ol.children, function (li) { if (li.dataset.key) r[li.dataset.key] = li.getBoundingClientRect().top; });
+    return r;
+  }
+  function playFlip(ol, before, skip) {
+    if (reduceMotion) return;
+    Array.prototype.forEach.call(ol.children, function (li) {
+      var old = before[li.dataset.key];
+      if (old == null || li === skip) return;
+      var dy = old - li.getBoundingClientRect().top;
+      if (!dy) return;
+      li.animate([{ transform: 'translateY(' + dy + 'px)' }, { transform: 'none' }], { duration: 220, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    });
+  }
+
+  function highlightPreview(key, on) {
+    var el = landingEl.querySelector('[data-section="' + key + '"]');
+    if (el) el.classList.toggle('lp-hover', on);
+  }
+
+  // Kéo thả bằng con trỏ (chuột + cảm ứng): thẻ được "nhấc lên" đi theo tay, các thẻ khác trượt nhường chỗ
+  function startDrag(e, li, ol) {
+    if (e.button !== undefined && e.button !== 0) return;
+    if (e.target.closest('button, input, label')) return;
+    var startY = e.clientY, dragging = false, ghost, holder, offsetY, lastTop;
+    function begin() {
+      dragging = true;
+      var r = li.getBoundingClientRect();
+      offsetY = startY - r.top;
+      holder = document.createElement('li');
+      holder.className = 'section-placeholder';
+      holder.style.height = r.height + 'px';
+      ol.insertBefore(holder, li);
+      ghost = li;
+      ghost.classList.add('is-lifted');
+      ghost.style.width = r.width + 'px';
+      ghost.style.left = r.left + 'px';
+      ghost.style.top = r.top + 'px';
+      document.body.appendChild(ghost);
+      document.body.classList.add('is-sorting');
+    }
+    function move(ev) {
+      if (!dragging) { if (Math.abs(ev.clientY - startY) < 5) return; begin(); }
+      ev.preventDefault();
+      lastTop = ev.clientY - offsetY;
+      ghost.style.top = lastTop + 'px';
+      var items = Array.prototype.filter.call(ol.children, function (x) { return x !== holder; });
+      var target = null;
+      for (var k = 0; k < items.length; k++) {
+        var rr = items[k].getBoundingClientRect();
+        if (ev.clientY < rr.top + rr.height / 2) { target = items[k]; break; }
+      }
+      if ((target || null) !== holder.nextSibling || (!target && holder !== ol.lastChild)) {
+        var before = rectsOf(ol);
+        ol.insertBefore(holder, target);
+        playFlip(ol, before);
+      }
+      // Tự cuộn khi kéo gần mép
+      var box = ol.closest('.editor-side');
+      if (box) {
+        var br = box.getBoundingClientRect();
+        if (ev.clientY < br.top + 40) box.scrollTop -= 8; else if (ev.clientY > br.bottom - 40) box.scrollTop += 8;
+      }
+    }
+    function end() {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', end);
+      document.removeEventListener('pointercancel', end);
+      if (!dragging) return;
+      var dest = holder.getBoundingClientRect();
+      function finish() {
+        ghost.classList.remove('is-lifted');
+        ghost.removeAttribute('style');
+        ol.replaceChild(ghost, holder);
+        document.body.classList.remove('is-sorting');
+        var order = Array.prototype.map.call(ol.children, function (x) { return Number(x.getAttribute('data-index')); });
+        var changed = order.some(function (v, k) { return k > 0 && v < order[k - 1]; });
+        if (changed) { flashKey = ghost.dataset.key; reorderSections(order); toast('Đã đổi thứ tự bố cục.'); }
+      }
+      if (reduceMotion) return finish();
+      var a = ghost.animate([{ top: lastTop + 'px' }, { top: dest.top + 'px' }], { duration: 180, easing: 'ease-out' });
+      a.onfinish = finish;
+    }
+    document.addEventListener('pointermove', move, { passive: false });
+    document.addEventListener('pointerup', end);
+    document.addEventListener('pointercancel', end);
   }
 
   function renderSectionList() {
@@ -315,20 +419,25 @@
     var isWedding = TPL.get(state.event.templateId).wedding;
     var labels = TPL.labels(state.event.templateId);
     var ol = $('#section-list');
+    var before = rectsOf(ol);
+    var firstTime = !ol.children.length;
     ol.innerHTML = '';
     var list = currentSections();
     list.forEach(function (s, i) {
       if (s.key === 'gallery' && !isWedding) return;
       var m = meta[s.key];
       var li = document.createElement('li');
-      li.className = 'section-item' + (s.visible ? '' : ' is-hidden');
-      li.draggable = true;
+      li.className = 'section-item' + (s.visible ? '' : ' is-hidden') + (firstTime ? ' is-entering' : '');
+      if (firstTime) li.style.animationDelay = (ol.children.length * 35) + 'ms';
       li.setAttribute('data-index', i);
+      li.dataset.key = s.key;
       var grip = document.createElement('span'); grip.className = 'grip'; grip.textContent = '⋮⋮'; grip.setAttribute('aria-hidden', 'true');
       var name = document.createElement('label'); name.className = 'name';
       var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = s.visible; cb.disabled = !!m.locked;
       cb.addEventListener('change', function () {
-        var l = currentSections(); l[i].visible = cb.checked; state.event.sections = l; persist();
+        var l = currentSections(); l[i].visible = cb.checked; state.event.sections = l;
+        if (cb.checked) flashKey = s.key;
+        persist();
       });
       var title = labels[s.key] && s.key !== 'countdown' && s.key !== 'register' ? labels[s.key] : m.label;
       name.appendChild(cb);
@@ -337,17 +446,29 @@
       var down = document.createElement('button'); down.type = 'button'; down.textContent = '↓'; down.disabled = i === list.length - 1; down.setAttribute('aria-label', 'Đưa xuống');
       up.addEventListener('click', function () { moveSection(i, i - 1); });
       down.addEventListener('click', function () { moveSection(i, i + 1); });
-      li.addEventListener('dragstart', function (e) { li.classList.add('is-dragging'); e.dataTransfer.setData('text/plain', String(i)); });
-      li.addEventListener('dragend', function () { li.classList.remove('is-dragging'); });
-      li.addEventListener('dragover', function (e) { e.preventDefault(); });
-      li.addEventListener('drop', function (e) {
-        e.preventDefault();
-        var from = Number(e.dataTransfer.getData('text/plain'));
-        if (!isNaN(from) && from !== i) moveSection(from, i);
-      });
+      li.addEventListener('pointerdown', function (e) { startDrag(e, li, ol); });
+      li.addEventListener('mouseenter', function () { highlightPreview(s.key, true); });
+      li.addEventListener('mouseleave', function () { highlightPreview(s.key, false); });
       li.appendChild(grip); li.appendChild(name); li.appendChild(up); li.appendChild(down);
       ol.appendChild(li);
     });
+    playFlip(ol, before);
+    if (flashKey) setTimeout(flashChanged.bind(null, ol, flashKey), 0); // chờ bản xem trước vẽ xong
+    flashKey = null;
+  }
+
+  function flashChanged(ol, key) {
+    {
+      var flashKey = key;
+      var moved = ol.querySelector('[data-key="' + flashKey + '"]');
+      if (moved) moved.classList.add('is-moved');
+      var sec = landingEl.querySelector('[data-section="' + flashKey + '"]');
+      if (sec) {
+        sec.classList.add('lp-flash');
+        var wrap = landingEl.closest('.preview-wrap');
+        if (wrap && !$('#view-editor').hidden) sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+      }
+    }
   }
 
   // Sửa chữ trực tiếp trên trang
