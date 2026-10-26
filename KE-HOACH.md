@@ -12,6 +12,8 @@
 4. Form đăng ký lưu localStorage + hiển thị số người đã đăng ký theo thời gian thực.
 5. Nút "Tạo trang mới".
 
+## 0b. Bảng thi: **Bảng B — Kinh tế** (đã chốt)
+
 ## 2. Kiến trúc
 - **Page = JSON**: `template + dữ liệu form + nội dung (offline/AI) → engine render`.
 - Thông tin cần chính xác (ngày giờ, địa điểm, diễn giả) **luôn lấy từ form**, AI chỉ viết phần chữ.
