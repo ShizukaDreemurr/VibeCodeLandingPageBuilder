@@ -8,10 +8,10 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  log('publish btn visible',await O.isVisible('#btn-publish'));
  await O.evaluate(()=>EP.cloud.testSignIn('owner1'));await O.waitForTimeout(800);
  log('user shown',await O.textContent('#user-email'));
- await O.click('#btn-publish');await O.waitForSelector('#share-box:not([hidden])',{timeout:15000});
+ await O.click('#btn-publish');await O.click('#btn-check-ok');await O.waitForSelector('#share-box:not([hidden])',{timeout:15000});
  const url=await O.inputValue('#share-url');log('share url',url);
  log('qr rendered',await O.isVisible('#share-qr img'));
- const G1=await page();await G1.goto(url+'&emulator=1');await G1.waitForSelector('.lp-headline',{timeout:15000});
+ const G1=await page();await G1.goto(url+'&emulator=1');await G1.waitForSelector('.lp-headline',{timeout:15000});await G1.click('.lp-cta');
  log('guest sees headline',await G1.textContent('.lp-headline'));
  await reg(G1,'Khách Một','0912345678','k1@gmail.com');log('guest1 msg',await G1.textContent('.lp-form-msg'));
  await O.waitForTimeout(1500);log('owner preview count (realtime)',await O.textContent('.lp-count'));
@@ -27,6 +27,9 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  log('concurrent A',await G3.textContent('.lp-form-msg'));log('concurrent B',await G4.textContent('.lp-form-msg'));
  await O.click('[data-tab="admin"]');await O.waitForTimeout(1500);
  log('owner admin rows',await O.$$eval('#admin-rows tr',r=>r.map(x=>x.cells[1]?.textContent+':'+x.cells[5]?.textContent).join(' | ')));
+ log('owner metrics',await O.$$eval('.metric',m=>m.map(x=>x.textContent).join(' | ')));
+ await O.selectOption('.lead-select >> nth=0','contacted');await O.waitForTimeout(800);await O.click('[data-tab="builder"]');await O.click('[data-tab="admin"]');await O.waitForTimeout(1500);
+ log('lead saved cloud',await O.inputValue('.lead-select >> nth=0'));
  // other account cannot read
  const X=await page();await X.goto('http://localhost:8000/?emulator=1');
  await X.evaluate((id)=>EP.cloud.testSignIn('intruder').then(()=>EP.cloud.listRegistrations(id)).then(()=>window.__r='READ',e=>window.__r='DENIED:'+e.code),url.split('e=')[1]);await X.waitForTimeout(1500);

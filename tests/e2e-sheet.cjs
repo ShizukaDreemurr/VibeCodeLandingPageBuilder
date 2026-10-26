@@ -15,8 +15,8 @@ const URL='file:///home/user/VibeCodeLandingPageBuilder/index.html';
  await reg(A,'Nguyễn Văn A','0912345678','a@gmail.com');
  log('A count',await A.textContent('.lp-count'));
  // device B: same event config copied (simulate organizer opening same page on other device)
- const st=await A.evaluate(()=>localStorage.ep_current);
- const B=await mk();await B.evaluate(s=>localStorage.ep_current=s,st);await B.reload();await B.waitForTimeout(800);
+ const st=await A.evaluate(()=>[localStorage.ep_events,localStorage.ep_current_id]);
+ const B=await mk();await B.evaluate(s=>{localStorage.ep_events=s[0];localStorage.ep_current_id=s[1];},st);await B.reload();await B.click('[data-tab="builder"]');await B.waitForTimeout(800);
  log('B count (from sheet)',await B.textContent('.lp-count'));
  await reg(B,'Trùng','+84912345678','x@gmail.com');
  log('B dup msg (local ok, remote dup)',await B.textContent('.lp-form-msg'));

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>EventPage AI – Tạo landing page sự kiện trong 5 phút</title>
+  <title>Xclipse – Tạo landing page sự kiện trong 5 phút</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap">
   <link rel="stylesheet" href="css/tokens.css">
@@ -12,9 +12,10 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">EventPage <span>AI</span></div>
+    <div class="brand">X<span>clipse</span></div>
     <nav class="tabs" role="tablist">
-      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Tạo trang</button>
+      <button type="button" class="tab" data-tab="events" role="tab" aria-selected="false">Sự kiện của tôi</button>
+      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Tạo / sửa trang</button>
       <button type="button" class="tab" data-tab="admin" role="tab" aria-selected="false">Danh sách đăng ký</button>
     </nav>
     <span class="user-email" id="user-email" hidden></span>
@@ -211,6 +212,15 @@
     </section>
   </main>
 
+  <main id="view-events" class="admin" hidden>
+    <div class="admin-head">
+      <h2>Sự kiện của tôi</h2>
+      <button type="button" class="btn btn-accent" id="btn-new-2">+ Tạo sự kiện mới</button>
+    </div>
+    <p class="hint" id="events-hint">Các trang bạn đã tạo trên trình duyệt này. Đăng nhập Google để thấy cả các trang đã xuất bản từ thiết bị khác.</p>
+    <div class="event-grid" id="event-grid"></div>
+  </main>
+
   <main id="view-public" class="public-view" hidden>
     <div id="public-landing" class="landing">
       <div class="empty-state"><p class="empty-title">Đang tải sự kiện…</p></div>
@@ -225,14 +235,25 @@
         <button type="button" class="btn btn-danger" id="btn-clear-regs">Xoá toàn bộ</button>
       </div>
     </div>
-    <p class="hint">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
+    <p class="hint" id="admin-source">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
+    <div class="metric-grid" id="metric-grid"></div>
     <div class="table-wrap">
       <table class="table">
-        <thead><tr><th>#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th>Thời gian</th><th>Trạng thái</th><th>Google Sheet</th></tr></thead>
+        <thead><tr><th>#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th>Thời gian</th><th>Trạng thái</th><th>Chăm sóc</th><th>Liên hệ</th><th>Lưu ở</th></tr></thead>
         <tbody id="admin-rows"></tbody>
       </table>
     </div>
   </main>
+
+  <dialog class="tpl-dialog check-dialog" id="check-dialog" aria-labelledby="check-title">
+    <h2 id="check-title">Kiểm tra trước khi xuất bản</h2>
+    <ul class="checklist" id="checklist"></ul>
+    <p class="hint" id="check-note"></p>
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="btn-check-ok">Xuất bản</button>
+      <button type="button" class="btn btn-ghost" id="btn-check-cancel">Quay lại sửa</button>
+    </div>
+  </dialog>
 
   <dialog class="tpl-dialog" id="tpl-dialog" aria-labelledby="tpl-dialog-title">
     <div class="tpl-dialog-head">

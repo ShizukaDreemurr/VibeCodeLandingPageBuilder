@@ -11,11 +11,11 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  await p.uncheck('.section-item:has-text("Diễn giả") input');
  log('after hide speakers',await order());
  log('locked disabled',await p.isDisabled('.section-item:has-text("Form đăng ký") input'));
- await p.reload();log('persist after reload',await order());
+ await p.reload();await p.click('[data-tab="builder"]');log('persist after reload',await order());
  // inline edit
  await p.click('.lp-headline');await p.keyboard.press('Control+A');await p.keyboard.type('Tiêu đề tự sửa');await p.keyboard.press('Enter');await p.waitForTimeout(300);
  log('headline edited',await p.textContent('.lp-headline'));
- await p.reload();log('edit persists',await p.textContent('.lp-headline'));
+ await p.reload();await p.click('[data-tab="builder"]');log('edit persists',await p.textContent('.lp-headline'));
  // simulation
  for (const v of ['almost','full','earlybird','ended','']) {await p.selectOption('#sim-state',v);await p.waitForTimeout(1200);
    log('sim '+(v||'now'),[await p.textContent('.lp-badge'),await p.isVisible('.lp-ended'),await p.isVisible('.lp-offer'),await p.isVisible('.lp-form'),await p.isVisible('#sim-banner')].join(' / '));}

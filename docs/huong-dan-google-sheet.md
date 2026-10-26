@@ -14,7 +14,7 @@ Nếu không kết nối, app vẫn chạy bình thường với localStorage.
    - Người có quyền truy cập: **Bất kỳ ai**
    - Bấm **Triển khai**, cấp quyền khi Google hỏi (chọn tài khoản → Nâng cao → Đi tới dự án → Cho phép).
 5. Copy **URL ứng dụng web** (dạng `https://script.google.com/macros/s/.../exec`).
-6. Trong EventPage AI: mở **Kết nối Google Sheet (tuỳ chọn)** → dán URL → **Kiểm tra kết nối** → bấm **✨ Tạo landing page** để lưu.
+6. Trong Xclipse: mở **Kết nối Google Sheet (tuỳ chọn)** → dán URL → **Kiểm tra kết nối** → bấm **✨ Tạo landing page** để lưu.
 
 Mỗi sự kiện tự tạo một tab riêng trong Sheet, gồm các cột: Thời gian, Mã đăng ký, Họ tên, Số điện thoại, Email, Trạng thái, Sự kiện.
 

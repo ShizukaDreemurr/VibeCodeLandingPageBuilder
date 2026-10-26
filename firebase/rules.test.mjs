@@ -31,6 +31,25 @@ await t('other cannot read list',getDocs(collection(other,'events','e1','registr
 await t('owner reads list',getDocs(collection(owner,'events','e1','registrations')),true);
 await t('anon cannot tamper stats',updateDoc(doc(anon,'events','e1','stats','public'),{count:999,waitlist:0,lastRegId:'x'}),false);
 await t('owner resets stats',updateDoc(doc(owner,'events','e1','stats','public'),{count:0,waitlist:0,lastRegId:''}),true);
+
+// --- metrics (phễu) ---
+const mref=(db)=>doc(db,'events','e1','metrics','funnel');
+await t('anon cannot create metrics',setDoc(mref(anon),{views:0,ctaClicks:0,studioClicks:0,appClicks:0}),false);
+await t('owner creates metrics',setDoc(mref(owner),{views:0,ctaClicks:0,studioClicks:0,appClicks:0}),true);
+await t('anon +1 view',updateDoc(mref(anon),{views:increment(1)}),true);
+await t('anon +1 studio click',updateDoc(mref(anon),{studioClicks:increment(1)}),true);
+await t('anon +2 view rejected',updateDoc(mref(anon),{views:increment(2)}),false);
+await t('anon two fields rejected',updateDoc(mref(anon),{views:increment(1),appClicks:increment(1)}),false);
+await t('anon set to 999 rejected',updateDoc(mref(anon),{views:999}),false);
+await t('anyone reads metrics',getDoc(mref(anon)),true);
+// --- leadStatus ---
+await register(anon,'e1','0901234567','lead@gmail.com','new');
+const rref=(db)=>doc(db,'events','e1','registrations','0901234567');
+await t('owner sets leadStatus',updateDoc(rref(owner),{leadStatus:'won'}),true);
+await t('owner bad leadStatus rejected',updateDoc(rref(owner),{leadStatus:'vip'}),false);
+await t('owner cannot edit name',updateDoc(rref(owner),{name:'X'}),false);
+await t('other cannot set lead',updateDoc(rref(other),{leadStatus:'lost'}),false);
+
 await createEvent(owner,'past',0,Timestamp.fromDate(new Date(Date.now()-1000)));
 await t('past event rejected',register(anon,'past','0912345678','a@gmail.com','new'),false);
 await t('extra field rejected',(async()=>{const b=writeBatch(anon);b.set(doc(anon,'events','past','registrations','0911111111'),{name:'A',phone:'0911111111',email:'q@gmail.com',status:'new',createdAt:serverTimestamp(),admin:true});return b.commit()})(),false);

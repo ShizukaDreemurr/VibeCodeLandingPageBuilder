@@ -32,20 +32,20 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
   await p.click('.lp-submit');
   log('dup msg', await p.textContent('.lp-form-msg'));
   // second tab realtime
-  const p2 = await ctx.newPage(); await p2.goto('file:///home/user/VibeCodeLandingPageBuilder/index.html');
+  const p2 = await ctx.newPage(); await p2.goto('file:///home/user/VibeCodeLandingPageBuilder/index.html');await p2.click('[data-tab="builder"]');
   await p2.fill('#lp-name','Trần C'); await p2.fill('#lp-phone','0987654321'); await p2.fill('#lp-email','c@gmail.com'); await p2.check('.lp-consent input');
   await p2.click('.lp-submit'); await p.waitForTimeout(600);
   log('tab1 count after tab2', await p.textContent('.lp-count'));
   await p.screenshot({ path: process.argv[2]+'/shot1.png', fullPage: false });
   // past event
-  await p.evaluate(()=>{const s=JSON.parse(localStorage.ep_current); s.event.startAt='2020-01-01T09:00'; localStorage.ep_current=JSON.stringify(s);});
-  await p.reload();
+  await p.evaluate(()=>{const id=JSON.parse(localStorage.ep_current_id);const all=JSON.parse(localStorage.ep_events);const s=all[id]; s.event.startAt='2020-01-01T09:00'; all[id]=s;localStorage.ep_events=JSON.stringify(all);});
+  await p.reload();await p.click('[data-tab="builder"]');
   log('ended text visible', await p.isVisible('.lp-ended'));
   log('form hidden', await p.isHidden('.lp-form'));
   log('badge', await p.textContent('.lp-badge'));
   // capacity full -> waitlist
-  await p.evaluate(()=>{const s=JSON.parse(localStorage.ep_current); s.event.startAt='2099-01-01T09:00'; s.event.capacity=2; localStorage.ep_current=JSON.stringify(s);});
-  await p.reload();
+  await p.evaluate(()=>{const id=JSON.parse(localStorage.ep_current_id);const all=JSON.parse(localStorage.ep_events);const s=all[id]; s.event.startAt='2099-01-01T09:00'; s.event.capacity=2; all[id]=s;localStorage.ep_events=JSON.stringify(all);});
+  await p.reload();await p.click('[data-tab="builder"]');
   log('badge full', await p.textContent('.lp-badge'));
   log('btn', await p.textContent('.lp-submit'));
   await p.fill('#lp-name','D'); await p.fill('#lp-phone','0333444555'); await p.fill('#lp-email','d@gmail.com'); await p.check('.lp-consent input');

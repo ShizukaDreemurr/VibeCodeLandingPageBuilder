@@ -10,7 +10,7 @@
   var form = $('#event-form');
   var landingEl = $('#landing');
   var aiMsg = $('#ai-msg');
-  var state = S.read('current', null); // { event, content, tone }
+  var state = loadState(); // { event, content, tone, updatedAt }
   var renderer = null;
   var regenSeed = 0;
   var remoteCount = null; // số đăng ký trên Google Sheet (null = chưa lấy được)
@@ -25,6 +25,31 @@
   var MAX_IMAGE_BYTES = 900000; // giới hạn 1MB/tài liệu của Firestore, chừa chỗ cho nội dung
   var IMAGE_TYPES = { hero: 'hero', speaker: 'avatar', gallery: 'gallery' };
   var APP_URL = /^https?:$/.test(root.location.protocol) ? root.location.origin + root.location.pathname : null;
+
+  // ---------- Lưu nhiều sự kiện trên trình duyệt ----------
+  // events: { [id]: state }, current_id: sự kiện đang mở
+  function loadState() {
+    var all = S.read('events', {});
+    var id = S.read('current_id', null);
+    if (id && all[id]) return all[id];
+    var legacy = S.read('current', null); // dữ liệu của bản cũ (1 sự kiện)
+    if (legacy && legacy.event) {
+      all[legacy.event.id] = legacy;
+      S.write('events', all);
+      S.write('current_id', legacy.event.id);
+      S.remove('current');
+      return legacy;
+    }
+    return null;
+  }
+
+  function saveState() {
+    var all = S.read('events', {});
+    state.updatedAt = new Date().toISOString();
+    all[state.event.id] = state;
+    S.write('current_id', state.event.id);
+    return S.write('events', all);
+  }
 
   // ---------- Đọc / ghi form ----------
   function parseLines(text, mapper) {
@@ -191,7 +216,7 @@
 
   // Lưu trạng thái, vẽ lại trang, và cập nhật bản công khai nếu đã xuất bản
   function persist() {
-    if (!S.write('current', state)) toast('Trình duyệt không lưu được dữ liệu (có thể do ảnh quá lớn).');
+    if (!saveState()) toast('Trình duyệt không lưu được dữ liệu (có thể do ảnh quá lớn).');
     renderLanding();
     if (isCloudEvent() && C.currentUser()) {
       C.publishEvent(state.event, state.content, false).catch(function (e) { toast('Chưa cập nhật được trang công khai: ' + e.message); });
@@ -450,8 +475,59 @@
     showShare();
   }
 
+  // ---------- Kiểm tra trước khi xuất bản ----------
+  // level: ok | warn (vẫn xuất bản được) | block (phải sửa)
+  function runChecklist() {
+    var ev = state.event;
+    var c = state.content;
+    var items = [];
+    function add(ok, okText, badText, level) { items.push({ level: ok ? 'ok' : level, text: ok ? okText : badText }); }
+    add(new Date(ev.startAt) > new Date(), 'Thời gian sự kiện ở tương lai', 'Thời gian sự kiện đã qua – khách sẽ không đăng ký được', 'block');
+    add(c.headline.length <= 90, 'Tiêu đề ngắn gọn (≤ 90 ký tự)', 'Tiêu đề dài ' + c.headline.length + ' ký tự – nên rút gọn để dễ đọc trên điện thoại', 'warn');
+    add(c.benefits.length === 3 && c.benefits.every(Boolean), 'Đủ 3 lợi ích khi tham dự', 'Thiếu lợi ích khi tham dự', 'block');
+    add(ev.agenda && ev.agenda.length > 0, 'Có chương trình (agenda)', 'Chưa có chương trình – khách khó hình dung buổi sự kiện', 'warn');
+    add(!!Number(ev.capacity), 'Đã đặt số chỗ tối đa (' + ev.capacity + ')', 'Chưa đặt số chỗ – trang sẽ không báo sắp hết chỗ / danh sách chờ', 'warn');
+    add(!!(ev.images && ev.images.hero), 'Có ảnh bìa', 'Chưa có ảnh bìa – trang dùng nền màu mặc định', 'warn');
+    add(c.source !== 'mock', 'Nội dung do AI thật viết hoặc đã chỉnh tay', 'Nội dung đang là bản AI mô phỏng – nên đọc lại hoặc sửa trực tiếp trước khi gửi khách', 'warn');
+    if (TPL.get(ev.templateId).wedding) {
+      add(!!ev.studioName, 'Có ghi nguồn studio ảnh cưới', 'Chưa ghi tên studio – thiệp sẽ không có nút "Đặt lịch chụp"', 'warn');
+    }
+    return items;
+  }
+
+  function confirmChecklist() {
+    var items = runChecklist();
+    var blocked = items.some(function (i) { return i.level === 'block'; });
+    var ul = $('#checklist');
+    ul.innerHTML = '';
+    items.forEach(function (i) {
+      var li = document.createElement('li');
+      li.className = 'is-' + i.level;
+      li.textContent = i.text;
+      ul.appendChild(li);
+    });
+    $('#check-note').textContent = blocked ? 'Cần sửa các mục ✕ trước khi xuất bản.' : 'Các mục ⚠ là gợi ý, bạn vẫn có thể xuất bản.';
+    $('#btn-check-ok').disabled = blocked;
+    var dlg = $('#check-dialog');
+    return new Promise(function (resolve) {
+      function done(ok) {
+        $('#btn-check-ok').onclick = null;
+        $('#btn-check-cancel').onclick = null;
+        if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
+        resolve(ok);
+      }
+      $('#btn-check-ok').onclick = function () { done(true); };
+      $('#btn-check-cancel').onclick = function () { done(false); };
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    });
+  }
+
   function publish() {
     if (!state) return;
+    confirmChecklist().then(function (ok) { if (ok) doPublish(); });
+  }
+
+  function doPublish() {
     var go = function () {
       var isNew = !state.event.published;
       var btn = $('#btn-publish');
@@ -460,7 +536,7 @@
       return C.publishEvent(state.event, state.content, isNew).then(function () {
         state.event.published = true;
         state.event.ownerUid = C.currentUser().uid;
-        S.write('current', state);
+        saveState();
         startWatch(state.event.id);
         renderLanding();
         toast(isNew ? 'Đã xuất bản! Gửi link hoặc mã QR cho khách.' : 'Đã cập nhật trang.');
@@ -570,7 +646,7 @@
       ev.ownerUid = state.event.ownerUid;
     }
     state = { event: ev, content: content, tone: tone };
-    if (!S.write('current', state)) setMsg('Không lưu được dữ liệu vào trình duyệt.', 'error');
+    if (!saveState()) setMsg('Không lưu được dữ liệu vào trình duyệt.', 'error');
     renderLanding();
     syncAll();
     // Trang đã xuất bản: tự cập nhật bản công khai
@@ -678,7 +754,7 @@
 
   function syncText(r) {
     if (isCloudEvent()) return state.event.sheetUrl ? 'Firebase + Sheet' : 'Firebase';
-    if (!state.event.sheetUrl) return '—';
+    if (!state.event.sheetUrl) return 'Trên máy';
     return r.synced === false ? 'Chờ gửi' : 'Đã gửi';
   }
 
@@ -686,13 +762,56 @@
     $('#admin-rows').innerHTML = '';
     var tr = document.createElement('tr');
     var td = document.createElement('td');
-    td.colSpan = 7; td.className = 'empty'; td.textContent = text;
+    td.colSpan = 9; td.className = 'empty'; td.textContent = text;
     tr.appendChild(td);
     $('#admin-rows').appendChild(tr);
   }
 
+  // ---------- Số liệu phễu + chăm sóc lead ----------
+  var LEAD_TEXT = { new: 'Mới', contacted: 'Đã liên hệ', won: 'Chốt tham dự', lost: 'Huỷ' };
+
+  function drawMetrics(regs, m) {
+    var grid = $('#metric-grid');
+    grid.innerHTML = '';
+    var confirmed = regs.filter(function (r) { return r.status === 'new'; }).length;
+    var waitlist = regs.filter(function (r) { return r.status === 'waitlist'; }).length;
+    var won = regs.filter(function (r) { return r.leadStatus === 'won'; }).length;
+    var cards = [['Đã đăng ký', confirmed], ['Danh sách chờ', waitlist], ['Đã chốt tham dự', won]];
+    if (m) {
+      cards.unshift(['Lượt xem trang', m.views]);
+      cards.push(['Tỉ lệ chuyển đổi', m.views ? (confirmed / m.views * 100).toFixed(1).replace('.', ',') + '%' : '—']);
+      cards.push(['Bấm nút đăng ký ở đầu trang', m.ctaClicks]);
+      if (TPL.get(state.event.templateId).wedding) cards.push(['Bấm "Đặt lịch studio"', m.studioClicks]);
+      cards.push(['Bấm "Tạo trang như thế này"', m.appClicks]);
+    }
+    cards.forEach(function (c) {
+      var d = document.createElement('div'); d.className = 'metric';
+      var sp = document.createElement('span'); sp.textContent = c[0];
+      var st = document.createElement('strong'); st.textContent = typeof c[1] === 'number' ? c[1].toLocaleString('vi-VN') : c[1];
+      d.appendChild(sp); d.appendChild(st); grid.appendChild(d);
+    });
+  }
+
+  function setLead(r, value) {
+    r.leadStatus = value;
+    if (isCloudEvent()) {
+      C.updateLead(state.event.id, r.id, value).then(function () { toast('Đã cập nhật trạng thái chăm sóc.'); }, function (e) { toast('Chưa lưu được: ' + e.message); });
+    } else {
+      EP.registrations.update(state.event.id, r.id, { leadStatus: value });
+      toast('Đã cập nhật trạng thái chăm sóc.');
+    }
+    drawMetrics(adminRows, lastMetrics);
+  }
+
+  var lastMetrics = null;
+
   function renderAdmin() {
     adminRows = [];
+    lastMetrics = null;
+    $('#metric-grid').innerHTML = '';
+    $('#admin-source').textContent = isCloudEvent()
+      ? 'Dữ liệu lưu trên máy chủ Firebase, xem được trên mọi thiết bị khi đăng nhập đúng tài khoản.'
+      : 'Dữ liệu chỉ lưu trên trình duyệt này (localStorage). Xuất bản trang để nhận đăng ký từ mọi thiết bị.';
     if (!state) {
       $('#admin-title').textContent = 'Danh sách đăng ký';
       return adminMessage('Chưa có sự kiện nào. Hãy tạo landing page trước.');
@@ -702,7 +821,10 @@
       if (!user) return adminMessage('Trang đã xuất bản: đăng nhập Google (tài khoản đã xuất bản trang) để xem danh sách đăng ký.');
       if (user.uid !== state.event.ownerUid) return adminMessage('Tài khoản này không phải chủ sự kiện nên không xem được danh sách.');
       adminMessage('Đang tải danh sách…');
-      C.listRegistrations(state.event.id).then(drawAdmin, function (e) { adminMessage('Không tải được danh sách: ' + e.message); });
+      C.listRegistrations(state.event.id).then(function (regs) {
+        drawAdmin(regs);
+        return C.getMetrics(state.event.id).then(function (m) { lastMetrics = m; drawMetrics(regs, m); }, function () {});
+      }, function (e) { adminMessage('Không tải được danh sách: ' + e.message); });
       return;
     }
     drawAdmin(EP.registrations.list(state.event.id));
@@ -713,12 +835,31 @@
     adminRows = regs;
     var confirmed = regs.filter(function (r) { return r.status === 'new'; }).length;
     $('#admin-title').textContent = 'Danh sách đăng ký – ' + state.event.name + ' (' + confirmed + ' người)';
+    drawMetrics(regs, lastMetrics);
     tbody.innerHTML = '';
     if (!regs.length) return adminMessage('Chưa có ai đăng ký.');
     regs.forEach(function (r, i) {
       var tr = document.createElement('tr');
-      [i + 1, r.name, r.phone, r.email, new Date(r.createdAt).toLocaleString('vi-VN'), STATUS_TEXT[r.status] || r.status, syncText(r)]
-        .forEach(function (v) { var td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
+      function cell(v) { var td = document.createElement('td'); if (v instanceof Node) td.appendChild(v); else td.textContent = v; tr.appendChild(td); }
+      cell(i + 1); cell(r.name); cell(r.phone); cell(r.email);
+      cell(new Date(r.createdAt).toLocaleString('vi-VN')); cell(STATUS_TEXT[r.status] || r.status);
+      var sel = document.createElement('select');
+      sel.className = 'lead-select';
+      sel.setAttribute('aria-label', 'Trạng thái chăm sóc của ' + r.name);
+      Object.keys(LEAD_TEXT).forEach(function (k) {
+        var o = document.createElement('option'); o.value = k; o.textContent = LEAD_TEXT[k];
+        if ((r.leadStatus || 'new') === k) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener('change', function () { setLead(r, sel.value); });
+      cell(sel);
+      var links = document.createElement('span');
+      links.className = 'contact-links';
+      var tel = document.createElement('a'); tel.href = 'tel:' + r.phone; tel.textContent = 'Gọi';
+      var zalo = document.createElement('a'); zalo.href = 'https://zalo.me/' + r.phone; zalo.target = '_blank'; zalo.rel = 'noopener'; zalo.textContent = 'Zalo';
+      links.appendChild(tel); links.appendChild(zalo);
+      cell(links);
+      cell(syncText(r));
       tbody.appendChild(tr);
     });
   }
@@ -733,8 +874,8 @@
     if (!state) return toast('Chưa có sự kiện để xuất.');
     var regs = adminRows;
     if (!regs.length) return toast('Chưa có ai đăng ký để xuất.');
-    var rows = [['STT', 'Họ tên', 'Số điện thoại', 'Email', 'Thời gian đăng ký', 'Trạng thái']].concat(regs.map(function (r, i) {
-      return [i + 1, r.name, r.phone, r.email, new Date(r.createdAt).toLocaleString('vi-VN'), STATUS_TEXT[r.status] || r.status];
+    var rows = [['STT', 'Họ tên', 'Số điện thoại', 'Email', 'Thời gian đăng ký', 'Trạng thái', 'Chăm sóc']].concat(regs.map(function (r, i) {
+      return [i + 1, r.name, r.phone, r.email, new Date(r.createdAt).toLocaleString('vi-VN'), STATUS_TEXT[r.status] || r.status, LEAD_TEXT[r.leadStatus || 'new']];
     }));
     // ﻿ để Excel đọc đúng tiếng Việt
     var blob = new Blob(['﻿' + rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n')], { type: 'text/csv;charset=utf-8' });
@@ -746,9 +887,17 @@
   }
 
   // ---------- Tạo trang mới ----------
-  function resetAll() {
-    if (state && !root.confirm('Tạo trang mới cho sự kiện khác? Trang hiện tại sẽ được đóng lại (danh sách đăng ký cũ vẫn được giữ trong trình duyệt).')) return;
-    S.remove('current');
+  function resetAll(skipConfirm) {
+    if (state && skipConfirm !== true && !root.confirm('Tạo trang mới cho sự kiện khác? Trang hiện tại vẫn được lưu trong "Sự kiện của tôi".')) return;
+    clearEditor();
+    switchTab('builder');
+    form.elements.name.focus();
+    toast('Đã sẵn sàng tạo trang mới.');
+  }
+
+  // Đóng sự kiện đang mở (không xoá dữ liệu)
+  function clearEditor() {
+    S.remove('current_id');
     state = null;
     renderer = null;
     remoteCount = null;
@@ -772,9 +921,112 @@
     $('#btn-regenerate').disabled = true;
     $('#mock-note').hidden = true;
     landingEl.innerHTML = '<div class="empty-state"><p class="empty-title">Landing page sẽ hiện ở đây</p><p>Nhập thông tin sự kiện bên trái rồi bấm <strong>✨ Tạo landing page</strong>.</p></div>';
+  }
+
+  // ---------- Sự kiện của tôi ----------
+  function fmtShort(local) {
+    var d = new Date(local);
+    return isNaN(d) ? '' : d.toLocaleString('vi-VN', { dateStyle: 'medium', timeStyle: 'short' });
+  }
+
+  function openEvent(saved) {
+    clearEditor();
+    state = saved;
+    saveState();
+    fillForm(state.event);
+    if (state.tone) form.elements.tone.value = state.tone;
+    if (isCloudEvent()) startWatch(state.event.id);
+    renderLanding();
+    syncAll();
     switchTab('builder');
-    form.elements.name.focus();
-    toast('Đã sẵn sàng tạo trang mới.');
+  }
+
+  function duplicateEvent(saved) {
+    var copy = JSON.parse(JSON.stringify(saved));
+    copy.event.id = S.newId('evt');
+    copy.event.name = saved.event.name + ' (bản sao)';
+    delete copy.event.published;
+    delete copy.event.ownerUid;
+    openEvent(copy);
+    toast('Đã nhân bản. Sửa ngày giờ rồi bấm "Tạo landing page" để cập nhật.');
+  }
+
+  function deleteEvent(saved) {
+    var msg = 'Xoá "' + saved.event.name + '" khỏi trình duyệt này? Danh sách đăng ký lưu trên máy cũng bị xoá.';
+    if (saved.event.published) msg += ' Trang đã xuất bản vẫn hoạt động; đăng nhập trên thiết bị khác vẫn mở lại được.';
+    if (!root.confirm(msg)) return;
+    var all = S.read('events', {});
+    delete all[saved.event.id];
+    S.write('events', all);
+    EP.registrations.removeAll(saved.event.id);
+    if (state && state.event.id === saved.event.id) clearEditor();
+    renderEvents();
+  }
+
+  function eventCard(item, actions) {
+    var t = TPL.get(item.templateId);
+    var card = document.createElement('div');
+    card.className = 'event-card';
+    var bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.background = 'linear-gradient(90deg, ' + t.theme.primary + ', ' + t.theme.accent + ')';
+    var body = document.createElement('div');
+    body.className = 'body';
+    var h3 = document.createElement('h3'); h3.textContent = item.name;
+    var meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = fmtShort(item.startAt) + ' · ' + t.name;
+    var badges = document.createElement('div'); badges.className = 'badges';
+    item.badges.forEach(function (b) { var s = document.createElement('span'); s.className = 'badge ' + (b.cls || ''); s.textContent = b.text; badges.appendChild(s); });
+    body.appendChild(h3); body.appendChild(meta); body.appendChild(badges);
+    var act = document.createElement('div'); act.className = 'actions';
+    actions.forEach(function (a) {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'btn btn-small ' + (a.cls || 'btn-ghost'); btn.textContent = a.text;
+      btn.addEventListener('click', a.fn);
+      act.appendChild(btn);
+    });
+    card.appendChild(bar); card.appendChild(body); card.appendChild(act);
+    return card;
+  }
+
+  function renderEvents() {
+    var grid = $('#event-grid');
+    grid.innerHTML = '';
+    var all = S.read('events', {});
+    var list = Object.keys(all).map(function (k) { return all[k]; })
+      .sort(function (a, b) { return String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')); });
+    var localIds = {};
+    list.forEach(function (saved) {
+      var ev = saved.event;
+      localIds[ev.id] = true;
+      var badges = [{ text: ev.published ? 'Đã xuất bản' : 'Bản nháp', cls: ev.published ? 'is-live' : '' }];
+      if (new Date(ev.startAt) <= new Date()) badges.push({ text: 'Đã diễn ra', cls: 'is-ended' });
+      if (!ev.published) badges.push({ text: EP.registrations.confirmedCount(ev.id) + ' đăng ký (trên máy)' });
+      grid.appendChild(eventCard({ name: ev.name, startAt: ev.startAt, templateId: ev.templateId, badges: badges }, [
+        { text: 'Mở / sửa', cls: 'btn-primary', fn: function () { openEvent(all[ev.id]); } },
+        { text: 'Nhân bản', fn: function () { duplicateEvent(all[ev.id]); } },
+        { text: 'Xoá', cls: 'btn-danger', fn: function () { deleteEvent(all[ev.id]); } }
+      ]));
+    });
+    if (!list.length) {
+      var empty = document.createElement('p');
+      empty.className = 'hint';
+      empty.textContent = 'Chưa có sự kiện nào. Bấm "+ Tạo sự kiện mới" để bắt đầu.';
+      grid.appendChild(empty);
+    }
+    // Trang đã xuất bản từ thiết bị khác (cần đăng nhập)
+    if (C.available && C.currentUser()) {
+      C.listMyEvents().then(function (remote) {
+        remote.filter(function (r) { return !localIds[r.id]; }).forEach(function (r) {
+          grid.appendChild(eventCard({ name: r.name, startAt: r.startAt, templateId: r.templateId, badges: [{ text: 'Trên đám mây', cls: 'is-live' }] }, [
+            { text: 'Mở trên máy này', cls: 'btn-primary', fn: function () {
+              C.loadEvent(r.id).then(function (data) {
+                openEvent({ event: data.event, content: data.content, tone: 'formal' });
+              }, function (e) { toast(e.message); });
+            } }
+          ]));
+        });
+      }).catch(function () { /* mất mạng: chỉ hiện sự kiện trên máy */ });
+    }
   }
 
   // ---------- Dữ liệu mẫu để demo ----------
@@ -796,7 +1048,9 @@
     });
     $('#view-builder').hidden = name !== 'builder';
     $('#view-admin').hidden = name !== 'admin';
+    $('#view-events').hidden = name !== 'events';
     if (name === 'admin') renderAdmin();
+    if (name === 'events') renderEvents();
   }
 
   function syncModeBoxes() {
@@ -808,6 +1062,7 @@
   form.addEventListener('submit', function (e) { e.preventDefault(); generate(false); });
   $('#btn-regenerate').addEventListener('click', function () { generate(true); });
   $('#btn-new').addEventListener('click', resetAll);
+  $('#btn-new-2').addEventListener('click', function () { resetAll(true); });
   $('#btn-sample').addEventListener('click', fillSample);
   $('#btn-sheet-test').addEventListener('click', testSheet);
   $('#btn-export').addEventListener('click', exportCsv);
@@ -849,12 +1104,20 @@
       document.title = data.event.name;
       var pub = data.event;
       stopWatch = C.watchStats(pub.id, function (st) { cloudStats = st; if (renderer) renderer.update(); });
+      // Đếm 1 lượt xem cho mỗi phiên trình duyệt
+      try {
+        if (!sessionStorage.getItem('xc_viewed_' + pub.id)) {
+          sessionStorage.setItem('xc_viewed_' + pub.id, '1');
+          C.track(pub.id, 'views');
+        }
+      } catch (err) { C.track(pub.id, 'views'); }
       renderer = EP.landingRenderer.render(publicEl, {
         event: pub,
         content: data.content,
         now: function () { return new Date(); },
         getCount: function () { return cloudStats ? cloudStats.count : 0; },
         appUrl: APP_URL,
+        onFunnel: function (field) { C.track(pub.id, field); },
         onRegister: function (d) { return cloudRegister(pub, d); }
       });
     }, function (e) {
@@ -885,6 +1148,10 @@
     renderLanding();
     syncAll();
   }
+
+  // Mở app: có sự kiện thì vào "Sự kiện của tôi", chưa có thì vào màn tạo trang
+  switchTab(Object.keys(S.read('events', {})).length ? 'events' : 'builder');
+  C.onAuth(function () { if (!$('#view-events').hidden) renderEvents(); });
 
   setInterval(syncAll, SYNC_INTERVAL_MS);
 

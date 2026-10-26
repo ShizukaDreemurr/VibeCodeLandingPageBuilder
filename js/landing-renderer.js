@@ -250,7 +250,7 @@
       ]));
     }
     if (opts.appUrl) {
-      footerChildren.push(h('a', { class: 'lp-made-with', href: opts.appUrl, target: '_blank', rel: 'noopener', 'data-funnel': 'app', text: 'Tạo trang như thế này miễn phí bằng EventPage AI →' }));
+      footerChildren.push(h('a', { class: 'lp-made-with', href: opts.appUrl, target: '_blank', rel: 'noopener', 'data-funnel': 'app', text: 'Tạo trang như thế này miễn phí bằng Xclipse →' }));
     }
     var footer = h('footer', { class: 'lp-footer' }, footerChildren);
 
@@ -260,6 +260,13 @@
       if (s.visible && byKey[s.key]) container.appendChild(byKey[s.key]);
     });
     container.appendChild(footer);
+
+    // Đo phễu: bấm nút đăng ký ở đầu trang, bấm đặt lịch studio, bấm "Tạo trang như thế này"
+    if (opts.onFunnel) {
+      container.querySelectorAll('.lp-cta').forEach(function (a) { a.addEventListener('click', function () { opts.onFunnel('ctaClicks'); }); });
+      container.querySelectorAll('[data-funnel="studio"]').forEach(function (a) { a.addEventListener('click', function () { opts.onFunnel('studioClicks'); }); });
+      container.querySelectorAll('[data-funnel="app"]').forEach(function (a) { a.addEventListener('click', function () { opts.onFunnel('appClicks'); }); });
+    }
 
     function update() {
       var now = opts.now();

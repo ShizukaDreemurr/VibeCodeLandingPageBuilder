@@ -56,7 +56,7 @@ Mỗi thiệp tự đếm 4 bước (lưu localStorage, hiển thị cho chủ t
 1. Lượt xem thiệp
 2. Khách xác nhận tham dự (RSVP)
 3. Bấm "Đặt lịch chụp – Studio X"
-4. Bấm "Tạo thiệp như thế này" (về EventPage AI)
+4. Bấm "Tạo thiệp như thế này" (về Xclipse)
 
 → Studio thấy ngay "thiệp này mang về X lượt quan tâm". Đây là **bằng chứng có thể đo**, thay cho lời hứa.
 

@@ -42,6 +42,8 @@
 
   function eventRef(id) { return db.collection('events').doc(id); }
   function statsRef(id) { return eventRef(id).collection('stats').doc('public'); }
+  function metricsRef(id) { return eventRef(id).collection('metrics').doc('funnel'); }
+  var EMPTY_METRICS = { views: 0, ctaClicks: 0, studioClicks: 0, appClicks: 0 };
 
   // ---------- Đăng nhập (chủ sự kiện) ----------
   function onAuth(callback) {
@@ -111,9 +113,9 @@
       var batch = db.batch();
       batch.set(eventRef(ev.id), data);
       batch.set(statsRef(ev.id), { count: 0, waitlist: 0, lastRegId: '' });
-      op = batch.commit();
+      op = batch.commit().then(ensureMetrics.bind(null, ev.id));
     } else {
-      op = eventRef(ev.id).set(data);
+      op = eventRef(ev.id).set(data).then(ensureMetrics.bind(null, ev.id));
     }
     return withTimeout(op);
   }
@@ -203,13 +205,51 @@
     return readStats().then(tryOnce);
   }
 
+  // ---------- Đo phễu: lượt xem, lượt bấm (số liệu tổng, không có thông tin cá nhân) ----------
+  // Tạo bộ đếm nếu chưa có. Lỗi (ví dụ quy tắc chưa cập nhật) không chặn việc xuất bản.
+  function ensureMetrics(id) {
+    return metricsRef(id).get().then(function (snap) {
+      if (!snap.exists) return metricsRef(id).set(EMPTY_METRICS);
+    }).catch(function () {});
+  }
+
+  // field: views | ctaClicks | studioClicks | appClicks
+  function track(id, field) {
+    if (!available || !EMPTY_METRICS.hasOwnProperty(field)) return Promise.resolve();
+    var data = {};
+    data[field] = fb.firestore.FieldValue.increment(1);
+    return metricsRef(id).update(data).catch(function () {});
+  }
+
+  function getMetrics(id) {
+    return withTimeout(metricsRef(id).get()).then(function (snap) {
+      return Object.assign({}, EMPTY_METRICS, snap.exists ? snap.data() : {});
+    });
+  }
+
+  // Các sự kiện của tài khoản đang đăng nhập (để mở lại trên thiết bị khác)
+  function listMyEvents() {
+    var user = currentUser();
+    if (!user) return Promise.resolve([]);
+    return withTimeout(db.collection('events').where('ownerUid', '==', user.uid).get()).then(function (snap) {
+      return snap.docs.map(function (d) {
+        var x = d.data();
+        return { id: d.id, name: x.name, startAt: x.startAtLocal || '', templateId: x.templateId || 'tech' };
+      });
+    });
+  }
+
+  function updateLead(eventId, regId, leadStatus) {
+    return withTimeout(eventRef(eventId).collection('registrations').doc(regId).update({ leadStatus: leadStatus }));
+  }
+
   // ---------- Quản trị (chỉ chủ sự kiện) ----------
   function listRegistrations(id) {
     return withTimeout(eventRef(id).collection('registrations').orderBy('createdAt').get()).then(function (snap) {
       return snap.docs.map(function (d) {
         var r = d.data();
         return {
-          id: d.id, name: r.name, phone: r.phone, email: r.email, status: r.status,
+          id: d.id, name: r.name, phone: r.phone, email: r.email, status: r.status, leadStatus: r.leadStatus || 'new',
           createdAt: r.createdAt ? r.createdAt.toDate().toISOString() : new Date().toISOString()
         };
       });
@@ -246,6 +286,10 @@
     watchStats: watchStats,
     register: register,
     listRegistrations: listRegistrations,
+    listMyEvents: listMyEvents,
+    updateLead: updateLead,
+    track: track,
+    getMetrics: getMetrics,
     clearRegistrations: clearRegistrations,
     testSignIn: testSignIn
   };

@@ -1,5 +1,5 @@
 /**
- * EventPage AI — Google Apps Script nhận đăng ký từ landing page và ghi vào Google Sheet.
+ * Xclipse — Google Apps Script nhận đăng ký từ landing page và ghi vào Google Sheet.
  * Cách cài: xem docs/huong-dan-google-sheet.md
  *
  * API:

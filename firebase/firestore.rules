@@ -62,9 +62,28 @@ service cloud.firestore {
           );
       }
 
+      // Bộ đếm phễu công khai: { views, ctaClicks, studioClicks, appClicks } — mỗi lần chỉ tăng đúng 1 ở một trường
+      match /metrics/{docId} {
+        function inc(f) {
+          return request.resource.data.diff(resource.data).affectedKeys().hasOnly([f])
+            && request.resource.data[f] == resource.data[f] + 1;
+        }
+        allow read: if docId == 'funnel';
+        allow create: if docId == 'funnel' && isOwner(eventId)
+          && request.resource.data.keys().hasOnly(['views', 'ctaClicks', 'studioClicks', 'appClicks'])
+          && request.resource.data.views == 0 && request.resource.data.ctaClicks == 0
+          && request.resource.data.studioClicks == 0 && request.resource.data.appClicks == 0;
+        allow update: if docId == 'funnel'
+          && (inc('views') || inc('ctaClicks') || inc('studioClicks') || inc('appClicks') || isOwner(eventId));
+      }
+
       // Mã bản ghi = số điện thoại đã chuẩn hoá → cùng SĐT không tạo được lần 2
       match /registrations/{regId} {
-        allow read, update, delete: if isOwner(eventId);
+        allow read, delete: if isOwner(eventId);
+        // Chủ sự kiện chỉ được đổi trạng thái chăm sóc (leadStatus)
+        allow update: if isOwner(eventId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['leadStatus'])
+          && request.resource.data.leadStatus in ['new', 'contacted', 'won', 'lost'];
         allow create: if
           request.resource.data.keys().hasOnly(['name', 'phone', 'email', 'status', 'createdAt'])
           && regId == request.resource.data.phone

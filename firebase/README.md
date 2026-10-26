@@ -1,7 +1,7 @@
 # Firebase (Firestore + Google Sign-in)
 
 - `firestore.rules` — quy tắc bảo mật (khách chỉ gửi đăng ký; chỉ chủ sự kiện đọc danh sách; chống trùng SĐT/email; đếm chỗ chính xác).
-- `rules.test.mjs` — 21 ca kiểm thử quy tắc trên Firestore Emulator.
+- `rules.test.mjs` — 33 ca kiểm thử quy tắc trên Firestore Emulator.
 
 Chạy kiểm thử (cần Java + Node):
 ```bash
