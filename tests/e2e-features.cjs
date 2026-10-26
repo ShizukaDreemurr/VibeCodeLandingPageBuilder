@@ -15,7 +15,7 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  await p.click('[data-tab="events"]');await p.click('.event-card:has-text("Workshop") >> text=Nhân bản');
  log('dup name',await p.inputValue('#f-name'));log('dup count reset',await p.textContent('.lp-count'));
  await p.click('[data-tab="events"]');log('3 cards',await p.locator('.event-card').count());
- await p.click('.event-card:has-text("bản sao") >> text=Xoá');log('after delete',await p.locator('.event-card').count());
+ await p.click('.event-card:has-text("bản sao") >> text=Xoá');await p.waitForTimeout(600);log('after delete',await p.locator('.event-card').count());
  // lead status
  await p.click('.event-card:has-text("Workshop") >> text=Mở / sửa');await p.click('[data-tab="admin"]');
  log('metrics local',await p.$$eval('.metric',m=>m.map(x=>x.textContent).join(' | ')));

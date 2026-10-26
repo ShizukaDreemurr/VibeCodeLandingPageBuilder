@@ -1,0 +1,304 @@
+/*
+ * inspector.js — bấm vào bất kỳ phần tử nào trong bản xem trước để chỉnh ngay tại chỗ.
+ * Thanh công cụ nổi cạnh phần tử: sửa chữ, màu, cỡ, đậm/nghiêng/gạch chân, căn lề, nền, ẩn/hiện, về mặc định.
+ * Chế độ Studio có thêm ô mã màu tự do, độ đậm, giãn chữ.
+ * Kiểu riêng lưu ở event.elStyles[mã phần tử], chữ ở event.texts[mã] (renderer đọc lại khi vẽ).
+ */
+(function (root) {
+  var cfg = null;
+  var bar = null;
+  var selectedKey = null;
+  var rafId = 0;
+
+  function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function btn(label, title, onClick, active) {
+    var b = el('button', 'ins-btn' + (active ? ' is-active' : ''), label);
+    b.type = 'button'; b.title = title; b.setAttribute('aria-label', title);
+    if (active != null) b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    b.addEventListener('mousedown', function (e) { e.preventDefault(); }); // giữ con trỏ trong chữ đang sửa
+    b.addEventListener('click', onClick);
+    return b;
+  }
+  function sep() { return el('span', 'ins-sep'); }
+
+  function node() { return selectedKey ? cfg.landing.querySelector('[data-el="' + cssEsc(selectedKey) + '"]') : null; }
+  function cssEsc(s) { return String(s).replace(/["\\]/g, '\\$&'); }
+  function styles() { var ev = cfg.getState().event; return (ev.elStyles && ev.elStyles[selectedKey]) || {}; }
+
+  // Ghi kiểu cho phần tử đang chọn. live=true: chỉ xem trước (đang kéo màu)
+  // Đang gõ chữ trên trang mà bấm nút trên thanh công cụ: lưu chữ trước
+  function flushEdit() {
+    var a = document.activeElement;
+    if (a && a.isContentEditable && cfg.landing.contains(a)) a.blur();
+  }
+  function setProp(prop, value, live) {
+    if (!live) flushEdit();
+    var ev = cfg.getState().event;
+    var all = Object.assign({}, ev.elStyles || {});
+    var cur = Object.assign({}, all[selectedKey] || {});
+    if (value === '' || value == null || value === false) delete cur[prop]; else cur[prop] = value;
+    if (Object.keys(cur).length) all[selectedKey] = cur; else delete all[selectedKey];
+    ev.elStyles = all;
+    if (live) cfg.liveRender(); else cfg.persist();
+  }
+  function setText(value) {
+    flushEdit();
+    var ev = cfg.getState().event;
+    var t = Object.assign({}, ev.texts || {});
+    if (value) t[selectedKey] = value; else delete t[selectedKey];
+    ev.texts = t;
+    cfg.persist();
+  }
+  function resetEl() {
+    flushEdit();
+    var ev = cfg.getState().event;
+    var a = Object.assign({}, ev.elStyles || {}); delete a[selectedKey]; ev.elStyles = a;
+    var t = Object.assign({}, ev.texts || {}); delete t[selectedKey]; ev.texts = t;
+    if (selectedKey === 'hero.cta' && ev.style) delete ev.style.ctaText;
+    cfg.persist();
+    cfg.toast('Đã đưa phần tử về mặc định.');
+  }
+
+  // Kích thước chữ hiện tại (px) của phần tử
+  function currentSize(n) { return Math.round(parseFloat(root.getComputedStyle(n).fontSize)) || 16; }
+
+  function select(key) {
+    if (selectedKey === key && bar && !bar.hidden) return;
+    var prev = node();
+    if (prev) prev.classList.remove('lp-selected');
+    selectedKey = key;
+    var n = node();
+    if (!n) { close(); return; }
+    n.classList.add('lp-selected', 'lp-just-selected');
+    build(true);
+  }
+
+  function close() {
+    var n = node();
+    if (n) n.classList.remove('lp-selected');
+    selectedKey = null;
+    if (bar && !bar.hidden) {
+      bar.classList.add('is-leaving');
+      setTimeout(function () { if (!selectedKey) { bar.hidden = true; bar.classList.remove('is-leaving'); } }, 160);
+    }
+  }
+
+  // Vẽ thanh công cụ cho phần tử đang chọn
+  function build(fresh) {
+    var n = node();
+    if (!n) return close();
+    var kind = n.getAttribute('data-el-kind') || 'text';
+    var required = n.hasAttribute('data-el-required');
+    var studio = cfg.getMode() === 'studio';
+    var st = styles();
+    var PS = EP.pageStyle;
+    bar.innerHTML = '';
+
+    // Đường dẫn: phần chứa › phần tử (bấm để chọn phần cha)
+    var crumbs = el('div', 'ins-crumbs');
+    var chain = [], p = n.parentElement;
+    while (p && p !== cfg.landing) { if (p.hasAttribute('data-el')) chain.unshift(p); p = p.parentElement; }
+    chain.forEach(function (a) {
+      var c = el('button', 'ins-crumb', a.getAttribute('data-el-label'));
+      c.type = 'button';
+      c.addEventListener('click', function () { select(a.getAttribute('data-el')); });
+      crumbs.appendChild(c);
+      crumbs.appendChild(el('span', 'ins-crumb-sep', '›'));
+    });
+    crumbs.appendChild(el('strong', 'ins-name', n.getAttribute('data-el-label')));
+    crumbs.appendChild(btn('✕', 'Đóng (Esc)', close));
+    bar.appendChild(crumbs);
+
+    var row = el('div', 'ins-row');
+    if (kind === 'section') {
+      buildSection(row, n.getAttribute('data-el').replace('section.', ''));
+      bar.appendChild(row);
+      return finish(fresh);
+    }
+
+    if (kind === 'text') {
+      row.appendChild(btn('✏️ Sửa chữ', 'Sửa chữ ngay trên trang', function () {
+        n.focus();
+        var r = document.createRange(); r.selectNodeContents(n);
+        var sel = root.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      }));
+      row.appendChild(sep());
+    }
+    if (kind === 'button') {
+      var tIn = el('input', 'ins-text');
+      tIn.type = 'text'; tIn.maxLength = 40; tIn.value = n.textContent.trim(); tIn.setAttribute('aria-label', 'Chữ trên nút');
+      tIn.addEventListener('change', function () { setText(tIn.value.trim()); });
+      tIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') tIn.blur(); });
+      row.appendChild(tIn);
+      row.appendChild(sep());
+    }
+
+    // Cỡ chữ
+    var size = st.fontSize || currentSize(n);
+    row.appendChild(btn('A−', 'Chữ nhỏ hơn', function () { setProp('fontSize', Math.max(10, size - 2)); }));
+    var sz = el('input', 'ins-num'); sz.type = 'number'; sz.min = 10; sz.max = 96; sz.value = size; sz.setAttribute('aria-label', 'Cỡ chữ (px)');
+    sz.addEventListener('change', function () { setProp('fontSize', Math.max(10, Math.min(96, Number(sz.value) || size))); });
+    row.appendChild(sz);
+    row.appendChild(btn('A+', 'Chữ lớn hơn', function () { setProp('fontSize', Math.min(96, size + 2)); }));
+    row.appendChild(sep());
+    var bold = st.fontWeight ? Number(st.fontWeight) >= 600 : Number(root.getComputedStyle(n).fontWeight) >= 600;
+    row.appendChild(btn('B', 'In đậm', function () { setProp('fontWeight', bold ? 400 : 700); }, bold));
+    row.appendChild(btn('I', 'In nghiêng', function () { setProp('italic', !st.italic); }, !!st.italic));
+    row.appendChild(btn('U', 'Gạch chân', function () { setProp('underline', !st.underline); }, !!st.underline));
+    row.appendChild(btn('AA', 'Viết hoa', function () { setProp('upper', !st.upper); }, !!st.upper));
+    row.appendChild(sep());
+    [['left', '⯇', 'Căn trái'], ['center', '≡', 'Căn giữa'], ['right', '⯈', 'Căn phải']].forEach(function (a) {
+      row.appendChild(btn(a[1], a[2], function () { setProp('align', st.align === a[0] ? '' : a[0]); }, st.align === a[0]));
+    });
+    bar.appendChild(row);
+
+    // Màu
+    var row2 = el('div', 'ins-row');
+    row2.appendChild(colorControl('Màu chữ', 'color', st.color, root.getComputedStyle(n).color, studio));
+    if (kind === 'button' || kind === 'box') row2.appendChild(colorControl('Màu nền', 'background', st.background, root.getComputedStyle(n).backgroundColor, studio));
+    bar.appendChild(row2);
+
+    if (studio) {
+      var row3 = el('div', 'ins-row');
+      var w = el('select', 'ins-select'); w.setAttribute('aria-label', 'Độ đậm');
+      w.add(new Option('Độ đậm: tự động', ''));
+      [300, 400, 500, 600, 700, 800, 900].forEach(function (v) { w.add(new Option('Độ đậm ' + v, String(v))); });
+      w.value = st.fontWeight ? String(st.fontWeight) : '';
+      w.addEventListener('change', function () { setProp('fontWeight', w.value ? Number(w.value) : ''); });
+      row3.appendChild(w);
+      var ls = el('label', 'ins-inline', 'Giãn chữ ');
+      var lsIn = el('input', 'ins-num'); lsIn.type = 'number'; lsIn.step = 0.01; lsIn.min = -0.1; lsIn.max = 0.5; lsIn.value = st.letterSpacing != null ? st.letterSpacing : '';
+      lsIn.placeholder = '0'; lsIn.setAttribute('aria-label', 'Giãn chữ (em)');
+      lsIn.addEventListener('change', function () { setProp('letterSpacing', lsIn.value === '' ? '' : Number(lsIn.value)); });
+      ls.appendChild(lsIn); ls.appendChild(document.createTextNode(' em'));
+      row3.appendChild(ls);
+      bar.appendChild(row3);
+    }
+
+    var row4 = el('div', 'ins-row ins-actions');
+    if (!required) row4.appendChild(btn(st.hidden ? '👁 Hiện lại' : '🙈 Ẩn', st.hidden ? 'Hiện lại phần tử này' : 'Ẩn phần tử này khỏi trang', function () { setProp('hidden', !st.hidden); cfg.toast(st.hidden ? 'Đã hiện lại.' : 'Đã ẩn – khách sẽ không thấy phần tử này.'); }));
+    row4.appendChild(btn('↺ Mặc định', 'Bỏ mọi chỉnh sửa của phần tử này', resetEl));
+    var def = n.getAttribute('data-el-default');
+    if (kind === 'text' && def != null && n.getAttribute('data-field') == null) {
+      var hint = el('small', 'ins-hint', 'Gốc: ' + (def.length > 40 ? def.slice(0, 40) + '…' : def));
+      row4.appendChild(hint);
+    }
+    bar.appendChild(row4);
+    finish(fresh);
+
+    function colorControl(label, prop, value, computed, full) {
+      var wrap = el('div', 'ins-color');
+      wrap.appendChild(el('span', 'ins-label', label));
+      if (full) {
+        wrap.appendChild(cfg.colorField('', value, PS.normalizeColor(computed), '', function (v, commit) { setProp(prop, v, commit === false); }));
+        return wrap;
+      }
+      var sw = el('div', 'ins-swatches');
+      var theme = cfg.themeColors();
+      theme.forEach(function (c) {
+        var b = btn('', 'Chọn màu ' + c, function () { setProp(prop, c); }, value === c);
+        b.classList.add('ins-swatch'); b.style.background = c;
+        sw.appendChild(b);
+      });
+      var pick = el('input', 'ins-picker'); pick.type = 'color'; pick.value = PS.solidHex(value || computed) || '#000000';
+      pick.setAttribute('aria-label', label + ' tuỳ chọn');
+      pick.addEventListener('input', function () { setProp(prop, pick.value, true); });
+      pick.addEventListener('change', function () { setProp(prop, pick.value); });
+      sw.appendChild(pick);
+      if (value) sw.appendChild(btn('↺', 'Bỏ ' + label.toLowerCase(), function () { setProp(prop, ''); }));
+      wrap.appendChild(sw);
+      return wrap;
+    }
+  }
+
+  // Phần lớn (section): nền, căn lề, màu riêng, di chuyển, ẩn
+  function buildSection(row, key) {
+    var PS = EP.pageStyle;
+    var api = cfg.sectionApi;
+    var cur = api.get(key);
+    row.classList.add('ins-col');
+    row.appendChild(api.chips('Nền', PS.OPTIONS.sectionBg, cur.bg || 'auto', function (v) { api.set(key, 'bg', v); }));
+    row.appendChild(api.chips('Căn lề', PS.OPTIONS.sectionAlign, cur.align || 'auto', function (v) { api.set(key, 'align', v); }));
+    if (cfg.getMode() === 'studio') {
+      row.appendChild(cfg.colorField('Màu nền riêng', cur.bgColor, '', '', function (v, c) { api.set(key, 'bgColor', v, c); }));
+      row.appendChild(cfg.colorField('Màu chữ riêng', cur.textColor, '', '', function (v, c) { api.set(key, 'textColor', v, c); }));
+    }
+    var acts = el('div', 'ins-row ins-actions');
+    acts.appendChild(btn('↑ Đưa lên', 'Đưa phần này lên trên', function () { api.move(key, -1); }));
+    acts.appendChild(btn('↓ Đưa xuống', 'Đưa phần này xuống dưới', function () { api.move(key, 1); }));
+    if (!api.locked(key)) acts.appendChild(btn('🙈 Ẩn phần', 'Ẩn cả phần này', function () { close(); api.hide(key); }));
+    row.appendChild(acts);
+  }
+
+  function finish(fresh) {
+    bar.hidden = false;
+    bar.classList.remove('is-leaving');
+    if (fresh) { bar.classList.remove('is-entering'); void bar.offsetWidth; bar.classList.add('is-entering'); }
+    position(!fresh);
+  }
+
+  // Đặt thanh công cụ ngay trên (hoặc dưới) phần tử, không tràn khỏi màn hình
+  function position(animate) {
+    var n = node();
+    if (!n || !bar || bar.hidden) return;
+    var r = n.getBoundingClientRect();
+    var wrap = cfg.landing.getBoundingClientRect();
+    var bh = bar.offsetHeight, bw = bar.offsetWidth;
+    var top = r.top - bh - 10;
+    if (top < 70) top = Math.min(r.bottom + 10, root.innerHeight - bh - 10);
+    var left = Math.max(8, Math.min(r.left, Math.min(wrap.right, root.innerWidth) - bw - 8));
+    bar.classList.toggle('no-anim', !animate);
+    bar.style.top = Math.max(8, top) + 'px';
+    bar.style.left = left + 'px';
+  }
+  function schedule() { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(function () { position(false); }); }
+
+  function init(c) {
+    cfg = c;
+    bar = el('div', 'inspector');
+    bar.id = 'inspector';
+    bar.hidden = true;
+    bar.setAttribute('role', 'toolbar');
+    bar.setAttribute('aria-label', 'Chỉnh phần tử');
+    document.body.appendChild(bar);
+
+    cfg.landing.addEventListener('click', function (e) {
+      if (!cfg.landing.classList.contains('is-editable')) return;
+      if (e.target.closest('.lp-img-btn')) return;
+      var t = e.target.closest('[data-el]');
+      if (!t || !cfg.landing.contains(t)) return;
+      // Chọn phần tử nhỏ nhất được bấm; bấm lần nữa vào phần tử đang chọn thì giữ nguyên
+      if (t.matches('input, select, textarea')) return;
+      select(t.getAttribute('data-el'));
+    });
+    // Rê chuột: hiện tên phần tử
+    cfg.landing.addEventListener('mouseover', function (e) {
+      if (!cfg.landing.classList.contains('is-editable')) return;
+      var t = e.target.closest('[data-el]');
+      cfg.landing.querySelectorAll('.lp-hovered').forEach(function (x) { if (x !== t) x.classList.remove('lp-hovered'); });
+      if (t) t.classList.add('lp-hovered');
+    });
+    cfg.landing.addEventListener('mouseleave', function () { cfg.landing.querySelectorAll('.lp-hovered').forEach(function (x) { x.classList.remove('lp-hovered'); }); });
+    document.addEventListener('mousedown', function (e) {
+      if (!selectedKey) return;
+      if (bar.contains(e.target) || cfg.landing.contains(e.target)) return;
+      close();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && selectedKey && !(e.target && e.target.isContentEditable)) close(); });
+    root.addEventListener('scroll', schedule, true);
+    root.addEventListener('resize', schedule);
+  }
+
+  // Gọi sau mỗi lần vẽ lại trang: chọn lại phần tử cũ, cập nhật thanh công cụ
+  function refresh() {
+    if (!selectedKey || !bar) return;
+    var n = node();
+    if (!n) { close(); return; }
+    n.classList.add('lp-selected');
+    if (!bar.contains(document.activeElement)) build(false); else position(true);
+  }
+
+  root.EP = root.EP || {};
+  root.EP.inspector = { init: init, refresh: refresh, select: select, close: close, selected: function () { return selectedKey; } };
+})(typeof window !== 'undefined' ? window : globalThis);

@@ -90,7 +90,6 @@ img.lp-avatar { object-fit: cover; }
 
 /* Sửa chữ trực tiếp khi soạn */
 .is-editable [contenteditable="true"] { outline: 1px dashed transparent; outline-offset: 4px; border-radius: 4px; cursor: text; }
-.is-editable [contenteditable="true"]:hover { outline-color: currentColor; }
 .is-editable [contenteditable="true"]:focus { outline: 2px solid var(--lp-accent); }
 
 /* ---------- Animation landing page (tắt khi giảm chuyển động) ---------- */
@@ -222,3 +221,6 @@ img.lp-avatar { object-fit: cover; }
 .st-motion-off *, .st-motion-off *::before { animation: none !important; transition: none !important; }
 .st-motion-subtle .lp-cta { animation: lpUp 0.7s ease 0.32s both; }
 .st-motion-subtle .lp-hero.has-image { animation: none; }
+
+/* Đang soạn: không chạy lại hiệu ứng xuất hiện mỗi lần trang vẽ lại */
+.is-editable .lp-hero > *, .is-editable .lp-cta { animation: none; }

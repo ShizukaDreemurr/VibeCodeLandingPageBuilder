@@ -311,3 +311,104 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; user-select: n
 .sec-settings .icon-btn, .sec-settings input[type="color"] { width: 28px; height: 28px; }
 .section-item input[type="text"] { user-select: text; touch-action: auto; }
 body.mode-studio .editor { grid-template-columns: 300px minmax(0, 1fr) 320px; }
+
+/* ---------- Thanh chỉnh phần tử (inspector) ---------- */
+.inspector { position: fixed; z-index: 950; max-width: min(560px, calc(100vw - 16px)); background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 16px 40px rgba(22, 25, 58, 0.22); padding: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.inspector[hidden] { display: none; }
+.ins-crumbs { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; padding: 0 2px 4px; border-bottom: 1px solid var(--border); }
+.ins-crumb { font: inherit; font-size: 12px; border: 0; background: var(--bg); color: var(--text-muted); padding: 2px 8px; border-radius: 999px; cursor: pointer; }
+.ins-crumb:hover { color: var(--text); }
+.ins-crumb-sep { color: var(--text-muted); }
+.ins-name { flex: 1; font-size: 13px; }
+.ins-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.ins-col { flex-direction: column; align-items: stretch; gap: 8px; }
+.ins-btn { font: inherit; font-weight: 700; min-width: 30px; height: 30px; padding: 0 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; cursor: pointer; }
+.ins-btn.is-active { background: var(--primary, #1e2a78); border-color: transparent; color: #fff; }
+.ins-btn[aria-label="In nghiêng"] { font-style: italic; }
+.ins-btn[aria-label="Gạch chân"] { text-decoration: underline; }
+.ins-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+.ins-num { width: 56px; height: 30px; font: inherit; padding: 0 6px; border: 1px solid var(--border); border-radius: 8px; }
+.ins-text { flex: 1; min-width: 140px; height: 30px; font: inherit; padding: 0 8px; border: 1px solid var(--border); border-radius: 8px; }
+.ins-select { height: 30px; font: inherit; border: 1px solid var(--border); border-radius: 8px; padding: 0 6px; background: var(--surface); }
+.ins-inline { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); }
+.ins-color { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 200px; }
+.ins-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.ins-swatches { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.ins-swatch { min-width: 24px; width: 24px; height: 24px; padding: 0; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15); }
+.ins-swatch.is-active { outline: 2px solid var(--text); outline-offset: 2px; }
+.ins-picker { width: 30px; height: 26px; padding: 0; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: none; }
+.ins-actions { justify-content: flex-start; }
+.ins-hint { color: var(--text-muted); margin-left: auto; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inspector .color-field .st-label:empty { display: none; }
+
+/* Phần tử trong bản xem trước khi soạn */
+.landing.is-editable [data-el] { cursor: pointer; }
+.landing.is-editable [contenteditable="true"] { cursor: text; }
+.landing.is-editable .lp-hovered:not(.lp-selected) { outline: 1.5px dashed rgba(79, 107, 255, 0.8); outline-offset: 3px; }
+.landing.is-editable .lp-selected { outline: 2px solid #4f6bff; outline-offset: 3px; }
+.landing.is-editable [data-el-kind="section"].lp-selected, .landing.is-editable [data-el="hero"].lp-selected { outline-offset: -3px; }
+.landing .lp-el-hidden { opacity: 0.3; background-image: repeating-linear-gradient(45deg, transparent 0 6px, rgba(0, 0, 0, 0.05) 6px 12px); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .inspector { transition: top 0.22s cubic-bezier(.2,.8,.2,1), left 0.22s cubic-bezier(.2,.8,.2,1); }
+  .inspector.no-anim { transition: none; }
+  .inspector.is-entering { animation: insIn 0.2s cubic-bezier(.2,.8,.2,1) both; }
+  .inspector.is-leaving { animation: insOut 0.16s ease both; }
+  .ins-btn, .ins-crumb, .ins-swatch { transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease; }
+  .ins-btn:hover, .ins-swatch:hover { transform: translateY(-1px); }
+  .ins-btn:active, .ins-swatch:active { transform: scale(0.9); }
+  .landing.is-editable [data-el] { transition: outline-color 0.15s ease, outline-offset 0.15s ease, opacity 0.25s ease; }
+  .landing.is-editable .lp-just-selected { animation: insPulse 0.5s ease; }
+}
+@keyframes insIn { from { opacity: 0; transform: translateY(6px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes insOut { to { opacity: 0; transform: translateY(4px) scale(0.98); } }
+@keyframes insPulse { 0% { outline-offset: 8px; outline-color: rgba(79, 107, 255, 0); } 100% { outline-offset: 3px; outline-color: #4f6bff; } }
+
+/* ---------- Hiệu ứng toàn app (motion.js) ---------- */
+.tabs { position: relative; }
+.tab-indicator { position: absolute; left: 0; bottom: -2px; height: 3px; border-radius: 3px; background: var(--accent, #e5396e); pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .tab-indicator { transition: transform 0.35s cubic-bezier(.2,.8,.2,1), width 0.35s cubic-bezier(.2,.8,.2,1), opacity 0.2s ease; }
+  .tab { transition: color 0.2s ease, background-color 0.2s ease; }
+  .mo-stagger { animation: xcViewIn 0.4s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 45ms); }
+  tr.mo-stagger { animation-name: moRowIn; }
+  .mo-swap { animation: moSwap 0.45s cubic-bezier(.2,.8,.2,1); }
+  .mo-pop { animation: moPop 0.35s cubic-bezier(.2,.8,.2,1); }
+  .mo-morph { animation: moPop 0.3s ease; }
+  .mo-flash { animation: moFlash 1s ease; }
+  .mo-sparkle { animation: moSparkle 0.6s ease; }
+  .mo-img-in { animation: moImgIn 0.6s ease; }
+  .landing.is-generating { position: relative; }
+  .landing.is-generating::after { content: 'AI đang viết nội dung…'; position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; color: var(--primary, #1e2a78); background: linear-gradient(100deg, rgba(255,255,255,.55) 30%, rgba(255,255,255,.95) 50%, rgba(255,255,255,.55) 70%); background-size: 300% 100%; animation: moShimmer 1.2s linear infinite; z-index: 5; }
+  input, select, textarea { transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease; }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):focus, select:focus, textarea:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary, #1e2a78) 18%, transparent); }
+  input[type="checkbox"], input[type="radio"] { transition: transform 0.15s ease; }
+  input[type="checkbox"]:active, input[type="radio"]:active { transform: scale(0.85); }
+  .ai-box:not([hidden]), .studio-box:not([hidden]), .sheet-box:not([hidden]), #layout-box:not([hidden]) { animation: xcViewIn 0.3s ease both; }
+  .sheet-status:not([hidden]), .mock-note:not([hidden]), #user-email:not([hidden]) { animation: moPop 0.35s ease both; }
+  .form-msg:empty { animation: none; }
+  .share-qr img, .share-qr svg, .share-qr canvas { animation: moQr 0.5s cubic-bezier(.2,1.4,.4,1) both; }
+  .empty-state { animation: xcViewIn 0.5s ease both; }
+  .empty-state .empty-title { animation: moBob 3s ease-in-out infinite; }
+  .metric strong { display: inline-block; }
+  .lead-select { transition: background-color 0.2s ease, border-color 0.2s ease; }
+  tbody tr { transition: background-color 0.2s ease; }
+  tbody tr:hover { background: var(--bg); }
+  .tpl-card.is-current { animation: none; }
+  .badge { transition: transform 0.2s ease; }
+  .event-card:hover .badge { transform: translateY(-1px); }
+  .error:not(:empty) { animation: xcShake 0.35s ease, xcViewIn 0.25s ease; }
+  [aria-invalid="true"] { animation: xcShake 0.35s ease; }
+  .tpl-thumb { transition: transform 0.3s ease; }
+  .tpl-card:hover .tpl-thumb { transform: scale(1.03); }
+  .panel { animation: xcViewIn 0.35s ease both; }
+}
+@keyframes moRowIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@keyframes moSwap { 0% { opacity: 0.35; transform: translateY(10px) scale(0.995); } 100% { opacity: 1; transform: none; } }
+@keyframes moPop { 0% { transform: scale(0.92); opacity: 0.4; } 60% { transform: scale(1.04); opacity: 1; } 100% { transform: none; } }
+@keyframes moFlash { 0% { background-color: color-mix(in srgb, var(--accent, #e5396e) 22%, transparent); } 100% { background-color: transparent; } }
+@keyframes moSparkle { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent, #e5396e) 60%, transparent); transform: scale(1); } 40% { transform: scale(0.96); } 100% { box-shadow: 0 0 0 16px transparent; transform: scale(1); } }
+@keyframes moImgIn { 0% { filter: brightness(1.6) saturate(0.4); } 100% { filter: none; } }
+@keyframes moShimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@keyframes moQr { from { opacity: 0; transform: scale(0.6) rotate(-6deg); } to { opacity: 1; transform: none; } }
+@keyframes moBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }

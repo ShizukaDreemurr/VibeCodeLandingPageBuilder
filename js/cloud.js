@@ -99,6 +99,8 @@
       studioUrl: ev.studioUrl || '',
       sections: ev.sections || null,
       style: ev.style || null,
+      texts: ev.texts || null,
+      elStyles: ev.elStyles || null,
       content: { headline: content.headline, description: content.description, benefits: content.benefits, source: content.source },
       updatedAt: fb.firestore.FieldValue.serverTimestamp()
     };
@@ -145,6 +147,8 @@
           studioUrl: d.studioUrl || '',
           sections: d.sections || null,
           style: d.style || null,
+          texts: d.texts || null,
+          elStyles: d.elStyles || null,
           ownerUid: d.ownerUid,
           published: true
         },
