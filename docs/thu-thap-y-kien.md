@@ -56,6 +56,33 @@
 
 ---
 
+## PHIÊN BẢN ĐÓNG VAI FRESHER (ưu tiên dùng — theo góp ý của cô 26/10)
+Lý do: hỏi như người mới vào nghề xin kinh nghiệm thì người đọc thoải mái chia sẻ hơn là trả lời "khảo sát".
+
+### Threads
+> Em mới đi làm marketing được 2 tháng, tuần sau sếp giao làm landing page cho workshop của công ty mà em hơi rối 😅
+> Mọi người thường làm trang sự kiện bằng gì ạ, LadiPage hay Canva hay nhờ designer? Làm mất bao lâu?
+> Có khâu nào hay "toang" mà em nên tránh không ạ? Em cảm ơn nhiều!
+
+### Group Facebook (marketing/event)
+> **[Fresher xin kinh nghiệm] Làm landing page cho workshop lần đầu**
+> Chào anh chị, em là fresher marketing, lần đầu được giao làm landing page cho một workshop khoảng 100 người. Em xin phép hỏi kinh nghiệm:
+> 1. Anh chị hay dùng công cụ gì để làm trang sự kiện? Tự làm hay nhờ designer/dev?
+> 2. Thường mất bao lâu thì xong một trang ạ?
+> 3. Lúc làm hay gặp khó ở đâu: viết nội dung, thiết kế, hiển thị trên điện thoại hay form đăng ký?
+> 4. Sau khi có người đăng ký thì anh chị quản lý danh sách thế nào cho đỡ sót, đỡ trùng?
+> 5. Anh chị có dùng ChatGPT/Gemini để viết nội dung trang không, có ổn không ạ?
+> Anh chị chỉ em vài ý thôi cũng được ạ, em cảm ơn nhiều 🙏
+
+### Group studio / nhiếp ảnh cưới
+> Em đang học việc ở một studio nhỏ, anh chủ muốn làm thêm thiệp cưới online tặng khách mà em chưa biết bắt đầu từ đâu.
+> Studio của anh chị có làm thiệp online cho khách không ạ? Dùng công cụ gì, khách có thích không?
+> Anh chị thấy khách mời trong đám cưới có hay thành khách của studio không ạ? Em cảm ơn!
+
+**Lưu ý đạo đức:** đóng vai là cách mở lời; khi xin phép dùng câu trả lời làm dữ liệu cho bài thi (đặc biệt khi trích dẫn), nhắn riêng nói rõ là sinh viên làm nghiên cứu và xin đồng ý, ẩn danh người trả lời.
+
+---
+
 ## Bảng tổng hợp ý kiến (tạo Google Sheet với các cột sau)
 
 | Cột | Ghi gì |
