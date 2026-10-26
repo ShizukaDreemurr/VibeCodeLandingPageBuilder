@@ -264,6 +264,7 @@
         el.setAttribute('data-section', s.key);
         if (sec.bg && sec.bg !== 'auto') el.classList.add('lp-bg-' + sec.bg);
         if (sec.align && sec.align !== 'auto') el.classList.add('lp-align-' + sec.align);
+        if (root.EP.pageStyle) root.EP.pageStyle.sectionInline(el, sec);
         container.appendChild(el);
       }
     });

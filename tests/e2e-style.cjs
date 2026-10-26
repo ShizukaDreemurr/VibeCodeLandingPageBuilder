@@ -1,22 +1,60 @@
+// Bảng Giao diện: chế độ Đơn giản & Studio, ô màu nhận mọi mã màu, thanh trượt, font Google tuỳ ý, màu từng phần, hoàn tác
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
-const SP=process.argv[2]||require('os').tmpdir();
-(async()=>{const b=require('./auto-tab.cjs')(await chromium.launch());const p=await (await b.newContext({viewport:{width:1400,height:1000}})).newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
-await p.goto('http://localhost:8000/');await p.click('[data-tab="builder"]');await p.click('#btn-sample');await p.click('#btn-generate');await p.waitForTimeout(1000);
-await p.click('.palette:nth-child(3)');
-for (const g of ['Chữ','Phần đầu trang','Nút & hình khối']) await p.click('details[data-group="'+g+'"] > summary');
-await p.selectOption('details[data-group="Chữ"] select >> nth=0','playfair');
-await p.click('details[data-group="Phần đầu trang"] .chip:text("Giữa")');
-await p.click('details[data-group="Nút & hình khối"] .chip:text("Viên thuốc")');
-await p.click('details[data-group="Nút & hình khối"] .chip:text("Bo tròn")');
-await p.click('details[data-group="Nút & hình khối"] .chip:text("★")');
-await p.click('.section-item[data-key="benefits"] .gear');await p.click('.section-item[data-key="benefits"] .chip:text("Màu chính")');
-console.log('class',await p.getAttribute('#landing','class'));
-console.log('benefits bg',await p.getAttribute('[data-section="benefits"]','class'));
-console.log('undo enabled',await p.isEnabled('#btn-undo'));
-await p.screenshot({path:SP+'/style.png'});
-await p.locator('[data-section="benefits"]').scrollIntoViewIfNeeded();await p.screenshot({path:SP+'/style2.png'});
-for(let i=0;i<7;i++) await p.click('#btn-undo');
-console.log('after undos',await p.getAttribute('#landing','class'), await p.getAttribute('[data-section="benefits"]','class'));
-await p.click('#btn-redo');console.log('redo',JSON.stringify(await p.evaluate(()=>JSON.parse(localStorage.ep_events)[localStorage.ep_current_id.replace(/"/g,'')]?.event.style)));
-await p.reload();await p.click('[data-tab="editor"]');console.log('persist',await p.getAttribute('#landing','class'));
-console.log('errs',errs);await b.close();})();
+const SP = process.argv[2] || require('os').tmpdir();
+(async () => {
+  const b = require('./auto-tab.cjs')(await chromium.launch());
+  const p = await (await b.newContext({ viewport: { width: 1400, height: 1000 } })).newPage();
+  const errs = []; p.on('pageerror', e => errs.push(e.message));
+  const log = (k, v) => console.log(k.padEnd(30), v);
+  const v = (name) => p.evaluate(n => document.querySelector('#landing').style.getPropertyValue(n), name);
+  await p.goto('http://localhost:8000/'); await p.click('[data-tab="builder"]'); await p.click('#btn-sample'); await p.click('#btn-generate'); await p.waitForTimeout(1000);
+
+  // Đơn giản
+  log('default mode', await p.getAttribute('.mode-btn.is-active', 'data-mode'));
+  log('simple has groups', await p.locator('#style-panel details').count());
+  log('simple gear', await p.locator('.section-item .gear').count());
+  await p.click('.palette:nth-child(3)');
+  await p.click('#style-panel .chip:text("Viên thuốc")');
+  await p.click('#style-panel .chip:text("Bo tròn")');
+  log('simple classes', (await p.getAttribute('#landing', 'class')).match(/st-(button|radius)-\w+/g).join(' '));
+  await p.fill('[aria-label="Màu chính – mã màu"]', '#ffdd00'); await p.press('[aria-label="Màu chính – mã màu"]', 'Enter');
+  log('simple auto-darken', await v('--lp-primary'));
+
+  // Studio
+  await p.click('.mode-btn[data-mode="studio"]');
+  log('studio groups', await p.locator('#style-panel details').count());
+  log('studio gear', await p.locator('.section-item .gear').count());
+  await p.fill('[aria-label="Màu chính – mã màu"]', '#ffdd00'); await p.press('[aria-label="Màu chính – mã màu"]', 'Enter');
+  log('studio free primary', await v('--lp-primary') + ' badge ' + await p.locator('.color-field .cr-badge').first().textContent());
+  for (const [label, input] of [['Màu nhấn', 'rgb(200, 30, 60)'], ['Màu chữ phần đầu trang', 'hsl(232 60% 20%)'], ['Màu chữ nội dung', 'rgba(20,20,20,.9)'], ['Màu nền trang', 'seashell']]) {
+    await p.fill('[aria-label="' + label + ' – mã màu"]', input); await p.press('[aria-label="' + label + ' – mã màu"]', 'Enter');
+  }
+  log('accent rgb()', await v('--lp-accent'));
+  log('hero text hsl()', await v('--lp-hero-text'));
+  log('text rgba()', await v('--lp-text'));
+  log('bg named', await v('--lp-bg'));
+  await p.fill('[aria-label="Màu chữ phụ – mã màu"]', 'xyz');
+  log('invalid flagged', await p.locator('.color-line input.is-invalid').count() + ' err shown ' + await p.isVisible('.color-err >> visible=true'));
+  await p.click('details[data-group="Chữ"] > summary');
+  await p.fill('[aria-label="Cỡ tiêu đề lớn (số)"]', '60'); await p.press('[aria-label="Cỡ tiêu đề lớn (số)"]', 'Tab');
+  await p.fill('[aria-label="Độ đậm tiêu đề"]', '500');
+  log('h1 / weight', await v('--lp-h1') + ' / ' + await v('--lp-hw'));
+  await p.selectOption('[aria-label="Font tiêu đề"]', '__custom');
+  await p.fill('[aria-label="Font tiêu đề – tên font Google"]', 'Pacifico'); await p.press('[aria-label="Font tiêu đề – tên font Google"]', 'Tab');
+  log('custom google font', await v('--lp-heading-font') + ' link ' + await p.locator('link[href*="Pacifico"]').count());
+  await p.click('details[data-group="Bố cục & hiệu ứng"] > summary');
+  await p.fill('[aria-label="Khoảng cách trên/dưới mỗi phần (số)"]', '200'); await p.press('[aria-label="Khoảng cách trên/dưới mỗi phần (số)"]', 'Tab');
+  log('clamped pad', await v('--lp-pad'));
+  await p.click('.section-item[data-key="benefits"] .gear');
+  await p.fill('.section-item[data-key="benefits"] [aria-label="Màu nền riêng – mã màu"]', '#222'); await p.press('.section-item[data-key="benefits"] [aria-label="Màu nền riêng – mã màu"]', 'Enter');
+  await p.fill('.section-item[data-key="benefits"] [aria-label="Màu chữ riêng – mã màu"]', 'white'); await p.press('.section-item[data-key="benefits"] [aria-label="Màu chữ riêng – mã màu"]', 'Enter');
+  log('section colors', await p.getAttribute('[data-section="benefits"]', 'style'));
+  await p.screenshot({ path: SP + '/studio.png' });
+  await p.click('#btn-undo'); await p.click('#btn-undo');
+  log('undo section colors', await p.getAttribute('[data-section="benefits"]', 'style'));
+  await p.reload(); await p.click('[data-tab="editor"]');
+  log('persist mode', await p.getAttribute('.mode-btn.is-active', 'data-mode'));
+  log('persist h1', await v('--lp-h1'));
+  log('ERRORS', errs);
+  await b.close();
+})();
