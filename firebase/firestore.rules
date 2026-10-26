@@ -1,0 +1,94 @@
+rules_version = '2';
+
+// EventPage AI — quy tắc bảo mật Firestore
+// - Ai cũng xem được nội dung landing page và SỐ người đăng ký (không kèm tên/SĐT/email).
+// - Khách chỉ được GỬI đăng ký, không đọc được danh sách.
+// - Chỉ chủ sự kiện (đăng nhập Google) mới đọc/sửa/xoá danh sách đăng ký.
+// - Chống trùng SĐT (mã bản ghi = SĐT) và trùng email (bản ghi khoá email), đếm chỗ chính xác.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function eventPath(eventId) { return /databases/$(database)/documents/events/$(eventId); }
+    function statsPath(eventId) { return /databases/$(database)/documents/events/$(eventId)/stats/public; }
+    function regPath(eventId, regId) { return /databases/$(database)/documents/events/$(eventId)/registrations/$(regId); }
+    function emailPath(eventId, email) { return /databases/$(database)/documents/events/$(eventId)/emails/$(email); }
+    function isOwner(eventId) { return signedIn() && get(eventPath(eventId)).data.ownerUid == request.auth.uid; }
+    function str(v, max) { return v is string && v.size() > 0 && v.size() <= max; }
+    function isFull(eventId) {
+      return get(eventPath(eventId)).data.capacity > 0
+        && get(statsPath(eventId)).data.count >= get(eventPath(eventId)).data.capacity;
+    }
+
+    match /events/{eventId} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && str(request.resource.data.name, 120)
+        && request.resource.data.capacity is int && request.resource.data.capacity >= 0
+        && request.resource.data.startAt is timestamp
+        && existsAfter(statsPath(eventId));
+      allow update: if signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && str(request.resource.data.name, 120)
+        && request.resource.data.capacity is int && request.resource.data.capacity >= 0
+        && request.resource.data.startAt is timestamp;
+      allow delete: if signedIn() && resource.data.ownerUid == request.auth.uid;
+
+      // Số đếm công khai: { count, waitlist, lastRegId }
+      match /stats/{docId} {
+        allow read: if docId == 'public';
+        allow create: if docId == 'public' && signedIn()
+          && getAfter(eventPath(eventId)).data.ownerUid == request.auth.uid
+          && request.resource.data.keys().hasOnly(['count', 'waitlist', 'lastRegId'])
+          && request.resource.data.count == 0
+          && request.resource.data.waitlist == 0
+          && request.resource.data.lastRegId == '';
+        // Khách: tăng đúng 1 cùng lúc với việc tạo bản ghi đăng ký. Chủ sự kiện: được chỉnh lại khi xoá danh sách.
+        allow update: if docId == 'public'
+          && request.resource.data.keys().hasOnly(['count', 'waitlist', 'lastRegId'])
+          && (
+            isOwner(eventId)
+            || (
+              request.resource.data.lastRegId != resource.data.lastRegId
+              && !exists(regPath(eventId, request.resource.data.lastRegId))
+              && existsAfter(regPath(eventId, request.resource.data.lastRegId))
+              && (
+                (request.resource.data.count == resource.data.count + 1 && request.resource.data.waitlist == resource.data.waitlist)
+                || (request.resource.data.waitlist == resource.data.waitlist + 1 && request.resource.data.count == resource.data.count)
+              )
+            )
+          );
+      }
+
+      // Mã bản ghi = số điện thoại đã chuẩn hoá → cùng SĐT không tạo được lần 2
+      match /registrations/{regId} {
+        allow read, update, delete: if isOwner(eventId);
+        allow create: if
+          request.resource.data.keys().hasOnly(['name', 'phone', 'email', 'status', 'createdAt'])
+          && regId == request.resource.data.phone
+          && request.resource.data.phone.matches('^0[35789][0-9]{8}$')
+          && str(request.resource.data.name, 80)
+          && str(request.resource.data.email, 120)
+          && request.resource.data.email.matches('^[^@ ]+@[^@ ]+[.][^@ ]{2,}$')
+          && request.resource.data.createdAt == request.time
+          && get(eventPath(eventId)).data.startAt > request.time
+          && request.resource.data.status in ['new', 'waitlist']
+          && (request.resource.data.status == 'waitlist') == isFull(eventId)
+          && getAfter(statsPath(eventId)).data.lastRegId == regId
+          && existsAfter(emailPath(eventId, request.resource.data.email));
+      }
+
+      // Khoá email → cùng email không đăng ký được lần 2
+      match /emails/{email} {
+        allow read, delete: if isOwner(eventId);
+        allow create: if
+          request.resource.data.keys().hasOnly(['regId'])
+          && !exists(regPath(eventId, request.resource.data.regId))
+          && existsAfter(regPath(eventId, request.resource.data.regId))
+          && getAfter(regPath(eventId, request.resource.data.regId)).data.email == email;
+      }
+    }
+  }
+}
