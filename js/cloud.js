@@ -98,6 +98,7 @@
       studioName: ev.studioName || '',
       studioUrl: ev.studioUrl || '',
       sections: ev.sections || null,
+      style: ev.style || null,
       content: { headline: content.headline, description: content.description, benefits: content.benefits, source: content.source },
       updatedAt: fb.firestore.FieldValue.serverTimestamp()
     };
@@ -143,6 +144,7 @@
           studioName: d.studioName || '',
           studioUrl: d.studioUrl || '',
           sections: d.sections || null,
+          style: d.style || null,
           ownerUid: d.ownerUid,
           published: true
         },

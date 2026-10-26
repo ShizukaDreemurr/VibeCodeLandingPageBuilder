@@ -139,3 +139,67 @@ img.lp-avatar { object-fit: cover; }
 @keyframes lpBump { 0% { transform: scale(1); } 30% { transform: scale(1.45); } 100% { transform: scale(1); } }
 @keyframes lpBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 @keyframes lpKen { from { background-position: center, 50% 40%, center; } to { background-position: center, 50% 60%, center; } }
+
+/* ---------- Tuỳ chỉnh giao diện (page-style.js) ---------- */
+.landing { font-family: var(--lp-body-font, inherit); --lp-radius: 10px; --lp-pad: 32px; }
+.lp-hero.has-image { background: linear-gradient(rgba(10, 10, 20, var(--lp-hero-overlay, 0.62)), rgba(10, 10, 20, var(--lp-hero-overlay, 0.62))), var(--lp-hero-image) center / cover no-repeat, var(--lp-primary); }
+.lp-cta, .lp-submit, .lp-cd-box, .lp-benefits li, .lp-field input, .lp-gallery-item { border-radius: var(--lp-radius); }
+.lp-section { padding: var(--lp-pad) 32px; }
+
+.st-radius-square { --lp-radius: 2px; }
+.st-radius-round { --lp-radius: 20px; }
+.st-spacing-compact { --lp-pad: 20px; }
+.st-spacing-airy { --lp-pad: 56px; }
+.st-headingSize-s .lp-headline { font-size: clamp(22px, 4cqi, 34px); }
+.st-headingSize-s .lp-section h2 { font-size: 19px; }
+.st-headingSize-l .lp-headline { font-size: clamp(30px, 6.5cqi, 58px); }
+.st-headingSize-l .lp-section h2 { font-size: 28px; }
+
+.st-button-outline .lp-cta { background: transparent; color: #fff; box-shadow: inset 0 0 0 2px var(--lp-accent); }
+.st-button-outline .lp-submit { background: transparent; color: var(--lp-primary); box-shadow: inset 0 0 0 2px var(--lp-primary); }
+.st-button-pill .lp-cta, .st-button-pill .lp-submit { border-radius: 999px; padding-left: 28px; padding-right: 28px; }
+
+.st-shadow-soft .lp-benefits li, .st-shadow-soft .lp-cd-box, .st-shadow-soft .lp-gallery-item, .st-shadow-soft .lp-form { box-shadow: 0 6px 20px rgba(22, 25, 58, 0.1); }
+.st-shadow-soft .lp-form { padding: 20px; border-radius: var(--lp-radius); background: #fff; }
+
+.st-heroAlign-center .lp-hero { text-align: center; }
+.st-heroAlign-center .lp-meta { justify-content: center; }
+.st-heroAlign-left .lp-hero { text-align: left; }
+.st-heroAlign-left .lp-meta { justify-content: flex-start; }
+.st-heroHeight-compact .lp-hero { padding-top: 28px; padding-bottom: 28px; }
+.st-heroHeight-full .lp-hero { min-height: min(100vh, 760px); display: flex; flex-direction: column; justify-content: center; }
+.st-heroHeight-full.st-heroAlign-center .lp-hero { align-items: center; }
+.st-heroHeight-full .lp-hero > * { max-width: 100%; }
+
+.st-countdown-minimal .lp-cd-box { background: transparent; color: var(--lp-primary); box-shadow: none; border-bottom: 3px solid var(--lp-accent); border-radius: 0; }
+
+.st-bullet-star .lp-benefits li::before { content: '★'; }
+.st-bullet-arrow .lp-benefits li::before { content: '→'; }
+.st-bullet-dot .lp-benefits li::before { content: '●'; font-size: 12px; top: 18px; }
+
+/* Nền & căn lề từng phần */
+.lp-bg-plain { background: #fff; }
+.lp-bg-tint { background: var(--lp-surface); }
+.lp-bg-tint .lp-benefits li { background: #fff; }
+.lp-bg-primary { background: var(--lp-primary); color: #fff; }
+.lp-bg-primary h2, .lp-bg-primary .lp-agenda-time, .lp-bg-primary .lp-cd-box { color: #fff; }
+.lp-bg-primary .lp-benefits li { background: rgba(255, 255, 255, 0.1); }
+.lp-bg-primary .lp-speaker span, .lp-bg-primary .lp-offer-until, .lp-bg-primary .lp-ended { color: rgba(255, 255, 255, 0.82); }
+.lp-bg-primary .lp-cd-box { background: rgba(255, 255, 255, 0.14); }
+.lp-bg-primary .lp-avatar { background: rgba(255, 255, 255, 0.2); }
+.lp-bg-primary .lp-agenda li { border-bottom-color: rgba(255, 255, 255, 0.2); }
+.lp-bg-primary .lp-form { color: var(--lp-text); }
+.lp-bg-primary.lp-section .lp-field label, .lp-bg-primary .lp-consent { color: #fff; }
+.st-shadow-soft .lp-bg-primary .lp-field label, .st-shadow-soft .lp-bg-primary .lp-consent { color: var(--lp-text); }
+.lp-bg-primary .lp-form-msg.is-success, .lp-bg-primary .lp-form-msg.is-error, .lp-bg-primary .lp-error { background: #fff; padding: 4px 8px; border-radius: 6px; }
+.lp-bg-primary .lp-submit { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5); }
+.landing .lp-align-center { text-align: center; }
+.landing .lp-align-center .lp-form { margin: 0 auto; text-align: left; }
+.landing .lp-align-center .lp-agenda li, .lp-align-center .lp-countdown { justify-content: center; }
+.landing .lp-align-left, .lp-align-left .lp-section { text-align: left; }
+.landing .lp-align-left .lp-countdown { justify-content: flex-start; }
+
+/* Mức hiệu ứng */
+.st-motion-off *, .st-motion-off *::before { animation: none !important; transition: none !important; }
+.st-motion-subtle .lp-cta { animation: lpUp 0.7s ease 0.32s both; }
+.st-motion-subtle .lp-hero.has-image { animation: none; }

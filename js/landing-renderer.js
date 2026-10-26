@@ -84,7 +84,9 @@
     container.innerHTML = '';
     container.className = 'landing tpl-' + tpl.id + (editable ? ' is-editable' : '');
     var vars = T.cssVars(tpl.id);
+    container.removeAttribute('style');
     Object.keys(vars).forEach(function (k) { container.style.setProperty(k, vars[k]); });
+    var st = root.EP.pageStyle ? root.EP.pageStyle.apply(container, tpl.theme, ev.style) : { sections: {}, motion: 'full', ctaText: '' };
 
     // Nút đổi ảnh (chỉ ở chế độ soạn)
     function imageButton(slot, label) {
@@ -129,7 +131,7 @@
       h('p', { class: 'lp-eyebrow', text: ev.name }),
       editableText('h1', { class: 'lp-headline' }, 'headline', content.headline),
       h('p', { class: 'lp-meta' }, [h('span', { text: '🗓 ' + fmtDate(ev.startAt) }), h('span', { text: '📍 ' + ev.location })]),
-      h('a', { class: 'lp-cta', href: '#lp-register', text: L.submit }),
+      h('a', { class: 'lp-cta', href: '#lp-register', text: (st.ctaText || '').trim() || L.submit }),
       imageButton('hero', images.hero ? '🖼 Đổi ảnh bìa' : '🖼 Thêm ảnh bìa')
     ]);
     if (images.hero) hero.style.setProperty('--lp-hero-image', 'url("' + images.hero.replace(/"/g, '') + '")');
@@ -257,7 +259,13 @@
     var byKey = { countdown: countdownSection, about: about, benefits: benefits, speakers: speakers, gallery: gallery, agenda: agenda, offer: offer, register: register };
     container.appendChild(hero);
     normalizeSections(ev.sections).forEach(function (s) {
-      if (s.visible && byKey[s.key]) { byKey[s.key].setAttribute('data-section', s.key); container.appendChild(byKey[s.key]); }
+      if (s.visible && byKey[s.key]) {
+        var el = byKey[s.key], sec = st.sections[s.key] || {};
+        el.setAttribute('data-section', s.key);
+        if (sec.bg && sec.bg !== 'auto') el.classList.add('lp-bg-' + sec.bg);
+        if (sec.align && sec.align !== 'auto') el.classList.add('lp-align-' + sec.align);
+        container.appendChild(el);
+      }
     });
     container.appendChild(footer);
 
@@ -302,7 +310,7 @@
       void el.offsetWidth; // ép trình duyệt chạy lại animation
       el.classList.add(cls);
     }
-    if (!editable) {
+    if (!editable && st.motion !== 'off') {
       var revealEls = Array.prototype.slice.call(container.children).filter(function (el) { return el !== hero; });
       revealEls.forEach(function (el) { el.classList.add('lp-reveal'); });
       if (typeof IntersectionObserver === 'function') {

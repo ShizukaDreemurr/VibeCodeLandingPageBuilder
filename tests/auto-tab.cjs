@@ -8,6 +8,11 @@ async function openTabFor(page, sel) {
       var tab = document.querySelector('[data-tab="' + view.id.replace('view-', '') + '"]');
       if (tab) tab.click();
     }
+    var pane = el && el.closest('.side-pane');
+    if (pane && pane.hidden) {
+      var st = document.querySelector('.side-tab[data-side="' + pane.id.replace('side-', '') + '"]');
+      if (st) st.click();
+    }
   }, sel).catch(() => {});
 }
 function wrap(page) {

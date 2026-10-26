@@ -79,7 +79,8 @@
       studioName: currentTemplateId === 'wedding' ? V.clean(f.studioName.value) : '',
       studioUrl: currentTemplateId === 'wedding' ? V.clean(f.studioUrl.value) : '',
       images: (state && state.event.images) || {},
-      sections: (state && state.event.sections) || null
+      sections: (state && state.event.sections) || null,
+      style: (state && state.event.style) || null
     };
   }
 
@@ -190,6 +191,8 @@
     if (state) {
       state.event.templateId = currentTemplateId;
       if (currentTemplateId !== 'wedding') { state.event.studioName = ''; state.event.studioUrl = ''; }
+      // Đổi mẫu → dùng màu & font của mẫu mới, giữ các tuỳ chỉnh bố cục khác
+      if (state.event.style) { delete state.event.style.primary; delete state.event.style.accent; delete state.event.style.headingFont; }
       persist();
     }
     toast('Đã chuyển sang mẫu "' + TPL.get(id).name + '".');
@@ -218,6 +221,7 @@
 
   // Lưu trạng thái, vẽ lại trang, và cập nhật bản công khai nếu đã xuất bản
   function persist() {
+    recordHistory();
     if (!saveState()) toast('Trình duyệt không lưu được dữ liệu (có thể do ảnh quá lớn).');
     renderLanding();
     if (isCloudEvent() && C.currentUser()) {
@@ -345,7 +349,7 @@
   // Kéo thả bằng con trỏ (chuột + cảm ứng): thẻ được "nhấc lên" đi theo tay, các thẻ khác trượt nhường chỗ
   function startDrag(e, li, ol) {
     if (e.button !== undefined && e.button !== 0) return;
-    if (e.target.closest('button, input, label')) return;
+    if (e.target.closest('button, input, label, .sec-settings')) return;
     var startY = e.clientY, dragging = false, ghost, holder, offsetY, lastTop;
     function begin() {
       dragging = true;
@@ -378,6 +382,7 @@
         var before = rectsOf(ol);
         ol.insertBefore(holder, target);
         playFlip(ol, before);
+    justOpened = false;
       }
       // Tự cuộn khi kéo gần mép
       var box = ol.closest('.editor-side');
@@ -408,6 +413,22 @@
     document.addEventListener('pointermove', move, { passive: false });
     document.addEventListener('pointerup', end);
     document.addEventListener('pointercancel', end);
+  }
+
+  var justOpened = false;
+  var openSettings = null; // phần đang mở bảng tuỳ chỉnh nhỏ
+  function sectionSettings(key) {
+    var PS = EP.pageStyle;
+    var cur = (getStyle().sections[key]) || {};
+    var box = document.createElement('div');
+    box.className = 'sec-settings';
+    [['bg', 'Nền', PS.OPTIONS.sectionBg], ['align', 'Căn lề', PS.OPTIONS.sectionAlign]].forEach(function (row) {
+      box.appendChild(chipRow(row[1], row[2], cur[row[0]] || 'auto', function (v) {
+        var st = getStyle(); var secs = Object.assign({}, st.sections); secs[key] = Object.assign({}, secs[key]); secs[key][row[0]] = v;
+        flashKey = key; setStyle('sections', secs);
+      }));
+    });
+    return box;
   }
 
   function renderSectionList() {
@@ -449,7 +470,15 @@
       li.addEventListener('pointerdown', function (e) { startDrag(e, li, ol); });
       li.addEventListener('mouseenter', function () { highlightPreview(s.key, true); });
       li.addEventListener('mouseleave', function () { highlightPreview(s.key, false); });
-      li.appendChild(grip); li.appendChild(name); li.appendChild(up); li.appendChild(down);
+      var gear = document.createElement('button'); gear.type = 'button'; gear.textContent = '⚙'; gear.className = 'gear';
+      gear.setAttribute('aria-label', 'Tuỳ chỉnh phần này'); gear.setAttribute('aria-expanded', openSettings === s.key ? 'true' : 'false');
+      gear.addEventListener('click', function () { openSettings = openSettings === s.key ? null : s.key; justOpened = true; renderSectionList(); });
+      li.appendChild(grip); li.appendChild(name); li.appendChild(gear); li.appendChild(up); li.appendChild(down);
+      if (openSettings === s.key) {
+        var ss = sectionSettings(s.key);
+        if (justOpened) ss.classList.add('is-opening');
+        li.appendChild(ss);
+      }
       ol.appendChild(li);
     });
     playFlip(ol, before);
@@ -469,6 +498,175 @@
         if (wrap && !$('#view-editor').hidden) sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
       }
     }
+  }
+
+  // ---------- Bảng Giao diện ----------
+  function getStyle() { return EP.pageStyle.normalize(state && state.event.style); }
+  // commit=false: chỉ vẽ lại để xem trước (đang kéo thanh trượt/chọn màu); commit=true: lưu + ghi lịch sử
+  function setStyle(key, value, commit) {
+    if (!state) return;
+    var st = Object.assign({}, state.event.style || {});
+    st[key] = value;
+    state.event.style = st;
+    if (commit === false) { renderLanding(); return; }
+    persist();
+  }
+
+  function chipRow(label, options, current, onPick) {
+    var row = document.createElement('div'); row.className = 'st-row';
+    var l = document.createElement('span'); l.className = 'st-label'; l.textContent = label; row.appendChild(l);
+    var g = document.createElement('div'); g.className = 'chips'; g.setAttribute('role', 'radiogroup'); g.setAttribute('aria-label', label);
+    options.forEach(function (o) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (o[0] === current ? ' is-active' : '');
+      b.textContent = o[1]; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', o[0] === current ? 'true' : 'false');
+      b.addEventListener('click', function () { onPick(o[0]); });
+      g.appendChild(b);
+    });
+    row.appendChild(g);
+    return row;
+  }
+
+  function group(title, open, children) {
+    var d = document.createElement('details'); d.className = 'st-group'; d.open = !!open;
+    d.setAttribute('data-group', title);
+    var sm = document.createElement('summary'); sm.textContent = title; d.appendChild(sm);
+    sm.addEventListener('click', function () { d.classList.add('is-toggled'); });
+    var body = document.createElement('div'); body.className = 'st-body';
+    children.forEach(function (c) { if (c) body.appendChild(c); });
+    d.appendChild(body);
+    return d;
+  }
+
+  function renderStylePanel() {
+    var box = $('#style-panel');
+    if (!box) return;
+    if (!state) { box.innerHTML = '<p class="hint">Tạo trang trước để tuỳ chỉnh giao diện.</p>'; return; }
+    var PS = EP.pageStyle, O = PS.OPTIONS, st = getStyle();
+    var theme = TPL.get(state.event.templateId).theme;
+    var openGroups = {};
+    box.querySelectorAll('details').forEach(function (d) { openGroups[d.getAttribute('data-group')] = d.open; });
+    var isOpen = function (t, def) { return t in openGroups ? openGroups[t] : def; };
+    box.innerHTML = '';
+    var pick = function (key) { return function (v) { setStyle(key, v); }; };
+
+    // Màu
+    var pal = document.createElement('div'); pal.className = 'palettes';
+    PS.PALETTES.forEach(function (p) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'palette';
+      b.title = p.name; b.setAttribute('aria-label', 'Bảng màu ' + p.name);
+      b.style.background = 'linear-gradient(135deg, ' + p.primary + ' 55%, ' + p.accent + ' 55%)';
+      if (st.primary === p.primary && st.accent === p.accent) b.classList.add('is-active');
+      b.addEventListener('click', function () {
+        state.event.style = Object.assign({}, state.event.style || {}, { primary: p.primary, accent: p.accent });
+        persist();
+      });
+      pal.appendChild(b);
+    });
+    function colorRow(label, key, fallback, note) {
+      var row = document.createElement('label'); row.className = 'st-row st-color';
+      var span = document.createElement('span'); span.className = 'st-label'; span.textContent = label;
+      var inp = document.createElement('input'); inp.type = 'color'; inp.value = st[key] || fallback;
+      inp.addEventListener('input', function () { setStyle(key, inp.value, false); });
+      inp.addEventListener('change', function () {
+        var v = inp.value;
+        if (key === 'primary' && PS.contrast(v, '#ffffff') < 4.5) toast('Màu này hơi sáng nên chữ trắng khó đọc – Xclipse đã tự làm đậm hơn một chút.');
+        setStyle(key, v);
+      });
+      row.appendChild(span); row.appendChild(inp);
+      if (note) { var n = document.createElement('small'); n.className = 'hint'; n.textContent = note; row.appendChild(n); }
+      return row;
+    }
+    box.appendChild(group('Màu sắc', isOpen('Màu sắc', true), [
+      pal,
+      colorRow('Màu chính', 'primary', theme.primary, 'Nền phần đầu trang, tiêu đề'),
+      colorRow('Màu nhấn', 'accent', theme.accent, 'Nút đăng ký, số đếm'),
+      chipRow('Nền trang', O.pageBg, st.pageBg, pick('pageBg'))
+    ]));
+
+    // Chữ
+    function fontSelect(label, key, current, allowDefault) {
+      var row = document.createElement('label'); row.className = 'st-row';
+      var span = document.createElement('span'); span.className = 'st-label'; span.textContent = label;
+      var sel = document.createElement('select');
+      if (allowDefault) sel.add(new Option('Theo mẫu', ''));
+      Object.keys(PS.FONTS).forEach(function (k) { var o = new Option(PS.FONTS[k].label, k); o.style.fontFamily = PS.FONTS[k].css; sel.add(o); });
+      sel.value = current || '';
+      sel.addEventListener('change', function () { setStyle(key, sel.value); });
+      row.appendChild(span); row.appendChild(sel);
+      return row;
+    }
+    box.appendChild(group('Chữ', isOpen('Chữ', false), [
+      fontSelect('Font tiêu đề', 'headingFont', st.headingFont, true),
+      fontSelect('Font nội dung', 'bodyFont', st.bodyFont, false),
+      chipRow('Cỡ tiêu đề', O.headingSize, st.headingSize, pick('headingSize'))
+    ]));
+
+    // Phần đầu trang
+    var cta = document.createElement('label'); cta.className = 'st-row';
+    cta.innerHTML = '<span class="st-label">Chữ trên nút chính</span>';
+    var ctaIn = document.createElement('input'); ctaIn.type = 'text'; ctaIn.maxLength = 32; ctaIn.placeholder = TPL.labels(state.event.templateId).submit; ctaIn.value = st.ctaText;
+    ctaIn.addEventListener('change', function () { setStyle('ctaText', ctaIn.value.trim()); });
+    cta.appendChild(ctaIn);
+    var ov = document.createElement('label'); ov.className = 'st-row';
+    ov.innerHTML = '<span class="st-label">Độ tối lớp phủ ảnh bìa <output>' + st.heroOverlay + '%</output></span>';
+    var ovIn = document.createElement('input'); ovIn.type = 'range'; ovIn.min = 30; ovIn.max = 85; ovIn.value = st.heroOverlay;
+    ovIn.addEventListener('input', function () { ov.querySelector('output').textContent = ovIn.value + '%'; setStyle('heroOverlay', Number(ovIn.value), false); });
+    ovIn.addEventListener('change', function () { setStyle('heroOverlay', Number(ovIn.value)); });
+    ov.appendChild(ovIn);
+    if (!state.event.images || !state.event.images.hero) ov.hidden = true;
+    var heroDefault = TPL.get(state.event.templateId).wedding ? 'center' : 'left';
+    box.appendChild(group('Phần đầu trang', isOpen('Phần đầu trang', false), [
+      chipRow('Căn chữ', O.heroAlign, st.heroAlign || heroDefault, pick('heroAlign')),
+      chipRow('Chiều cao', O.heroHeight, st.heroHeight, pick('heroHeight')),
+      ov, cta
+    ]));
+
+    // Hình khối
+    box.appendChild(group('Nút & hình khối', isOpen('Nút & hình khối', false), [
+      chipRow('Kiểu nút', O.button, st.button, pick('button')),
+      chipRow('Bo góc', O.radius, st.radius, pick('radius')),
+      chipRow('Đổ bóng', O.shadow, st.shadow, pick('shadow')),
+      chipRow('Biểu tượng lợi ích', O.bullet, st.bullet, pick('bullet')),
+      chipRow('Đồng hồ đếm ngược', O.countdown, st.countdown, pick('countdown'))
+    ]));
+
+    box.appendChild(group('Khoảng cách & hiệu ứng', isOpen('Khoảng cách & hiệu ứng', false), [
+      chipRow('Khoảng cách giữa các phần', O.spacing, st.spacing, pick('spacing')),
+      chipRow('Hiệu ứng khi khách xem', O.motion, st.motion, pick('motion'))
+    ]));
+  }
+
+  // ---------- Hoàn tác / làm lại ----------
+  var undoStack = [], redoStack = [], lastSnap = null;
+  function snapshot() { return JSON.stringify({ event: state.event, content: state.content }); }
+  function resetHistory() { undoStack = []; redoStack = []; lastSnap = null; updateHistoryUi(); }
+  function recordHistory() {
+    if (!state) return;
+    var snap = snapshot();
+    if (lastSnap && snap !== lastSnap) {
+      undoStack.push(lastSnap);
+      if (undoStack.length > 60) undoStack.shift();
+      redoStack = [];
+    }
+    lastSnap = snap;
+    updateHistoryUi();
+  }
+  function restore(snap) {
+    var d = JSON.parse(snap);
+    state.event = d.event; state.content = d.content;
+    lastSnap = snap;
+    saveState();
+    setTemplate(state.event.templateId);
+    renderLanding();
+    if (isCloudEvent() && C.currentUser()) C.publishEvent(state.event, state.content, false).catch(function () {});
+    updateHistoryUi();
+  }
+  function undo() { if (!undoStack.length || !state) return; redoStack.push(snapshot()); restore(undoStack.pop()); toast('Đã hoàn tác.'); }
+  function redo() { if (!redoStack.length || !state) return; undoStack.push(snapshot()); restore(redoStack.pop()); toast('Đã làm lại.'); }
+  function updateHistoryUi() {
+    var u = $('#btn-undo'), r = $('#btn-redo');
+    if (u) u.disabled = !undoStack.length;
+    if (r) r.disabled = !redoStack.length;
   }
 
   // Sửa chữ trực tiếp trên trang
@@ -491,6 +689,7 @@
     $('#mock-note').hidden = state.content.source !== 'mock';
     syncSimUi();
     renderSectionList();
+    renderStylePanel();
     renderer = EP.landingRenderer.render(landingEl, {
       event: state.event,
       content: state.content,
@@ -774,7 +973,11 @@
       ev.published = true;
       ev.ownerUid = state.event.ownerUid;
     }
+    if (state && state.event.id === ev.id) {
+      if (state.event.style && !ev.style) ev.style = state.event.style;
+    } else resetHistory();
     state = { event: ev, content: content, tone: tone };
+    recordHistory();
     if (!saveState()) setMsg('Không lưu được dữ liệu vào trình duyệt.', 'error');
     renderLanding();
     syncAll();
@@ -1029,6 +1232,9 @@
   function clearEditor() {
     S.remove('current_id');
     state = null;
+    resetHistory();
+    openSettings = null;
+    renderStylePanel();
     renderer = null;
     remoteCount = null;
     if (stopWatch) { stopWatch(); stopWatch = null; }
@@ -1061,6 +1267,7 @@
   function openEvent(saved) {
     clearEditor();
     state = saved;
+    resetHistory();
     saveState();
     fillForm(state.event);
     if (state.tone) form.elements.tone.value = state.tone;
@@ -1193,6 +1400,29 @@
   $('#btn-regenerate').addEventListener('click', function () { generate(true); });
   $('#btn-regenerate-2').addEventListener('click', function () { generate(true); });
   $('#btn-tpl-2').addEventListener('click', openTemplates);
+  $('#btn-undo').addEventListener('click', undo);
+  $('#btn-redo').addEventListener('click', redo);
+  document.addEventListener('keydown', function (e) {
+    if ($('#view-editor').hidden || !(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z') return;
+    var t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return; // để ô nhập tự hoàn tác chữ
+    e.preventDefault();
+    if (e.shiftKey) redo(); else undo();
+  });
+  $('#btn-style-reset').addEventListener('click', function () {
+    if (!state || !state.event.style) return;
+    state.event.style = null;
+    persist();
+    toast('Đã về giao diện gốc của mẫu. Bấm ↶ nếu muốn lấy lại.');
+  });
+  document.querySelectorAll('.side-tab').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var name = b.getAttribute('data-side');
+      document.querySelectorAll('.side-tab').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      $('#side-style').hidden = name !== 'style';
+      $('#side-publish').hidden = name !== 'publish';
+    });
+  });
   $('#btn-back-info').addEventListener('click', function () { switchTab('builder'); });
   document.querySelectorAll('.device-toggle [data-device]').forEach(function (b) {
     b.addEventListener('click', function () {

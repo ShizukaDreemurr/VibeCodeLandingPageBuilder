@@ -236,3 +236,45 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; user-select: n
 @keyframes xcMoved { 0% { background-color: rgba(229, 57, 110, 0.18); } 100% { background-color: var(--surface); } }
 @keyframes xcFlash { 0% { box-shadow: inset 0 0 0 3px rgba(229, 57, 110, 0.9); } 100% { box-shadow: inset 0 0 0 3px rgba(229, 57, 110, 0); } }
 @keyframes xcShake { 0%, 100% { transform: none; } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+/* ---------- Bảng Giao diện ---------- */
+.side-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--bg); border-radius: var(--radius-small); }
+.side-tab { font: inherit; font-size: 14px; font-weight: 600; border: 0; background: none; padding: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); }
+.side-tab.is-active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(22, 25, 58, 0.1); }
+.side-pane { display: flex; flex-direction: column; gap: 10px; }
+.st-group { border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); }
+.st-group > summary { cursor: pointer; padding: 10px 12px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.st-group > summary::-webkit-details-marker { display: none; }
+.st-group > summary::after { content: '▾'; color: var(--text-muted); transition: transform 0.2s ease; }
+.st-group:not([open]) > summary::after { transform: rotate(-90deg); }
+.st-body { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 10px; }
+.st-row { display: flex; flex-direction: column; gap: 5px; font-size: 13px; }
+.st-label { font-weight: 600; color: var(--text); display: flex; justify-content: space-between; }
+.st-row select, .st-row input[type="text"] { font: inherit; font-size: 14px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.st-row input[type="range"] { width: 100%; accent-color: var(--accent, #e5396e); }
+.st-color { display: grid; grid-template-columns: 1fr auto; align-items: center; }
+.st-color .hint { grid-column: 1 / -1; margin: 0; }
+.st-color input[type="color"] { width: 44px; height: 30px; padding: 0; border: 1px solid var(--border); border-radius: 8px; background: none; cursor: pointer; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { font: inherit; font-size: 13px; padding: 5px 10px; border: 1px solid var(--border); background: var(--surface); border-radius: 999px; cursor: pointer; }
+.chip.is-active { background: var(--primary, #1e2a78); border-color: var(--primary, #1e2a78); color: #fff; }
+.palettes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.palette { aspect-ratio: 1.6; border: 2px solid transparent; border-radius: 8px; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08); }
+.palette.is-active { border-color: var(--text); }
+.history-btns { display: inline-flex; gap: 4px; }
+.history-btns button { font: inherit; font-size: 16px; width: 32px; height: 30px; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; cursor: pointer; }
+.history-btns button:disabled { opacity: 0.35; cursor: default; }
+.section-item { flex-wrap: wrap; }
+.section-item .gear { font-size: 13px; }
+.section-item .gear[aria-expanded="true"] { background: var(--primary, #1e2a78); color: #fff; border-color: transparent; }
+.sec-settings { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; padding: 8px 2px 2px; border-top: 1px dashed var(--border); margin-top: 4px; cursor: default; }
+.sec-settings .chip { font-size: 12px; padding: 4px 8px; width: auto; height: auto; }
+@media (prefers-reduced-motion: no-preference) {
+  .chip, .palette, .side-tab { transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease; }
+  .chip:hover, .palette:hover { transform: translateY(-1px); }
+  .chip:active, .palette:active { transform: scale(0.94); }
+  .side-pane:not([hidden]), .sec-settings.is-opening { animation: xcViewIn 0.25s ease both; }
+  .st-group.is-toggled[open] > .st-body { animation: xcViewIn 0.25s ease both; }
+  .history-btns button:not(:disabled):active { transform: scale(0.9); }
+}
+.section-item .chip.is-active, .section-item .chip.is-active:hover { background: var(--primary, #1e2a78); color: #fff; border-color: transparent; }
