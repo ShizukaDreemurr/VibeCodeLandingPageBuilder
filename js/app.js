@@ -53,7 +53,8 @@
       templateId: currentTemplateId,
       studioName: currentTemplateId === 'wedding' ? V.clean(f.studioName.value) : '',
       studioUrl: currentTemplateId === 'wedding' ? V.clean(f.studioUrl.value) : '',
-      images: (state && state.event.images) || {}
+      images: (state && state.event.images) || {},
+      sections: (state && state.event.sections) || null
     };
   }
 
@@ -222,18 +223,132 @@
   }
 
   // ---------- Dựng landing page ----------
+  // ---------- Xem thử trạng thái (không đổi dữ liệu thật) ----------
+  var simState = '';
+  var SIM_TEXT = {
+    almost: 'Đang xem thử: sắp hết chỗ',
+    full: 'Đang xem thử: hết chỗ (khách sẽ vào danh sách chờ)',
+    earlybird: 'Đang xem thử: đã hết hạn ưu đãi đăng ký sớm',
+    ended: 'Đang xem thử: sự kiện đã diễn ra'
+  };
+
+  function simNow() {
+    var ev = state.event;
+    if (simState === 'ended') return new Date(new Date(ev.startAt).getTime() + 60000);
+    if (simState === 'earlybird' && ev.earlyBirdUntil) return new Date(new Date(ev.earlyBirdUntil).getTime() + 60000);
+    return new Date();
+  }
+
+  function simCount() {
+    var cap = Number(state.event.capacity) || 0;
+    if (simState === 'almost' && cap) return Math.max(0, cap - Math.max(1, Math.floor(cap * 0.05)));
+    if (simState === 'full' && cap) return cap;
+    return currentCount();
+  }
+
+  function syncSimUi() {
+    var wrap = $('#sim-wrap');
+    wrap.hidden = !state;
+    if (!state) return;
+    var sel = $('#sim-state');
+    var hasCap = !!Number(state.event.capacity);
+    sel.querySelector('[value="almost"]').disabled = !hasCap;
+    sel.querySelector('[value="full"]').disabled = !hasCap;
+    sel.querySelector('[value="earlybird"]').disabled = !state.event.earlyBirdUntil;
+    if (sel.selectedOptions[0] && sel.selectedOptions[0].disabled) { sel.value = ''; simState = ''; }
+    var banner = $('#sim-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'sim-banner';
+      banner.className = 'sim-banner';
+      $('#landing').parentNode.insertBefore(banner, $('#landing'));
+    }
+    banner.hidden = !simState;
+    banner.textContent = SIM_TEXT[simState] || '';
+  }
+
+  // ---------- Bố cục: thứ tự / ẩn hiện các phần ----------
+  function currentSections() { return EP.landingRenderer.normalizeSections(state.event.sections); }
+
+  function moveSection(from, to) {
+    var list = currentSections();
+    if (to < 0 || to >= list.length) return;
+    var item = list.splice(from, 1)[0];
+    list.splice(to, 0, item);
+    state.event.sections = list;
+    persist();
+  }
+
+  function renderSectionList() {
+    var box = $('#layout-box');
+    box.hidden = !state;
+    if (!state) return;
+    var meta = {};
+    EP.landingRenderer.SECTIONS.forEach(function (s) { meta[s.key] = s; });
+    var isWedding = TPL.get(state.event.templateId).wedding;
+    var labels = TPL.labels(state.event.templateId);
+    var ol = $('#section-list');
+    ol.innerHTML = '';
+    var list = currentSections();
+    list.forEach(function (s, i) {
+      if (s.key === 'gallery' && !isWedding) return;
+      var m = meta[s.key];
+      var li = document.createElement('li');
+      li.className = 'section-item' + (s.visible ? '' : ' is-hidden');
+      li.draggable = true;
+      li.setAttribute('data-index', i);
+      var grip = document.createElement('span'); grip.className = 'grip'; grip.textContent = '⋮⋮'; grip.setAttribute('aria-hidden', 'true');
+      var name = document.createElement('label'); name.className = 'name';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = s.visible; cb.disabled = !!m.locked;
+      cb.addEventListener('change', function () {
+        var l = currentSections(); l[i].visible = cb.checked; state.event.sections = l; persist();
+      });
+      var title = labels[s.key] && s.key !== 'countdown' && s.key !== 'register' ? labels[s.key] : m.label;
+      name.appendChild(cb);
+      name.appendChild(document.createTextNode(' ' + title + (m.locked ? ' 🔒' : '')));
+      var up = document.createElement('button'); up.type = 'button'; up.textContent = '↑'; up.disabled = i === 0; up.setAttribute('aria-label', 'Đưa lên');
+      var down = document.createElement('button'); down.type = 'button'; down.textContent = '↓'; down.disabled = i === list.length - 1; down.setAttribute('aria-label', 'Đưa xuống');
+      up.addEventListener('click', function () { moveSection(i, i - 1); });
+      down.addEventListener('click', function () { moveSection(i, i + 1); });
+      li.addEventListener('dragstart', function (e) { li.classList.add('is-dragging'); e.dataTransfer.setData('text/plain', String(i)); });
+      li.addEventListener('dragend', function () { li.classList.remove('is-dragging'); });
+      li.addEventListener('dragover', function (e) { e.preventDefault(); });
+      li.addEventListener('drop', function (e) {
+        e.preventDefault();
+        var from = Number(e.dataTransfer.getData('text/plain'));
+        if (!isNaN(from) && from !== i) moveSection(from, i);
+      });
+      li.appendChild(grip); li.appendChild(name); li.appendChild(up); li.appendChild(down);
+      ol.appendChild(li);
+    });
+  }
+
+  // Sửa chữ trực tiếp trên trang
+  function editContent(field, value) {
+    var c = JSON.parse(JSON.stringify(state.content));
+    if (field.indexOf('benefits:') === 0) c.benefits[Number(field.split(':')[1])] = value;
+    else c[field] = value;
+    state.content = c;
+    persist();
+    toast('Đã lưu chỉnh sửa.');
+  }
+
   function renderLanding() {
     if (!state) return;
     $('#mock-note').hidden = state.content.source !== 'mock';
+    syncSimUi();
+    renderSectionList();
     renderer = EP.landingRenderer.render(landingEl, {
       event: state.event,
       content: state.content,
-      now: function () { return new Date(); },
-      getCount: currentCount,
+      now: simNow,
+      getCount: simCount,
       editable: true,
       onPickImage: pickImage,
+      onEditContent: editContent,
       appUrl: APP_URL,
       onRegister: function (data) {
+        if (simState) return { ok: false, errors: { form: 'Đang ở chế độ xem thử trạng thái. Chọn "Hiện tại" để đăng ký thật.' } };
         if (isCloudEvent()) return cloudRegister(state.event, data);
         var r = EP.registrations.register(state.event, data, new Date(), currentCount());
         if (!r.ok) {
@@ -641,6 +756,11 @@
     cloudStats = null;
     $('#share-box').hidden = true;
     $('#btn-publish').hidden = true;
+    simState = '';
+    $('#sim-state').value = '';
+    $('#sim-wrap').hidden = true;
+    $('#layout-box').hidden = true;
+    if ($('#sim-banner')) $('#sim-banner').hidden = true;
     setSheetStatus('');
     $('#sheet-msg').textContent = '';
     regenSeed = 0;
@@ -755,6 +875,7 @@
   syncModeBoxes();
   C.onAuth(updateAuthUi);
   $('#btn-tpl').addEventListener('click', openTemplates);
+  $('#sim-state').addEventListener('change', function (e) { simState = e.target.value; renderLanding(); });
   $('#btn-tpl-close').addEventListener('click', closeTemplates);
 
   if (state) {

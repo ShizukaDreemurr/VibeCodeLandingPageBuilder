@@ -7,6 +7,34 @@
   var T = root.EP.templates;
   var GALLERY_SLOTS = 4;
 
+  // Thứ tự mặc định các phần giữa hero và footer. locked = bắt buộc theo đề, không cho ẩn.
+  var SECTIONS = [
+    { key: 'countdown', label: 'Đếm ngược + số đăng ký', locked: true },
+    { key: 'about', label: 'Giới thiệu' },
+    { key: 'benefits', label: '3 lợi ích' },
+    { key: 'speakers', label: 'Diễn giả' },
+    { key: 'gallery', label: 'Album ảnh (thiệp cưới)' },
+    { key: 'agenda', label: 'Chương trình (agenda)', locked: true },
+    { key: 'offer', label: 'Ưu đãi đăng ký sớm' },
+    { key: 'register', label: 'Form đăng ký', locked: true }
+  ];
+
+  // Ghép cấu hình người dùng với danh sách mặc định (thêm phần mới, bỏ phần lạ)
+  function normalizeSections(config) {
+    var known = {};
+    SECTIONS.forEach(function (s) { known[s.key] = s; });
+    var out = [];
+    (config || []).forEach(function (c) {
+      if (known[c.key] && !out.some(function (o) { return o.key === c.key; })) {
+        out.push({ key: c.key, visible: known[c.key].locked ? true : c.visible !== false });
+      }
+    });
+    SECTIONS.forEach(function (s) {
+      if (!out.some(function (o) { return o.key === s.key; })) out.push({ key: s.key, visible: true });
+    });
+    return out;
+  }
+
   // h('div', {class: 'x'}, [con...]) — tạo phần tử an toàn
   function h(tag, attrs, children) {
     var el = document.createElement(tag);
@@ -77,11 +105,29 @@
       }));
     var endedEl = h('p', { class: 'lp-ended', text: 'Sự kiện đã diễn ra', hidden: true });
 
+    // Chữ do AI viết: sửa trực tiếp khi soạn (field = headline | description | benefits:i)
+    function editableText(tag, attrs, field, text) {
+      attrs.text = text;
+      if (editable && opts.onEditContent) {
+        attrs.contenteditable = 'true';
+        attrs.spellcheck = 'false';
+        attrs['data-field'] = field;
+        attrs.title = 'Bấm để sửa chữ';
+        attrs.onblur = function (e) {
+          var v = e.target.textContent.trim();
+          if (!v) { e.target.textContent = text; return; } // không cho để trống
+          if (v !== text) opts.onEditContent(field, v);
+        };
+        attrs.onkeydown = function (e) { if (e.key === 'Enter' && tag !== 'p') { e.preventDefault(); e.target.blur(); } };
+      }
+      return h(tag, attrs);
+    }
+
     // HERO (có ảnh nền nếu người dùng tải lên)
     var hero = h('section', { class: 'lp-hero' + (images.hero ? ' has-image' : '') }, [
       statusBadge,
       h('p', { class: 'lp-eyebrow', text: ev.name }),
-      h('h1', { class: 'lp-headline', text: content.headline }),
+      editableText('h1', { class: 'lp-headline' }, 'headline', content.headline),
       h('p', { class: 'lp-meta' }, [h('span', { text: '🗓 ' + fmtDate(ev.startAt) }), h('span', { text: '📍 ' + ev.location })]),
       h('a', { class: 'lp-cta', href: '#lp-register', text: L.submit }),
       imageButton('hero', images.hero ? '🖼 Đổi ảnh bìa' : '🖼 Thêm ảnh bìa')
@@ -93,11 +139,11 @@
       h('p', { class: 'lp-social-proof' }, [countText, L.countSuffix])
     ]);
 
-    var about = h('section', { class: 'lp-section' }, [h('h2', { text: L.about }), h('p', { text: content.description })]);
+    var about = h('section', { class: 'lp-section' }, [h('h2', { text: L.about }), editableText('p', {}, 'description', content.description)]);
 
     var benefits = h('section', { class: 'lp-section' }, [
       h('h2', { text: L.benefits }),
-      h('ul', { class: 'lp-benefits' }, content.benefits.map(function (b) { return h('li', { text: b }); }))
+      h('ul', { class: 'lp-benefits' }, content.benefits.map(function (b, i) { return editableText('li', {}, 'benefits:' + i, b); }))
     ]);
 
     var speakerPhotos = images.speakers || {};
@@ -208,8 +254,12 @@
     }
     var footer = h('footer', { class: 'lp-footer' }, footerChildren);
 
-    [hero, countdownSection, about, benefits, speakers, gallery, agenda, offer, register, footer]
-      .forEach(function (s) { if (s) container.appendChild(s); });
+    var byKey = { countdown: countdownSection, about: about, benefits: benefits, speakers: speakers, gallery: gallery, agenda: agenda, offer: offer, register: register };
+    container.appendChild(hero);
+    normalizeSections(ev.sections).forEach(function (s) {
+      if (s.visible && byKey[s.key]) container.appendChild(byKey[s.key]);
+    });
+    container.appendChild(footer);
 
     function update() {
       var now = opts.now();
@@ -237,5 +287,5 @@
   }
 
   root.EP = root.EP || {};
-  root.EP.landingRenderer = { render: render, h: h };
+  root.EP.landingRenderer = { render: render, h: h, SECTIONS: SECTIONS, normalizeSections: normalizeSections };
 })(typeof window !== 'undefined' ? window : globalThis);

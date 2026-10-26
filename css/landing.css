@@ -88,3 +88,8 @@ img.lp-avatar { object-fit: cover; }
 .tpl-wedding .lp-agenda li { justify-content: center; }
 .tpl-wedding .lp-form { margin: 0 auto; text-align: left; }
 .tpl-wedding .lp-hero { padding-top: 72px; padding-bottom: 72px; }
+
+/* Sửa chữ trực tiếp khi soạn */
+.is-editable [contenteditable="true"] { outline: 1px dashed transparent; outline-offset: 4px; border-radius: 4px; cursor: text; }
+.is-editable [contenteditable="true"]:hover { outline-color: currentColor; }
+.is-editable [contenteditable="true"]:focus { outline: 2px solid var(--lp-accent); }

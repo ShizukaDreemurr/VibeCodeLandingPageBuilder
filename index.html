@@ -164,6 +164,12 @@
           <button type="submit" class="btn btn-primary" id="btn-generate">✨ Tạo landing page</button>
           <button type="button" class="btn btn-ghost" id="btn-regenerate" disabled>↻ Viết lại</button>
         </div>
+
+        <div class="layout-box" id="layout-box" hidden>
+          <h2 class="panel-title">3. Bố cục trang</h2>
+          <p class="hint">Kéo thả hoặc dùng mũi tên để đổi thứ tự, bỏ tick để ẩn. Phần có 🔒 là bắt buộc. Bấm trực tiếp vào chữ trên trang để sửa.</p>
+          <ol class="section-list" id="section-list"></ol>
+        </div>
       </form>
     </aside>
 
@@ -171,6 +177,15 @@
     <section class="preview-wrap" aria-label="Xem trước landing page">
       <div class="preview-bar">
         <span>Xem trước</span>
+        <label class="sim-label" id="sim-wrap" hidden>⏱ Xem thử
+          <select id="sim-state" aria-label="Xem thử trạng thái trang">
+            <option value="">Hiện tại</option>
+            <option value="almost">Sắp hết chỗ</option>
+            <option value="full">Hết chỗ</option>
+            <option value="earlybird">Hết hạn ưu đãi</option>
+            <option value="ended">Sự kiện đã diễn ra</option>
+          </select>
+        </label>
         <span class="sheet-status" id="sheet-status" hidden></span>
         <span class="mock-note" id="mock-note" hidden>Bản demo vòng loại – Dữ liệu mô phỏng AI</span>
         <button type="button" class="btn btn-primary btn-small" id="btn-publish" hidden disabled>Xuất bản &amp; chia sẻ</button>
