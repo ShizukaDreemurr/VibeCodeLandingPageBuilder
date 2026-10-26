@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EventPage AI – Tạo landing page sự kiện trong 5 phút</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">EventPage <span>AI</span></div>
+    <nav class="tabs" role="tablist">
+      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Tạo trang</button>
+      <button type="button" class="tab" data-tab="admin" role="tab" aria-selected="false">Danh sách đăng ký</button>
+    </nav>
+    <button type="button" class="btn btn-accent" id="btn-new">+ Tạo trang mới</button>
+  </header>
+
+  <main id="view-builder" class="workspace">
+    <!-- CỘT TRÁI: FORM NHẬP + AI -->
+    <aside class="panel">
+      <form id="event-form" novalidate>
+        <h2 class="panel-title">1. Thông tin sự kiện</h2>
+
+        <div class="field">
+          <label for="f-name">Tên sự kiện <span class="req">*</span></label>
+          <input id="f-name" name="name" type="text" maxlength="120" placeholder="Workshop AI Marketing 2026">
+          <p class="error" data-error-for="name"></p>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="f-startAt">Thời gian bắt đầu <span class="req">*</span></label>
+            <input id="f-startAt" name="startAt" type="datetime-local">
+            <p class="error" data-error-for="startAt"></p>
+          </div>
+          <div class="field">
+            <label for="f-capacity">Số chỗ tối đa</label>
+            <input id="f-capacity" name="capacity" type="number" min="1" step="1" placeholder="Để trống = không giới hạn">
+            <p class="error" data-error-for="capacity"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-location">Địa điểm <span class="req">*</span></label>
+          <input id="f-location" name="location" type="text" placeholder="Toà nhà FPT, Cầu Giấy, Hà Nội">
+          <p class="error" data-error-for="location"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-speakers">Diễn giả <span class="req">*</span></label>
+          <textarea id="f-speakers" name="speakers" rows="3" placeholder="Mỗi dòng một người: Tên - Chức danh&#10;Nguyễn Văn An - Chuyên gia AI Marketing"></textarea>
+          <p class="hint">Mỗi dòng một diễn giả, dạng <code>Tên - Chức danh</code>.</p>
+          <p class="error" data-error-for="speakers"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-agenda">Chương trình (agenda)</label>
+          <textarea id="f-agenda" name="agenda" rows="4" placeholder="Mỗi dòng một mục: Giờ - Nội dung&#10;08:30 - Đón khách &amp; check-in&#10;09:00 - Khai mạc"></textarea>
+          <p class="hint">Mỗi dòng dạng <code>08:30 - Nội dung</code>.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="f-earlyBird">Ưu đãi đăng ký sớm</label>
+            <input id="f-earlyBird" name="earlyBird" type="text" placeholder="Giảm 30% cho 50 người đầu tiên">
+          </div>
+          <div class="field">
+            <label for="f-earlyBirdUntil">Hạn ưu đãi</label>
+            <input id="f-earlyBirdUntil" name="earlyBirdUntil" type="datetime-local">
+            <p class="error" data-error-for="earlyBirdUntil"></p>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-ghost btn-small" id="btn-sample">Điền dữ liệu mẫu</button>
+
+        <h2 class="panel-title">2. Viết nội dung bằng AI</h2>
+
+        <fieldset class="segmented" id="ai-mode">
+          <legend class="sr-only">Chế độ AI</legend>
+          <label><input type="radio" name="aiMode" value="mock" checked> Mô phỏng (offline)</label>
+          <label><input type="radio" name="aiMode" value="gemini"> Gemini API</label>
+          <label><input type="radio" name="aiMode" value="copy"> Copy prompt sang AI khác</label>
+        </fieldset>
+
+        <div class="field">
+          <label for="f-tone">Giọng văn</label>
+          <select id="f-tone" name="tone">
+            <option value="formal">Trang trọng</option>
+            <option value="young">Trẻ trung</option>
+            <option value="urgent">Gấp rút</option>
+          </select>
+        </div>
+
+        <div class="ai-box" data-mode="gemini" hidden>
+          <div class="field">
+            <label for="f-apikey">Gemini API key</label>
+            <input id="f-apikey" type="password" autocomplete="off" placeholder="Dán key lấy từ Google AI Studio">
+            <label class="check"><input type="checkbox" id="f-remember-key"> Ghi nhớ key trên máy này</label>
+            <p class="hint">Key chỉ lưu trong trình duyệt của bạn, không gửi đi đâu ngoài Google.</p>
+          </div>
+          <div class="field">
+            <label for="f-model">Model</label>
+            <input id="f-model" list="model-list" value="gemini-2.5-flash">
+            <datalist id="model-list">
+              <option value="gemini-2.5-flash"></option>
+              <option value="gemini-2.5-flash-lite"></option>
+              <option value="gemini-2.5-pro"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <div class="ai-box" data-mode="copy" hidden>
+          <p class="hint">Bấm một nền tảng: prompt được copy sẵn, bạn chỉ cần dán vào ô chat (Ctrl+V), sau đó copy kết quả JSON về đây.</p>
+          <div class="platforms" id="platforms"></div>
+          <div class="field">
+            <label for="f-paste">Dán kết quả AI trả về</label>
+            <textarea id="f-paste" rows="4" placeholder='{"headline": "...", "description": "...", "benefits": ["...", "...", "..."]}'></textarea>
+          </div>
+        </div>
+
+        <p class="form-msg" id="ai-msg" role="status" aria-live="polite"></p>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" id="btn-generate">✨ Tạo landing page</button>
+          <button type="button" class="btn btn-ghost" id="btn-regenerate" disabled>↻ Viết lại</button>
+        </div>
+      </form>
+    </aside>
+
+    <!-- CỘT PHẢI: XEM TRƯỚC LANDING PAGE -->
+    <section class="preview-wrap" aria-label="Xem trước landing page">
+      <div class="preview-bar">
+        <span>Xem trước</span>
+        <span class="mock-note" id="mock-note" hidden>Bản demo vòng loại – Dữ liệu mô phỏng AI</span>
+      </div>
+      <div id="landing" class="landing">
+        <div class="empty-state">
+          <p class="empty-title">Landing page sẽ hiện ở đây</p>
+          <p>Nhập thông tin sự kiện bên trái rồi bấm <strong>✨ Tạo landing page</strong>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main id="view-admin" class="admin" hidden>
+    <div class="admin-head">
+      <h2 id="admin-title">Danh sách đăng ký</h2>
+      <div class="actions">
+        <button type="button" class="btn btn-ghost" id="btn-export">Xuất CSV (mở bằng Excel)</button>
+        <button type="button" class="btn btn-danger" id="btn-clear-regs">Xoá toàn bộ</button>
+      </div>
+    </div>
+    <p class="hint">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th>Thời gian</th><th>Trạng thái</th></tr></thead>
+        <tbody id="admin-rows"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/validators.js"></script>
+  <script src="js/event-status.js"></script>
+  <script src="js/registrations.js"></script>
+  <script src="js/content-generator.js"></script>
+  <script src="js/ai-service.js"></script>
+  <script src="js/landing-renderer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

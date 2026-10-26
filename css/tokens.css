@@ -1,0 +1,31 @@
+/* tokens.css — toàn bộ màu, font, bo góc. Đổi giao diện chỉ cần sửa file này. */
+:root {
+  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Công cụ */
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --border: #e3e6ef;
+  --text: #16193a;
+  --text-muted: #5b6078;
+  --primary: #1e2a78;
+  --primary-contrast: #ffffff;
+  --accent: #d6336c;
+  --accent-contrast: #ffffff;
+  --success: #12804a;
+  --warn: #9a5b00;
+  --danger: #c0262d;
+
+  /* Landing page */
+  --lp-bg: #ffffff;
+  --lp-surface: #f4f5fb;
+  --lp-text: #16193a;
+  --lp-muted: #5b6078;
+  --lp-primary: #1e2a78;
+  --lp-accent: #d6336c;
+  --lp-accent-contrast: #ffffff;
+
+  --radius: 14px;
+  --radius-small: 8px;
+  --shadow: 0 6px 24px rgba(22, 25, 58, 0.08);
+}

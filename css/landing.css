@@ -1,0 +1,60 @@
+/* landing.css — giao diện landing page (template mặc định) */
+.landing { background: var(--lp-bg); color: var(--lp-text); container-type: inline-size; }
+.lp-hero { padding: 48px 32px; background: var(--lp-primary); color: #fff; }
+.lp-eyebrow { margin: 12px 0 4px; font-weight: 600; opacity: 0.85; }
+.lp-headline { margin: 0 0 16px; font-size: clamp(26px, 5cqi, 44px); line-height: 1.2; }
+.lp-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 24px; }
+.lp-cta, .lp-submit {
+  display: inline-block; background: var(--lp-accent); color: var(--lp-accent-contrast); text-decoration: none; font: inherit; font-weight: 700;
+  padding: 12px 22px; border-radius: var(--radius-small); border: 0; cursor: pointer;
+}
+.lp-submit:disabled { opacity: 0.6; cursor: wait; }
+
+.lp-badge { display: inline-block; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: #e7f6ee; color: #0d6b3c; }
+.lp-badge.is-almost { background: #fff1d6; color: #8a5200; }
+.lp-badge.is-full { background: #ffe3e3; color: #a3161c; }
+.lp-badge.is-ended { background: #e9eaf0; color: #444a63; }
+
+.lp-section { padding: 32px; border-bottom: 1px solid var(--lp-surface); }
+.lp-section h2 { margin: 0 0 16px; font-size: 22px; color: var(--lp-primary); }
+.lp-countdown-section { text-align: center; background: var(--lp-surface); }
+.lp-countdown { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.lp-cd-box { background: var(--lp-primary); color: #fff; border-radius: var(--radius-small); padding: 10px 14px; min-width: 72px; }
+.lp-cd-num { display: block; font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.lp-cd-label { font-size: 13px; opacity: 0.85; }
+.lp-ended { font-size: 24px; font-weight: 800; color: var(--lp-muted); margin: 8px 0; }
+.lp-social-proof { margin: 16px 0 0; }
+.lp-count { color: var(--lp-accent); font-size: 22px; }
+
+.lp-benefits { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.lp-benefits li { background: var(--lp-surface); border-radius: var(--radius-small); padding: 14px 16px 14px 44px; position: relative; }
+.lp-benefits li::before { content: '✓'; position: absolute; left: 16px; color: var(--lp-accent); font-weight: 800; }
+
+.lp-speakers { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.lp-speaker { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; }
+.lp-speaker span { font-size: 14px; color: var(--lp-muted); }
+.lp-avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: var(--lp-primary); color: #fff; font-size: 24px; font-weight: 800; }
+
+.lp-agenda { list-style: none; padding: 0; margin: 0; }
+.lp-agenda li { display: flex; gap: 16px; padding: 10px 0; border-bottom: 1px dashed var(--lp-surface); }
+.lp-agenda-time { font-weight: 700; color: var(--lp-primary); min-width: 64px; }
+
+.lp-offer { background: #fff4f8; }
+.lp-offer-until { font-size: 14px; color: var(--lp-muted); }
+
+.lp-form { display: grid; gap: 4px; max-width: 480px; }
+.lp-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+.lp-field label { font-weight: 600; font-size: 14px; }
+.lp-field input { font: inherit; padding: 10px 12px; border: 1px solid #d6d9e6; border-radius: var(--radius-small); }
+.lp-consent { font-size: 14px; display: flex; gap: 8px; align-items: flex-start; }
+.lp-error { margin: 0; color: #c0262d; font-size: 13px; }
+.lp-form-msg { margin: 8px 0 0; font-weight: 600; }
+.lp-form-msg.is-success { color: #12804a; }
+.lp-form-msg.is-error { color: #c0262d; }
+.lp-closed { font-weight: 700; color: var(--lp-muted); }
+.lp-footer { padding: 20px 32px; font-size: 14px; color: var(--lp-muted); text-align: center; }
+
+@container (max-width: 520px) {
+  .lp-hero, .lp-section { padding: 24px 16px; }
+  .lp-cd-box { min-width: 60px; }
+}
