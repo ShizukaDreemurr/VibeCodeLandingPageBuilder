@@ -84,3 +84,15 @@ code { background: var(--lp-surface); padding: 0 4px; border-radius: 4px; }
   .topbar { flex-wrap: wrap; }
 }
 @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.user-email { font-size: 13px; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.preview-bar { align-items: center; }
+.share-box { display: flex; gap: 16px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg); flex-wrap: wrap; }
+.share-info { flex: 1; min-width: 240px; }
+.share-title { margin: 0 0 6px; font-weight: 700; font-size: 14px; color: var(--success); }
+.share-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.share-row input { flex: 1; min-width: 180px; font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.share-qr img, .share-qr svg { width: 112px; height: 112px; display: block; background: #fff; padding: 4px; border-radius: var(--radius-small); }
+a.btn { text-decoration: none; display: inline-block; }
+body.is-public .topbar, body.is-public #view-builder, body.is-public #view-admin { display: none !important; }
+.public-view .landing { min-height: 100vh; }

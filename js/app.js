@@ -15,6 +15,11 @@
   var regenSeed = 0;
   var remoteCount = null; // số đăng ký trên Google Sheet (null = chưa lấy được)
   var SYNC_INTERVAL_MS = 15000;
+  var C = EP.cloud;
+  var cloudStats = null;   // { count, waitlist } từ Firebase, cập nhật tức thì
+  var stopWatch = null;
+  var adminRows = [];      // danh sách đang hiển thị ở tab quản trị (dùng để xuất CSV)
+  var publicEventId = new URLSearchParams(root.location.search).get('e');
 
   // ---------- Đọc / ghi form ----------
   function parseLines(text, mapper) {
@@ -90,6 +95,7 @@
       now: function () { return new Date(); },
       getCount: currentCount,
       onRegister: function (data) {
+        if (isCloudEvent()) return cloudRegister(state.event, data);
         var r = EP.registrations.register(state.event, data, new Date(), currentCount());
         if (!r.ok) {
           if (r.duplicate) toast('Bạn đã đăng ký rồi bằng số điện thoại hoặc email này.');
@@ -115,11 +121,115 @@
       }
     });
     $('#btn-regenerate').disabled = false;
+    updatePublishUi();
+  }
+
+  // ---------- Firebase: xuất bản, đăng ký dùng chung mọi thiết bị ----------
+  function isCloudEvent() { return !!(state && state.event.published && C.available); }
+
+  function startWatch(eventId) {
+    if (stopWatch) stopWatch();
+    cloudStats = null;
+    stopWatch = C.watchStats(eventId, function (st) {
+      cloudStats = st;
+      if (renderer) renderer.update();
+    });
+  }
+
+  // Đăng ký qua Firebase (dùng cho cả trang công khai lẫn bản xem trước đã xuất bản)
+  function cloudRegister(ev, data) {
+    var errors = V.validateRegistration(data);
+    if (Object.keys(errors).length) return { ok: false, errors: errors };
+    var count = cloudStats ? cloudStats.count : 0;
+    if (!EP.eventStatus.getStatus(ev, count, new Date()).canRegister) {
+      return { ok: false, errors: { form: 'Sự kiện đã diễn ra, không thể đăng ký thêm.' } };
+    }
+    var rec = { name: V.clean(data.name), phone: V.normalizePhone(data.phone), email: V.clean(data.email).toLowerCase() };
+    return C.register(ev, rec).then(function (res) {
+      if (!res.ok) {
+        return { ok: false, duplicate: true, errors: { form: 'Bạn đã đăng ký rồi bằng số điện thoại hoặc email này.' } };
+      }
+      // Gửi thêm bản sao sang Google Sheet nếu ban tổ chức có kết nối (không chặn người dùng)
+      if (ev.sheetUrl) {
+        EP.sheetSync.send(ev.sheetUrl, ev, {
+          id: rec.phone, name: rec.name, phone: rec.phone, email: rec.email, createdAt: new Date().toISOString()
+        }).catch(function () { /* Sheet lỗi không ảnh hưởng đăng ký chính */ });
+      }
+      toast(res.waitlist ? 'Đã thêm vào danh sách chờ.' : 'Đăng ký thành công!');
+      return { ok: true, waitlist: res.waitlist };
+    }, function (e) {
+      return { ok: false, errors: { form: e.message } };
+    });
+  }
+
+  function shareUrl(eventId) {
+    return root.location.origin + root.location.pathname + '?e=' + encodeURIComponent(eventId);
+  }
+
+  function showShare() {
+    var box = $('#share-box');
+    if (!isCloudEvent()) { box.hidden = true; return; }
+    var url = shareUrl(state.event.id);
+    var isFile = root.location.protocol === 'file:';
+    box.hidden = false;
+    $('#share-url').value = isFile ? '(Cần mở app qua GitHub Pages để có link chia sẻ)' : url;
+    $('#btn-open-link').href = isFile ? '#' : url;
+    $('#share-note').textContent = 'Số người đăng ký trên trang cập nhật tức thì trên mọi thiết bị.';
+    var qrBox = $('#share-qr');
+    qrBox.innerHTML = '';
+    if (!isFile && root.qrcode) {
+      var qr = root.qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      var img = document.createElement('img');
+      img.src = qr.createDataURL(6, 2);
+      img.alt = 'Mã QR mở trang đăng ký';
+      qrBox.appendChild(img);
+    }
+  }
+
+  function updatePublishUi() {
+    var btn = $('#btn-publish');
+    btn.hidden = !C.available || !state;
+    btn.disabled = !state;
+    btn.textContent = isCloudEvent() ? 'Cập nhật trang đã xuất bản' : 'Xuất bản & chia sẻ';
+    showShare();
+  }
+
+  function publish() {
+    if (!state) return;
+    var go = function () {
+      var isNew = !state.event.published;
+      var btn = $('#btn-publish');
+      btn.disabled = true;
+      btn.textContent = 'Đang xuất bản…';
+      return C.publishEvent(state.event, state.content, isNew).then(function () {
+        state.event.published = true;
+        state.event.ownerUid = C.currentUser().uid;
+        S.write('current', state);
+        startWatch(state.event.id);
+        renderLanding();
+        toast(isNew ? 'Đã xuất bản! Gửi link hoặc mã QR cho khách.' : 'Đã cập nhật trang.');
+      }, function (e) {
+        toast('Không xuất bản được: ' + e.message);
+      }).then(updatePublishUi);
+    };
+    if (C.currentUser()) return go();
+    C.signIn().then(go, function (e) { toast(e.message); });
+  }
+
+  function updateAuthUi(user) {
+    $('#btn-auth').hidden = !C.available;
+    $('#btn-auth').textContent = user ? 'Đăng xuất' : 'Đăng nhập Google';
+    $('#user-email').hidden = !user;
+    $('#user-email').textContent = user ? (user.email || 'Đã đăng nhập') : '';
+    if (!$('#view-admin').hidden) renderAdmin();
   }
 
   // ---------- Đồng bộ Google Sheet ----------
   function currentCount() {
     var id = state.event.id;
+    if (isCloudEvent()) return cloudStats ? cloudStats.count : 0;
     var local = EP.registrations.confirmedCount(id);
     if (!state.event.sheetUrl || remoteCount == null) return local;
     // Số trên Sheet + những người vừa đăng ký trên máy này nhưng chưa gửi được
@@ -158,7 +268,8 @@
 
   // Gửi lại các bản ghi chưa đồng bộ, rồi lấy số đăng ký chung
   function syncAll() {
-    if (!state || !state.event.sheetUrl) return Promise.resolve();
+    // Trang đã xuất bản dùng Firebase làm nguồn chính; Sheet chỉ nhận bản sao
+    if (!state || !state.event.sheetUrl || isCloudEvent()) return Promise.resolve();
     var ev = state.event;
     var chain = Promise.resolve();
     EP.registrations.unsynced(ev.id).forEach(function (r) {
@@ -199,10 +310,18 @@
 
   function saveAndRender(ev, content, tone) {
     if (!state || state.event.sheetUrl !== ev.sheetUrl) { remoteCount = null; setSheetStatus(''); }
+    if (state && state.event.id === ev.id && state.event.published) {
+      ev.published = true;
+      ev.ownerUid = state.event.ownerUid;
+    }
     state = { event: ev, content: content, tone: tone };
     if (!S.write('current', state)) setMsg('Không lưu được dữ liệu vào trình duyệt.', 'error');
     renderLanding();
     syncAll();
+    // Trang đã xuất bản: tự cập nhật bản công khai
+    if (isCloudEvent() && C.currentUser()) {
+      C.publishEvent(ev, content, false).then(function () { toast('Đã cập nhật trang công khai.'); }, function (e) { toast('Chưa cập nhật được trang công khai: ' + e.message); });
+    }
   }
 
   // ---------- Sinh nội dung theo chế độ AI ----------
@@ -303,24 +422,44 @@
   var STATUS_TEXT = { new: 'Đã đăng ký', waitlist: 'Danh sách chờ', duplicate: 'Trùng (đã có trên Sheet)' };
 
   function syncText(r) {
+    if (isCloudEvent()) return state.event.sheetUrl ? 'Firebase + Sheet' : 'Firebase';
     if (!state.event.sheetUrl) return '—';
     return r.synced === false ? 'Chờ gửi' : 'Đã gửi';
   }
 
+  function adminMessage(text) {
+    $('#admin-rows').innerHTML = '';
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.colSpan = 7; td.className = 'empty'; td.textContent = text;
+    tr.appendChild(td);
+    $('#admin-rows').appendChild(tr);
+  }
+
   function renderAdmin() {
-    var tbody = $('#admin-rows');
-    tbody.innerHTML = '';
+    adminRows = [];
     if (!state) {
       $('#admin-title').textContent = 'Danh sách đăng ký';
-      tbody.innerHTML = '<tr><td colspan="7" class="empty">Chưa có sự kiện nào. Hãy tạo landing page trước.</td></tr>';
+      return adminMessage('Chưa có sự kiện nào. Hãy tạo landing page trước.');
+    }
+    if (isCloudEvent()) {
+      var user = C.currentUser();
+      if (!user) return adminMessage('Trang đã xuất bản: đăng nhập Google (tài khoản đã xuất bản trang) để xem danh sách đăng ký.');
+      if (user.uid !== state.event.ownerUid) return adminMessage('Tài khoản này không phải chủ sự kiện nên không xem được danh sách.');
+      adminMessage('Đang tải danh sách…');
+      C.listRegistrations(state.event.id).then(drawAdmin, function (e) { adminMessage('Không tải được danh sách: ' + e.message); });
       return;
     }
-    var regs = EP.registrations.list(state.event.id);
-    $('#admin-title').textContent = 'Danh sách đăng ký – ' + state.event.name + ' (' + EP.registrations.confirmedCount(state.event.id) + ' người)';
-    if (!regs.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="empty">Chưa có ai đăng ký.</td></tr>';
-      return;
-    }
+    drawAdmin(EP.registrations.list(state.event.id));
+  }
+
+  function drawAdmin(regs) {
+    var tbody = $('#admin-rows');
+    adminRows = regs;
+    var confirmed = regs.filter(function (r) { return r.status === 'new'; }).length;
+    $('#admin-title').textContent = 'Danh sách đăng ký – ' + state.event.name + ' (' + confirmed + ' người)';
+    tbody.innerHTML = '';
+    if (!regs.length) return adminMessage('Chưa có ai đăng ký.');
     regs.forEach(function (r, i) {
       var tr = document.createElement('tr');
       [i + 1, r.name, r.phone, r.email, new Date(r.createdAt).toLocaleString('vi-VN'), STATUS_TEXT[r.status] || r.status, syncText(r)]
@@ -337,7 +476,7 @@
 
   function exportCsv() {
     if (!state) return toast('Chưa có sự kiện để xuất.');
-    var regs = EP.registrations.list(state.event.id);
+    var regs = adminRows;
     if (!regs.length) return toast('Chưa có ai đăng ký để xuất.');
     var rows = [['STT', 'Họ tên', 'Số điện thoại', 'Email', 'Thời gian đăng ký', 'Trạng thái']].concat(regs.map(function (r, i) {
       return [i + 1, r.name, r.phone, r.email, new Date(r.createdAt).toLocaleString('vi-VN'), STATUS_TEXT[r.status] || r.status];
@@ -358,6 +497,10 @@
     state = null;
     renderer = null;
     remoteCount = null;
+    if (stopWatch) { stopWatch(); stopWatch = null; }
+    cloudStats = null;
+    $('#share-box').hidden = true;
+    $('#btn-publish').hidden = true;
     setSheetStatus('');
     $('#sheet-msg').textContent = '';
     regenSeed = 0;
@@ -428,11 +571,14 @@
   $('#btn-export').addEventListener('click', exportCsv);
   $('#btn-clear-regs').addEventListener('click', function () {
     if (!state) return;
-    if (root.confirm('Xoá toàn bộ danh sách đăng ký của sự kiện này? Không thể hoàn tác.')) {
-      EP.registrations.removeAll(state.event.id);
-      renderAdmin();
-      if (renderer) renderer.update();
+    if (!root.confirm('Xoá toàn bộ danh sách đăng ký của sự kiện này? Không thể hoàn tác.')) return;
+    if (isCloudEvent()) {
+      C.clearRegistrations(state.event.id).then(renderAdmin, function (e) { toast('Không xoá được: ' + e.message); });
+      return;
     }
+    EP.registrations.removeAll(state.event.id);
+    renderAdmin();
+    if (renderer) renderer.update();
   });
   document.querySelectorAll('.tab').forEach(function (t) {
     t.addEventListener('click', function () { switchTab(t.getAttribute('data-tab')); });
@@ -442,12 +588,51 @@
   var savedKey = S.read('gemini_key', '');
   if (savedKey) { $('#f-apikey').value = savedKey; $('#f-remember-key').checked = true; }
 
+  $('#btn-publish').addEventListener('click', publish);
+  $('#btn-auth').addEventListener('click', function () {
+    if (C.currentUser()) C.signOut();
+    else C.signIn().catch(function (e) { toast(e.message); });
+  });
+  $('#btn-copy-link').addEventListener('click', function () {
+    copyText($('#share-url').value).then(function () { toast('Đã copy link.'); }, function () { $('#share-url').select(); });
+  });
+
+  // ---------- Trang công khai cho khách: ?e=<mã sự kiện> ----------
+  if (publicEventId) {
+    document.body.classList.add('is-public');
+    $('#view-public').hidden = false;
+    var publicEl = $('#public-landing');
+    C.loadEvent(publicEventId).then(function (data) {
+      document.title = data.event.name;
+      var pub = data.event;
+      stopWatch = C.watchStats(pub.id, function (st) { cloudStats = st; if (renderer) renderer.update(); });
+      renderer = EP.landingRenderer.render(publicEl, {
+        event: pub,
+        content: data.content,
+        now: function () { return new Date(); },
+        getCount: function () { return cloudStats ? cloudStats.count : 0; },
+        onRegister: function (d) { return cloudRegister(pub, d); }
+      });
+    }, function (e) {
+      publicEl.innerHTML = '';
+      var box = document.createElement('div');
+      box.className = 'empty-state';
+      var t = document.createElement('p'); t.className = 'empty-title'; t.textContent = 'Không mở được trang sự kiện';
+      var m = document.createElement('p'); m.textContent = e.message;
+      box.appendChild(t); box.appendChild(m); publicEl.appendChild(box);
+    });
+    setInterval(function () { if (renderer) renderer.update(); }, 1000);
+    return;
+  }
+
   buildPlatformButtons();
   syncModeBoxes();
+  C.onAuth(updateAuthUi);
 
   if (state) {
     fillForm(state.event);
     if (state.tone) form.elements.tone.value = state.tone;
+    if (isCloudEvent()) startWatch(state.event.id);
     renderLanding();
     syncAll();
   }

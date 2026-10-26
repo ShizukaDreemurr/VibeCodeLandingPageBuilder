@@ -1,0 +1,226 @@
+/*
+ * cloud.js — lưu sự kiện và đăng ký lên Firebase (Firestore) để mọi thiết bị dùng chung.
+ * Nếu không tải được Firebase (mất mạng, mở file trực tiếp…), app tự dùng localStorage như cũ.
+ *
+ * Cấu trúc dữ liệu:
+ *   events/{eventId}                      nội dung trang (công khai), ownerUid
+ *   events/{eventId}/stats/public         { count, waitlist, lastRegId } (công khai)
+ *   events/{eventId}/registrations/{SĐT}  { name, phone, email, status, createdAt } (chỉ chủ sự kiện đọc)
+ *   events/{eventId}/emails/{email}       { regId } (khoá chống trùng email)
+ */
+(function (root) {
+  var fb = root.firebase;
+  var available = !!(fb && root.EP_FIREBASE_CONFIG);
+  var db = null;
+  var auth = null;
+  var MAX_RETRY = 3;
+  var TIMEOUT_MS = 12000;
+
+  var params = new URLSearchParams(root.location.search);
+  var useEmulator = params.get('emulator') === '1';
+
+  if (available) {
+    try {
+      fb.initializeApp(root.EP_FIREBASE_CONFIG);
+      db = fb.firestore();
+      auth = fb.auth();
+      if (useEmulator) {
+        db.useEmulator('127.0.0.1', 8085);
+        auth.useEmulator('http://127.0.0.1:9099');
+      }
+    } catch (e) {
+      available = false;
+    }
+  }
+
+  function withTimeout(promise, message) {
+    return new Promise(function (resolve, reject) {
+      var t = setTimeout(function () { reject(new Error(message || 'Máy chủ phản hồi quá lâu, vui lòng thử lại.')); }, TIMEOUT_MS);
+      promise.then(function (v) { clearTimeout(t); resolve(v); }, function (e) { clearTimeout(t); reject(e); });
+    });
+  }
+
+  function eventRef(id) { return db.collection('events').doc(id); }
+  function statsRef(id) { return eventRef(id).collection('stats').doc('public'); }
+
+  // ---------- Đăng nhập (chủ sự kiện) ----------
+  function onAuth(callback) {
+    if (!available) return callback(null);
+    auth.onAuthStateChanged(callback);
+  }
+
+  function signIn() {
+    if (!available) return Promise.reject(new Error('Chưa kết nối được Firebase.'));
+    if (root.location.protocol === 'file:') {
+      return Promise.reject(new Error('Đăng nhập Google cần mở app qua đường dẫn web (GitHub Pages hoặc localhost), không mở trực tiếp file.'));
+    }
+    return auth.signInWithPopup(new fb.auth.GoogleAuthProvider());
+  }
+
+  function signOut() { return available ? auth.signOut() : Promise.resolve(); }
+
+  function currentUser() { return available ? auth.currentUser : null; }
+
+  // ---------- Sự kiện ----------
+  function toPublicDoc(ev, content, uid) {
+    return {
+      ownerUid: uid,
+      name: ev.name,
+      capacity: Number(ev.capacity) || 0,
+      startAt: fb.firestore.Timestamp.fromDate(new Date(ev.startAt)),
+      startAtLocal: ev.startAt,
+      location: ev.location,
+      speakers: ev.speakers || [],
+      agenda: ev.agenda || [],
+      earlyBird: ev.earlyBird || '',
+      earlyBirdUntil: ev.earlyBirdUntil || '',
+      sheetUrl: ev.sheetUrl || '',
+      content: { headline: content.headline, description: content.description, benefits: content.benefits, source: content.source },
+      updatedAt: fb.firestore.FieldValue.serverTimestamp()
+    };
+  }
+
+  // Lần đầu: tạo sự kiện + bộ đếm. Các lần sau: chỉ cập nhật nội dung.
+  function publishEvent(ev, content, isNew) {
+    var user = currentUser();
+    if (!user) return Promise.reject(new Error('Vui lòng đăng nhập Google để xuất bản trang.'));
+    var data = toPublicDoc(ev, content, user.uid);
+    var op;
+    if (isNew) {
+      var batch = db.batch();
+      batch.set(eventRef(ev.id), data);
+      batch.set(statsRef(ev.id), { count: 0, waitlist: 0, lastRegId: '' });
+      op = batch.commit();
+    } else {
+      op = eventRef(ev.id).set(data);
+    }
+    return withTimeout(op);
+  }
+
+  // Đọc sự kiện cho trang công khai (?e=...)
+  function loadEvent(id) {
+    if (!available) return Promise.reject(new Error('Không tải được dữ liệu sự kiện (chưa kết nối máy chủ).'));
+    return withTimeout(eventRef(id).get()).then(function (snap) {
+      if (!snap.exists) throw new Error('Không tìm thấy sự kiện. Đường dẫn có thể sai hoặc sự kiện đã bị xoá.');
+      var d = snap.data();
+      return {
+        event: {
+          id: id,
+          name: d.name,
+          startAt: d.startAtLocal || d.startAt.toDate().toISOString().slice(0, 16),
+          location: d.location,
+          capacity: d.capacity || '',
+          speakers: d.speakers || [],
+          agenda: d.agenda || [],
+          earlyBird: d.earlyBird,
+          earlyBirdUntil: d.earlyBirdUntil,
+          sheetUrl: d.sheetUrl || '',
+          ownerUid: d.ownerUid,
+          published: true
+        },
+        content: d.content
+      };
+    });
+  }
+
+  // Theo dõi số đăng ký theo thời gian thực
+  function watchStats(id, callback) {
+    if (!available) return function () {};
+    return statsRef(id).onSnapshot(function (snap) {
+      if (snap.exists) callback(snap.data());
+    }, function () { /* mất quyền/mạng: giữ số cũ */ });
+  }
+
+  // ---------- Đăng ký ----------
+  // rec: { name, phone (đã chuẩn hoá), email (chữ thường) }
+  // Trả về { ok, duplicate, waitlist }
+  function register(ev, rec) {
+    var attempt = 0;
+    var capacity = Number(ev.capacity) || 0;
+
+    function readStats() {
+      return withTimeout(statsRef(ev.id).get()).then(function (s) { return s.data() || { count: 0, waitlist: 0 }; });
+    }
+
+    function tryOnce(stats) {
+      attempt++;
+      var waitlist = capacity > 0 && stats.count >= capacity;
+      var batch = db.batch();
+      batch.set(eventRef(ev.id).collection('registrations').doc(rec.phone), {
+        name: rec.name,
+        phone: rec.phone,
+        email: rec.email,
+        status: waitlist ? 'waitlist' : 'new',
+        createdAt: fb.firestore.FieldValue.serverTimestamp()
+      });
+      batch.set(eventRef(ev.id).collection('emails').doc(rec.email), { regId: rec.phone });
+      batch.update(statsRef(ev.id), waitlist
+        ? { waitlist: stats.waitlist + 1, lastRegId: rec.phone }
+        : { count: stats.count + 1, lastRegId: rec.phone });
+
+      return withTimeout(batch.commit()).then(function () {
+        return { ok: true, waitlist: waitlist };
+      }, function (err) {
+        if (!err || err.code !== 'permission-denied') {
+          throw new Error('Kết nối chậm hoặc mất mạng. Hãy thử lại; nếu hệ thống báo "đã đăng ký" nghĩa là lần trước đã gửi thành công.');
+        }
+        // Bị từ chối: hoặc người khác vừa đăng ký cùng lúc (số đếm đổi) → thử lại,
+        // hoặc SĐT/email đã đăng ký → báo trùng.
+        return readStats().then(function (fresh) {
+          var changed = fresh.count !== stats.count || fresh.waitlist !== stats.waitlist;
+          if (changed && attempt < MAX_RETRY) return tryOnce(fresh);
+          return { ok: false, duplicate: true };
+        });
+      });
+    }
+
+    return readStats().then(tryOnce);
+  }
+
+  // ---------- Quản trị (chỉ chủ sự kiện) ----------
+  function listRegistrations(id) {
+    return withTimeout(eventRef(id).collection('registrations').orderBy('createdAt').get()).then(function (snap) {
+      return snap.docs.map(function (d) {
+        var r = d.data();
+        return {
+          id: d.id, name: r.name, phone: r.phone, email: r.email, status: r.status,
+          createdAt: r.createdAt ? r.createdAt.toDate().toISOString() : new Date().toISOString()
+        };
+      });
+    });
+  }
+
+  function clearRegistrations(id) {
+    var regs = eventRef(id).collection('registrations');
+    var emails = eventRef(id).collection('emails');
+    return Promise.all([regs.get(), emails.get()]).then(function (res) {
+      var batch = db.batch();
+      res[0].docs.concat(res[1].docs).forEach(function (d) { batch.delete(d.ref); });
+      batch.update(statsRef(id), { count: 0, waitlist: 0, lastRegId: '' });
+      return withTimeout(batch.commit());
+    });
+  }
+
+  // Chỉ dùng khi chạy kiểm thử với Firebase Emulator
+  function testSignIn(uid) {
+    if (!useEmulator) return Promise.reject(new Error('Chỉ dùng với emulator.'));
+    var token = JSON.stringify({ sub: uid, email: uid + '@test.local', email_verified: true });
+    return auth.signInWithCredential(fb.auth.GoogleAuthProvider.credential(token));
+  }
+
+  root.EP = root.EP || {};
+  root.EP.cloud = {
+    available: available,
+    onAuth: onAuth,
+    signIn: signIn,
+    signOut: signOut,
+    currentUser: currentUser,
+    publishEvent: publishEvent,
+    loadEvent: loadEvent,
+    watchStats: watchStats,
+    register: register,
+    listRegistrations: listRegistrations,
+    clearRegistrations: clearRegistrations,
+    testSignIn: testSignIn
+  };
+})(window);

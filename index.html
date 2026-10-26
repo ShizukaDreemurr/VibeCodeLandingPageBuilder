@@ -17,6 +17,8 @@
       <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Tạo trang</button>
       <button type="button" class="tab" data-tab="admin" role="tab" aria-selected="false">Danh sách đăng ký</button>
     </nav>
+    <span class="user-email" id="user-email" hidden></span>
+    <button type="button" class="btn btn-ghost" id="btn-auth" hidden>Đăng nhập Google</button>
     <button type="button" class="btn btn-accent" id="btn-new">+ Tạo trang mới</button>
   </header>
 
@@ -150,6 +152,19 @@
         <span>Xem trước</span>
         <span class="sheet-status" id="sheet-status" hidden></span>
         <span class="mock-note" id="mock-note" hidden>Bản demo vòng loại – Dữ liệu mô phỏng AI</span>
+        <button type="button" class="btn btn-primary btn-small" id="btn-publish" hidden disabled>Xuất bản &amp; chia sẻ</button>
+      </div>
+      <div class="share-box" id="share-box" hidden>
+        <div class="share-info">
+          <p class="share-title">Trang đã xuất bản – gửi link hoặc mã QR cho khách</p>
+          <div class="share-row">
+            <input id="share-url" type="text" readonly aria-label="Đường dẫn trang công khai">
+            <button type="button" class="btn btn-ghost btn-small" id="btn-copy-link">Copy link</button>
+            <a class="btn btn-ghost btn-small" id="btn-open-link" target="_blank" rel="noopener">Mở trang</a>
+          </div>
+          <p class="hint" id="share-note"></p>
+        </div>
+        <div class="share-qr" id="share-qr" aria-label="Mã QR của trang"></div>
       </div>
       <div id="landing" class="landing">
         <div class="empty-state">
@@ -158,6 +173,12 @@
         </div>
       </div>
     </section>
+  </main>
+
+  <main id="view-public" class="public-view" hidden>
+    <div id="public-landing" class="landing">
+      <div class="empty-state"><p class="empty-title">Đang tải sự kiện…</p></div>
+    </div>
   </main>
 
   <main id="view-admin" class="admin" hidden>
@@ -179,6 +200,11 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+  <script src="vendor/firebase/firebase-app-compat.js"></script>
+  <script src="vendor/firebase/firebase-auth-compat.js"></script>
+  <script src="vendor/firebase/firebase-firestore-compat.js"></script>
+  <script src="vendor/qrcode/qrcode.js"></script>
+  <script src="js/firebase-config.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/validators.js"></script>
   <script src="js/event-status.js"></script>
@@ -186,6 +212,7 @@
   <script src="js/content-generator.js"></script>
   <script src="js/ai-service.js"></script>
   <script src="js/sheet-sync.js"></script>
+  <script src="js/cloud.js"></script>
   <script src="js/landing-renderer.js"></script>
   <script src="js/app.js"></script>
 </body>
