@@ -50,6 +50,24 @@
     ['Tham gia dễ dàng tại {location}, không cần chuẩn bị trước', 'Đặt câu hỏi trực tiếp và nhận giải đáp ngay trong buổi']
   ];
 
+  // Thiệp cưới: giọng văn ấm áp, "lợi ích" thành điểm nhấn của ngày vui
+  var WEDDING = {
+    headlines: [
+      'Trân trọng kính mời bạn đến chung vui cùng {couple}',
+      '{couple}: Chúng mình về chung một nhà!',
+      'Hẹn bạn trong ngày vui của {couple}'
+    ],
+    intro: [
+      'Sự hiện diện của bạn là niềm vinh hạnh cho gia đình chúng mình. Mời bạn đến chung vui tại {location}.',
+      'Sau những năm tháng bên nhau, chúng mình quyết định về chung một nhà và rất mong được đón bạn tại {location}.'
+    ],
+    benefits: [
+      ['Cùng chứng kiến khoảnh khắc thiêng liêng của hai gia đình', 'Gặp lại bạn bè, người thân trong một ngày thật ý nghĩa'],
+      ['Thưởng thức tiệc cưới ấm cúng cùng gia đình hai bên', 'Lưu lại những bức ảnh kỷ niệm cùng cô dâu chú rể'],
+      ['Xác nhận tham dự chỉ mất 30 giây để chúng mình chuẩn bị chu đáo', 'Thông tin giờ giấc, địa điểm luôn có sẵn trên thiệp này']
+    ]
+  };
+
   function fill(text, vars) {
     return text.replace(/\{(\w+)\}/g, function (_, k) { return vars[k] != null ? vars[k] : ''; });
   }
@@ -67,6 +85,15 @@
       speakerCount: (ev.speakers || []).length || 1,
       location: ev.location
     };
+    if (ev.templateId === 'wedding') {
+      vars.couple = (ev.speakers || []).map(function (sp) { return sp.name.trim().split(/\s+/).pop(); }).join(' & ') || ev.name;
+      return {
+        headline: fill(pick(WEDDING.headlines, seed), vars),
+        description: fill(pick(WEDDING.intro, seed), vars),
+        benefits: WEDDING.benefits.map(function (options, i) { return fill(pick(options, seed + i), vars); }),
+        source: 'mock'
+      };
+    }
     var description = fill(pick(t.intro, seed), vars);
     if (ev.earlyBird) description += ' Ưu đãi đăng ký sớm: ' + ev.earlyBird + '.';
     return {

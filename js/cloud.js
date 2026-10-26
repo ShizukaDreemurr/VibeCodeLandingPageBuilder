@@ -91,6 +91,10 @@
       earlyBird: ev.earlyBird || '',
       earlyBirdUntil: ev.earlyBirdUntil || '',
       sheetUrl: ev.sheetUrl || '',
+      templateId: ev.templateId || 'tech',
+      images: ev.images || {},
+      studioName: ev.studioName || '',
+      studioUrl: ev.studioUrl || '',
       content: { headline: content.headline, description: content.description, benefits: content.benefits, source: content.source },
       updatedAt: fb.firestore.FieldValue.serverTimestamp()
     };
@@ -131,6 +135,10 @@
           earlyBird: d.earlyBird,
           earlyBirdUntil: d.earlyBirdUntil,
           sheetUrl: d.sheetUrl || '',
+          templateId: d.templateId || 'tech',
+          images: d.images || {},
+          studioName: d.studioName || '',
+          studioUrl: d.studioUrl || '',
           ownerUid: d.ownerUid,
           published: true
         },

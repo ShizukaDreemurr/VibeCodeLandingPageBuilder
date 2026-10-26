@@ -20,6 +20,11 @@
   var stopWatch = null;
   var adminRows = [];      // danh sách đang hiển thị ở tab quản trị (dùng để xuất CSV)
   var publicEventId = new URLSearchParams(root.location.search).get('e');
+  var TPL = EP.templates;
+  var currentTemplateId = (state && state.event.templateId) || 'tech';
+  var MAX_IMAGE_BYTES = 900000; // giới hạn 1MB/tài liệu của Firestore, chừa chỗ cho nội dung
+  var IMAGE_TYPES = { hero: 'hero', speaker: 'avatar', gallery: 'gallery' };
+  var APP_URL = /^https?:$/.test(root.location.protocol) ? root.location.origin + root.location.pathname : null;
 
   // ---------- Đọc / ghi form ----------
   function parseLines(text, mapper) {
@@ -44,7 +49,11 @@
       agenda: parseLines(f.agenda.value, function (l) { var p = splitDash(l); return { time: p[0], title: p[1] || p[0] }; }),
       earlyBird: V.clean(f.earlyBird.value),
       earlyBirdUntil: f.earlyBirdUntil.value,
-      sheetUrl: V.clean(f.sheetUrl.value)
+      sheetUrl: V.clean(f.sheetUrl.value),
+      templateId: currentTemplateId,
+      studioName: currentTemplateId === 'wedding' ? V.clean(f.studioName.value) : '',
+      studioUrl: currentTemplateId === 'wedding' ? V.clean(f.studioUrl.value) : '',
+      images: (state && state.event.images) || {}
     };
   }
 
@@ -59,6 +68,133 @@
     f.earlyBird.value = ev.earlyBird || '';
     f.earlyBirdUntil.value = ev.earlyBirdUntil || '';
     f.sheetUrl.value = ev.sheetUrl || '';
+    f.studioName.value = ev.studioName || '';
+    f.studioUrl.value = ev.studioUrl || '';
+    if (ev.templateId) setTemplate(ev.templateId);
+  }
+
+  // ---------- Thư viện mẫu ----------
+  function setTemplate(id) {
+    currentTemplateId = TPL.get(id).id;
+    var t = TPL.get(currentTemplateId);
+    $('#tpl-name').textContent = t.name;
+    $('#tpl-swatch').style.background = 'linear-gradient(135deg, ' + t.theme.primary + ' 50%, ' + t.theme.accent + ' 50%)';
+    $('#studio-box').hidden = !t.wedding;
+  }
+
+  function buildTemplateFilters() {
+    var box = $('#tpl-filters');
+    Object.keys(TPL.FILTERS).forEach(function (key) {
+      var f = TPL.FILTERS[key];
+      var label = document.createElement('label');
+      label.textContent = f.label;
+      var sel = document.createElement('select');
+      sel.setAttribute('data-filter', key);
+      var all = document.createElement('option');
+      all.value = ''; all.textContent = 'Tất cả';
+      sel.appendChild(all);
+      Object.keys(f.options).forEach(function (v) {
+        var o = document.createElement('option');
+        o.value = v; o.textContent = f.options[v];
+        sel.appendChild(o);
+      });
+      sel.addEventListener('change', renderTemplateGrid);
+      label.appendChild(sel);
+      box.appendChild(label);
+    });
+  }
+
+  function renderTemplateGrid() {
+    var filters = {};
+    document.querySelectorAll('#tpl-filters select').forEach(function (sel) { filters[sel.getAttribute('data-filter')] = sel.value; });
+    var grid = $('#tpl-grid');
+    grid.innerHTML = '';
+    TPL.search(filters).forEach(function (r) {
+      var t = r.template;
+      var card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'tpl-card' + (t.id === currentTemplateId ? ' is-current' : '');
+      var thumb = document.createElement('div');
+      thumb.className = 'tpl-thumb';
+      thumb.style.background = t.theme.primary;
+      var title = document.createElement('span');
+      title.className = 'tpl-thumb-title'; title.textContent = t.name;
+      if (t.theme.headingFont) title.style.fontFamily = t.theme.headingFont;
+      var pill = document.createElement('span');
+      pill.className = 'tpl-thumb-btn'; pill.textContent = TPL.labels(t.id).submit;
+      pill.style.background = t.theme.accent; pill.style.color = '#fff';
+      thumb.appendChild(title); thumb.appendChild(pill);
+      var body = document.createElement('div');
+      body.className = 'tpl-card-body';
+      var tags = document.createElement('span');
+      tags.textContent = Object.keys(t.tags).map(function (k) {
+        return t.tags[k].map(function (v) { return TPL.FILTERS[k].options[v]; }).join(', ');
+      }).join(' · ');
+      body.appendChild(tags);
+      if (r.score.total) {
+        var sc = document.createElement('span');
+        sc.className = 'tpl-score';
+        sc.textContent = 'Phù hợp ' + r.score.hit + '/' + r.score.total;
+        body.appendChild(sc);
+      }
+      card.appendChild(thumb); card.appendChild(body);
+      card.addEventListener('click', function () { applyTemplate(t.id); });
+      grid.appendChild(card);
+    });
+  }
+
+  function openTemplates() {
+    renderTemplateGrid();
+    var dlg = $('#tpl-dialog');
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+
+  function closeTemplates() {
+    var dlg = $('#tpl-dialog');
+    if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
+  }
+
+  // Đổi mẫu: giữ nguyên nội dung, chỉ đổi giao diện; form trống thì điền dữ liệu mẫu của mẫu đó
+  function applyTemplate(id) {
+    setTemplate(id);
+    closeTemplates();
+    if (!form.elements.name.value.trim()) fillSample();
+    if (state) {
+      state.event.templateId = currentTemplateId;
+      if (currentTemplateId !== 'wedding') { state.event.studioName = ''; state.event.studioUrl = ''; }
+      persist();
+    }
+    toast('Đã chuyển sang mẫu "' + TPL.get(id).name + '".');
+  }
+
+  // ---------- Ảnh tuỳ chỉnh ----------
+  function pickImage(slot) {
+    var parts = slot.split(':');
+    var kind = parts[0];
+    var index = Number(parts[1]);
+    EP.images.pick(IMAGE_TYPES[kind]).then(function (dataUrl) {
+      var images = JSON.parse(JSON.stringify(state.event.images || {}));
+      if (kind === 'hero') images.hero = dataUrl;
+      if (kind === 'speaker') { images.speakers = images.speakers || {}; images.speakers[index] = dataUrl; }
+      if (kind === 'gallery') { images.gallery = images.gallery || []; images.gallery[index] = dataUrl; }
+      if (EP.images.totalBytes(images) > MAX_IMAGE_BYTES) {
+        toast('Tổng dung lượng ảnh đã đầy (khoảng 900KB). Hãy bớt ảnh hoặc dùng ảnh đơn giản hơn.');
+        return;
+      }
+      state.event.images = images;
+      persist();
+    }, function (e) {
+      if (e.message !== 'Chưa chọn ảnh.') toast(e.message);
+    });
+  }
+
+  // Lưu trạng thái, vẽ lại trang, và cập nhật bản công khai nếu đã xuất bản
+  function persist() {
+    if (!S.write('current', state)) toast('Trình duyệt không lưu được dữ liệu (có thể do ảnh quá lớn).');
+    renderLanding();
+    if (isCloudEvent() && C.currentUser()) {
+      C.publishEvent(state.event, state.content, false).catch(function (e) { toast('Chưa cập nhật được trang công khai: ' + e.message); });
+    }
   }
 
   function showErrors(errors) {
@@ -94,6 +230,9 @@
       content: state.content,
       now: function () { return new Date(); },
       getCount: currentCount,
+      editable: true,
+      onPickImage: pickImage,
+      appUrl: APP_URL,
       onRegister: function (data) {
         if (isCloudEvent()) return cloudRegister(state.event, data);
         var r = EP.registrations.register(state.event, data, new Date(), currentCount());
@@ -519,30 +658,12 @@
   }
 
   // ---------- Dữ liệu mẫu để demo ----------
-  function toLocalInput(date) {
-    var d = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-    return d.toISOString().slice(0, 16);
-  }
-
+  // Dữ liệu mẫu theo mẫu trang đang chọn
   function fillSample() {
-    var start = new Date(); start.setDate(start.getDate() + 12); start.setHours(9, 0, 0, 0);
-    var early = new Date(); early.setDate(early.getDate() + 5); early.setHours(23, 59, 0, 0);
-    fillForm({
-      name: 'Workshop AI Marketing 2026',
-      startAt: toLocalInput(start),
-      location: 'Toà nhà FPT, Cầu Giấy, Hà Nội',
-      capacity: 150,
-      speakers: [{ name: 'Nguyễn Văn An', title: 'Chuyên gia AI Marketing' }, { name: 'Trần Thu Hà', title: 'Growth Director, Agency X' }],
-      agenda: [
-        { time: '08:30', title: 'Đón khách & check-in' },
-        { time: '09:00', title: 'Khai mạc & giới thiệu chương trình' },
-        { time: '09:15', title: 'Ứng dụng AI vào lập kế hoạch chiến dịch' },
-        { time: '10:30', title: 'Thực hành: tự động hoá nội dung' },
-        { time: '11:30', title: 'Hỏi đáp & kết nối' }
-      ],
-      earlyBird: 'Giảm 30% học phí cho 50 người đăng ký đầu tiên',
-      earlyBirdUntil: toLocalInput(early)
-    });
+    var sample = TPL.get(currentTemplateId).sample();
+    sample.templateId = currentTemplateId;
+    sample.sheetUrl = form.elements.sheetUrl.value;
+    fillForm(sample);
     showErrors({});
   }
 
@@ -613,6 +734,7 @@
         content: data.content,
         now: function () { return new Date(); },
         getCount: function () { return cloudStats ? cloudStats.count : 0; },
+        appUrl: APP_URL,
         onRegister: function (d) { return cloudRegister(pub, d); }
       });
     }, function (e) {
@@ -628,8 +750,12 @@
   }
 
   buildPlatformButtons();
+  buildTemplateFilters();
+  setTemplate(currentTemplateId);
   syncModeBoxes();
   C.onAuth(updateAuthUi);
+  $('#btn-tpl').addEventListener('click', openTemplates);
+  $('#btn-tpl-close').addEventListener('click', closeTemplates);
 
   if (state) {
     fillForm(state.event);

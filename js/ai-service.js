@@ -29,6 +29,28 @@
     var speakers = (ev.speakers || []).map(function (s) {
       return '- ' + s.name + (s.title ? ' (' + s.title + ')' : '');
     }).join('\n');
+    if (ev.templateId === 'wedding') {
+      return [
+        'Bạn là người viết lời mời cưới tinh tế, ấm áp bằng tiếng Việt.',
+        'Viết nội dung cho thiệp cưới online dưới đây.',
+        '',
+        'THÔNG TIN',
+        'Tên sự kiện: ' + ev.name,
+        'Thời gian: ' + formatDate(ev.startAt),
+        'Địa điểm: ' + ev.location,
+        'Cô dâu, chú rể:\n' + (speakers || '- (chưa có)'),
+        'Lời nhắn của gia đình: ' + (ev.earlyBird || 'không có'),
+        '',
+        'YÊU CẦU',
+        '1. headline: lời mời ngắn gọn, tối đa 90 ký tự.',
+        '2. description: lời mời 2–3 câu, trang trọng mà gần gũi, tối đa 350 ký tự.',
+        '3. benefits: đúng 3 điểm nhấn của ngày vui khiến khách muốn tới dự, mỗi ý tối đa 110 ký tự.',
+        '4. Chỉ dùng thông tin đã cho. KHÔNG bịa thêm ngày giờ, địa điểm hay tên người.',
+        '',
+        'Chỉ trả về đúng một khối JSON, không giải thích, không markdown:',
+        '{"headline": "...", "description": "...", "benefits": ["...", "...", "..."]}'
+      ].join('\n');
+    }
     return [
       'Bạn là copywriter marketing sự kiện tại Việt Nam.',
       'Viết nội dung cho landing page sự kiện dưới đây, giọng văn ' + (TONE_TEXT[tone] || TONE_TEXT.formal) + '.',

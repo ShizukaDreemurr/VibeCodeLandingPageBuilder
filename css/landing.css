@@ -2,7 +2,7 @@
 .landing { background: var(--lp-bg); color: var(--lp-text); container-type: inline-size; }
 .lp-hero { padding: 48px 32px; background: var(--lp-primary); color: #fff; }
 .lp-eyebrow { margin: 12px 0 4px; font-weight: 600; opacity: 0.85; }
-.lp-headline { margin: 0 0 16px; font-size: clamp(26px, 5cqi, 44px); line-height: 1.2; }
+.lp-headline { font-family: var(--lp-heading-font, inherit); margin: 0 0 16px; font-size: clamp(26px, 5cqi, 44px); line-height: 1.2; }
 .lp-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 24px; }
 .lp-cta, .lp-submit {
   display: inline-block; background: var(--lp-accent); color: var(--lp-accent-contrast); text-decoration: none; font: inherit; font-weight: 700;
@@ -16,7 +16,7 @@
 .lp-badge.is-ended { background: #e9eaf0; color: #444a63; }
 
 .lp-section { padding: 32px; border-bottom: 1px solid var(--lp-surface); }
-.lp-section h2 { margin: 0 0 16px; font-size: 22px; color: var(--lp-primary); }
+.lp-section h2 { font-family: var(--lp-heading-font, inherit); margin: 0 0 16px; font-size: 22px; color: var(--lp-primary); }
 .lp-countdown-section { text-align: center; background: var(--lp-surface); }
 .lp-countdown { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .lp-cd-box { background: var(--lp-primary); color: #fff; border-radius: var(--radius-small); padding: 10px 14px; min-width: 72px; }
@@ -58,3 +58,33 @@
   .lp-hero, .lp-section { padding: 24px 16px; }
   .lp-cd-box { min-width: 60px; }
 }
+
+/* Ảnh bìa: lớp phủ tối để chữ trắng luôn đủ tương phản */
+.lp-hero { position: relative; }
+.lp-hero.has-image { background: linear-gradient(rgba(10, 10, 20, 0.62), rgba(10, 10, 20, 0.62)), var(--lp-hero-image) center / cover no-repeat, var(--lp-primary); }
+img.lp-avatar { object-fit: cover; }
+
+/* Nút đổi ảnh (chỉ hiện khi soạn) */
+.lp-img-btn { font: inherit; font-size: 13px; font-weight: 600; border: 1px dashed currentColor; background: rgba(255, 255, 255, 0.9); color: #16193a; border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.lp-hero .lp-img-btn { position: absolute; top: 16px; right: 16px; }
+
+/* Album ảnh cưới */
+.lp-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.lp-gallery-item { position: relative; border-radius: var(--radius-small); overflow: hidden; aspect-ratio: 4 / 3; background: var(--lp-surface); display: grid; place-items: center; }
+.lp-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.lp-gallery-item .lp-img-btn { position: absolute; bottom: 8px; right: 8px; }
+.lp-gallery-item.is-empty .lp-img-btn { position: static; }
+
+/* Chân trang: ghi nguồn studio + phễu */
+.lp-footer p { margin: 4px 0; }
+.lp-credit { display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.lp-credit-cta { color: var(--lp-accent-contrast); background: var(--lp-accent); text-decoration: none; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+.lp-made-with { display: inline-block; margin-top: 8px; color: var(--lp-primary); font-weight: 600; }
+
+/* Mẫu thiệp cưới: căn giữa, trang nhã */
+.tpl-wedding .lp-hero, .tpl-wedding .lp-section { text-align: center; }
+.tpl-wedding .lp-meta { justify-content: center; }
+.tpl-wedding .lp-benefits li { text-align: left; }
+.tpl-wedding .lp-agenda li { justify-content: center; }
+.tpl-wedding .lp-form { margin: 0 auto; text-align: left; }
+.tpl-wedding .lp-hero { padding-top: 72px; padding-bottom: 72px; }

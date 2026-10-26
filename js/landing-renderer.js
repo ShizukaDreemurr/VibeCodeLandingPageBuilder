@@ -1,9 +1,11 @@
 /*
- * landing-renderer.js — dựng landing page từ dữ liệu sự kiện + nội dung.
+ * landing-renderer.js — dựng landing page từ dữ liệu sự kiện + nội dung + mẫu (template).
  * Mọi chữ người dùng nhập đều đi qua textContent (không chèn HTML) để tránh lỗi bảo mật.
  */
 (function (root) {
   var ES = root.EP.eventStatus;
+  var T = root.EP.templates;
+  var GALLERY_SLOTS = 4;
 
   // h('div', {class: 'x'}, [con...]) — tạo phần tử an toàn
   function h(tag, attrs, children) {
@@ -25,6 +27,8 @@
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
+  function isSafeUrl(url) { return /^https?:\/\/\S+$/i.test(url || ''); }
+
   function field(name, label, type, placeholder) {
     return h('div', { class: 'lp-field' }, [
       h('label', { for: 'lp-' + name, text: label }),
@@ -34,13 +38,34 @@
   }
 
   /*
-   * opts: { event, content, getCount(), onRegister(formData) → result, now() }
+   * opts: {
+   *   event, content, getCount(), onRegister(formData) → result | Promise, now(),
+   *   editable: true ở chế độ soạn (hiện nút đổi ảnh), onPickImage(slot) → được gọi khi bấm ô ảnh,
+   *   appUrl: đường dẫn về app (dòng "Tạo trang như thế này")
+   * }
    * Trả về { update() } để cập nhật đếm ngược, số đăng ký, trạng thái mà không vẽ lại cả trang.
    */
   function render(container, opts) {
     var ev = opts.event;
     var content = opts.content;
+    var tpl = T.get(ev.templateId);
+    var L = T.labels(tpl.id);
+    var images = ev.images || {};
+    var editable = !!opts.editable;
+
     container.innerHTML = '';
+    container.className = 'landing tpl-' + tpl.id + (editable ? ' is-editable' : '');
+    var vars = T.cssVars(tpl.id);
+    Object.keys(vars).forEach(function (k) { container.style.setProperty(k, vars[k]); });
+
+    // Nút đổi ảnh (chỉ ở chế độ soạn)
+    function imageButton(slot, label) {
+      if (!editable) return null;
+      return h('button', {
+        type: 'button', class: 'lp-img-btn', 'data-slot': slot, text: label,
+        onclick: function (e) { e.preventDefault(); if (opts.onPickImage) opts.onPickImage(slot); }
+      });
+    }
 
     var statusBadge = h('span', { class: 'lp-badge' });
     var countText = h('strong', { class: 'lp-count' });
@@ -52,53 +77,71 @@
       }));
     var endedEl = h('p', { class: 'lp-ended', text: 'Sự kiện đã diễn ra', hidden: true });
 
-    // HERO
-    var hero = h('section', { class: 'lp-hero' }, [
+    // HERO (có ảnh nền nếu người dùng tải lên)
+    var hero = h('section', { class: 'lp-hero' + (images.hero ? ' has-image' : '') }, [
       statusBadge,
       h('p', { class: 'lp-eyebrow', text: ev.name }),
       h('h1', { class: 'lp-headline', text: content.headline }),
       h('p', { class: 'lp-meta' }, [h('span', { text: '🗓 ' + fmtDate(ev.startAt) }), h('span', { text: '📍 ' + ev.location })]),
-      h('a', { class: 'lp-cta', href: '#lp-register', text: 'Đăng ký tham gia' })
+      h('a', { class: 'lp-cta', href: '#lp-register', text: L.submit }),
+      imageButton('hero', images.hero ? '🖼 Đổi ảnh bìa' : '🖼 Thêm ảnh bìa')
     ]);
+    if (images.hero) hero.style.setProperty('--lp-hero-image', 'url("' + images.hero.replace(/"/g, '') + '")');
 
-    // ĐẾM NGƯỢC + SỐ ĐĂNG KÝ
     var countdownSection = h('section', { class: 'lp-section lp-countdown-section' }, [
-      h('h2', { text: 'Đếm ngược đến giờ G' }), countdownEl, endedEl,
-      h('p', { class: 'lp-social-proof' }, [countText, ' người đã đăng ký'])
+      h('h2', { text: L.countdown }), countdownEl, endedEl,
+      h('p', { class: 'lp-social-proof' }, [countText, L.countSuffix])
     ]);
 
-    var about = h('section', { class: 'lp-section' }, [h('h2', { text: 'Giới thiệu' }), h('p', { text: content.description })]);
+    var about = h('section', { class: 'lp-section' }, [h('h2', { text: L.about }), h('p', { text: content.description })]);
 
     var benefits = h('section', { class: 'lp-section' }, [
-      h('h2', { text: 'Bạn nhận được gì khi tham dự?' }),
+      h('h2', { text: L.benefits }),
       h('ul', { class: 'lp-benefits' }, content.benefits.map(function (b) { return h('li', { text: b }); }))
     ]);
 
+    var speakerPhotos = images.speakers || {};
     var speakers = h('section', { class: 'lp-section' }, [
-      h('h2', { text: 'Diễn giả' }),
-      h('div', { class: 'lp-speakers' }, ev.speakers.map(function (s) {
+      h('h2', { text: L.speakers }),
+      h('div', { class: 'lp-speakers' }, ev.speakers.map(function (s, i) {
+        var photo = speakerPhotos[i];
+        var avatar = photo
+          ? h('img', { class: 'lp-avatar', src: photo, alt: s.name })
+          : h('div', { class: 'lp-avatar', 'aria-hidden': 'true', text: s.name.trim().split(/\s+/).pop().charAt(0).toUpperCase() });
         return h('div', { class: 'lp-speaker' }, [
-          h('div', { class: 'lp-avatar', 'aria-hidden': 'true', text: s.name.trim().split(/\s+/).pop().charAt(0).toUpperCase() }),
+          avatar, imageButton('speaker:' + i, photo ? 'Đổi ảnh' : '+ Ảnh'),
           h('strong', { text: s.name }), s.title ? h('span', { text: s.title }) : null
         ]);
       }))
     ]);
 
+    // ALBUM ẢNH (mẫu thiệp cưới)
+    var gallery = null;
+    if (tpl.wedding) {
+      var pics = images.gallery || [];
+      var cells = [];
+      for (var g = 0; g < GALLERY_SLOTS; g++) {
+        if (pics[g]) cells.push(h('div', { class: 'lp-gallery-item' }, [h('img', { src: pics[g], alt: 'Ảnh cưới ' + (g + 1), loading: 'lazy' }), imageButton('gallery:' + g, 'Đổi')]));
+        else if (editable) cells.push(h('div', { class: 'lp-gallery-item is-empty' }, [imageButton('gallery:' + g, '+ Thêm ảnh cưới')]));
+      }
+      if (cells.length) gallery = h('section', { class: 'lp-section' }, [h('h2', { text: 'Khoảnh khắc của chúng mình' }), h('div', { class: 'lp-gallery' }, cells)]);
+    }
+
     var agenda = ev.agenda && ev.agenda.length ? h('section', { class: 'lp-section' }, [
-      h('h2', { text: 'Chương trình' }),
+      h('h2', { text: L.agenda }),
       h('ol', { class: 'lp-agenda' }, ev.agenda.map(function (a) {
         return h('li', {}, [h('span', { class: 'lp-agenda-time', text: a.time }), h('span', { text: a.title })]);
       }))
     ]) : null;
 
     var offer = ev.earlyBird ? h('section', { class: 'lp-section lp-offer' }, [
-      h('h2', { text: 'Ưu đãi đăng ký sớm' }), h('p', { text: ev.earlyBird }),
+      h('h2', { text: L.offer }), h('p', { text: ev.earlyBird }),
       ev.earlyBirdUntil ? h('p', { class: 'lp-offer-until', text: 'Áp dụng đến ' + fmtDate(ev.earlyBirdUntil) }) : null
     ]) : null;
 
-    // FORM ĐĂNG KÝ
+    // FORM ĐĂNG KÝ / XÁC NHẬN THAM DỰ
     var formMsg = h('p', { class: 'lp-form-msg', role: 'status', 'aria-live': 'polite' });
-    var submitBtn = h('button', { type: 'submit', class: 'lp-submit', text: 'Đăng ký tham gia' });
+    var submitBtn = h('button', { type: 'submit', class: 'lp-submit', text: L.submit });
     var form = h('form', { class: 'lp-form', novalidate: true }, [
       field('name', 'Họ và tên', 'text', 'Nguyễn Văn A'),
       field('phone', 'Số điện thoại', 'tel', '0912345678'),
@@ -121,7 +164,7 @@
         email: form.elements.email.value, consent: form.elements.consent.checked
       };
       submitBtn.textContent = 'Đang gửi…';
-      // onRegister có thể trả kết quả ngay hoặc Promise (khi chờ Google Sheet)
+      // onRegister có thể trả kết quả ngay hoặc Promise (khi chờ máy chủ)
       Promise.resolve(opts.onRegister(data)).then(showResult, function () {
         showResult({ ok: false, errors: { form: 'Có lỗi xảy ra, vui lòng thử lại.' } });
       });
@@ -134,7 +177,7 @@
       if (result.ok) {
         formMsg.textContent = result.waitlist
           ? 'Sự kiện đã đủ chỗ. Bạn đã được thêm vào danh sách chờ, ban tổ chức sẽ liên hệ nếu có chỗ trống.'
-          : 'Đăng ký thành công! Hẹn gặp bạn tại sự kiện.';
+          : L.success;
         formMsg.classList.add('is-success');
         form.reset();
       } else {
@@ -149,12 +192,23 @@
     }
 
     var register = h('section', { class: 'lp-section lp-register', id: 'lp-register' }, [
-      h('h2', { text: 'Đăng ký tham gia' }), form, formClosed
+      h('h2', { text: L.register }), form, formClosed
     ]);
 
-    var footer = h('footer', { class: 'lp-footer', text: ev.name + ' · ' + ev.location });
+    // CHÂN TRANG: ghi nguồn studio (thiệp cưới) + đường dẫn "Tạo trang như thế này" (phễu lan truyền)
+    var footerChildren = [h('p', { text: ev.name + ' · ' + ev.location })];
+    if (ev.studioName) {
+      footerChildren.push(h('p', { class: 'lp-credit' }, [
+        'Ảnh cưới: ', h('strong', { text: ev.studioName }),
+        isSafeUrl(ev.studioUrl) ? h('a', { class: 'lp-credit-cta', href: ev.studioUrl, target: '_blank', rel: 'noopener', 'data-funnel': 'studio', text: 'Đặt lịch chụp' }) : null
+      ]));
+    }
+    if (opts.appUrl) {
+      footerChildren.push(h('a', { class: 'lp-made-with', href: opts.appUrl, target: '_blank', rel: 'noopener', 'data-funnel': 'app', text: 'Tạo trang như thế này miễn phí bằng EventPage AI →' }));
+    }
+    var footer = h('footer', { class: 'lp-footer' }, footerChildren);
 
-    [hero, countdownSection, about, benefits, speakers, agenda, offer, register, footer]
+    [hero, countdownSection, about, benefits, speakers, gallery, agenda, offer, register, footer]
       .forEach(function (s) { if (s) container.appendChild(s); });
 
     function update() {
@@ -173,7 +227,9 @@
       if (offer) offer.hidden = !ES.isEarlyBirdActive(ev, now);
       form.hidden = !status.canRegister;
       formClosed.hidden = status.canRegister;
-      submitBtn.textContent = status.waitlist ? 'Vào danh sách chờ' : 'Đăng ký tham gia';
+      if (!submitBtn.disabled || submitBtn.textContent !== 'Đang gửi…') {
+        submitBtn.textContent = status.waitlist ? 'Vào danh sách chờ' : L.submit;
+      }
     }
 
     update();

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EventPage AI – Tạo landing page sự kiện trong 5 phút</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/landing.css">
@@ -26,6 +26,12 @@
     <!-- CỘT TRÁI: FORM NHẬP + AI -->
     <aside class="panel">
       <form id="event-form" novalidate>
+        <div class="tpl-bar">
+          <span class="tpl-swatch" id="tpl-swatch" aria-hidden="true"></span>
+          <div class="tpl-bar-text"><span class="hint">Mẫu trang</span><strong id="tpl-name">Tech Workshop</strong></div>
+          <button type="button" class="btn btn-ghost btn-small" id="btn-tpl">Đổi mẫu</button>
+        </div>
+
         <h2 class="panel-title">1. Thông tin sự kiện</h2>
 
         <div class="field">
@@ -75,6 +81,21 @@
             <label for="f-earlyBirdUntil">Hạn ưu đãi</label>
             <input id="f-earlyBirdUntil" name="earlyBirdUntil" type="datetime-local">
             <p class="error" data-error-for="earlyBirdUntil"></p>
+          </div>
+        </div>
+
+        <div class="studio-box" id="studio-box" hidden>
+          <p class="hint">Thiệp cưới: ghi nguồn studio ảnh ở cuối thiệp (khách mời bấm "Đặt lịch chụp").</p>
+          <div class="grid-2">
+            <div class="field">
+              <label for="f-studioName">Tên studio ảnh cưới</label>
+              <input id="f-studioName" name="studioName" type="text" maxlength="60" placeholder="Studio Ánh Dương">
+            </div>
+            <div class="field">
+              <label for="f-studioUrl">Link đặt lịch của studio</label>
+              <input id="f-studioUrl" name="studioUrl" type="url" placeholder="https://facebook.com/studio...">
+              <p class="error" data-error-for="studioUrl"></p>
+            </div>
           </div>
         </div>
 
@@ -198,6 +219,16 @@
     </div>
   </main>
 
+  <dialog class="tpl-dialog" id="tpl-dialog" aria-labelledby="tpl-dialog-title">
+    <div class="tpl-dialog-head">
+      <h2 id="tpl-dialog-title">Thư viện mẫu</h2>
+      <button type="button" class="btn btn-ghost btn-small" id="btn-tpl-close">Đóng</button>
+    </div>
+    <p class="hint">Lọc theo ngành, loại và mục đích sự kiện. Đổi mẫu giữ nguyên nội dung đã viết.</p>
+    <div class="tpl-filters" id="tpl-filters"></div>
+    <div class="tpl-grid" id="tpl-grid"></div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="vendor/firebase/firebase-app-compat.js"></script>
@@ -213,6 +244,8 @@
   <script src="js/ai-service.js"></script>
   <script src="js/sheet-sync.js"></script>
   <script src="js/cloud.js"></script>
+  <script src="js/templates.js"></script>
+  <script src="js/images.js"></script>
   <script src="js/landing-renderer.js"></script>
   <script src="js/app.js"></script>
 </body>
