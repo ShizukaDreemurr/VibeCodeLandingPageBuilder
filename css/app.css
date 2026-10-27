@@ -760,3 +760,24 @@ html.motion-off::view-transition-group(*), html.motion-off::view-transition-old(
 @keyframes xcBlockIn { 0% { opacity: 0; transform: translateY(16px); } 100% { opacity: 1; transform: none; } }
 
 }
+
+/* ---------- Bảng 2 cột (diễn giả, chương trình) ---------- */
+@layer app {
+.pair-table { border: 1px solid #e3e5e8; border-radius: 8px; background: var(--surface); overflow: hidden; }
+.pair-table.is-invalid { border-color: var(--danger); }
+.pair-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) 36px; align-items: stretch; border-top: 1px solid var(--rule); }
+#f-agenda + .pair-table .pair-row { grid-template-columns: 96px minmax(0, 1fr) 36px; }
+.pair-head { border-top: 0; background: var(--raised); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.pair-head span { padding: 6px 12px; }
+.pair-head span + span { border-left: 1px solid var(--rule); }
+.field .pair-table .pair-row input { font: inherit; font-size: 14px; min-height: 40px; width: 100%; padding: 8px 12px; border: 0; border-radius: 0; background: none; color: var(--text); min-width: 0; }
+.field .pair-table .pair-row input + input { border-left: 1px solid var(--rule); }
+.field .pair-table .pair-row input:focus, .field .pair-table .pair-row input:hover:focus { outline: none; background: var(--raised); box-shadow: inset 0 0 0 2px var(--text); }
+.pair-del { border: 0; background: none; color: var(--text-muted); cursor: pointer; display: grid; place-items: center; border-left: 1px solid var(--rule); }
+.pair-del:hover { color: var(--danger); background: #fff5f5; }
+.pair-add { margin: 6px; }
+@media screen {
+  .pair-row.is-entering { animation: xcIn var(--dur-2) var(--ease-out) both; }
+  .pair-del, .pair-row input { transition: background-color var(--dur-1) ease, color var(--dur-1) ease, box-shadow var(--dur-1) ease; }
+}
+}

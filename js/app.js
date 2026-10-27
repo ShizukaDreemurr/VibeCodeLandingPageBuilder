@@ -63,6 +63,120 @@
     return m ? [m[1].trim(), m[2].trim()] : [line, ''];
   }
 
+  // Bảng 2 cột thay cho ô nhiều dòng "A - B" (diễn giả, chương trình).
+  // Ô textarea gốc vẫn giữ dữ liệu (ẩn đi) nên đọc/ghi form, mẫu, kiểm tra lỗi không phải đổi.
+  function pairTable(ta, cfg) {
+    var proto = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
+    var wrap = document.createElement('div');
+    wrap.className = 'pair-table';
+    wrap.setAttribute('role', 'table');
+    wrap.setAttribute('aria-label', cfg.label);
+    var head = document.createElement('div');
+    head.className = 'pair-row pair-head';
+    head.setAttribute('role', 'row');
+    head.innerHTML = '<span role="columnheader"></span><span role="columnheader"></span><span></span>';
+    head.children[0].textContent = cfg.cols[0]; head.children[1].textContent = cfg.cols[1];
+    var body = document.createElement('div');
+    body.className = 'pair-body';
+    var add = document.createElement('button');
+    add.type = 'button'; add.className = 'btn btn-ghost btn-small pair-add';
+    add.innerHTML = EP.icon('plus', 14);
+    add.appendChild(document.createTextNode(cfg.addText));
+    wrap.appendChild(head); wrap.appendChild(body); wrap.appendChild(add);
+    ta.hidden = true;
+    ta.parentNode.insertBefore(wrap, ta.nextSibling);
+    var syncing = false;
+    function rowsFrom(text) {
+      return String(text || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean).map(splitDash);
+    }
+    function toText() {
+      return Array.prototype.map.call(body.children, function (r) {
+        var a = r.querySelector('[data-c="0"]').value.trim(), b = r.querySelector('[data-c="1"]').value.trim();
+        return a && b ? a + ' - ' + b : a || b;
+      }).filter(Boolean).join('\n');
+    }
+    function sync() {
+      syncing = true;
+      proto.set.call(ta, toText());
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+      syncing = false;
+    }
+    function row(a, b, animate) {
+      var r = document.createElement('div');
+      r.className = 'pair-row' + (animate ? ' is-entering' : '');
+      r.setAttribute('role', 'row');
+      [a, b].forEach(function (v, i) {
+        var inp = document.createElement('input');
+        inp.type = 'text'; inp.value = v || ''; inp.setAttribute('data-c', i);
+        inp.placeholder = cfg.placeholders[i];
+        inp.setAttribute('aria-label', cfg.cols[i]);
+        inp.addEventListener('input', sync);
+        inp.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          if (i === 0) { r.querySelector('[data-c="1"]').focus(); return; }
+          var next = r.nextElementSibling;
+          if (!next) next = row('', '', true);
+          next.querySelector('[data-c="0"]').focus();
+        });
+        // Dán nhiều dòng "A - B" → tách thành nhiều hàng
+        inp.addEventListener('paste', function (e) {
+          var t = (e.clipboardData || root.clipboardData).getData('text');
+          if (t.indexOf('\n') < 0 && !(i === 0 && /\s[-–—]\s/.test(t))) return;
+          e.preventDefault();
+          var list = rowsFrom(t);
+          if (!list.length) return;
+          var at = r;
+          // Hàng đang trống thì điền vào, đã có chữ thì chèn các hàng mới ngay sau
+          if (!r.querySelector('[data-c="0"]').value.trim() && !r.querySelector('[data-c="1"]').value.trim()) {
+            r.querySelector('[data-c="0"]').value = list[0][0];
+            r.querySelector('[data-c="1"]').value = list[0][1];
+            list = list.slice(1);
+          }
+          list.forEach(function (p) { var nr = row(p[0], p[1], true); body.insertBefore(nr, at.nextSibling); at = nr; });
+          sync();
+        });
+        r.appendChild(inp);
+      });
+      var del = document.createElement('button');
+      del.type = 'button'; del.className = 'pair-del';
+      del.innerHTML = EP.icon('x', 14);
+      del.setAttribute('aria-label', 'Xoá hàng');
+      del.addEventListener('click', function () {
+        var focusTo = r.nextElementSibling || r.previousElementSibling;
+        EP.motion.collapse(r, function () {
+          r.remove();
+          if (!body.children.length) row('', '');
+          sync();
+          var f = (focusTo && focusTo.isConnected ? focusTo : body.firstElementChild).querySelector('input');
+          if (f) f.focus();
+        });
+      });
+      r.appendChild(del);
+      body.appendChild(r);
+      return r;
+    }
+    function render(text) {
+      body.innerHTML = '';
+      var list = rowsFrom(text);
+      if (!list.length) list = [['', '']];
+      list.forEach(function (p) { row(p[0], p[1]); });
+    }
+    add.addEventListener('click', function () { row('', '', true).querySelector('input').focus(); });
+    // Ghi vào textarea bằng code (mẫu, mở sự kiện, tạo trang mới) → vẽ lại bảng
+    Object.defineProperty(ta, 'value', {
+      configurable: true,
+      get: function () { return proto.get.call(ta); },
+      set: function (v) { proto.set.call(ta, v); if (!syncing) render(v); }
+    });
+    ta.focus = function () { var f = body.querySelector('input'); if (f) f.focus(); };
+    new MutationObserver(function () { wrap.classList.toggle('is-invalid', ta.getAttribute('aria-invalid') === 'true'); })
+      .observe(ta, { attributes: true, attributeFilter: ['aria-invalid'] });
+    render(proto.get.call(ta));
+  }
+  pairTable($('#f-speakers'), { label: 'Danh sách diễn giả', cols: ['Tên diễn giả', 'Chức danh'], placeholders: ['Nguyễn Văn An', 'Chuyên gia AI Marketing'], addText: 'Thêm diễn giả' });
+  pairTable($('#f-agenda'), { label: 'Chương trình', cols: ['Giờ', 'Nội dung'], placeholders: ['08:30', 'Đón khách & check-in'], addText: 'Thêm mục' });
+
   function readForm(existingId) {
     var f = form.elements;
     return {
