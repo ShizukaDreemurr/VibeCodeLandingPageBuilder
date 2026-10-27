@@ -1,0 +1,6 @@
+
+# Công cụ thiết kế cài cục bộ (taste-skill, impeccable) và ảnh kiểm tra
+.agents/
+.claude/skills/
+skills-lock.json
+.taste-skill/

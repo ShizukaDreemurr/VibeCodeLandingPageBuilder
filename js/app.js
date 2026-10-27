@@ -107,10 +107,12 @@
     currentTemplateId = TPL.get(id).id;
     var t = TPL.get(currentTemplateId);
     $('#tpl-name').textContent = t.name;
-    $('#tpl-swatch').style.background = 'linear-gradient(135deg, ' + t.theme.primary + ' 50%, ' + t.theme.accent + ' 50%)';
+    $('#tpl-swatch').style.setProperty('--sw1', t.theme.primary);
+    $('#tpl-swatch').style.setProperty('--sw2', t.theme.accent);
     $('#studio-box').hidden = !t.wedding;
     $('#tpl-name-2').textContent = t.name;
-    $('#tpl-swatch-2').style.background = $('#tpl-swatch').style.background;
+    $('#tpl-swatch-2').style.setProperty('--sw1', t.theme.primary);
+    $('#tpl-swatch-2').style.setProperty('--sw2', t.theme.accent);
   }
 
   function buildTemplateFilters() {
@@ -469,7 +471,7 @@
       if (firstTime) li.style.animationDelay = (ol.children.length * 35) + 'ms';
       li.setAttribute('data-index', i);
       li.dataset.key = s.key;
-      var grip = document.createElement('span'); grip.className = 'grip'; grip.textContent = '⋮⋮'; grip.setAttribute('aria-hidden', 'true');
+      var grip = document.createElement('span'); grip.className = 'grip'; grip.innerHTML = EP.icon('grip'); grip.setAttribute('aria-hidden', 'true');
       var name = document.createElement('label'); name.className = 'name';
       var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = s.visible; cb.disabled = !!m.locked;
       cb.addEventListener('change', function () {
@@ -480,15 +482,16 @@
       });
       var title = labels[s.key] && s.key !== 'countdown' && s.key !== 'register' ? labels[s.key] : m.label;
       name.appendChild(cb);
-      name.appendChild(document.createTextNode(' ' + title + (m.locked ? ' 🔒' : '')));
-      var up = document.createElement('button'); up.type = 'button'; up.textContent = '↑'; up.disabled = i === 0; up.setAttribute('aria-label', 'Đưa lên');
-      var down = document.createElement('button'); down.type = 'button'; down.textContent = '↓'; down.disabled = i === list.length - 1; down.setAttribute('aria-label', 'Đưa xuống');
+      name.appendChild(document.createTextNode(' ' + title));
+      if (m.locked) { var lk = EP.icons.node('lock', 14); lk.classList.add('lock'); lk.setAttribute('aria-label', 'bắt buộc'); name.appendChild(lk); }
+      var up = document.createElement('button'); up.type = 'button'; up.innerHTML = EP.icon('chevron-up'); up.disabled = i === 0; up.setAttribute('aria-label', 'Đưa lên');
+      var down = document.createElement('button'); down.type = 'button'; down.innerHTML = EP.icon('chevron-down'); down.disabled = i === list.length - 1; down.setAttribute('aria-label', 'Đưa xuống');
       up.addEventListener('click', function () { moveSection(i, i - 1); });
       down.addEventListener('click', function () { moveSection(i, i + 1); });
       li.addEventListener('pointerdown', function (e) { startDrag(e, li, ol); });
       li.addEventListener('mouseenter', function () { highlightPreview(s.key, true); });
       li.addEventListener('mouseleave', function () { highlightPreview(s.key, false); });
-      var gear = document.createElement('button'); gear.type = 'button'; gear.textContent = '⚙'; gear.className = 'gear';
+      var gear = document.createElement('button'); gear.type = 'button'; gear.innerHTML = EP.icon('sliders'); gear.className = 'gear';
       gear.setAttribute('aria-label', 'Tuỳ chỉnh phần này'); gear.setAttribute('aria-expanded', openSettings === s.key ? 'true' : 'false');
       gear.addEventListener('click', function () { openSettings = openSettings === s.key ? null : s.key; justOpened = true; renderSectionList(); });
       li.appendChild(grip); li.appendChild(name); if (editorMode === 'studio') li.appendChild(gear); li.appendChild(up); li.appendChild(down);
@@ -587,7 +590,7 @@
         var bg = v || fallback, fg = contrastWith();
         if (bg && fg) {
           var r = PS.contrast(PS.solidHex(bg), PS.solidHex(fg));
-          badge.textContent = r.toFixed(1) + ':1' + (r >= 4.5 ? ' ✓' : ' ⚠');
+          badge.textContent = r.toFixed(1) + ':1';
           badge.className = 'cr-badge ' + (r >= 4.5 ? 'is-ok' : 'is-warn');
           badge.title = r >= 4.5 ? 'Đạt chuẩn tương phản WCAG AA' : 'Tương phản thấp – chữ có thể khó đọc';
         }
@@ -611,13 +614,13 @@
     tx.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); fromText(true); } });
     line.appendChild(sw); line.appendChild(tx);
     if (root.EyeDropper) {
-      var eye = document.createElement('button'); eye.type = 'button'; eye.className = 'icon-btn'; eye.textContent = '💧'; eye.title = 'Hút màu trên màn hình';
+      var eye = document.createElement('button'); eye.type = 'button'; eye.className = 'icon-btn'; eye.innerHTML = EP.icon('droplet'); eye.setAttribute('aria-label', 'Hút màu trên màn hình'); eye.title = 'Hút màu trên màn hình';
       eye.addEventListener('click', function () {
         new root.EyeDropper().open().then(function (r) { show(r.sRGBHex); onSet(r.sRGBHex, true); }).catch(function () {});
       });
       line.appendChild(eye);
     }
-    var rs = document.createElement('button'); rs.type = 'button'; rs.className = 'icon-btn'; rs.textContent = '↺'; rs.title = 'Về mặc định';
+    var rs = document.createElement('button'); rs.type = 'button'; rs.className = 'icon-btn'; rs.innerHTML = EP.icon('reset'); rs.title = 'Về mặc định'; rs.setAttribute('aria-label', 'Về mặc định');
     rs.addEventListener('click', function () { show(''); onSet('', true); });
     line.appendChild(rs);
     row.appendChild(line);
@@ -636,7 +639,7 @@
     var rg = document.createElement('input'); rg.type = 'range'; rg.min = R[0]; rg.max = R[1]; rg.step = R[2]; rg.setAttribute('aria-label', R[4]);
     var nb = document.createElement('input'); nb.type = 'number'; nb.min = R[0]; nb.max = R[1]; nb.step = R[2]; nb.setAttribute('aria-label', R[4] + ' (số)');
     var unit = document.createElement('span'); unit.className = 'unit'; unit.textContent = R[3];
-    var rs = document.createElement('button'); rs.type = 'button'; rs.className = 'icon-btn'; rs.textContent = '↺'; rs.title = 'Về mặc định';
+    var rs = document.createElement('button'); rs.type = 'button'; rs.className = 'icon-btn'; rs.innerHTML = EP.icon('reset'); rs.title = 'Về mặc định'; rs.setAttribute('aria-label', 'Về mặc định');
     function show(v) { var isSet = v != null && v !== ''; rg.value = isSet ? v : R[0]; nb.value = isSet ? v : ''; nb.placeholder = 'Tự động'; row.classList.toggle('is-unset', !isSet); }
     show(value);
     rg.addEventListener('input', function () { nb.value = rg.value; row.classList.remove('is-unset'); setStyle(key, Number(rg.value), false); });
@@ -713,7 +716,8 @@
     PS.PALETTES.forEach(function (p) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'palette';
       b.title = p.name; b.setAttribute('aria-label', 'Bảng màu ' + p.name);
-      b.style.background = 'linear-gradient(135deg, ' + p.primary + ' 55%, ' + p.accent + ' 55%)';
+      b.style.setProperty('--sw1', p.primary);
+      b.style.setProperty('--sw2', p.accent);
       if (st.primary === p.primary && st.accent === p.accent) b.classList.add('is-active');
       b.addEventListener('click', function () {
         state.event.style = Object.assign({}, state.event.style || {}, { primary: p.primary, accent: p.accent, freeColors: false });
@@ -806,7 +810,7 @@
       chipRow('Hiệu ứng khi khách xem', O.motion, st.motion, pick('motion'))
     ]));
     var tip = document.createElement('p'); tip.className = 'hint';
-    tip.textContent = 'Mẹo: bấm ⚙ trên từng phần ở cột trái để đổi màu nền, màu chữ, căn lề riêng cho phần đó.';
+    tip.textContent = 'Mẹo: bấm biểu tượng tuỳ chỉnh trên từng phần ở cột trái, hoặc bấm thẳng vào phần đó trên trang, để đổi màu nền, màu chữ, căn lề riêng.';
     box.appendChild(tip);
     restoreFocus();
 
@@ -1020,7 +1024,12 @@
     var btn = $('#btn-publish');
     btn.hidden = !C.available || !state;
     btn.disabled = !state;
-    btn.textContent = isCloudEvent() ? 'Cập nhật trang đã xuất bản' : 'Xuất bản & chia sẻ';
+    btn.classList.remove('is-loading');
+    btn.innerHTML = EP.icon('send') + (isCloudEvent() ? 'Cập nhật trang' : 'Xuất bản');
+    var pill = $('#editor-status');
+    pill.textContent = isCloudEvent() ? 'Đã xuất bản' : 'Bản nháp';
+    pill.className = 'pill' + (isCloudEvent() ? ' is-positive' : '');
+    $('#editor-title').textContent = state ? state.event.name : 'Thiết kế trang';
     showShare();
   }
 
@@ -1055,7 +1064,7 @@
       li.textContent = i.text;
       ul.appendChild(li);
     });
-    $('#check-note').textContent = blocked ? 'Cần sửa các mục ✕ trước khi xuất bản.' : 'Các mục ⚠ là gợi ý, bạn vẫn có thể xuất bản.';
+    $('#check-note').textContent = blocked ? 'Cần sửa các mục đánh dấu đỏ trước khi xuất bản.' : 'Các mục màu vàng là gợi ý, bạn vẫn có thể xuất bản.';
     $('#btn-check-ok').disabled = blocked;
     var dlg = $('#check-dialog');
     return new Promise(function (resolve) {
@@ -1089,6 +1098,7 @@
         saveState();
         startWatch(state.event.id);
         renderLanding();
+        openSidePane('publish');
         toast(isNew ? 'Đã xuất bản! Gửi link hoặc mã QR cho khách.' : 'Đã cập nhật trang.');
       }, function (e) {
         toast('Không xuất bản được: ' + e.message);
@@ -1268,7 +1278,7 @@
         btn.disabled = false;
         btn.classList.remove('is-loading');
         landingEl.classList.remove('is-generating');
-        btn.textContent = '✨ Tạo landing page';
+        btn.innerHTML = EP.icon('wand') + 'Tạo landing page';
       });
   }
 
@@ -1352,6 +1362,7 @@
       var st = document.createElement('strong'); st.textContent = typeof c[1] === 'number' ? c[1].toLocaleString('vi-VN') : c[1];
       d.appendChild(sp); d.appendChild(st); grid.appendChild(d);
       if (typeof c[1] === 'number') EP.motion.countUp(st, c[1]);
+      if (c[0] === 'Đã đăng ký' && c[1] > 0) st.classList.add('is-data'); // chỉ tô màu khi có dữ liệu thật
     });
     EP.motion.stagger(grid.children);
   }
@@ -1449,7 +1460,7 @@
     a.download = 'dang-ky-' + state.event.name.replace(/[^\wÀ-ỹ]+/g, '-').toLowerCase() + '.csv';
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    EP.motion.morph($('#btn-export'), '✓ Đã tải file');
+    EP.motion.morph($('#btn-export'), 'Đã tải file');
   }
 
   // ---------- Tạo trang mới ----------
@@ -1488,7 +1499,7 @@
     setMsg('');
     $('#btn-regenerate').disabled = true;
     $('#mock-note').hidden = true;
-    landingEl.innerHTML = '<div class="empty-state"><p class="empty-title">Landing page sẽ hiện ở đây</p><p>Nhập thông tin sự kiện bên trái rồi bấm <strong>✨ Tạo landing page</strong>.</p></div>';
+    landingEl.innerHTML = '<div class="empty-state"><p class="empty-title">Landing page sẽ hiện ở đây</p><p>Nhập thông tin sự kiện ở tab <strong>Thông tin &amp; nội dung</strong> rồi bấm <strong>Tạo landing page</strong>.</p></div>';
   }
 
   // ---------- Sự kiện của tôi ----------
@@ -1539,7 +1550,8 @@
     card.className = 'event-card';
     var bar = document.createElement('div');
     bar.className = 'bar';
-    bar.style.background = 'linear-gradient(90deg, ' + t.theme.primary + ', ' + t.theme.accent + ')';
+    bar.style.setProperty('--sw1', t.theme.primary);
+    bar.style.setProperty('--sw2', t.theme.accent);
     var body = document.createElement('div');
     body.className = 'body';
     var h3 = document.createElement('h3'); h3.textContent = item.name;
@@ -1618,6 +1630,7 @@
       t.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     EP.motion.indicator($('.tabs'));
+    root.scrollTo(0, 0);
     $('#view-builder').hidden = name !== 'builder';
     $('#view-editor').hidden = name !== 'editor';
     $('#view-admin').hidden = name !== 'admin';
@@ -1691,13 +1704,13 @@
     persist();
     toast('Đã về giao diện gốc của mẫu. Bấm ↶ nếu muốn lấy lại.');
   });
+  function openSidePane(name) {
+    document.querySelectorAll('.side-tab').forEach(function (x) { x.classList.toggle('is-active', x.getAttribute('data-side') === name); });
+    $('#side-style').hidden = name !== 'style';
+    $('#side-publish').hidden = name !== 'publish';
+  }
   document.querySelectorAll('.side-tab').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var name = b.getAttribute('data-side');
-      document.querySelectorAll('.side-tab').forEach(function (x) { x.classList.toggle('is-active', x === b); });
-      $('#side-style').hidden = name !== 'style';
-      $('#side-publish').hidden = name !== 'publish';
-    });
+    b.addEventListener('click', function () { openSidePane(b.getAttribute('data-side')); });
   });
   $('#btn-back-info').addEventListener('click', function () { switchTab('builder'); });
   document.querySelectorAll('.device-toggle [data-device]').forEach(function (b) {
@@ -1738,7 +1751,7 @@
     C.signIn().then(function () { toast('Đã đăng nhập.'); }, function (e) { toast(e.message); });
   });
   $('#btn-copy-link').addEventListener('click', function () {
-    copyText($('#share-url').value).then(function () { EP.motion.morph($('#btn-copy-link'), '✓ Đã copy'); toast('Đã copy link.'); }, function () { $('#share-url').select(); });
+    copyText($('#share-url').value).then(function () { EP.motion.morph($('#btn-copy-link'), 'Đã copy'); toast('Đã copy link.'); }, function () { $('#share-url').select(); });
   });
 
   // ---------- Trang công khai cho khách: ?e=<mã sự kiện> ----------
@@ -1796,6 +1809,7 @@
   }
 
   // Mở app: có sự kiện thì vào "Sự kiện của tôi", chưa có thì vào màn tạo trang
+  EP.icons.hydrate();
   switchTab(Object.keys(S.read('events', {})).length ? 'events' : 'builder');
   root.addEventListener('resize', function () { EP.motion.indicator($('.tabs')); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { EP.motion.indicator($('.tabs')); });

@@ -53,6 +53,14 @@
       ' · ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   }
 
+  // Icon nét từ icons.js (nếu chưa nạp thì bỏ qua)
+  function ico(name, size) {
+    if (!root.EP.icons) return null;
+    var n = root.EP.icons.node(name, size || 16);
+    n.classList.add('lp-ic');
+    return n;
+  }
+
   function pad(n) { return String(n).padStart(2, '0'); }
 
   function isSafeUrl(url) { return /^https?:\/\/\S+$/i.test(url || ''); }
@@ -92,9 +100,9 @@
     function imageButton(slot, label) {
       if (!editable) return null;
       return h('button', {
-        type: 'button', class: 'lp-img-btn', 'data-slot': slot, text: label,
+        type: 'button', class: 'lp-img-btn', 'data-slot': slot,
         onclick: function (e) { e.preventDefault(); if (opts.onPickImage) opts.onPickImage(slot); }
-      });
+      }, [ico('image', 14), label]);
     }
 
     var statusBadge = h('span', { class: 'lp-badge' });
@@ -185,15 +193,14 @@
     var ctaText = txt('hero.cta', (st.ctaText || '').trim() || L.submit);
     var cta = mark(h('a', { class: 'lp-cta', href: '#lp-register', text: ctaText }), 'hero.cta', 'Nút chính', 'button', { def: L.submit });
     var hero = h('section', { class: 'lp-hero' + (images.hero ? ' has-image' : '') }, [
-      statusBadge,
-      TX('p', { class: 'lp-eyebrow' }, 'hero.eyebrow', 'Tên sự kiện (dòng nhỏ)', ev.name),
       editableText('h1', { class: 'lp-headline' }, 'headline', content.headline, 'Tiêu đề chính'),
+      TX('p', { class: 'lp-eyebrow' }, 'hero.eyebrow', 'Tên sự kiện', ev.name),
       mark(h('p', { class: 'lp-meta' }, [
-        TX('span', {}, 'hero.date', 'Thời gian', '🗓 ' + fmtDate(ev.startAt)),
-        TX('span', {}, 'hero.location', 'Địa điểm', '📍 ' + ev.location)
+        h('span', { class: 'lp-meta-item' }, [ico('calendar'), TX('span', {}, 'hero.date', 'Thời gian', fmtDate(ev.startAt))]),
+        h('span', { class: 'lp-meta-item' }, [ico('pin'), TX('span', {}, 'hero.location', 'Địa điểm', ev.location)])
       ]), 'hero.meta', 'Dòng thời gian & địa điểm', 'box'),
-      cta,
-      imageButton('hero', images.hero ? '🖼 Đổi ảnh bìa' : '🖼 Thêm ảnh bìa')
+      h('div', { class: 'lp-hero-action' }, [cta, statusBadge]),
+      imageButton('hero', images.hero ? 'Đổi ảnh bìa' : 'Thêm ảnh bìa')
     ]);
     if (images.hero) hero.style.setProperty('--lp-hero-image', 'url("' + images.hero.replace(/"/g, '') + '")');
     mark(hero, 'hero', 'Phần đầu trang', 'box', { required: true });

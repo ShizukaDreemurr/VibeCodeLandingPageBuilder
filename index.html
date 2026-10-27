@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Xclipse – Tạo landing page sự kiện trong 5 phút</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;700;800&family=Nunito:wght@400;600;800&family=Lora:wght@500;700&display=swap">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/app.css">
@@ -12,29 +14,34 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">X<span>clipse</span></div>
+    <a class="brand" href="./" aria-label="Xclipse – trang chủ">
+      <svg class="brand-mark" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15.5" cy="10" r="7" fill="var(--accent)"/></svg>
+      <span>Xclipse</span>
+    </a>
     <nav class="tabs" role="tablist">
       <button type="button" class="tab" data-tab="events" role="tab" aria-selected="false">Sự kiện của tôi</button>
-      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">1. Thông tin &amp; nội dung</button>
-      <button type="button" class="tab" data-tab="editor" role="tab" aria-selected="false">2. Thiết kế trang</button>
+      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Thông tin &amp; nội dung</button>
+      <button type="button" class="tab" data-tab="editor" role="tab" aria-selected="false">Thiết kế trang</button>
       <button type="button" class="tab" data-tab="admin" role="tab" aria-selected="false">Danh sách đăng ký</button>
     </nav>
     <span class="user-email" id="user-email" hidden></span>
     <button type="button" class="btn btn-ghost" id="btn-auth" hidden>Đăng nhập Google</button>
-    <button type="button" class="btn btn-accent" id="btn-new">+ Tạo trang mới</button>
+    <button type="button" class="btn btn-primary" id="btn-new" aria-label="Tạo trang mới"><span data-icon="plus"></span><span class="lbl">Tạo trang mới</span></button>
   </header>
 
   <main id="view-builder" class="workspace-form view">
     <!-- BƯỚC 1: FORM NHẬP + AI -->
+    <div class="title-row">
+      <div>
+        <h1>Thông tin sự kiện</h1>
+        <p class="subline">Thời gian, địa điểm và diễn giả lấy đúng từ đây; AI chỉ viết phần chữ giới thiệu.</p>
+      </div>
+      <button type="button" class="btn btn-ghost btn-small" id="btn-sample">Điền dữ liệu mẫu</button>
+    </div>
     <aside class="panel">
       <form id="event-form" novalidate>
-        <div class="tpl-bar">
-          <span class="tpl-swatch" id="tpl-swatch" aria-hidden="true"></span>
-          <div class="tpl-bar-text"><span class="hint">Mẫu trang</span><strong id="tpl-name">Tech Workshop</strong></div>
-          <button type="button" class="btn btn-ghost btn-small" id="btn-tpl">Đổi mẫu</button>
-        </div>
-
-        <h2 class="panel-title">1. Thông tin sự kiện</h2>
+        <div class="form-main">
+        <h2 class="panel-title">Sự kiện</h2>
 
         <div class="field">
           <label for="f-name">Tên sự kiện <span class="req">*</span></label>
@@ -112,16 +119,22 @@
           <button type="button" class="btn btn-ghost btn-small" id="btn-sheet-test">Kiểm tra kết nối</button>
           <p class="form-msg" id="sheet-msg" role="status" aria-live="polite"></p>
         </details>
+        </div>
 
-        <button type="button" class="btn btn-ghost btn-small" id="btn-sample">Điền dữ liệu mẫu</button>
+        <div class="form-side">
+        <h2 class="panel-title">Mẫu trang &amp; nội dung AI</h2>
+        <div class="tpl-bar">
+          <span class="tpl-swatch" id="tpl-swatch" aria-hidden="true"></span>
+          <div class="tpl-bar-text"><span class="hint">Mẫu trang</span><strong id="tpl-name">Tech Workshop</strong></div>
+          <button type="button" class="btn btn-ghost btn-small" id="btn-tpl">Đổi mẫu</button>
+        </div>
 
-        <h2 class="panel-title">2. Viết nội dung bằng AI</h2>
 
         <fieldset class="segmented" id="ai-mode">
           <legend class="sr-only">Chế độ AI</legend>
-          <label><input type="radio" name="aiMode" value="mock" checked> Mô phỏng (offline)</label>
+          <label title="Viết bằng bộ sinh nội dung có sẵn, không cần mạng"><input type="radio" name="aiMode" value="mock" checked> Mô phỏng</label>
           <label><input type="radio" name="aiMode" value="gemini"> Gemini API</label>
-          <label><input type="radio" name="aiMode" value="copy"> Copy prompt sang AI khác</label>
+          <label title="Copy prompt sang ChatGPT, Claude, Gemini, Manus rồi dán kết quả về"><input type="radio" name="aiMode" value="copy"> AI khác</label>
         </fieldset>
 
         <div class="field">
@@ -163,19 +176,38 @@
         <p class="form-msg" id="ai-msg" role="status" aria-live="polite"></p>
 
         <div class="actions">
-          <button type="submit" class="btn btn-primary" id="btn-generate">✨ Tạo landing page</button>
-          <button type="button" class="btn btn-ghost" id="btn-regenerate" disabled>↻ Viết lại</button>
+          <button type="submit" class="btn btn-primary" id="btn-generate"><span data-icon="wand"></span>Tạo landing page</button>
+          <button type="button" class="btn btn-ghost" id="btn-regenerate" disabled><span data-icon="refresh"></span>Viết lại</button>
         </div>
-        <p class="hint">Tạo xong, bạn sẽ được chuyển sang bước <strong>2. Thiết kế trang</strong> để chỉnh bố cục, ảnh và xuất bản.</p>
+        <p class="hint">Tạo xong, app chuyển sang <strong>Thiết kế trang</strong> để chỉnh bố cục, ảnh và xuất bản.</p>
+        </div>
 
       </form>
     </aside>
   </main>
 
   <main id="view-editor" class="editor view" hidden>
+    <div class="editor-bar">
+      <button type="button" class="icon-btn" id="btn-back-info" aria-label="Sửa thông tin &amp; nội dung" title="Sửa thông tin &amp; nội dung"><span data-icon="arrow-left"></span></button>
+      <h1 id="editor-title">Thiết kế trang</h1>
+      <span class="pill" id="editor-status">Bản nháp</span>
+      <span class="mock-note" id="mock-note" hidden>Dữ liệu AI mô phỏng</span>
+      <span class="sheet-status" id="sheet-status" hidden></span>
+      <div class="editor-bar-right">
+        <div class="history-btns" role="group" aria-label="Hoàn tác">
+          <button type="button" id="btn-undo" aria-label="Hoàn tác" title="Hoàn tác (Ctrl+Z)" disabled><span data-icon="undo"></span></button>
+          <button type="button" id="btn-redo" aria-label="Làm lại" title="Làm lại (Ctrl+Shift+Z)" disabled><span data-icon="redo"></span></button>
+        </div>
+        <div class="device-toggle" role="group" aria-label="Kích thước màn hình">
+          <button type="button" class="is-active" data-device="desktop" aria-label="Máy tính" title="Máy tính"><span data-icon="monitor"></span></button>
+          <button type="button" data-device="tablet" aria-label="Máy tính bảng" title="Máy tính bảng"><span data-icon="tablet"></span></button>
+          <button type="button" data-device="mobile" aria-label="Điện thoại" title="Điện thoại"><span data-icon="phone"></span></button>
+        </div>
+        <button type="button" class="btn btn-primary btn-small" id="btn-publish" hidden disabled><span data-icon="send"></span>Xuất bản</button>
+      </div>
+    </div>
     <!-- TRÁI: MẪU + BỐ CỤC -->
     <aside class="panel editor-side">
-      <button type="button" class="btn btn-ghost btn-small" id="btn-back-info">← Sửa thông tin &amp; nội dung</button>
       <div class="tpl-bar">
         <span class="tpl-swatch" id="tpl-swatch-2" aria-hidden="true"></span>
         <div class="tpl-bar-text"><span class="hint">Mẫu trang</span><strong id="tpl-name-2">Tech Workshop</strong></div>
@@ -183,31 +215,18 @@
       </div>
         <div class="layout-box" id="layout-box">
           <h2 class="panel-title">Bố cục trang</h2>
-          <p class="hint">Kéo thả hoặc dùng mũi tên để đổi thứ tự, bỏ tick để ẩn. Phần có 🔒 là bắt buộc. Bấm trực tiếp vào chữ trên trang để sửa.</p>
+          <p class="hint">Kéo để đổi thứ tự, bỏ chọn để ẩn. Phần có khoá là bắt buộc.</p>
           <ol class="section-list" id="section-list"></ol>
         </div>
-      <button type="button" class="btn btn-ghost btn-small" id="btn-regenerate-2">↻ AI viết lại nội dung</button>
+      <button type="button" class="btn btn-ghost btn-small" id="btn-regenerate-2"><span data-icon="refresh"></span>AI viết lại nội dung</button>
     </aside>
 
     <!-- GIỮA: KHUNG TRANG -->
     <section class="preview-wrap" aria-label="Xem trước landing page">
-      <div class="preview-bar">
-        <div class="device-toggle" role="group" aria-label="Kích thước màn hình">
-          <button type="button" class="is-active" data-device="desktop" title="Máy tính">🖥 Desktop</button>
-          <button type="button" data-device="tablet" title="Máy tính bảng">Tablet</button>
-          <button type="button" data-device="mobile" title="Điện thoại">📱 Mobile</button>
-        </div>
-        <div class="history-btns" role="group" aria-label="Hoàn tác">
-          <button type="button" id="btn-undo" title="Hoàn tác (Ctrl+Z)" disabled>↶</button>
-          <button type="button" id="btn-redo" title="Làm lại (Ctrl+Shift+Z)" disabled>↷</button>
-        </div>
-        <span class="sheet-status" id="sheet-status" hidden></span>
-        <span class="mock-note" id="mock-note" hidden>Bản demo vòng loại – Dữ liệu mô phỏng AI</span>
-      </div>
       <div id="landing" class="landing">
         <div class="empty-state">
           <p class="empty-title">Landing page sẽ hiện ở đây</p>
-          <p>Vào bước <strong>1. Thông tin &amp; nội dung</strong> rồi bấm <strong>✨ Tạo landing page</strong>.</p>
+          <p>Nhập thông tin sự kiện ở tab <strong>Thông tin &amp; nội dung</strong> rồi bấm <strong>Tạo landing page</strong>.</p>
         </div>
       </div>
     </section>
@@ -215,8 +234,8 @@
     <!-- PHẢI: XEM THỬ + XUẤT BẢN -->
     <aside class="panel editor-side editor-right">
       <div class="side-tabs" role="tablist">
-        <button type="button" class="side-tab is-active" data-side="style">🎨 Giao diện</button>
-        <button type="button" class="side-tab" data-side="publish">🚀 Xuất bản</button>
+        <button type="button" class="side-tab is-active" data-side="style">Giao diện</button>
+        <button type="button" class="side-tab" data-side="publish">Xuất bản &amp; xem thử</button>
       </div>
       <div class="side-pane" id="side-style">
         <div class="mode-switch" role="radiogroup" aria-label="Chế độ chỉnh giao diện">
@@ -224,13 +243,13 @@
           <button type="button" class="mode-btn" data-mode="studio" role="radio" aria-checked="false">Studio<small>Chỉnh mọi thông số</small></button>
         </div>
         <div id="style-panel"></div>
-        <button type="button" class="btn btn-ghost btn-small" id="btn-style-reset">↺ Về giao diện gốc của mẫu</button>
+        <button type="button" class="btn btn-ghost btn-small" id="btn-style-reset"><span data-icon="reset"></span>Về giao diện gốc của mẫu</button>
       </div>
       <div class="side-pane" id="side-publish" hidden>
-      <h2 class="panel-title">Ảnh</h2>
-      <p class="hint">Bấm nút <strong>🖼 / + Ảnh</strong> ngay trên trang để thay ảnh bìa, ảnh diễn giả, album. Bấm vào chữ để sửa trực tiếp.</p>
+      <h2 class="panel-title">Xuất bản</h2>
+      <p class="hint" id="publish-hint">Đăng nhập Google rồi bấm Xuất bản ở thanh trên để có link và mã QR; khách đăng ký từ mọi thiết bị.</p>
       <h2 class="panel-title">Xem thử trạng thái</h2>
-        <label class="sim-label" id="sim-wrap" hidden>⏱
+        <label class="sim-label" id="sim-wrap" hidden><span data-icon="clock"></span>
           <select id="sim-state" aria-label="Xem thử trạng thái trang">
             <option value="">Hiện tại</option>
             <option value="almost">Sắp hết chỗ</option>
@@ -240,16 +259,13 @@
           </select>
         </label>
 
-      <h2 class="panel-title">Xuất bản</h2>
-      <p class="hint">Xuất bản để có link + mã QR; khách đăng ký từ mọi thiết bị.</p>
-      <button type="button" class="btn btn-primary" id="btn-publish" hidden disabled>Xuất bản &amp; chia sẻ</button>
       <div class="share-box" id="share-box" hidden>
         <div class="share-info">
           <p class="share-title">Trang đã xuất bản – gửi link hoặc mã QR cho khách</p>
           <div class="share-row">
             <input id="share-url" type="text" readonly aria-label="Đường dẫn trang công khai">
             <button type="button" class="btn btn-ghost btn-small" id="btn-copy-link">Copy link</button>
-            <a class="btn btn-ghost btn-small" id="btn-open-link" target="_blank" rel="noopener">Mở trang</a>
+            <a class="btn btn-ghost btn-small" id="btn-open-link" target="_blank" rel="noopener"><span data-icon="external"></span>Mở trang</a>
           </div>
           <p class="hint" id="share-note"></p>
         </div>
@@ -260,11 +276,13 @@
   </main>
 
   <main id="view-events" class="admin view" hidden>
-    <div class="admin-head">
-      <h2>Sự kiện của tôi</h2>
-      <button type="button" class="btn btn-accent" id="btn-new-2">+ Tạo sự kiện mới</button>
+    <div class="title-row">
+      <div>
+        <h1>Sự kiện của tôi</h1>
+        <p class="subline" id="events-hint">Các trang bạn đã tạo trên trình duyệt này. Đăng nhập Google để thấy cả trang đã xuất bản từ thiết bị khác.</p>
+      </div>
+      <button type="button" class="btn btn-ghost" id="btn-new-2"><span data-icon="plus"></span>Tạo sự kiện mới</button>
     </div>
-    <p class="hint" id="events-hint">Các trang bạn đã tạo trên trình duyệt này. Đăng nhập Google để thấy cả các trang đã xuất bản từ thiết bị khác.</p>
     <div class="event-grid" id="event-grid"></div>
   </main>
 
@@ -275,18 +293,20 @@
   </main>
 
   <main id="view-admin" class="admin view" hidden>
-    <div class="admin-head">
-      <h2 id="admin-title">Danh sách đăng ký</h2>
+    <div class="title-row">
+      <div>
+        <h1 id="admin-title">Danh sách đăng ký</h1>
+        <p class="subline" id="admin-source">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
+      </div>
       <div class="actions">
-        <button type="button" class="btn btn-ghost" id="btn-export">Xuất CSV (mở bằng Excel)</button>
-        <button type="button" class="btn btn-danger" id="btn-clear-regs">Xoá toàn bộ</button>
+        <button type="button" class="btn btn-ghost" id="btn-export"><span data-icon="download"></span>Xuất CSV</button>
+        <button type="button" class="btn btn-danger" id="btn-clear-regs"><span data-icon="trash"></span>Xoá toàn bộ</button>
       </div>
     </div>
-    <p class="hint" id="admin-source">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
     <div class="metric-grid" id="metric-grid"></div>
     <div class="table-wrap">
       <table class="table">
-        <thead><tr><th>#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th>Thời gian</th><th>Trạng thái</th><th>Chăm sóc</th><th>Liên hệ</th><th>Lưu ở</th></tr></thead>
+        <thead><tr><th class="num">#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th class="num">Thời gian</th><th>Trạng thái</th><th>Chăm sóc</th><th>Liên hệ</th><th>Lưu ở</th></tr></thead>
         <tbody id="admin-rows"></tbody>
       </table>
     </div>
@@ -305,7 +325,7 @@
   <dialog class="tpl-dialog" id="tpl-dialog" aria-labelledby="tpl-dialog-title">
     <div class="tpl-dialog-head">
       <h2 id="tpl-dialog-title">Thư viện mẫu</h2>
-      <button type="button" class="btn btn-ghost btn-small" id="btn-tpl-close">Đóng</button>
+      <button type="button" class="icon-btn" id="btn-tpl-close" aria-label="Đóng"><span data-icon="x"></span></button>
     </div>
     <p class="hint">Lọc theo ngành, loại và mục đích sự kiện. Đổi mẫu giữ nguyên nội dung đã viết.</p>
     <div class="tpl-filters" id="tpl-filters"></div>
@@ -329,6 +349,7 @@
   <script src="js/cloud.js"></script>
   <script src="js/templates.js"></script>
   <script src="js/images.js"></script>
+  <script src="js/icons.js"></script>
   <script src="js/motion.js"></script>
   <script src="js/page-style.js"></script>
   <script src="js/landing-renderer.js"></script>

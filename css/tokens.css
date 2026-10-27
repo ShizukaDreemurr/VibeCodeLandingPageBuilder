@@ -1,31 +1,71 @@
-/* tokens.css — toàn bộ màu, font, bo góc. Đổi giao diện chỉ cần sửa file này. */
+/* tokens.css — mọi màu, chữ, khoảng cách, bo góc và chuyển động của app.
+   Phong cách "framed sheet": khung xám nhạt chứa thanh trên, nội dung nằm trên tấm trắng viền 1px, không bóng.
+   Màu thương hiệu (hồng) chỉ dùng cho dữ liệu và trạng thái đang chọn; nút chính màu gần đen.
+   Khi có bộ nhận diện chính thức, chỉ cần đổi --accent / --accent-ink / --font ở đây. */
 :root {
-  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font: 'IBM Plex Sans', 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-  /* Công cụ */
-  --bg: #f6f7fb;
-  --surface: #ffffff;
-  --border: #e3e6ef;
-  --text: #16193a;
-  --text-muted: #5b6078;
-  --primary: #1e2a78;
+  /* Nền & bề mặt */
+  --ground: #f7f8f9;     /* khung (thanh trên + nền quanh tấm) */
+  --surface: #ffffff;    /* tấm làm việc */
+  --raised: #f2f4f5;     /* giếng / khối lõm một bậc */
+  --active: #e9ebed;     /* trạng thái đang chọn trung tính */
+  --border: #e6e8ea;     /* viền tấm & thẻ */
+  --rule: #eff0f2;       /* kẻ dòng bảng */
+  --control: #cdced1;    /* viền ô nhập & nút phụ */
+
+  /* Chữ (mọi bậc ≥ 4.5:1 trên trắng) */
+  --text: #131416;
+  --text-muted: #5d5f63;
+
+  /* Hành động & thương hiệu */
+  --primary: #131416;            /* nút chính gần đen */
+  --primary-hover: #2a2c30;
   --primary-contrast: #ffffff;
-  --accent: #d6336c;
+  --accent: #d6336c;             /* hồng thương hiệu: dữ liệu, gạch chân tab, trạng thái chọn */
+  --accent-ink: #b8235a;         /* hồng dùng làm chữ (5.6:1 trên trắng) */
+  --accent-soft: #fdeef3;
   --accent-contrast: #ffffff;
-  --success: #12804a;
-  --warn: #9a5b00;
-  --danger: #c0262d;
 
-  /* Landing page */
+  /* Trạng thái */
+  --success: #1e7b4f;
+  --warn: #92400e;
+  --danger: #c4242a;
+  --pill-positive-bg: #dcfae5; --pill-positive-ink: #04250e;
+  --pill-negative-bg: #ffedea; --pill-negative-ink: #831c1e;
+  --pill-warning-bg: #fffbeb; --pill-warning-ink: #92400e;
+  --pill-neutral-bg: #ebedee; --pill-neutral-ink: #353736;
+
+  /* Hình khối */
+  --radius-sheet: 16px;
+  --radius: 10px;
+  --radius-small: 6px;
+  --control-h: 32px;
+  --field-h: 38px;
+  --gap: 24px;
+  --pad: 24px;
+
+  /* Bóng chỉ cho thứ đang nổi (menu, hộp thoại, thanh công cụ, toast) */
+  --shadow-float: 0 12px 32px rgba(19, 20, 22, 0.16), 0 2px 6px rgba(19, 20, 22, 0.08);
+
+  /* Chuyển động: một bộ duy nhất, ease-out dạng hàm mũ */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;  /* phản hồi bấm, rê */
+  --dur-2: 200ms;  /* chuyển trạng thái, mở khung */
+  --dur-3: 320ms;  /* đổi bố cục, chuyển trang */
+
+  /* Landing page (mặc định của mẫu, renderer ghi đè theo template) */
   --lp-bg: #ffffff;
-  --lp-surface: #f4f5fb;
-  --lp-text: #16193a;
-  --lp-muted: #5b6078;
-  --lp-primary: #1e2a78;
+  --lp-surface: #f4f5f7;
+  --lp-text: #131416;
+  --lp-muted: #5d5f63;
+  --lp-primary: #1f2a44;
   --lp-accent: #d6336c;
   --lp-accent-contrast: #ffffff;
 
-  --radius: 14px;
-  --radius-small: 8px;
-  --shadow: 0 6px 24px rgba(22, 25, 58, 0.08);
+  /* Tên cũ, giữ để không vỡ chỗ đang dùng */
+  --bg: var(--ground);
+  --shadow: var(--shadow-float);
 }

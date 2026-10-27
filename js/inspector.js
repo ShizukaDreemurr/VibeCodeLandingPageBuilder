@@ -20,6 +20,12 @@
     b.addEventListener('click', onClick);
     return b;
   }
+  // Nút có icon nét + chữ
+  function ibtn(iconName, label, title, onClick) {
+    var b = btn(label, title, onClick);
+    b.insertAdjacentHTML('afterbegin', EP.icon(iconName, 14));
+    return b;
+  }
   function sep() { return el('span', 'ins-sep'); }
 
   function node() { return selectedKey ? cfg.landing.querySelector('[data-el="' + cssEsc(selectedKey) + '"]') : null; }
@@ -107,7 +113,7 @@
       crumbs.appendChild(el('span', 'ins-crumb-sep', '›'));
     });
     crumbs.appendChild(el('strong', 'ins-name', n.getAttribute('data-el-label')));
-    crumbs.appendChild(btn('✕', 'Đóng (Esc)', close));
+    var cl = btn('', 'Đóng (Esc)', close); cl.innerHTML = EP.icon('x'); crumbs.appendChild(cl);
     bar.appendChild(crumbs);
 
     var row = el('div', 'ins-row');
@@ -118,7 +124,7 @@
     }
 
     if (kind === 'text') {
-      row.appendChild(btn('✏️ Sửa chữ', 'Sửa chữ ngay trên trang', function () {
+      row.appendChild(ibtn('pencil', 'Sửa chữ', 'Sửa chữ ngay trên trang', function () {
         n.focus();
         var r = document.createRange(); r.selectNodeContents(n);
         var sel = root.getSelection(); sel.removeAllRanges(); sel.addRange(r);
@@ -148,8 +154,10 @@
     row.appendChild(btn('U', 'Gạch chân', function () { setProp('underline', !st.underline); }, !!st.underline));
     row.appendChild(btn('AA', 'Viết hoa', function () { setProp('upper', !st.upper); }, !!st.upper));
     row.appendChild(sep());
-    [['left', '⯇', 'Căn trái'], ['center', '≡', 'Căn giữa'], ['right', '⯈', 'Căn phải']].forEach(function (a) {
-      row.appendChild(btn(a[1], a[2], function () { setProp('align', st.align === a[0] ? '' : a[0]); }, st.align === a[0]));
+    [['left', 'Căn trái'], ['center', 'Căn giữa'], ['right', 'Căn phải']].forEach(function (a) {
+      var ab = btn('', a[1], function () { setProp('align', st.align === a[0] ? '' : a[0]); }, st.align === a[0]);
+      ab.innerHTML = EP.icon('align-' + a[0]);
+      row.appendChild(ab);
     });
     bar.appendChild(row);
 
@@ -177,8 +185,8 @@
     }
 
     var row4 = el('div', 'ins-row ins-actions');
-    if (!required) row4.appendChild(btn(st.hidden ? '👁 Hiện lại' : '🙈 Ẩn', st.hidden ? 'Hiện lại phần tử này' : 'Ẩn phần tử này khỏi trang', function () { setProp('hidden', !st.hidden); cfg.toast(st.hidden ? 'Đã hiện lại.' : 'Đã ẩn – khách sẽ không thấy phần tử này.'); }));
-    row4.appendChild(btn('↺ Mặc định', 'Bỏ mọi chỉnh sửa của phần tử này', resetEl));
+    if (!required) row4.appendChild(ibtn(st.hidden ? 'eye' : 'eye-off', st.hidden ? 'Hiện lại' : 'Ẩn', st.hidden ? 'Hiện lại phần tử này' : 'Ẩn phần tử này khỏi trang', function () { setProp('hidden', !st.hidden); cfg.toast(st.hidden ? 'Đã hiện lại.' : 'Đã ẩn – khách sẽ không thấy phần tử này.'); }));
+    row4.appendChild(ibtn('reset', 'Mặc định', 'Bỏ mọi chỉnh sửa của phần tử này', resetEl));
     var def = n.getAttribute('data-el-default');
     if (kind === 'text' && def != null && n.getAttribute('data-field') == null) {
       var hint = el('small', 'ins-hint', 'Gốc: ' + (def.length > 40 ? def.slice(0, 40) + '…' : def));
@@ -206,7 +214,7 @@
       pick.addEventListener('input', function () { setProp(prop, pick.value, true); });
       pick.addEventListener('change', function () { setProp(prop, pick.value); });
       sw.appendChild(pick);
-      if (value) sw.appendChild(btn('↺', 'Bỏ ' + label.toLowerCase(), function () { setProp(prop, ''); }));
+      if (value) { var rb = btn('', 'Bỏ ' + label.toLowerCase(), function () { setProp(prop, ''); }); rb.innerHTML = EP.icon('reset'); sw.appendChild(rb); }
       wrap.appendChild(sw);
       return wrap;
     }
@@ -225,9 +233,9 @@
       row.appendChild(cfg.colorField('Màu chữ riêng', cur.textColor, '', '', function (v, c) { api.set(key, 'textColor', v, c); }));
     }
     var acts = el('div', 'ins-row ins-actions');
-    acts.appendChild(btn('↑ Đưa lên', 'Đưa phần này lên trên', function () { api.move(key, -1); }));
-    acts.appendChild(btn('↓ Đưa xuống', 'Đưa phần này xuống dưới', function () { api.move(key, 1); }));
-    if (!api.locked(key)) acts.appendChild(btn('🙈 Ẩn phần', 'Ẩn cả phần này', function () { close(); api.hide(key); }));
+    acts.appendChild(ibtn('arrow-up', 'Đưa lên', 'Đưa phần này lên trên', function () { api.move(key, -1); }));
+    acts.appendChild(ibtn('arrow-down', 'Đưa xuống', 'Đưa phần này xuống dưới', function () { api.move(key, 1); }));
+    if (!api.locked(key)) acts.appendChild(ibtn('eye-off', 'Ẩn phần', 'Ẩn cả phần này', function () { close(); api.hide(key); }));
     row.appendChild(acts);
   }
 

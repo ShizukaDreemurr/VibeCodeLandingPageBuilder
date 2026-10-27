@@ -122,7 +122,7 @@
           speakers: [{ name: 'Nguyễn Minh Anh', title: 'Cô dâu' }, { name: 'Trần Hoàng Nam', title: 'Chú rể' }],
           agenda: [{ time: '10:30', title: 'Đón khách' }, { time: '11:00', title: 'Lễ thành hôn' }, { time: '11:30', title: 'Khai tiệc' }],
           earlyBird: 'Sự hiện diện của bạn là niềm vinh hạnh của gia đình chúng mình', earlyBirdUntil: '',
-          studioName: 'Studio Ánh Dương', studioUrl: 'https://example.com/dat-lich'
+          studioName: 'Studio Ánh Dương', studioUrl: 'https://www.facebook.com/studioanhduong.vn'
         };
       }
     }

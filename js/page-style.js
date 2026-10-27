@@ -47,7 +47,7 @@
     heroHeight: [['compact', 'Gọn'], ['normal', 'Vừa'], ['full', 'Toàn màn hình']],
     spacing: [['compact', 'Gọn'], ['normal', 'Vừa'], ['airy', 'Thoáng']],
     countdown: [['boxes', 'Ô màu'], ['minimal', 'Tối giản']],
-    bullet: [['check', '✓'], ['star', '★'], ['arrow', '→'], ['dot', '●'], ['heart', '♥'], ['none', 'Không']],
+    bullet: [['check', 'Dấu tích'], ['star', 'Ngôi sao'], ['arrow', 'Mũi tên'], ['dot', 'Chấm tròn'], ['heart', 'Trái tim'], ['none', 'Không']],
     motion: [['full', 'Đầy đủ'], ['subtle', 'Nhẹ'], ['off', 'Tắt']],
     headingUpper: [['', 'Bình thường'], ['upper', 'VIẾT HOA']],
     sectionBg: [['auto', 'Mặc định'], ['plain', 'Trắng'], ['tint', 'Nhạt'], ['primary', 'Màu chính']],
