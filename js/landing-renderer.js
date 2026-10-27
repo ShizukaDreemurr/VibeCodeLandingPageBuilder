@@ -6,6 +6,7 @@
   var ES = root.EP.eventStatus;
   var T = root.EP.templates;
   var GALLERY_SLOTS = 4;
+  var scopeSeq = 0;
 
   // Thứ tự mặc định các phần giữa hero và footer. locked = bắt buộc theo đề, không cho ẩn.
   var SECTIONS = [
@@ -16,8 +17,39 @@
     { key: 'gallery', label: 'Album ảnh (thiệp cưới)' },
     { key: 'agenda', label: 'Chương trình (agenda)', locked: true },
     { key: 'offer', label: 'Ưu đãi đăng ký sớm' },
-    { key: 'register', label: 'Form đăng ký', locked: true }
+    { key: 'register', label: 'Form đăng ký', locked: true },
+    // Khối thêm (thư viện khối): mặc định ẩn, bật trong bảng "Khối"
+    { key: 'faq', label: 'Hỏi đáp (FAQ)', optional: true, block: true },
+    { key: 'testimonials', label: 'Cảm nhận người tham dự', optional: true, block: true },
+    { key: 'sponsors', label: 'Nhà tài trợ / đối tác', optional: true, block: true },
+    { key: 'video', label: 'Video giới thiệu', optional: true, block: true },
+    { key: 'map', label: 'Bản đồ địa điểm', optional: true, block: true },
+    { key: 'cta2', label: 'Lời kêu gọi cuối trang', optional: true, block: true }
   ];
+  // Mục mặc định của khối danh sách (người dùng sửa chữ tại chỗ, thêm/bớt mục)
+  var BLOCK_ITEMS = {
+    faq: [['Sự kiện có mất phí không?', 'Hoàn toàn miễn phí, bạn chỉ cần đăng ký trước để giữ chỗ.'],
+      ['Tôi có nhận được xác nhận không?', 'Có. Ban tổ chức sẽ liên hệ qua số điện thoại hoặc email bạn để lại.'],
+      ['Có thể đi cùng bạn bè không?', 'Được, mỗi người vui lòng đăng ký riêng để ban tổ chức chuẩn bị đủ chỗ.']],
+    testimonials: [['“Nội dung thực tế, ra về là áp dụng được ngay.”', 'Minh Anh · khách mời năm trước'],
+      ['“Tổ chức chu đáo, gặp được nhiều người cùng chí hướng.”', 'Quốc Bảo · khách mời năm trước']],
+    sponsors: [['Đối tác 1'], ['Đối tác 2'], ['Đối tác 3'], ['Đối tác 4']]
+  };
+  var MAX_ITEMS = 8;
+  function blockCount(ev, key) {
+    var b = (ev.blocks || {})[key];
+    var n = b && b.count != null ? Number(b.count) : BLOCK_ITEMS[key].length;
+    return Math.max(1, Math.min(MAX_ITEMS, n || 0));
+  }
+  // Link YouTube/Vimeo → địa chỉ nhúng an toàn
+  function videoEmbed(url) {
+    url = String(url || '').trim();
+    var m = url.match(/^https?:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/i);
+    if (m) return 'https://www.youtube-nocookie.com/embed/' + m[1];
+    m = url.match(/^https?:\/\/(?:www\.)?vimeo\.com\/(\d{5,12})/i);
+    if (m) return 'https://player.vimeo.com/video/' + m[1];
+    return '';
+  }
 
   // Ghép cấu hình người dùng với danh sách mặc định (thêm phần mới, bỏ phần lạ)
   function normalizeSections(config) {
@@ -30,7 +62,7 @@
       }
     });
     SECTIONS.forEach(function (s) {
-      if (!out.some(function (o) { return o.key === s.key; })) out.push({ key: s.key, visible: true });
+      if (!out.some(function (o) { return o.key === s.key; })) out.push({ key: s.key, visible: !s.optional });
     });
     return out;
   }
@@ -120,6 +152,15 @@
     // Chữ do AI viết (headline, description, benefits:i) lưu thẳng vào content như cũ.
     var texts = ev.texts || {};
     var elStyles = ev.elStyles || {};
+    var rich = ev.rich || {};
+    var LU = root.EP.lpUtils;
+    // Phạm vi CSS riêng của trang này: kiểu khi rê chuột + kiểu theo thiết bị (container query)
+    var scope = String(++scopeSeq);
+    container.setAttribute('data-lp-scope', scope);
+    if (LU) {
+      var css = LU.buildCss(scope, ev, editable);
+      if (css) container.appendChild(h('style', { text: css }));
+    }
     function txt(key, def) { return texts[key] != null && texts[key] !== '' ? texts[key] : def; }
 
     // kind: 'text' (sửa chữ tại chỗ) | 'button' (sửa chữ qua bảng) | 'box' (chỉ đổi kiểu)
@@ -133,6 +174,7 @@
         if (opt.def != null) node.setAttribute('data-el-default', opt.def);
       }
       applyElStyle(node, elStyles[key], opt.required);
+      if ((kind || 'text') === 'text' || kind === 'button') fill(node, key);
       if (editable && (kind || 'text') === 'text') makeEditable(node, key, opt);
       return node;
     }
@@ -168,20 +210,29 @@
         if (editable) node.classList.add('lp-el-hidden'); else node.hidden = true;
       }
     }
+    // Chữ có định dạng (ev.rich[mã], đã lọc) + biến động {con_cho}…
+    function fill(node, key) {
+      var r = rich[key];
+      // Chỉ dùng bản định dạng khi chữ gốc chưa đổi (vd. AI viết lại thì bỏ định dạng cũ)
+      if (r && r.html && LU && r.plain === node.textContent.replace(/\s+/g, ' ').trim()) node.innerHTML = LU.sanitizeRich(r.html);
+      if (LU) LU.expandVars(node, editable);
+    }
     function makeEditable(node, key, opt) {
       node.contentEditable = 'true';
       node.spellcheck = false;
-      var original = node.textContent;
+      var originalHtml = node.innerHTML;
+      var before = LU ? LU.serialize(node) : { plain: node.textContent, html: null };
       node.addEventListener('blur', function () {
-        var v = node.textContent.replace(/\s+/g, ' ').trim();
-        if (!v) { node.textContent = original; return; } // không cho để trống
-        if (v === original) return;
-        if (opt.field && opts.onEditContent) opts.onEditContent(opt.field, v);
-        else if (opts.onEditText) opts.onEditText(key, v);
+        var now = LU ? LU.serialize(node) : { plain: node.textContent.replace(/\s+/g, ' ').trim(), html: null };
+        if (!now.plain) { node.innerHTML = originalHtml; return; } // không cho để trống
+        if (now.plain === before.plain && now.html === before.html) return;
+        if (opt.field && opts.onEditContent) opts.onEditContent(opt.field, now.plain, now.html);
+        else if (opts.onEditText) opts.onEditText(key, now.plain, now.html);
       });
       node.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !opt.multiline) { e.preventDefault(); node.blur(); }
-        if (e.key === 'Escape') { node.textContent = original; node.blur(); }
+        if (e.key === 'Enter' && opt.multiline && e.shiftKey) { e.preventDefault(); document.execCommand('insertLineBreak'); }
+        if (e.key === 'Escape') { node.innerHTML = originalHtml; node.blur(); }
       });
       // Dán chữ thuần, không mang theo định dạng
       node.addEventListener('paste', function (e) {
@@ -365,6 +416,50 @@
       TX('h2', {}, 'register.title', 'Tiêu đề phần đăng ký', L.register), form, formClosed
     ]);
 
+    // ---------- Thư viện khối ----------
+    var blocks = ev.blocks || {};
+    function listBlock(key, cls, title, itemFn) {
+      var n = blockCount(ev, key), defs = BLOCK_ITEMS[key], items = [];
+      for (var i = 0; i < n; i++) items.push(itemFn(i, defs[i] || defs[defs.length - 1]));
+      var list = h('div', { class: cls }, items);
+      if (editable) list.setAttribute('data-block-list', key);
+      return h('section', { class: 'lp-section lp-block-' + key }, [TX('h2', {}, key + '.title', 'Tiêu đề khối', title), list]);
+    }
+    var faq = listBlock('faq', 'lp-faq', 'Câu hỏi thường gặp', function (i, d) {
+      var q = TX('summary', {}, 'faq.q.' + i, 'Câu hỏi ' + (i + 1), d[0]);
+      var item = h('details', { class: 'lp-faq-item', open: editable ? true : null }, [q, TX('p', {}, 'faq.a.' + i, 'Trả lời ' + (i + 1), d[1], { multiline: true })]);
+      // Đang soạn: bấm vào câu hỏi để sửa chứ không gập lại
+      if (editable) q.addEventListener('click', function (e) { e.preventDefault(); });
+      return item;
+    });
+    var testimonials = listBlock('testimonials', 'lp-quotes', 'Mọi người nói gì', function (i, d) {
+      return h('figure', { class: 'lp-quote' }, [
+        TX('blockquote', {}, 'testimonials.q.' + i, 'Lời nhận xét ' + (i + 1), d[0], { multiline: true }),
+        TX('figcaption', {}, 'testimonials.by.' + i, 'Người nhận xét ' + (i + 1), d[1])
+      ]);
+    });
+    var sponsors = listBlock('sponsors', 'lp-sponsors', 'Đồng hành cùng sự kiện', function (i, d) {
+      return TX('span', { class: 'lp-sponsor' }, 'sponsors.name.' + i, 'Tên đối tác ' + (i + 1), d[0]);
+    });
+    var vSrc = videoEmbed((blocks.video || {}).url);
+    var video = h('section', { class: 'lp-section lp-block-video' }, [
+      TX('h2', {}, 'video.title', 'Tiêu đề khối video', 'Xem nhanh về sự kiện'),
+      mark(h('div', { class: 'lp-video' }, [vSrc
+        ? h('iframe', { src: vSrc, title: 'Video giới thiệu', loading: 'lazy', allow: 'encrypted-media; picture-in-picture', allowfullscreen: true, referrerpolicy: 'strict-origin-when-cross-origin' })
+        : h('p', { class: 'lp-video-empty', text: editable ? 'Dán link YouTube/Vimeo trong bảng chỉnh khối này' : 'Video sẽ được cập nhật sớm' })]), 'video.frame', 'Khung video', 'box')
+    ]);
+    var mapQ = String((blocks.map || {}).query || ev.location || '').slice(0, 200);
+    var map = h('section', { class: 'lp-section lp-block-map' }, [
+      TX('h2', {}, 'map.title', 'Tiêu đề khối bản đồ', 'Đường đến sự kiện'),
+      TX('p', { class: 'lp-map-addr' }, 'map.addr', 'Địa chỉ hiển thị', ev.location),
+      mark(h('div', { class: 'lp-map' }, [mapQ ? h('iframe', { src: 'https://maps.google.com/maps?q=' + encodeURIComponent(mapQ) + '&output=embed', title: 'Bản đồ ' + mapQ, loading: 'lazy', referrerpolicy: 'no-referrer-when-downgrade' }) : null]), 'map.frame', 'Khung bản đồ', 'box')
+    ]);
+    var cta2 = h('section', { class: 'lp-section lp-cta2' }, [
+      TX('h2', {}, 'cta2.title', 'Tiêu đề kêu gọi', 'Chỉ còn {con_cho} chỗ – giữ chỗ ngay'),
+      TX('p', {}, 'cta2.text', 'Nội dung kêu gọi', 'Đã có {so_dang_ky} người đăng ký. Sự kiện diễn ra sau {dem_nguoc} ngày nữa.', { multiline: true }),
+      mark(h('a', { class: 'lp-cta', href: '#lp-register', text: txt('cta2.btn', 'Đăng ký ngay') }), 'cta2.btn', 'Nút kêu gọi cuối trang', 'button', { def: 'Đăng ký ngay' })
+    ]);
+
     // CHÂN TRANG: ghi nguồn studio (thiệp cưới) + đường dẫn "Tạo trang như thế này" (phễu lan truyền)
     var footerChildren = [TX('p', {}, 'footer.info', 'Dòng chân trang', ev.name + ' · ' + ev.location)];
     var bf = brandFooter();
@@ -380,7 +475,8 @@
     }
     var footer = mark(h('footer', { class: 'lp-footer' }, footerChildren), 'footer', 'Chân trang', 'box', { required: true });
 
-    var byKey = { countdown: countdownSection, about: about, benefits: benefits, speakers: speakers, gallery: gallery, agenda: agenda, offer: offer, register: register };
+    var byKey = { countdown: countdownSection, about: about, benefits: benefits, speakers: speakers, gallery: gallery, agenda: agenda, offer: offer, register: register,
+      faq: faq, testimonials: testimonials, sponsors: sponsors, video: video, map: map, cta2: cta2 };
     container.appendChild(hero);
     normalizeSections(ev.sections).forEach(function (s) {
       if (s.visible && byKey[s.key]) {
@@ -420,6 +516,7 @@
       if (lastCount != null && count > lastCount) retrigger(countText, 'bump');
       lastCount = count;
       countText.textContent = count.toLocaleString('vi-VN');
+      if (LU) LU.refreshVars(container, ev, count, now);
 
       var cd = ES.countdown(ev, now);
       countdownEl.hidden = !cd;
@@ -446,7 +543,7 @@
       el.classList.add(cls);
     }
     if (!editable && st.motion !== 'off') {
-      var revealEls = Array.prototype.slice.call(container.children).filter(function (el) { return el !== hero; });
+      var revealEls = Array.prototype.slice.call(container.children).filter(function (el) { return el !== hero && el.tagName !== 'STYLE'; });
       revealEls.forEach(function (el) { el.classList.add('lp-reveal'); });
       if (typeof IntersectionObserver === 'function') {
         var io = new IntersectionObserver(function (entries) {
@@ -463,5 +560,5 @@
   }
 
   root.EP = root.EP || {};
-  root.EP.landingRenderer = { render: render, h: h, SECTIONS: SECTIONS, normalizeSections: normalizeSections };
+  root.EP.landingRenderer = { render: render, h: h, SECTIONS: SECTIONS, normalizeSections: normalizeSections, BLOCK_ITEMS: BLOCK_ITEMS, MAX_ITEMS: MAX_ITEMS, blockCount: blockCount, videoEmbed: videoEmbed };
 })(typeof window !== 'undefined' ? window : globalThis);

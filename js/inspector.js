@@ -31,7 +31,14 @@
 
   function node() { return selectedKey ? cfg.landing.querySelector('[data-el="' + cssEsc(selectedKey) + '"]') : null; }
   function cssEsc(s) { return String(s).replace(/["\\]/g, '\\$&'); }
-  function styles() { var ev = cfg.getState().event; return (ev.elStyles && ev.elStyles[selectedKey]) || {}; }
+  // Thiết bị đang xem: máy tính = kiểu gốc; máy tính bảng / điện thoại = kiểu đè riêng (ev.elStylesBy[thiết bị])
+  var DEV_LABEL = { tablet: 'máy tính bảng', mobile: 'điện thoại' };
+  var BASE_ONLY = { hoverColor: 1, hoverBackground: 1, fontFamily: 1 };
+  var styleClip = null; // định dạng đã sao chép (Ctrl+Shift+C)
+  function dev() { return cfg.getDevice ? cfg.getDevice() : 'desktop'; }
+  function baseStyles() { var ev = cfg.getState().event; return (ev.elStyles && ev.elStyles[selectedKey]) || {}; }
+  function devStyles() { var ev = cfg.getState().event; return ((ev.elStylesBy || {})[dev()] || {})[selectedKey] || {}; }
+  function styles() { return dev() === 'desktop' ? baseStyles() : Object.assign({}, baseStyles(), devStyles()); }
 
   // Ghi kiểu cho phần tử đang chọn. live=true: chỉ xem trước (đang kéo màu)
   // Đang gõ chữ trên trang mà bấm nút trên thanh công cụ: lưu chữ trước
@@ -41,13 +48,42 @@
   }
   function setProp(prop, value, live) {
     if (!live) flushEdit();
+    var o = {}; o[prop] = value;
+    setMany(o, live);
+  }
+  // Ghi nhiều thuộc tính một lần (vào kiểu gốc, hoặc kiểu riêng của thiết bị đang xem)
+  function setMany(obj, live) {
     var ev = cfg.getState().event;
+    var d = dev();
     var all = Object.assign({}, ev.elStyles || {});
     var cur = Object.assign({}, all[selectedKey] || {});
-    if (value === '' || value == null || value === false) delete cur[prop]; else cur[prop] = value;
+    var byAll = Object.assign({}, ev.elStylesBy || {});
+    var byDev = Object.assign({}, byAll[d] || {});
+    var over = Object.assign({}, byDev[selectedKey] || {});
+    Object.keys(obj).forEach(function (prop) {
+      var value = obj[prop];
+      if (d !== 'desktop' && !BASE_ONLY[prop]) {
+        // Thiết bị nhỏ: giữ cả giá trị false để tắt được kiểu gốc (vd. bỏ in nghiêng chỉ trên điện thoại)
+        if (value === '' || value == null) delete over[prop]; else over[prop] = value;
+      } else if (value === '' || value == null || value === false) delete cur[prop]; else cur[prop] = value;
+    });
     if (Object.keys(cur).length) all[selectedKey] = cur; else delete all[selectedKey];
     ev.elStyles = all;
+    if (d !== 'desktop') {
+      if (Object.keys(over).length) byDev[selectedKey] = over; else delete byDev[selectedKey];
+      if (Object.keys(byDev).length) byAll[d] = byDev; else delete byAll[d];
+      ev.elStylesBy = Object.keys(byAll).length ? byAll : null;
+    }
     if (live) cfg.liveRender(); else cfg.persist();
+  }
+  function clearDevice() {
+    flushEdit();
+    var ev = cfg.getState().event, byAll = Object.assign({}, ev.elStylesBy || {}), byDev = Object.assign({}, byAll[dev()] || {});
+    delete byDev[selectedKey];
+    if (Object.keys(byDev).length) byAll[dev()] = byDev; else delete byAll[dev()];
+    ev.elStylesBy = Object.keys(byAll).length ? byAll : null;
+    cfg.persist();
+    cfg.toast('Đã bỏ chỉnh riêng cho ' + DEV_LABEL[dev()] + '.');
   }
   function setText(value) {
     flushEdit();
@@ -62,6 +98,12 @@
     var ev = cfg.getState().event;
     var a = Object.assign({}, ev.elStyles || {}); delete a[selectedKey]; ev.elStyles = a;
     var t = Object.assign({}, ev.texts || {}); delete t[selectedKey]; ev.texts = t;
+    if (ev.rich && ev.rich[selectedKey]) { var r = Object.assign({}, ev.rich); delete r[selectedKey]; ev.rich = r; }
+    if (ev.elStylesBy) {
+      var by = {};
+      Object.keys(ev.elStylesBy).forEach(function (d) { var x = Object.assign({}, ev.elStylesBy[d]); delete x[selectedKey]; if (Object.keys(x).length) by[d] = x; });
+      ev.elStylesBy = Object.keys(by).length ? by : null;
+    }
     if (selectedKey === 'hero.cta' && ev.style) delete ev.style.ctaText;
     cfg.persist();
     cfg.toast('Đã đưa phần tử về mặc định.');
@@ -79,12 +121,14 @@
     if (!n) { close(); return; }
     n.classList.add('lp-selected', 'lp-just-selected');
     build(true);
+    if (cfg.onSelect) cfg.onSelect(key);
   }
 
   function close() {
     var n = node();
     if (n) n.classList.remove('lp-selected');
     selectedKey = null;
+    if (cfg && cfg.onSelect) cfg.onSelect(null);
     if (bar && !bar.hidden) {
       bar.classList.add('is-leaving');
       setTimeout(function () { if (!selectedKey) { bar.hidden = true; bar.classList.remove('is-leaving'); } }, 160);
@@ -116,6 +160,15 @@
     crumbs.appendChild(el('strong', 'ins-name', n.getAttribute('data-el-label')));
     var cl = btn('', 'Đóng (Esc)', close); cl.innerHTML = EP.icon('x'); crumbs.appendChild(cl);
     bar.appendChild(crumbs);
+
+    if (dev() !== 'desktop' && kind !== 'section') {
+      var db = el('div', 'ins-device');
+      db.insertAdjacentHTML('afterbegin', EP.icon(dev() === 'mobile' ? 'phone' : 'tablet', 14));
+      var has = Object.keys(devStyles()).length;
+      db.appendChild(el('span', null, has ? 'Đang có chỉnh riêng cho ' + DEV_LABEL[dev()] + ' – máy tính giữ nguyên.' : 'Chỉnh ở đây chỉ áp dụng trên ' + DEV_LABEL[dev()] + '.'));
+      if (has) db.appendChild(btn('Bỏ chỉnh riêng', 'Bỏ mọi chỉnh riêng cho ' + DEV_LABEL[dev()], clearDevice));
+      bar.appendChild(db);
+    }
 
     var row = el('div', 'ins-row');
     if (kind === 'section') {
@@ -161,12 +214,19 @@
       row.appendChild(ab);
     });
     bar.appendChild(row);
+    if (kind === 'text') bar.appendChild(richRow(n));
 
     // Màu
     var row2 = el('div', 'ins-row');
     row2.appendChild(colorControl('Màu chữ', 'color', st.color, root.getComputedStyle(n).color, studio));
     if (kind === 'button' || kind === 'box') row2.appendChild(colorControl('Màu nền', 'background', st.background, root.getComputedStyle(n).backgroundColor, studio));
     bar.appendChild(row2);
+    if (kind === 'button' || (kind === 'box' && n.tagName === 'A')) {
+      var rowH = el('div', 'ins-row ins-hover');
+      rowH.appendChild(colorControl('Rê chuột · chữ', 'hoverColor', st.hoverColor, root.getComputedStyle(n).color, studio));
+      rowH.appendChild(colorControl('Rê chuột · nền', 'hoverBackground', st.hoverBackground, root.getComputedStyle(n).backgroundColor, studio));
+      bar.appendChild(rowH);
+    }
 
     // Font riêng + độ đậm (cả hai chế độ)
     var rowF = el('div', 'ins-row ins-font');
@@ -241,12 +301,171 @@
     }
   }
 
+  // Định dạng một đoạn chữ đang bôi đen (đậm, nghiêng, gạch, link) + chèn biến dữ liệu
+  function richRow(n) {
+    var row = el('div', 'ins-row ins-rich');
+    row.appendChild(el('span', 'ins-label', 'Đoạn chọn'));
+    function inNode() {
+      var s = root.getSelection();
+      return s && s.rangeCount && !s.isCollapsed && n.contains(s.anchorNode) && n.contains(s.focusNode);
+    }
+    function fmt(cmd, arg) {
+      if (!inNode()) { cfg.toast('Bôi đen đoạn chữ cần định dạng ngay trên trang trước.'); return; }
+      document.execCommand('styleWithCSS', false, false);
+      document.execCommand(cmd, false, arg);
+    }
+    [['bold', 'bold', 'Đậm đoạn chọn (Ctrl+B)'], ['italic', 'italic', 'Nghiêng đoạn chọn (Ctrl+I)'], ['underline', 'underline', 'Gạch chân đoạn chọn (Ctrl+U)'], ['strikeThrough', 'strike', 'Gạch ngang đoạn chọn']].forEach(function (c) {
+      var b = btn('', c[2], function () { fmt(c[0]); });
+      b.innerHTML = EP.icon(c[1], 14);
+      row.appendChild(b);
+    });
+    var lk = btn('', 'Gắn link cho đoạn chọn', function () {
+      if (!inNode()) { cfg.toast('Bôi đen đoạn chữ cần gắn link trước.'); return; }
+      var range = root.getSelection().getRangeAt(0).cloneRange();
+      var url = root.prompt('Đường dẫn (https://…, mailto:…, tel:…)', 'https://');
+      if (url == null) return;
+      var safe = EP.lpUtils.safeHref(url.trim());
+      if (!safe) { cfg.toast('Đường dẫn chưa hợp lệ. Dùng https://, mailto: hoặc tel:'); return; }
+      n.focus();
+      var sel = root.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+      document.execCommand('createLink', false, safe);
+    });
+    lk.innerHTML = EP.icon('link', 14);
+    row.appendChild(lk);
+    var clr = btn('', 'Bỏ định dạng đoạn chọn', function () { fmt('removeFormat'); document.execCommand('unlink'); });
+    clr.innerHTML = EP.icon('eraser', 14);
+    row.appendChild(clr);
+    row.appendChild(sep());
+    // Chèn biến: {con_cho}, {so_dang_ky}…
+    var vb = btn('', 'Chèn biến dữ liệu tự cập nhật', function () { pop.hidden = !pop.hidden; vb.setAttribute('aria-expanded', String(!pop.hidden)); if (!pop.hidden) EP.motion.replay(pop, 'is-entering'); position(true); });
+    vb.innerHTML = EP.icon('braces', 14) + '<span>Biến</span>';
+    vb.setAttribute('aria-expanded', 'false');
+    row.appendChild(vb);
+    var pop = el('div', 'ins-vars');
+    pop.hidden = true;
+    var ev = cfg.getState().event;
+    (cfg.vars || []).forEach(function (v) {
+      var b = btn('', 'Chèn ' + v[1], function () { insertVar(n, v[0]); });
+      b.classList.add('ins-var');
+      b.appendChild(el('code', null, '{' + v[0] + '}'));
+      b.appendChild(el('span', null, v[1]));
+      b.appendChild(el('small', null, EP.lpUtils.varValue(v[0], ev, cfg.getCount ? cfg.getCount() : 0, new Date()) || '—'));
+      pop.appendChild(b);
+    });
+    var wrap = el('div', 'ins-rich-wrap');
+    wrap.appendChild(row); wrap.appendChild(pop);
+    return wrap;
+  }
+  function insertVar(n, name) {
+    var s = root.getSelection();
+    var inside = s && s.rangeCount && n.contains(s.anchorNode) && document.activeElement === n;
+    if (!inside) {
+      n.focus();
+      var r = document.createRange(); r.selectNodeContents(n); r.collapse(false);
+      s.removeAllRanges(); s.addRange(r);
+    }
+    document.execCommand('insertText', false, '{' + name + '}');
+    n.blur(); // lưu ngay → trang vẽ lại, biến hiện giá trị thật
+    cfg.toast('Đã chèn biến {' + name + '} – tự cập nhật theo số liệu.');
+  }
+
+  // Khối trong thư viện: thêm/bớt mục, link video, địa chỉ bản đồ
+  function blockControls(row, key) {
+    var B = cfg.getBlockApi && cfg.getBlockApi();
+    if (!B || !B.isBlock(key)) return;
+    var box = el('div', 'ins-row ins-block');
+    if (B.isList(key)) {
+      box.appendChild(el('span', 'ins-label', B.count(key) + ' mục'));
+      box.appendChild(ibtn('plus', 'Thêm mục', 'Thêm một mục vào khối này', function () { B.addItem(key); }));
+      box.appendChild(ibtn('minus', 'Bớt mục', 'Bỏ mục cuối của khối này', function () { B.removeItem(key); }));
+    }
+    if (key === 'video' || key === 'map') {
+      var lab = el('label', 'ins-cell ins-wide');
+      lab.appendChild(el('span', 'ins-label', key === 'video' ? 'Link YouTube / Vimeo' : 'Địa chỉ trên bản đồ'));
+      var inp = el('input', 'ins-text');
+      inp.type = key === 'video' ? 'url' : 'text';
+      inp.maxLength = 200;
+      inp.value = B.get(key)[key === 'video' ? 'url' : 'query'] || '';
+      inp.placeholder = key === 'video' ? 'https://youtu.be/…' : (cfg.getState().event.location || 'Địa điểm sự kiện');
+      inp.setAttribute('aria-label', key === 'video' ? 'Link video' : 'Địa chỉ bản đồ');
+      inp.addEventListener('change', function () {
+        var v = inp.value.trim();
+        if (key === 'video' && v && !B.videoOk(v)) { inp.setAttribute('aria-invalid', 'true'); cfg.toast('Chỉ nhận link YouTube hoặc Vimeo.'); return; }
+        B.set(key, key === 'video' ? 'url' : 'query', v);
+      });
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') inp.blur(); });
+      lab.appendChild(inp);
+      box.appendChild(lab);
+    }
+    row.appendChild(box);
+  }
+
+  // ---------- Phím tắt khi đang chọn phần tử ----------
+  function allEls() { return Array.prototype.slice.call(cfg.landing.querySelectorAll('[data-el]')); }
+  function parentEl(x) { var p = x.parentElement; while (p && p !== cfg.landing && !p.hasAttribute('data-el')) p = p.parentElement; return p && p !== cfg.landing ? p : null; }
+  function go(target) {
+    if (!target) return;
+    select(target.getAttribute('data-el'));
+    target.scrollIntoView({ block: 'nearest', behavior: EP.motion.reduce() ? 'auto' : 'smooth' });
+  }
+  function onKey(e) {
+    if (!selectedKey || !cfg.landing.classList.contains('is-editable') || cfg.landing.closest('[hidden]')) return;
+    var t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (document.querySelector('dialog[open]')) return;
+    var n = node();
+    if (!n) return;
+    var k = e.key;
+    if (e.altKey && /^Arrow(Up|Down|Left|Right)$/.test(k)) {
+      e.preventDefault();
+      if (k === 'ArrowUp') return go(parentEl(n));
+      if (k === 'ArrowDown') return go(n.querySelector('[data-el]'));
+      var sibs = allEls().filter(function (x) { return parentEl(x) === parentEl(n); });
+      var i = sibs.indexOf(n);
+      return go(sibs[i + (k === 'ArrowLeft' ? -1 : 1)]);
+    }
+    if (k === 'Enter' && n.isContentEditable) {
+      e.preventDefault();
+      n.focus();
+      var r = document.createRange(); r.selectNodeContents(n);
+      var sel = root.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      return;
+    }
+    if (k === 'Delete' || k === 'Backspace') {
+      e.preventDefault();
+      var kind = n.getAttribute('data-el-kind');
+      if (kind === 'section') {
+        var sk = selectedKey.replace('section.', '');
+        if (cfg.sectionApi.locked(sk)) { cfg.toast('Phần này bắt buộc theo đề, không ẩn được.'); return; }
+        close(); cfg.sectionApi.hide(sk); return;
+      }
+      if (n.hasAttribute('data-el-required')) { cfg.toast('Phần tử này bắt buộc, không ẩn được.'); return; }
+      setProp('hidden', true);
+      cfg.toast('Đã ẩn phần tử. Ctrl+Z để lấy lại.');
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (k === 'C' || k === 'c' || e.code === 'KeyC')) {
+      e.preventDefault();
+      styleClip = JSON.parse(JSON.stringify(styles()));
+      delete styleClip.hidden; delete styleClip.offsetX; delete styleClip.offsetY;
+      cfg.toast(Object.keys(styleClip).length ? 'Đã sao chép định dạng. Chọn phần tử khác rồi Ctrl+Shift+V.' : 'Phần tử này chưa có định dạng riêng để sao chép.');
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (k === 'V' || k === 'v' || e.code === 'KeyV')) {
+      e.preventDefault();
+      if (!styleClip || !Object.keys(styleClip).length) { cfg.toast('Chưa sao chép định dạng nào (Ctrl+Shift+C).'); return; }
+      setMany(styleClip);
+      cfg.toast('Đã dán định dạng.');
+    }
+  }
+
   // Phần lớn (section): nền, căn lề, màu riêng, di chuyển, ẩn
   function buildSection(row, key) {
     var PS = EP.pageStyle;
     var api = cfg.sectionApi;
     var cur = api.get(key);
     row.classList.add('ins-col');
+    blockControls(row, key);
     row.appendChild(api.chips('Nền', PS.OPTIONS.sectionBg, cur.bg || 'auto', function (v) { api.set(key, 'bg', v); }));
     row.appendChild(api.chips('Căn lề', PS.OPTIONS.sectionAlign, cur.align || 'auto', function (v) { api.set(key, 'align', v); }));
     if (cfg.getMode() === 'studio') {
@@ -315,6 +534,7 @@
       close();
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && selectedKey && !(e.target && e.target.isContentEditable)) close(); });
+    document.addEventListener('keydown', onKey);
     root.addEventListener('scroll', schedule, true);
     root.addEventListener('resize', schedule);
   }

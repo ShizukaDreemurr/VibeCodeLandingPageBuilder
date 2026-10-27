@@ -219,6 +219,7 @@
           <button type="button" data-device="tablet" aria-label="Máy tính bảng" title="Máy tính bảng"><span data-icon="tablet"></span></button>
           <button type="button" data-device="mobile" aria-label="Điện thoại" title="Điện thoại"><span data-icon="phone"></span></button>
         </div>
+        <button type="button" class="icon-btn" id="btn-preview" aria-label="Xem trước toàn màn hình (Alt+P)" title="Xem trước toàn màn hình (Alt+P)"><span data-icon="expand"></span></button>
         <button type="button" class="btn btn-primary btn-small" id="btn-publish" hidden disabled><span data-icon="send"></span>Xuất bản</button>
       </div>
     </div>
@@ -255,6 +256,20 @@
       <button type="button" class="btn btn-ghost btn-small" id="btn-regenerate-2"><span data-icon="refresh"></span>AI viết lại nội dung</button>
         </div>
       </section>
+      <section class="ws-panel" data-panel="blocks" data-title="Khối">
+        <div class="ws-body">
+          <h2 class="panel-title">Thư viện khối</h2>
+          <p class="hint">Bấm một khối để thêm vào trang (đặt ngay trước form đăng ký). Bấm lần nữa để gỡ. Chữ trong khối sửa trực tiếp trên trang.</p>
+          <div class="block-lib" id="block-lib"></div>
+        </div>
+      </section>
+      <section class="ws-panel" data-panel="layers" data-title="Cấu trúc">
+        <div class="ws-body">
+          <h2 class="panel-title">Cấu trúc trang</h2>
+          <p class="hint">Bấm để chọn, con mắt để ẩn/hiện. Khi đang chọn: Alt + ↑ ↓ ← → để đi giữa các phần tử.</p>
+          <ul class="layer-tree" id="layer-tree" role="tree" aria-label="Cấu trúc trang"></ul>
+        </div>
+      </section>
       <section class="ws-panel" data-panel="style" data-title="Giao diện">
         <div class="ws-body" id="side-style">
         <div class="brand-apply">
@@ -276,6 +291,11 @@
         <div class="ws-body" id="side-publish">
       <h2 class="panel-title">Xuất bản</h2>
       <p class="hint" id="publish-hint">Đăng nhập Google rồi bấm Xuất bản ở thanh trên để có link và mã QR; khách đăng ký từ mọi thiết bị.</p>
+      <div class="export-row">
+        <button type="button" class="btn btn-ghost btn-small" id="btn-preview-2"><span data-icon="expand"></span>Xem trước toàn màn hình</button>
+        <button type="button" class="btn btn-ghost btn-small" id="btn-export-html"><span data-icon="download"></span>Tải file HTML</button>
+      </div>
+      <p class="hint">File HTML chạy độc lập (mở bằng trình duyệt, đưa lên hosting bất kỳ). Đếm ngược và biến số tự chạy; nút đăng ký dẫn về trang đã xuất bản.</p>
       <h2 class="panel-title">Xem thử trạng thái</h2>
         <label class="sim-label" id="sim-wrap" hidden><span data-icon="clock"></span>
           <select id="sim-state" aria-label="Xem thử trạng thái trang">
@@ -392,6 +412,14 @@
       <dt>Kéo vạch chia</dt><dd>Đổi độ rộng cột; bấm đúp để về mặc định</dd>
       <dt>Kéo góc cửa sổ nổi</dt><dd>Đổi kích thước; bấm đúp thanh tên để neo lại</dd>
       <dt>Bấm vào trang</dt><dd>Chọn phần tử để sửa chữ, màu, cỡ chữ…</dd>
+      <dt><kbd>Enter</kbd></dt><dd>Sửa chữ của phần tử đang chọn</dd>
+      <dt><kbd>Alt</kbd> <kbd>↑</kbd> / <kbd>↓</kbd></dt><dd>Chọn phần tử cha / phần tử con đầu tiên</dd>
+      <dt><kbd>Alt</kbd> <kbd>←</kbd> / <kbd>→</kbd></dt><dd>Chọn phần tử trước / sau</dd>
+      <dt><kbd>Delete</kbd></dt><dd>Ẩn phần tử hoặc phần đang chọn (Ctrl+Z để lấy lại)</dd>
+      <dt><kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>C</kbd> / <kbd>V</kbd></dt><dd>Sao chép / dán định dạng giữa các phần tử</dd>
+      <dt><kbd>Ctrl</kbd> <kbd>B</kbd> / <kbd>I</kbd> / <kbd>U</kbd></dt><dd>Khi đang sửa chữ: đậm / nghiêng / gạch chân đoạn bôi đen</dd>
+      <dt><kbd>Alt</kbd> <kbd>P</kbd></dt><dd>Xem trước toàn màn hình (Esc để thoát)</dd>
+      <dt><code>{con_cho}</code> <code>{so_dang_ky}</code>…</dt><dd>Gõ biến vào chữ, trang tự điền số liệu mới nhất</dd>
     </dl>
   </dialog>
 
@@ -416,6 +444,7 @@
   <script src="js/icons.js"></script>
   <script src="js/motion.js"></script>
   <script src="js/page-style.js"></script>
+  <script src="js/lp-utils.js"></script>
   <script src="js/landing-renderer.js"></script>
   <script src="js/inspector.js"></script>
   <script src="js/workspace.js"></script>

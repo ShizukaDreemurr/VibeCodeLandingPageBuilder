@@ -12,6 +12,7 @@
 | `e2e-brand.cjs` | Brand DNA: tạo thương hiệu (tên, khẩu hiệu, logo, màu, font, nút, giọng văn, liên hệ có kiểm tra), xem trước, chọn ở bước 1 tự áp dụng, áp dụng/gỡ trong Thiết kế, AI prompt có khối thương hiệu, xoá thương hiệu trang vẫn giữ | `node tests/e2e-brand.cjs <thư-mục-có-photo.jpg>`
 | `e2e-images.cjs` | Tự nén ảnh: ảnh 16MB về dưới trần từng loại ô (bìa/album/diễn giả), logo WebP giữ nền trong suốt, vượt giới hạn trang thì tự nén lại ảnh nặng nhất | `node tests/e2e-images.cjs <thư-mục-có-big.png-và-logo.png>`
 | `e2e-features.cjs` | Sự kiện của tôi (mở, nhân bản, xoá), chăm sóc lead (trạng thái, gọi/Zalo), số liệu, checklist trước xuất bản | `node tests/e2e-features.cjs` |
+| `e2e-gjs.cjs` | 10 tính năng học từ GrapesJS: thư viện khối (FAQ, cảm nhận, tài trợ, video, bản đồ, kêu gọi), định dạng đoạn chữ + link (có lọc mã độc), chỉnh riêng theo thiết bị, màu khi rê chuột, panel Cấu trúc, phím tắt + sao chép định dạng, xem trước toàn màn hình, xuất file HTML, cách ly CSS, biến dữ liệu `{con_cho}`… | `node tests/e2e-gjs.cjs` |
 | `e2e-firebase.cjs` | Firebase: xuất bản, link/QR, khách đăng ký, số đếm tức thì, trùng SĐT/email, hết chỗ, đăng ký đồng thời, người lạ không đọc được danh sách | `python3 -m http.server 8000` rồi trong thư mục có `firebase.json`: `npx firebase emulators:exec --only firestore,auth "node tests/e2e-firebase.cjs"` |
 | `../firebase/rules.test.mjs` | 21 ca quy tắc bảo mật Firestore | xem `firebase/README.md` |
 

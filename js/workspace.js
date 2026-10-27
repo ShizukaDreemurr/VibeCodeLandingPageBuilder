@@ -10,7 +10,7 @@
 (function (root) {
   var KEY = 'ep_ws_layout';
   var DEFAULT = {
-    left: { w: 280, groups: [{ tabs: ['layout'], active: 'layout' }] },
+    left: { w: 280, groups: [{ tabs: ['layout', 'blocks', 'layers'], active: 'layout' }] },
     right: { w: 320, groups: [{ tabs: ['style', 'publish'], active: 'style' }] },
     float: [],
     hidden: []
@@ -47,7 +47,14 @@
     l.right.groups = clean(l.right.groups);
     l.float = clean(l.float);
     l.hidden = (l.hidden || []).filter(function (t) { if (!panels[t] || seen[t]) return false; seen[t] = true; return true; });
-    Object.keys(panels).forEach(function (id) { if (!seen[id]) l.right.groups.push({ tabs: [id], active: id }); });
+    // Panel mới (chưa có trong bố cục đã lưu): đặt vào nhóm mặc định của nó nếu nhóm đó còn
+    Object.keys(panels).forEach(function (id) {
+      if (seen[id]) return;
+      var leftTabs = DEFAULT.left.groups[0].tabs;
+      var host = null;
+      if (leftTabs.indexOf(id) >= 0) l.left.groups.concat(l.right.groups).forEach(function (g) { if (!host && g.tabs.indexOf('layout') >= 0) host = g; });
+      if (host) host.tabs.push(id); else l.right.groups.push({ tabs: [id], active: id });
+    });
     l.left.w = clamp(l.left.w || 280, MIN_W, MAX_W);
     l.right.w = clamp(l.right.w || 320, MIN_W, MAX_W);
     return l;
@@ -112,7 +119,7 @@
     var all = Object.keys(panels);
     if (name === 'focus') { layout = sanitize({ left: { w: layout.left.w, groups: [] }, right: { w: layout.right.w, groups: [] }, float: [], hidden: all }); }
     else if (name === 'right') { layout = sanitize({ left: { w: 280, groups: [] }, right: { w: 340, groups: [{ tabs: all, active: all[0] }] }, float: [], hidden: [] }); }
-    else if (name === 'split') { layout = sanitize({ left: { w: 280, groups: [{ tabs: ['layout'], active: 'layout' }, { tabs: ['publish'], active: 'publish' }] }, right: { w: 320, groups: [{ tabs: ['style'], active: 'style' }] }, float: [], hidden: [] }); }
+    else if (name === 'split') { layout = sanitize({ left: { w: 280, groups: [{ tabs: ['layout', 'blocks', 'layers'], active: 'layout' }, { tabs: ['publish'], active: 'publish' }] }, right: { w: 320, groups: [{ tabs: ['style'], active: 'style' }] }, float: [], hidden: [] }); }
     else layout = sanitize(clone(DEFAULT));
     commit();
   }

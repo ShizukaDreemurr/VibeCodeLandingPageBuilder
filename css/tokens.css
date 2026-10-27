@@ -1,3 +1,4 @@
+@layer app {
 /* tokens.css — mọi màu, chữ, khoảng cách, bo góc và chuyển động của app.
    Phong cách "framed sheet": khung xám nhạt chứa thanh trên, nội dung nằm trên tấm trắng viền 1px, không bóng.
    Màu thương hiệu (hồng) chỉ dùng cho dữ liệu và trạng thái đang chọn; nút chính màu gần đen.
@@ -68,4 +69,6 @@
   /* Tên cũ, giữ để không vỡ chỗ đang dùng */
   --bg: var(--ground);
   --shadow: var(--shadow-float);
+}
+
 }
