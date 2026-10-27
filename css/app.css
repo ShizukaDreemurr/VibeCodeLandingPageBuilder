@@ -572,3 +572,37 @@ html.motion-off::view-transition-group(*), html.motion-off::view-transition-old(
   .combo-opt { transition: background-color var(--dur-1) ease; }
   .mo-shake { animation: xcShake 300ms var(--ease-out); }
 }
+
+/* ---------- Thanh định dạng chữ: cỡ chữ (− số +) + độ đậm ---------- */
+.typebar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.stepper { display: inline-flex; align-items: center; height: var(--control-h); border: 1px solid #e3e5e8; border-radius: 6px; background: var(--surface); overflow: hidden; }
+.stepper button { width: 28px; height: 100%; border: 0; background: none; display: inline-grid; place-items: center; color: var(--text-muted); cursor: pointer; padding: 0; }
+.stepper button:hover { background: var(--raised); color: var(--text); }
+.stepper input { width: 48px; height: 100%; border: 0; border-left: 1px solid var(--rule); border-right: 0; text-align: right; font: inherit; font-size: 13px; padding: 0 2px 0 4px; font-variant-numeric: tabular-nums; background: none; -moz-appearance: textfield; appearance: textfield; }
+.stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper input:focus { outline: none; background: var(--raised); }
+.stepper-unit { font-size: 12px; color: var(--text-muted); padding: 0 6px 0 2px; min-width: 8px; border-right: 1px solid var(--rule); align-self: stretch; display: inline-flex; align-items: center; }
+.stepper-unit:empty { padding: 0; }
+.stepper:focus-within { border-color: var(--text); }
+.weight-select { flex: 1; min-width: 130px; height: var(--control-h); font: inherit; font-size: 13px; border: 1px solid #e3e5e8; border-radius: 6px; padding: 0 8px; background: var(--surface); color: var(--text); }
+.typebar .stepper { flex: none; }
+
+/* Inspector: font + độ đậm, mục Khoảng cách & vị trí */
+.ins-font { flex-wrap: wrap; }
+.ins-combo { flex: 1 1 200px; min-width: 180px; }
+.ins-font .weight-select { flex: 1 1 140px; min-width: 130px; height: 30px; }
+.ins-more { border-top: 1px solid var(--rule); padding-top: 6px; }
+.ins-more > summary { cursor: pointer; font-weight: 600; font-size: 12px; color: var(--text-muted); list-style: none; display: flex; align-items: center; gap: 6px; height: 24px; }
+.ins-more > summary::-webkit-details-marker { display: none; }
+.ins-more > summary::before { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
+.ins-more[open] > summary::before { transform: rotate(45deg); }
+.ins-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 10px; padding-top: 8px; }
+.ins-cell { display: flex; flex-direction: column; gap: 4px; }
+.ins-cell .stepper { height: 30px; }
+.ins-cell .stepper input { flex: 1; width: 0; min-width: 40px; }
+@media screen {
+  .stepper button { transition: background-color var(--dur-1) ease, color var(--dur-1) ease; }
+  .stepper button:active { transform: scale(0.9); }
+  .ins-more > summary::before { transition: transform var(--dur-2) var(--ease-out); }
+  .ins-more[open] .ins-grid { animation: xcIn var(--dur-2) var(--ease-out); }
+}

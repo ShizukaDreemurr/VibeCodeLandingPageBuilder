@@ -574,6 +574,7 @@
     var PS = EP.pageStyle;
     var row = document.createElement('div'); row.className = 'st-row color-field';
     var head = document.createElement('div'); head.className = 'st-label';
+    head.hidden = !label && !contrastWith; // ô màu không nhãn (trong thanh chỉnh) thì bỏ dòng trống
     head.appendChild(document.createTextNode(label));
     var badge = document.createElement('span'); badge.className = 'cr-badge';
     head.appendChild(badge);
@@ -599,15 +600,18 @@
     show(current);
     sw.addEventListener('input', function () { tx.value = sw.value; onSet(sw.value, false); });
     sw.addEventListener('change', function () { onSet(sw.value, true); });
+    var committed = current || '';
     function fromText(commit) {
       var raw = tx.value.trim();
-      if (!raw) { tx.classList.remove('is-invalid'); if (commit) onSet('', true); return; }
+      if (!raw) { tx.classList.remove('is-invalid'); if (commit && committed !== '') { committed = ''; onSet('', true); } return; }
       var v = PS.normalizeColor(raw);
       tx.classList.toggle('is-invalid', !v);
       if (!v) return;
       sw.value = PS.solidHex(v);
+      // Enter rồi rời ô sẽ bắn "change" lần hai: không lưu lại giá trị đã lưu (tránh vẽ lại cả bảng)
+      if (commit && v === committed) { tx.value = v; return; }
       onSet(v, commit);
-      if (commit) tx.value = v;
+      if (commit) { tx.value = v; committed = v; }
     }
     tx.addEventListener('input', function () { fromText(false); });
     tx.addEventListener('change', function () { fromText(true); });
@@ -640,7 +644,7 @@
     var nb = document.createElement('input'); nb.type = 'number'; nb.min = R[0]; nb.max = R[1]; nb.step = R[2]; nb.setAttribute('aria-label', R[4] + ' (số)');
     var unit = document.createElement('span'); unit.className = 'unit'; unit.textContent = R[3];
     var rs = document.createElement('button'); rs.type = 'button'; rs.className = 'icon-btn'; rs.innerHTML = EP.icon('reset'); rs.title = 'Về mặc định'; rs.setAttribute('aria-label', 'Về mặc định');
-    function show(v) { var isSet = v != null && v !== ''; rg.value = isSet ? v : R[0]; nb.value = isSet ? v : ''; nb.placeholder = 'Tự động'; row.classList.toggle('is-unset', !isSet); }
+    function show(v) { var isSet = v != null && v !== ''; rg.value = isSet ? v : R[0]; nb.value = isSet ? v : ''; nb.placeholder = '–'; nb.title = 'Để trống = tự động'; row.classList.toggle('is-unset', !isSet); }
     show(value);
     rg.addEventListener('input', function () { nb.value = rg.value; row.classList.remove('is-unset'); setStyle(key, Number(rg.value), false); });
     rg.addEventListener('change', function () { setStyle(key, Number(rg.value)); });
@@ -694,40 +698,30 @@
   }
 
   var openCombo = null;
-  function fontField(label, key, customKey, current, custom, keys, allowDefault) {
+  // o: { id, label, value (tên font hoặc ''), allowDefault, onPick(name) } → { wrap, note }
+  function fontCombo(o) {
     var PS = EP.pageStyle;
-    var row = document.createElement('div'); row.className = 'st-row font-field';
-    var id = 'fc-' + key;
-    var head = document.createElement('label'); head.className = 'st-label'; head.textContent = label; head.htmlFor = id;
+    var id = o.id, label = o.label, allowDefault = o.allowDefault;
     var wrap = document.createElement('div'); wrap.className = 'combo';
     var input = document.createElement('input');
     input.type = 'text'; input.id = id; input.className = 'combo-input'; input.autocomplete = 'off'; input.spellcheck = false;
     input.setAttribute('role', 'combobox'); input.setAttribute('aria-autocomplete', 'list'); input.setAttribute('aria-expanded', 'false');
     input.setAttribute('aria-label', label);
-    var curName = custom || (current && PS.FONTS[current] ? PS.FONTS[current].google : '');
+    var curName = o.value || '';
     input.value = curName || (allowDefault ? '' : 'Be Vietnam Pro');
     input.placeholder = allowDefault ? 'Theo mẫu – gõ để tìm font…' : 'Gõ để tìm font…';
     if (curName) input.style.fontFamily = "'" + curName + "', var(--font)";
     var caret = document.createElement('span'); caret.className = 'combo-caret'; caret.innerHTML = EP.icon('chevron-down', 14);
     wrap.appendChild(input); wrap.appendChild(caret);
-    row.appendChild(head); row.appendChild(wrap);
-    var note = document.createElement('small'); note.className = 'hint combo-note'; row.appendChild(note);
+    var note = document.createElement('small'); note.className = 'hint combo-note';
 
     var list = document.createElement('div'); list.className = 'combo-list'; list.setAttribute('role', 'listbox'); list.id = id + '-list';
     input.setAttribute('aria-controls', list.id);
     var items = [], active = -1;
 
     function choose(name) {
-      var st = Object.assign({}, state.event.style || {});
-      if (!name) { st[key] = allowDefault ? '' : 'be-vietnam'; st[customKey] = ''; }
-      else {
-        var k = PS.keyForFamily(name);
-        if (k) { st[key] = k; st[customKey] = ''; }
-        else { st[key] = allowDefault ? '' : 'be-vietnam'; st[customKey] = name; }
-      }
-      state.event.style = st;
       close();
-      persist();
+      o.onPick(name);
       var e = name && PS.catalogEntry(name);
       if (e && e.vi === false) toast('"' + name + '" chưa có đủ dấu tiếng Việt – chữ có dấu sẽ hiện bằng font dự phòng.');
     }
@@ -823,7 +817,12 @@
     input.addEventListener('focus', function () { open(); input.select(); keepSelection = true; });
     input.addEventListener('mouseup', function (e) { if (keepSelection) { e.preventDefault(); input.select(); keepSelection = false; } });
     input.addEventListener('click', function () { if (!list.parentNode) open(); });
-    caret.addEventListener('mousedown', function (e) { e.preventDefault(); if (list.parentNode) close(); else { input.focus(); } });
+    caret.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+      if (list.parentNode) close();
+      else if (document.activeElement === input) open();
+      else input.focus();
+    });
     input.addEventListener('input', function () { if (!list.parentNode) open(); build(input.value); position(); });
     input.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowDown') { e.preventDefault(); if (!list.parentNode) open(); highlight(Math.min(items.length - 1, active + 1)); }
@@ -832,6 +831,70 @@
       else if (e.key === 'Escape') { e.preventDefault(); input.value = curName; close(); }
     });
     input.addEventListener('blur', function () { setTimeout(function () { if (document.activeElement !== input) { close(); input.value = curName || (allowDefault ? '' : 'Be Vietnam Pro'); } }, 120); });
+    return { wrap: wrap, note: note };
+  }
+
+  // Ô số có nút − / + (cỡ chữ, giãn dòng…): kẹp trong [min, max]; để trống = tự động
+  function stepper(o) {
+    var box = document.createElement('div'); box.className = 'stepper';
+    var minus = document.createElement('button'); minus.type = 'button'; minus.innerHTML = EP.icon('minus', 14); minus.setAttribute('aria-label', 'Giảm ' + o.label.toLowerCase());
+    var inp = document.createElement('input'); inp.type = 'number'; inp.min = o.min; inp.max = o.max; inp.step = o.step;
+    // Để trống = tự động (hiện gạch ngang xám, chú thích khi rê chuột)
+    inp.setAttribute('aria-label', o.label); inp.placeholder = o.placeholder || '–'; inp.title = 'Để trống = tự động';
+    inp.value = o.value == null || o.value === '' ? '' : o.value;
+    var plus = document.createElement('button'); plus.type = 'button'; plus.innerHTML = EP.icon('plus', 14); plus.setAttribute('aria-label', 'Tăng ' + o.label.toLowerCase());
+    var unit = document.createElement('span'); unit.className = 'stepper-unit'; unit.textContent = o.unit || '';
+    function clampV(v) { var d = String(o.step).split('.')[1]; return Number(Math.max(o.min, Math.min(o.max, v)).toFixed(d ? d.length : 0)); }
+    function commit(v) { inp.value = v === '' ? '' : v; o.onChange(v === '' ? null : v); }
+    function base() { return inp.value === '' ? (o.base != null ? o.base : o.min) : Number(inp.value); }
+    minus.addEventListener('click', function () { commit(clampV(base() - o.step)); });
+    plus.addEventListener('click', function () { commit(clampV(base() + o.step)); });
+    inp.addEventListener('change', function () { commit(inp.value === '' ? '' : clampV(Number(inp.value))); });
+    box.appendChild(minus); box.appendChild(inp); box.appendChild(unit); box.appendChild(plus);
+    return box;
+  }
+  function weightSelect(label, value, onChange, allowAuto) {
+    var sel = document.createElement('select'); sel.className = 'weight-select'; sel.setAttribute('aria-label', label);
+    if (allowAuto) sel.add(new Option('Đậm: tự động', ''));
+    EP.pageStyle.WEIGHTS.forEach(function (w) { var op = new Option(w[1] + ' ' + w[0], String(w[0])); op.style.fontWeight = w[0]; sel.add(op); });
+    sel.value = value == null || value === '' ? '' : String(value);
+    sel.addEventListener('change', function () { onChange(sel.value === '' ? null : Number(sel.value)); });
+    return sel;
+  }
+
+  // Ô font của bảng Giao diện: chọn font + cỡ chữ + độ đậm ngay bên dưới (như thanh định dạng của Word)
+  function fontField(label, key, customKey, current, custom, keys, allowDefault, sizeKey, weightKey, sizeLabel, sizeBase) {
+    var PS = EP.pageStyle;
+    var row = document.createElement('div'); row.className = 'st-row font-field';
+    var id = 'fc-' + key;
+    var head = document.createElement('label'); head.className = 'st-label'; head.textContent = label; head.htmlFor = id;
+    var combo = fontCombo({
+      id: id, label: label, allowDefault: allowDefault,
+      value: custom || (current && PS.FONTS[current] ? PS.FONTS[current].google : ''),
+      onPick: function (name) {
+        var st = Object.assign({}, state.event.style || {});
+        if (!name) { st[key] = allowDefault ? '' : 'be-vietnam'; st[customKey] = ''; }
+        else {
+          var k = PS.keyForFamily(name);
+          if (k) { st[key] = k; st[customKey] = ''; }
+          else { st[key] = allowDefault ? '' : 'be-vietnam'; st[customKey] = name; }
+        }
+        state.event.style = st;
+        persist();
+      }
+    });
+    row.appendChild(head); row.appendChild(combo.wrap);
+    if (sizeKey || weightKey) {
+      var bar = document.createElement('div'); bar.className = 'typebar';
+      var cur = getStyle();
+      if (sizeKey) {
+        var R = PS.RANGES[sizeKey];
+        bar.appendChild(stepper({ label: sizeLabel || 'Cỡ chữ', min: R[0], max: R[1], step: R[2], unit: 'px', value: cur[sizeKey], base: sizeBase, onChange: function (v) { setStyle(sizeKey, v); } }));
+      }
+      if (weightKey) bar.appendChild(weightSelect(label + ' – độ đậm', cur[weightKey], function (v) { setStyle(weightKey, v); }, true));
+      row.appendChild(bar);
+    }
+    row.appendChild(combo.note);
     return row;
   }
   // Cuộn trang/panel: danh sách bám theo ô; ô ra khỏi màn hình thì đóng
@@ -900,7 +963,7 @@
         sectionTitle('Bảng màu'), pal,
         simpleColor('Màu chính', 'primary', theme.primary),
         simpleColor('Màu nhấn', 'accent', theme.accent),
-        fontField('Font tiêu đề', 'headingFont', 'headingFontCustom', st.headingFont, st.headingFontCustom, null, true),
+        fontField('Font tiêu đề', 'headingFont', 'headingFontCustom', st.headingFont, st.headingFontCustom, null, true, 'h1Size', 'headingWeight', 'Cỡ tiêu đề lớn', 44),
         chipRow('Kiểu nút', O.button, st.button, pickChip('button')),
         chipRow('Bo góc', O.radius, st.radius, pickChip('radius')),
         chipRow('Căn chữ phần đầu trang', O.heroAlign, st.heroAlign || heroDefault, pick('heroAlign')),
@@ -936,11 +999,14 @@
     ]));
     var allFonts = Object.keys(PS.FONTS);
     box.appendChild(group('Chữ', isOpen('Chữ', false), [
-      fontField('Font tiêu đề', 'headingFont', 'headingFontCustom', st.headingFont, st.headingFontCustom, allFonts, true),
-      fontField('Font nội dung', 'bodyFont', 'bodyFontCustom', st.bodyFont, st.bodyFontCustom, allFonts, false),
-      rangeField('h1Size', st.h1Size), rangeField('h2Size', st.h2Size), rangeField('bodySize', st.bodySize),
-      rangeField('lineHeight', st.lineHeight), rangeField('headingWeight', st.headingWeight), rangeField('letterSpacing', st.letterSpacing),
-      chipRow('Kiểu chữ tiêu đề', O.headingUpper, st.headingUpper, pick('headingUpper'))
+      fontField('Font tiêu đề', 'headingFont', 'headingFontCustom', st.headingFont, st.headingFontCustom, allFonts, true, 'h1Size', 'headingWeight', 'Cỡ tiêu đề lớn', 44),
+      rangeField('h2Size', st.h2Size), rangeField('headingLineHeight', st.headingLineHeight), rangeField('letterSpacing', st.letterSpacing),
+      chipRow('Kiểu chữ tiêu đề', O.headingUpper, st.headingUpper, pick('headingUpper')),
+      chipRow('Dáng chữ tiêu đề', O.headingItalic, st.headingItalic, pick('headingItalic')),
+      fontField('Font nội dung', 'bodyFont', 'bodyFontCustom', st.bodyFont, st.bodyFontCustom, allFonts, false, 'bodySize', 'bodyWeight', 'Cỡ chữ nội dung', 16),
+      rangeField('lineHeight', st.lineHeight), rangeField('bodyLetterSpacing', st.bodyLetterSpacing), rangeField('wordSpacing', st.wordSpacing),
+      rangeField('textIndent', st.textIndent), rangeField('paraSpacing', st.paraSpacing),
+      chipRow('Căn lề nội dung', O.bodyAlign, st.bodyAlign, pick('bodyAlign'))
     ]));
     box.appendChild(group('Phần đầu trang', isOpen('Phần đầu trang', false), [
       chipRow('Căn chữ', O.heroAlign, st.heroAlign || heroDefault, pick('heroAlign')),
@@ -1852,6 +1918,9 @@
     liveRender: liveRender,
     toast: toast,
     colorField: colorField,
+    fontCombo: fontCombo,
+    stepper: stepper,
+    weightSelect: weightSelect,
     themeColors: function () {
       var th = TPL.get(state.event.templateId).theme, st = getStyle();
       return [st.primary || th.primary, st.accent || th.accent, st.textColor || th.text, st.mutedColor || th.muted, '#ffffff', '#16193a']

@@ -53,6 +53,16 @@ const SP = process.argv[2] || require('os').tmpdir();
   log('studio color', await p.getAttribute('[data-el="hero.eyebrow"]', 'style'));
   await p.selectOption('#inspector [aria-label="Độ đậm"]', '900');
   log('studio weight', await p.getAttribute('[data-el="hero.eyebrow"]', 'style'));
+  // Font riêng của phần tử + khoảng cách & vị trí
+  await p.click('#inspector [aria-label="Font của phần tử"]'); await p.keyboard.type('lobster'); await p.keyboard.press('Enter'); await p.waitForTimeout(300);
+  log('element font', await p.$eval('[data-el="hero.eyebrow"]', e => e.style.fontFamily) + ' | ' + await p.evaluate(() => document.activeElement.getAttribute('aria-label')));
+  log('inspector still open', await p.isVisible('#inspector'));
+  await p.click('#inspector .ins-more > summary');
+  await p.click('#inspector [aria-label="Tăng thụt đầu dòng"]'); await p.click('#inspector [aria-label="Tăng thụt đầu dòng"]');
+  await p.fill('#inspector [aria-label="Lề trên"]', '12'); await p.press('#inspector [aria-label="Lề trên"]', 'Tab');
+  await p.fill('#inspector [aria-label="Dịch ngang"]', '500'); await p.press('#inspector [aria-label="Dịch ngang"]', 'Tab');
+  await p.fill('#inspector [aria-label="Giãn dòng"]', '1.8'); await p.press('#inspector [aria-label="Giãn dòng"]', 'Tab');
+  log('spacing & offset', await p.$eval('[data-el="hero.eyebrow"]', e => [e.style.textIndent, e.style.marginTop, e.style.left, e.style.lineHeight].join(' ')));
   await p.screenshot({ path: SP + '/inspector.png' });
   await p.keyboard.press('Escape'); await p.waitForTimeout(250);
   log('esc closes', await p.isHidden('#inspector'));

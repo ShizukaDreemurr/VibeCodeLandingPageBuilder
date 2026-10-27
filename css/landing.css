@@ -250,3 +250,12 @@ img.lp-avatar { object-fit: cover; }
 
 html.motion-off .landing *, html.motion-off .landing *::before { animation: none !important; transition: none !important; }
 .lp-reveal { } html.motion-off .lp-reveal { opacity: 1 !important; transform: none !important; }
+
+/* Chữ nâng cao (Studio / ô font): giãn dòng tiêu đề, độ đậm & giãn chữ nội dung, giãn từ, thụt đầu dòng, khoảng cách đoạn, căn lề */
+.landing { font-weight: var(--lp-bw, 400); letter-spacing: var(--lp-bls, normal); word-spacing: var(--lp-ws, normal); }
+.landing .lp-headline { line-height: var(--lp-hlh, 1.1); }
+.landing .lp-section h2 { line-height: var(--lp-hlh, 1.2); }
+.st-hitalic .lp-headline, .st-hitalic .lp-section h2 { font-style: italic; }
+.landing .lp-section p:not(.lp-social-proof):not(.lp-ended):not(.lp-error):not(.lp-form-msg) { text-indent: var(--lp-indent, 0); text-align: var(--lp-balign, inherit); margin-top: 0; margin-bottom: var(--lp-para, 1em); }
+.landing .lp-benefits { gap: var(--lp-para, 20px); }
+.landing .lp-benefits li { text-align: var(--lp-balign, inherit); }

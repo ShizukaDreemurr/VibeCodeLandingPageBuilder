@@ -9,6 +9,7 @@
   var bar = null;
   var selectedKey = null;
   var rafId = 0;
+  var openMore = false; // nhớ trạng thái mở mục Khoảng cách & vị trí
 
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
@@ -167,22 +168,42 @@
     if (kind === 'button' || kind === 'box') row2.appendChild(colorControl('Màu nền', 'background', st.background, root.getComputedStyle(n).backgroundColor, studio));
     bar.appendChild(row2);
 
-    if (studio) {
-      var row3 = el('div', 'ins-row');
-      var w = el('select', 'ins-select'); w.setAttribute('aria-label', 'Độ đậm');
-      w.add(new Option('Độ đậm: tự động', ''));
-      [300, 400, 500, 600, 700, 800, 900].forEach(function (v) { w.add(new Option('Độ đậm ' + v, String(v))); });
-      w.value = st.fontWeight ? String(st.fontWeight) : '';
-      w.addEventListener('change', function () { setProp('fontWeight', w.value ? Number(w.value) : ''); });
-      row3.appendChild(w);
-      var ls = el('label', 'ins-inline', 'Giãn chữ ');
-      var lsIn = el('input', 'ins-num'); lsIn.type = 'number'; lsIn.step = 0.01; lsIn.min = -0.1; lsIn.max = 0.5; lsIn.value = st.letterSpacing != null ? st.letterSpacing : '';
-      lsIn.placeholder = '0'; lsIn.setAttribute('aria-label', 'Giãn chữ (em)');
-      lsIn.addEventListener('change', function () { setProp('letterSpacing', lsIn.value === '' ? '' : Number(lsIn.value)); });
-      ls.appendChild(lsIn); ls.appendChild(document.createTextNode(' em'));
-      row3.appendChild(ls);
-      bar.appendChild(row3);
-    }
+    // Font riêng + độ đậm (cả hai chế độ)
+    var rowF = el('div', 'ins-row ins-font');
+    var fc = cfg.fontCombo({
+      id: 'ins-font-' + selectedKey.replace(/[^a-z0-9]/gi, '-'), label: 'Font của phần tử', allowDefault: true,
+      value: st.fontFamily || '',
+      onPick: function (name) { setProp('fontFamily', name || ''); }
+    });
+    fc.wrap.classList.add('ins-combo');
+    rowF.appendChild(fc.wrap);
+    rowF.appendChild(cfg.weightSelect('Độ đậm', st.fontWeight, function (v) { setProp('fontWeight', v == null ? '' : v); }, true));
+    bar.appendChild(rowF);
+    bar.appendChild(fc.note);
+
+    // Khoảng cách & vị trí: giãn dòng/chữ/từ, thụt đầu dòng, lề trên/dưới, dịch ngang/dọc
+    var det = el('details', 'ins-more');
+    det.open = !!openMore;
+    det.addEventListener('toggle', function () { openMore = det.open; position(true); });
+    det.appendChild(el('summary', null, 'Khoảng cách & vị trí'));
+    var grid = el('div', 'ins-grid');
+    [
+      ['lineHeight', 'Giãn dòng', 0.8, 3, 0.05, '', 1.5],
+      ['letterSpacing', 'Giãn chữ', -0.1, 0.5, 0.01, 'em', 0],
+      ['wordSpacing', 'Giãn từ', -0.2, 1, 0.02, 'em', 0],
+      ['textIndent', 'Thụt đầu dòng', 0, 120, 2, 'px', 0],
+      ['marginTop', 'Lề trên', -40, 160, 2, 'px', 0],
+      ['marginBottom', 'Lề dưới', -40, 160, 2, 'px', 0],
+      ['offsetX', 'Dịch ngang', -200, 200, 2, 'px', 0],
+      ['offsetY', 'Dịch dọc', -200, 200, 2, 'px', 0]
+    ].forEach(function (f) {
+      var cell = el('label', 'ins-cell');
+      cell.appendChild(el('span', 'ins-label', f[1]));
+      cell.appendChild(cfg.stepper({ label: f[1], min: f[2], max: f[3], step: f[4], unit: f[5], value: st[f[0]], base: f[6], onChange: function (v) { setProp(f[0], v == null ? '' : v); } }));
+      grid.appendChild(cell);
+    });
+    det.appendChild(grid);
+    bar.appendChild(det);
 
     var row4 = el('div', 'ins-row ins-actions');
     if (!required) row4.appendChild(ibtn(st.hidden ? 'eye' : 'eye-off', st.hidden ? 'Hiện lại' : 'Ẩn', st.hidden ? 'Hiện lại phần tử này' : 'Ẩn phần tử này khỏi trang', function () { setProp('hidden', !st.hidden); cfg.toast(st.hidden ? 'Đã hiện lại.' : 'Đã ẩn – khách sẽ không thấy phần tử này.'); }));
@@ -290,7 +311,7 @@
     cfg.landing.addEventListener('mouseleave', function () { cfg.landing.querySelectorAll('.lp-hovered').forEach(function (x) { x.classList.remove('lp-hovered'); }); });
     document.addEventListener('mousedown', function (e) {
       if (!selectedKey) return;
-      if (bar.contains(e.target) || cfg.landing.contains(e.target)) return;
+      if (bar.contains(e.target) || cfg.landing.contains(e.target) || (e.target.closest && e.target.closest('.combo-list'))) return;
       close();
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && selectedKey && !(e.target && e.target.isContentEditable)) close(); });

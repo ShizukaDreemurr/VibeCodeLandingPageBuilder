@@ -114,6 +114,7 @@
   function catalogEntry(name) { var n = String(name || '').toLowerCase(); for (var i = 0; i < CATALOG.length; i++) if (CATALOG[i].name.toLowerCase() === n) return CATALOG[i]; return null; }
   function keyForFamily(name) { var n = String(name || '').toLowerCase(); var k = Object.keys(FONTS).filter(function (x) { return FONTS[x].google.toLowerCase() === n; })[0]; return k || null; }
 
+  var WEIGHTS = [[100, 'Rất mảnh'], [200, 'Mảnh'], [300, 'Nhẹ'], [400, 'Thường'], [500, 'Vừa'], [600, 'Nửa đậm'], [700, 'Đậm'], [800, 'Rất đậm'], [900, 'Đen đặc']];
   var SIMPLE_FONTS = ['be-vietnam', 'montserrat', 'nunito', 'playfair', 'lora'];
 
   // Bảng màu gợi ý: màu chính luôn đủ tương phản với chữ trắng (≥ 4.5:1)
@@ -142,6 +143,8 @@
     bullet: [['check', 'Dấu tích'], ['star', 'Ngôi sao'], ['arrow', 'Mũi tên'], ['dot', 'Chấm tròn'], ['heart', 'Trái tim'], ['none', 'Không']],
     motion: [['full', 'Đầy đủ'], ['subtle', 'Nhẹ'], ['off', 'Tắt']],
     headingUpper: [['', 'Bình thường'], ['upper', 'VIẾT HOA']],
+    headingItalic: [['', 'Thẳng'], ['italic', 'Nghiêng']],
+    bodyAlign: [['', 'Mặc định'], ['left', 'Trái'], ['center', 'Giữa'], ['right', 'Phải'], ['justify', 'Đều hai bên']],
     sectionBg: [['auto', 'Mặc định'], ['plain', 'Trắng'], ['tint', 'Nhạt'], ['primary', 'Màu chính']],
     sectionAlign: [['auto', 'Mặc định'], ['left', 'Trái'], ['center', 'Giữa']]
   };
@@ -161,7 +164,13 @@
     maxWidth: [560, 1280, 20, 'px', 'Độ rộng nội dung tối đa'],
     heroPad: [16, 160, 4, 'px', 'Khoảng đệm phần đầu trang'],
     heroMinH: [0, 100, 5, 'vh', 'Chiều cao tối thiểu phần đầu'],
-    heroOverlay: [0, 90, 1, '%', 'Độ tối lớp phủ ảnh bìa']
+    heroOverlay: [0, 90, 1, '%', 'Độ tối lớp phủ ảnh bìa'],
+    headingLineHeight: [0.8, 1.8, 0.05, '', 'Giãn dòng tiêu đề'],
+    bodyWeight: [300, 700, 100, '', 'Độ đậm nội dung'],
+    bodyLetterSpacing: [-0.05, 0.2, 0.01, 'em', 'Giãn chữ nội dung'],
+    wordSpacing: [-0.1, 0.6, 0.02, 'em', 'Giãn từ'],
+    textIndent: [0, 80, 2, 'px', 'Thụt đầu dòng đoạn văn'],
+    paraSpacing: [0, 48, 2, 'px', 'Khoảng cách giữa các đoạn']
   };
 
   // Màu Studio: [khoá, nhãn, gợi ý]
@@ -187,7 +196,7 @@
     primary: '', accent: '', headingFont: '', bodyFont: 'be-vietnam', headingFontCustom: '', bodyFontCustom: '',
     pageBg: 'white', headingSize: 'm', radius: 'soft', button: 'solid', shadow: 'none', heroAlign: '',
     heroHeight: 'normal', heroOverlay: 62, spacing: 'normal', countdown: 'boxes', bullet: 'check', motion: 'full',
-    ctaText: '', headingUpper: '', freeColors: false, sections: {}
+    ctaText: '', headingUpper: '', headingItalic: '', bodyAlign: '', freeColors: false, sections: {}
   };
 
   // ---------- Màu: nhận mọi cách viết ----------
@@ -345,6 +354,12 @@
       '--lp-maxw': px(s.maxWidth),
       '--lp-hero-pad': px(s.heroPad),
       '--lp-hero-minh': s.heroMinH == null ? null : (s.heroMinH ? 'min(' + s.heroMinH + 'vh, 900px)' : 'auto'),
+      '--lp-hlh': s.headingLineHeight == null ? null : String(s.headingLineHeight),
+      '--lp-bw': s.bodyWeight == null ? null : String(s.bodyWeight),
+      '--lp-bls': px(s.bodyLetterSpacing, 'em'),
+      '--lp-ws': px(s.wordSpacing, 'em'),
+      '--lp-indent': px(s.textIndent),
+      '--lp-para': px(s.paraSpacing),
       '--lp-shadow': s.shadowLevel == null ? null : ['none', '0 2px 8px rgba(22,25,58,.08)', '0 6px 20px rgba(22,25,58,.12)', '0 14px 40px rgba(22,25,58,.18)'][s.shadowLevel]
     };
     Object.keys(studio).forEach(function (k) { if (studio[k] != null) vars[k] = studio[k]; });
@@ -354,6 +369,8 @@
     });
     if (s.heroAlign) container.classList.add('st-heroAlign-' + s.heroAlign);
     if (s.headingUpper) container.classList.add('st-upper');
+    if (s.headingItalic) container.classList.add('st-hitalic');
+    if (/^(left|center|right|justify)$/.test(s.bodyAlign)) container.style.setProperty('--lp-balign', s.bodyAlign);
     return s;
   }
 
@@ -370,6 +387,6 @@
     normalize: normalize, apply: apply, sectionInline: sectionInline,
     parseColor: parseColor, normalizeColor: normalizeColor, solidHex: solidHex,
     contrast: contrast, textOn: textOn, ensureDark: ensureDark, loadFont: loadFont, fontFamilyName: fontFamilyName,
-    CATALOG: CATALOG, FONT_CATS: FONT_CATS, catalogEntry: catalogEntry, keyForFamily: keyForFamily
+    WEIGHTS: WEIGHTS, CATALOG: CATALOG, FONT_CATS: FONT_CATS, catalogEntry: catalogEntry, keyForFamily: keyForFamily
   };
 })(typeof window !== 'undefined' ? window : globalThis);

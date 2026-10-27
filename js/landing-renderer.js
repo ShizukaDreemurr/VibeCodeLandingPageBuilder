@@ -149,6 +149,21 @@
       if (st.upper) node.style.textTransform = 'uppercase';
       if (st.align && /^(left|center|right)$/.test(st.align)) node.style.textAlign = st.align;
       if (st.letterSpacing != null && st.letterSpacing !== '') node.style.letterSpacing = Math.max(-0.1, Math.min(0.5, Number(st.letterSpacing))) + 'em';
+      var num = function (v, a, b) { v = Number(v); return v === v && v !== null && st != null ? Math.max(a, Math.min(b, v)) : null; };
+      var set = function (prop, v, unit) { if (v != null && v !== '' && !isNaN(Number(v))) node.style[prop] = v + (unit || ''); };
+      if (st.fontFamily && /^[A-Za-z0-9 ]{2,40}$/.test(st.fontFamily)) {
+        var PSx = root.EP.pageStyle, fam = PSx ? PSx.fontFamilyName('', st.fontFamily) : { google: st.fontFamily, fallback: 'sans-serif' };
+        if (PSx) PSx.loadFont(fam);
+        node.style.fontFamily = "'" + fam.google + "', " + fam.fallback;
+      }
+      if (st.lineHeight !== '' && st.lineHeight != null) set('lineHeight', num(st.lineHeight, 0.8, 3));
+      if (st.wordSpacing !== '' && st.wordSpacing != null) set('wordSpacing', num(st.wordSpacing, -0.2, 1), 'em');
+      if (st.textIndent !== '' && st.textIndent != null) set('textIndent', num(st.textIndent, 0, 120), 'px');
+      if (st.marginTop !== '' && st.marginTop != null) set('marginTop', num(st.marginTop, -40, 160), 'px');
+      if (st.marginBottom !== '' && st.marginBottom != null) set('marginBottom', num(st.marginBottom, -40, 160), 'px');
+      var ox = st.offsetX !== '' && st.offsetX != null ? num(st.offsetX, -200, 200) : null;
+      var oy = st.offsetY !== '' && st.offsetY != null ? num(st.offsetY, -200, 200) : null;
+      if (ox || oy) { node.style.position = 'relative'; node.style.left = (ox || 0) + 'px'; node.style.top = (oy || 0) + 'px'; }
       if (st.hidden && !required) {
         if (editable) node.classList.add('lp-el-hidden'); else node.hidden = true;
       }
