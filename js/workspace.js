@@ -119,12 +119,9 @@
 
   function commit(flashId, moved) {
     save();
+    var M = root.EP.motion, before = M ? M.flipRecord(ws.querySelectorAll('.ws-group, .preview-wrap')) : null;
     render();
-    if (flashId && moved) {
-      var g = ws.querySelector('[data-panel="' + flashId + '"]');
-      g = g && g.closest('.ws-group');
-      if (g && root.EP.motion) root.EP.motion.replay(g, 'ws-arrive');
-    }
+    if (M) M.flipPlay(before, ws.querySelectorAll('.ws-group, .preview-wrap'));
     onChange();
   }
 
@@ -166,6 +163,7 @@
 
   function buildGroup(g, side) {
     var node = el('section', 'ws-group');
+    node.dataset.flip = g.tabs[0];
     node.setAttribute('aria-label', g.tabs.map(function (t) { return panels[t].getAttribute('data-title'); }).join(', '));
     var head = el('header', 'ws-ghead');
     var tabs = el('div', 'ws-tabs');

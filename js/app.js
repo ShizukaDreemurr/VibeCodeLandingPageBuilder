@@ -312,7 +312,7 @@
   // ---------- Bố cục: thứ tự / ẩn hiện các phần ----------
   function currentSections() { return EP.landingRenderer.normalizeSections(state.event.sections); }
 
-  var reduceMotion = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   var flashKey = null; // phần vừa đổi → nháy sáng trên bản xem trước
 
   function moveSection(from, to) {
@@ -342,7 +342,7 @@
     return r;
   }
   function playFlip(ol, before, skip) {
-    if (reduceMotion) return;
+    if (EP.motion.reduce()) return;
     Array.prototype.forEach.call(ol.children, function (li) {
       var old = before[li.dataset.key];
       if (old == null || li === skip) return;
@@ -417,7 +417,7 @@
         var changed = order.some(function (v, k) { return k > 0 && v < order[k - 1]; });
         if (changed) { flashKey = ghost.dataset.key; reorderSections(order); toast('Đã đổi thứ tự bố cục.'); }
       }
-      if (reduceMotion) return finish();
+      if (EP.motion.reduce()) return finish();
       var a = ghost.animate([{ top: lastTop + 'px' }, { top: dest.top + 'px' }], { duration: 180, easing: 'ease-out' });
       a.onfinish = finish;
     }
@@ -516,7 +516,7 @@
       if (sec) {
         sec.classList.add('lp-flash');
         var wrap = landingEl.closest('.preview-wrap');
-        if (wrap && !$('#view-editor').hidden) sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+        if (wrap && !$('#view-editor').hidden) sec.scrollIntoView({ behavior: EP.motion.reduce() ? 'auto' : 'smooth', block: 'nearest' });
       }
     }
   }
@@ -916,8 +916,15 @@
     document.querySelectorAll('.device-toggle [data-device]').forEach(function (x) { x.classList.toggle('is-active', x.getAttribute('data-device') === device); });
   }
   function saveView() { S.write('ws_view', { device: device, zoom: zoom }); }
-  function setDevice(d) { device = d; saveView(); applyDevice(); if (EP.inspector) EP.inspector.refresh(); }
-  function setZoom(z) { zoom = z; saveView(); applyDevice(); if (EP.inspector) EP.inspector.refresh(); }
+  function setDevice(d) {
+    if (d === device) return;
+    EP.motion.transition(function () { device = d; saveView(); applyDevice(); }, 'device');
+    if (EP.inspector) setTimeout(EP.inspector.refresh, 360);
+  }
+  function setZoom(z) {
+    EP.motion.transition(function () { zoom = z; saveView(); applyDevice(); }, 'device');
+    if (EP.inspector) setTimeout(EP.inspector.refresh, 360);
+  }
   function stepZoom(dir) {
     var cur = currentZoom(), next;
     if (dir > 0) next = ZOOMS.filter(function (v) { return v > cur + 0.001; })[0] || ZOOMS[ZOOMS.length - 1];
@@ -1653,7 +1660,16 @@
   }
 
   // ---------- Tab ----------
+  var TAB_ORDER = ['events', 'builder', 'editor', 'admin'];
+  var currentTab = null;
   function switchTab(name) {
+    var dir = currentTab && currentTab !== name ? (TAB_ORDER.indexOf(name) > TAB_ORDER.indexOf(currentTab) ? 'forward' : 'back') : null;
+    currentTab = name;
+    doSwitchTab(name);
+    // Màn mới trượt vào theo hướng của tab (sang phải: từ phải vào, sang trái: từ trái vào)
+    if (dir) EP.motion.replay($('#view-' + name), 'tab-in-' + dir);
+  }
+  function doSwitchTab(name) {
     document.querySelectorAll('.tab').forEach(function (t) {
       var on = t.getAttribute('data-tab') === name;
       t.classList.toggle('is-active', on);
@@ -1786,6 +1802,11 @@
           '-',
           { heading: 'Thiết bị' },
           menuDevice('desktop', 'Máy tính (1280px)'), menuDevice('tablet', 'Máy tính bảng (768px)'), menuDevice('mobile', 'Điện thoại (390px)'),
+          '-',
+          { heading: 'Hiệu ứng chuyển động' },
+          { label: 'Bật', checked: function () { return EP.motion.pref() === 'on'; }, action: function () { EP.motion.setPref('on'); toast('Đã bật hiệu ứng.'); } },
+          { label: 'Theo cài đặt của máy', checked: function () { return EP.motion.pref() === 'system'; }, action: function () { EP.motion.setPref('system'); toast(EP.motion.reduce() ? 'Máy đang bật "giảm chuyển động" nên hiệu ứng tắt.' : 'Hiệu ứng theo cài đặt của máy.'); } },
+          { label: 'Tắt', checked: function () { return EP.motion.pref() === 'off'; }, action: function () { EP.motion.setPref('off'); toast('Đã tắt hiệu ứng.'); } },
           '-',
           { heading: 'Chế độ chỉnh' },
           { label: 'Đơn giản', checked: function () { return editorMode === 'simple'; }, action: function () { if (editorMode !== 'simple') setEditorMode('simple'); } },
