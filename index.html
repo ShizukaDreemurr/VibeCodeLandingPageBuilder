@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;700;800&family=Nunito:wght@400;600;800&family=Lora:wght@500;700&display=swap">
-  <link rel="stylesheet" href="css/tokens.css?v=1.6.1">
-  <link rel="stylesheet" href="css/app.css?v=1.6.1">
-  <link rel="stylesheet" href="css/landing.css?v=1.6.1">
+  <link rel="stylesheet" href="css/tokens.css?v=1.7.0">
+  <link rel="stylesheet" href="css/app.css?v=1.7.0">
+  <link rel="stylesheet" href="css/landing.css?v=1.7.0">
 </head>
 <body>
   <header class="topbar">
@@ -389,8 +389,27 @@
       <button type="button" class="icon-btn" id="btn-tpl-close" aria-label="Đóng"><span data-icon="x"></span></button>
     </div>
     <p class="hint">Lọc theo ngành, loại và mục đích sự kiện. Đổi mẫu giữ nguyên nội dung đã viết.</p>
+    <div class="tpl-search">
+      <span class="tpl-search-icon" data-icon="zoom-in" aria-hidden="true"></span>
+      <input type="search" id="tpl-search" placeholder="Tìm mẫu: tiệc cưới, marathon, khai trương…" aria-label="Tìm mẫu" autocomplete="off">
+    </div>
     <div class="tpl-filters" id="tpl-filters"></div>
-    <div class="tpl-grid" id="tpl-grid"></div>
+    <div class="tpl-status">
+      <p class="tpl-count" id="tpl-count" role="status" aria-live="polite"></p>
+      <button type="button" class="btn btn-ghost btn-small" id="tpl-clear" hidden>Xoá bộ lọc</button>
+    </div>
+    <div class="tpl-results" id="tpl-results">
+      <div class="tpl-grid" id="tpl-grid" aria-label="Mẫu khớp đủ"></div>
+      <details class="tpl-near" id="tpl-near" open hidden>
+        <summary><span id="tpl-near-title">Gần đúng</span></summary>
+        <div class="tpl-grid" id="tpl-grid-near"></div>
+      </details>
+      <div class="tpl-empty" id="tpl-empty" hidden>
+        <strong>Chưa có mẫu nào khớp</strong>
+        <p class="hint">Thử bỏ bớt một bộ lọc hoặc đổi từ khoá tìm kiếm.</p>
+        <button type="button" class="btn btn-ghost btn-small" id="tpl-empty-clear">Xoá bộ lọc</button>
+      </div>
+    </div>
   </dialog>
 
   <dialog class="tpl-dialog help-dialog" id="help-dialog" aria-labelledby="help-title">
@@ -435,27 +454,27 @@
   <script src="vendor/firebase/firebase-auth-compat.js"></script>
   <script src="vendor/firebase/firebase-firestore-compat.js"></script>
   <script src="vendor/qrcode/qrcode.js"></script>
-  <script src="js/firebase-config.js?v=1.6.1"></script>
-  <script src="js/storage.js?v=1.6.1"></script>
-  <script src="js/validators.js?v=1.6.1"></script>
-  <script src="js/event-status.js?v=1.6.1"></script>
-  <script src="js/registrations.js?v=1.6.1"></script>
-  <script src="js/content-generator.js?v=1.6.1"></script>
-  <script src="js/ai-service.js?v=1.6.1"></script>
-  <script src="js/sheet-sync.js?v=1.6.1"></script>
-  <script src="js/cloud.js?v=1.6.1"></script>
-  <script src="js/templates-data.js?v=1.6.1"></script>
-  <script src="js/templates.js?v=1.6.1"></script>
-  <script src="js/images.js?v=1.6.1"></script>
-  <script src="js/brands.js?v=1.6.1"></script>
-  <script src="js/icons.js?v=1.6.1"></script>
-  <script src="js/motion.js?v=1.6.1"></script>
-  <script src="js/page-style.js?v=1.6.1"></script>
-  <script src="js/lp-utils.js?v=1.6.1"></script>
-  <script src="js/landing-renderer.js?v=1.6.1"></script>
-  <script src="js/inspector.js?v=1.6.1"></script>
-  <script src="js/workspace.js?v=1.6.1"></script>
-  <script src="js/version.js?v=1.6.1"></script>
-  <script src="js/app.js?v=1.6.1"></script>
+  <script src="js/firebase-config.js?v=1.7.0"></script>
+  <script src="js/storage.js?v=1.7.0"></script>
+  <script src="js/validators.js?v=1.7.0"></script>
+  <script src="js/event-status.js?v=1.7.0"></script>
+  <script src="js/registrations.js?v=1.7.0"></script>
+  <script src="js/content-generator.js?v=1.7.0"></script>
+  <script src="js/ai-service.js?v=1.7.0"></script>
+  <script src="js/sheet-sync.js?v=1.7.0"></script>
+  <script src="js/cloud.js?v=1.7.0"></script>
+  <script src="js/templates-data.js?v=1.7.0"></script>
+  <script src="js/templates.js?v=1.7.0"></script>
+  <script src="js/images.js?v=1.7.0"></script>
+  <script src="js/brands.js?v=1.7.0"></script>
+  <script src="js/icons.js?v=1.7.0"></script>
+  <script src="js/motion.js?v=1.7.0"></script>
+  <script src="js/page-style.js?v=1.7.0"></script>
+  <script src="js/lp-utils.js?v=1.7.0"></script>
+  <script src="js/landing-renderer.js?v=1.7.0"></script>
+  <script src="js/inspector.js?v=1.7.0"></script>
+  <script src="js/workspace.js?v=1.7.0"></script>
+  <script src="js/version.js?v=1.7.0"></script>
+  <script src="js/app.js?v=1.7.0"></script>
 </body>
 </html>

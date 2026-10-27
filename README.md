@@ -30,7 +30,7 @@
 **Quy tắc nghiệp vụ**: tên trống → cảnh báo; SĐT Việt Nam (nhận cả +84) và email sai định dạng → cảnh báo; **đăng ký trùng SĐT/email chỉ ghi nhận 1 lần**; hết chỗ → **danh sách chờ**; hết hạn ưu đãi → tự ẩn phần ưu đãi; sự kiện đã diễn ra → ẩn form; chặn bấm gửi liên tục.
 
 **Mở rộng giúp marketer & sale**
-- **Thư viện 56 mẫu** lọc theo 14 ngành / 15 loại sự kiện / 8 mục đích (công nghệ, giáo dục, sức khoẻ, bất động sản, F&B, du lịch, âm nhạc, nghệ thuật, thiện nguyện, **4 kiểu thiệp cưới**, ăn hỏi, thôi nôi, mừng thọ…). Mỗi mẫu có **ảnh nền vẽ sẵn** (SVG, `tools/make-art.cjs`) và **ảnh đại diện là ảnh chụp phần đầu trang** (`tools/make-thumbs.cjs`); đổi mẫu giữ nguyên nội dung; bảng màu đạt chuẩn tương phản WCAG AA.
+- **Thư viện 106 mẫu** lọc theo 14 ngành / 15 loại sự kiện / 8 mục đích (công nghệ, giáo dục, sức khoẻ, bất động sản, F&B, du lịch, âm nhạc, nghệ thuật, thiện nguyện, **4 kiểu thiệp cưới**, ăn hỏi, thôi nôi, mừng thọ…). Mỗi mẫu có **ảnh nền vẽ sẵn** (SVG, `tools/make-art.cjs`) và **ảnh đại diện là ảnh chụp phần đầu trang** (`tools/make-thumbs.cjs`); đổi mẫu giữ nguyên nội dung; bảng màu đạt chuẩn tương phản WCAG AA.
 - **Builder theo section**: kéo thả / mũi tên đổi thứ tự, ẩn hiện (phần bắt buộc bị khoá), **sửa chữ trực tiếp trên trang**.
 - **Ô ảnh tuỳ chỉnh**: ảnh bìa, ảnh diễn giả, album ảnh cưới — tự cắt, nén.
 - **Xem thử trạng thái**: sắp hết chỗ / hết chỗ / hết ưu đãi / đã diễn ra, không ảnh hưởng dữ liệu thật.

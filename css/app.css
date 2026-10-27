@@ -358,20 +358,47 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; user-select: n
 .tpl-dialog::backdrop { background: rgba(19, 20, 22, 0.4); }
 .tpl-dialog-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
 .tpl-dialog h2 { font-size: 18px; line-height: 26px; font-weight: 600; }
-.tpl-filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
-.tpl-filters label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500; min-width: 180px; }
-.tpl-filters select { min-height: var(--control-h); padding: 4px 10px; }
+.tpl-dialog { overflow-x: hidden; }
+.tpl-search { position: relative; margin: 14px 0 0; }
+.tpl-search input[type="search"] { width: 100%; min-height: 40px; padding: 4px 12px 4px 36px !important; font: inherit; font-size: 14px; }
+.tpl-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); display: inline-flex; pointer-events: none; }
+.tpl-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 12px 0; }
+.tpl-filters label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500; min-width: 0; }
+.tpl-filters select { width: 100%; min-height: var(--control-h); padding: 4px 10px; text-overflow: ellipsis; }
+.tpl-filters select.is-set { border-color: var(--text); font-weight: 500; }
+.tpl-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; margin-bottom: 12px; }
+.tpl-count { margin: 0; font-size: 13px; line-height: 20px; font-weight: 500; color: var(--text-muted); }
+.tpl-near { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px; }
+.tpl-near > summary { cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 12px; list-style: none; display: flex; align-items: center; gap: 8px; }
+.tpl-near > summary::-webkit-details-marker { display: none; }
+.tpl-near > summary::before { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform var(--dur-2) var(--ease-out); }
+.tpl-near[open] > summary::before { transform: rotate(45deg); }
+.tpl-empty { text-align: center; padding: 40px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.tpl-empty[hidden], .tpl-grid[hidden], .tpl-near[hidden] { display: none; }
 .tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
-.tpl-card { text-align: left; font: inherit; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 0; cursor: pointer; overflow: hidden; color: var(--text); }
-.tpl-card:hover { border-color: var(--control); }
+.tpl-card { text-align: left; font: inherit; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 0; cursor: pointer; overflow: hidden; color: var(--text); transition: border-color var(--dur-2) ease, transform var(--dur-2) var(--ease-out); }
+.tpl-card:hover { border-color: var(--control); transform: translateY(-2px); }
 .tpl-card.is-current { border-color: var(--text); box-shadow: inset 0 0 0 1px var(--text); }
 .tpl-thumb { aspect-ratio: 16 / 9; overflow: hidden; position: relative; }
 .tpl-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; opacity: 0; transition: opacity var(--dur-2) ease, transform var(--dur-3) var(--ease-out); }
 .tpl-thumb.is-loaded img { opacity: 1; }
-.tpl-card:hover .tpl-thumb img { transform: scale(1.03); }
-.tpl-card-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.tpl-card:hover .tpl-thumb img, .tpl-card:focus-visible .tpl-thumb img { transform: scale(1.03); }
+.tpl-peek { position: absolute; left: 8px; bottom: 8px; padding: 3px 10px; border-radius: 999px; background: rgba(19, 20, 22, 0.85); color: #fff; font-size: 12px; line-height: 18px; font-weight: 500; opacity: 0; transform: translateY(4px); transition: opacity var(--dur-2) ease, transform var(--dur-2) var(--ease-out); }
+.tpl-card:hover .tpl-peek, .tpl-card:focus-visible .tpl-peek { opacity: 1; transform: none; }
+.tpl-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tpl-card-name { font-size: 14px; font-weight: 600; color: var(--text); min-width: 0; }
+.tpl-dots { display: inline-flex; flex: none; }
+.tpl-dots i { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--surface); box-shadow: 0 0 0 1px var(--border); }
+.tpl-dots i + i { margin-left: -4px; }
 .tpl-card-body { padding: 10px 12px 12px; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
-.tpl-score { font-weight: 500; color: var(--success); }
+.tpl-card-desc { color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tpl-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.tpl-score, .tpl-badge { font-size: 12px; line-height: 18px; font-weight: 500; padding: 0 8px; border-radius: 999px; background: var(--raised); color: var(--text); }
+.tpl-score { color: var(--success); }
+.tpl-score.is-near { color: var(--text-muted); }
+.tpl-badge.is-current { background: var(--text); color: var(--surface); }
+@media (max-width: 760px) { .tpl-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .tpl-dialog { padding: 16px; } .tpl-search input[type="search"] { font-size: 13px; } .tpl-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; } }
 .check-dialog { width: min(560px, calc(100vw - 32px)); }
 .check-dialog .actions { margin-top: 16px; }
 .checklist { list-style: none; padding: 0; margin: 16px 0 12px; display: flex; flex-direction: column; }
@@ -479,6 +506,7 @@ body.is-public .topbar, body.is-public #view-builder, body.is-public #view-admin
   .checklist li { animation: xcIn var(--dur-2) var(--ease-out) both; }
   .checklist li:nth-child(2) { animation-delay: 30ms; } .checklist li:nth-child(3) { animation-delay: 60ms; }
   .checklist li:nth-child(4) { animation-delay: 90ms; } .checklist li:nth-child(n+5) { animation-delay: 120ms; }
+  .mo-fade { animation: xcFade var(--dur-2) ease both; }
   .mo-stagger { animation: xcIn var(--dur-2) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 30ms); }
   .mo-swap { animation: xcSwap var(--dur-3) var(--ease-out); }
   .mo-pop, .mo-morph { animation: xcPop var(--dur-2) var(--ease-out); }

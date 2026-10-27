@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '1.6.1',
+    version: '1.7.0',
     date: '2026-10-27',
-    notes: '56 mẫu landing page có ảnh nền vẽ sẵn và ảnh đại diện chụp phần đầu trang, thêm bộ lọc ngành/loại/mục đích',
+    notes: '106 mẫu; trang chọn mẫu lọc đúng (khớp đủ / gần đúng), tìm kiếm không dấu, đếm số mẫu từng lựa chọn, sắp xếp',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

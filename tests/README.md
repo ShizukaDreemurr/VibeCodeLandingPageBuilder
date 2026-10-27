@@ -5,6 +5,7 @@
 | `e2e-local.cjs` | Lõi 5 tính năng, quy tắc nghiệp vụ, AI copy-prompt, mobile (chế độ localStorage) | `node tests/e2e-local.cjs <thư-mục-ảnh>` |
 | `e2e-sheet.cjs` + `mock-sheet-server.cjs` | Đồng bộ Google Sheet: 2 thiết bị, trùng, mất mạng rồi gửi lại (máy chủ giả lập) | chạy `node tests/mock-sheet-server.cjs` rồi `node tests/e2e-sheet.cjs` |
 | `e2e-templates.cjs` | Thư viện mẫu (lọc, đổi mẫu giữ nội dung), mẫu thiệp cưới, ô ảnh (bìa, diễn giả, album), ghi nguồn studio | `node tests/e2e-templates.cjs <thư-mục-có-photo.jpg>` |
+| `e2e-picker.cjs` | Bộ chọn mẫu: lọc đúng (khớp đủ / gần đúng), số lượng tuỳ chọn, tìm không dấu, sắp xếp, xoá bộ lọc, trạng thái rỗng, nhớ bộ lọc, áp mẫu, không tràn ngang ở 390px | `node tests/e2e-picker.cjs` |
 | `e2e-builder.cjs` | Bố cục (đổi thứ tự, ẩn/hiện, phần bắt buộc), sửa chữ trực tiếp, xem thử trạng thái (sắp hết chỗ, hết chỗ, hết ưu đãi, đã diễn ra) | `node tests/e2e-builder.cjs` |
 | `e2e-style.cjs` | Chế độ Đơn giản/Studio, ô màu nhận hex/rgb/rgba/hsl/tên màu, thanh trượt (kẹp giới hạn), ô tìm font (danh sách, lọc, font Google tuỳ ý, báo font không tồn tại), màu riêng từng phần, hoàn tác, lưu sau khi tải lại | `node tests/e2e-style.cjs`
 | `e2e-inspector.cjs` | Bấm phần tử trong bản xem trước để chỉnh: sửa chữ tại chỗ, cỡ/đậm/nghiêng/căn lề/màu, nút, ẩn (trừ phần bắt buộc), chọn cả phần qua đường dẫn, Studio có ô mã màu | `e2e-features.cjs` độ đậm, về mặc định, hoàn tác, lưu | `node tests/e2e-inspector.cjs`

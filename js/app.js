@@ -236,72 +236,209 @@
     $('#tpl-swatch-2').style.setProperty('--sw2', t.theme.accent);
   }
 
+  // ---------- Bộ chọn mẫu: lọc, tìm, sắp xếp ----------
+  var SORTS = { best: 'Phù hợp nhất', name: 'Tên A–Z', newest: 'Mới thêm' };
+  var tplState = { industry: '', type: '', goal: '', q: '', sort: 'best' };
+  var tplTimer = null;
+
+  function norm(s) {
+    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'd').toLowerCase().trim();
+  }
+
+  function tplHaystack(t) {
+    if (!t._hay) {
+      var parts = [t.name];
+      Object.keys(t.tags).forEach(function (k) { t.tags[k].forEach(function (v) { parts.push(TPL.FILTERS[k].options[v]); }); });
+      try { parts.push(t.sample().name); } catch (e) { /* bỏ qua */ }
+      if (t.wedding) parts.push('thiệp cưới');
+      t._hay = norm(parts.join(' '));
+    }
+    return t._hay;
+  }
+
+  function tplHas(t, k, v) { return !v || t.tags[k].indexOf(v) !== -1; }
+
+  function tplTextOk(t, q) {
+    return !q || norm(q).split(/\s+/).every(function (w) { return tplHaystack(t).indexOf(w) !== -1; });
+  }
+
+  function tplDesc(t) {
+    var f = function (k) { return t.tags[k].length ? TPL.FILTERS[k].options[t.tags[k][0]] : ''; };
+    return [f('type'), f('industry')].filter(Boolean).join(' · ');
+  }
+
+  function tplSave() { try { S.write('tpl_filters', tplState); } catch (e) { /* bỏ qua */ } }
+
+  function tplLoad() {
+    var v = null;
+    try { v = S.read('tpl_filters', null); } catch (e) { v = null; }
+    if (!v || typeof v !== 'object') return;
+    ['industry', 'type', 'goal'].forEach(function (k) {
+      if (typeof v[k] === 'string' && (v[k] === '' || TPL.FILTERS[k].options[v[k]])) tplState[k] = v[k];
+    });
+    if (typeof v.q === 'string') tplState.q = v.q.slice(0, 80);
+    if (SORTS[v.sort]) tplState.sort = v.sort;
+  }
+
+  function tplActive() { return !!(tplState.industry || tplState.type || tplState.goal || tplState.q); }
+
+  // Số mẫu khớp nếu chọn giá trị v cho bộ lọc key (các bộ lọc khác giữ nguyên)
+  function tplCount(key, v) {
+    var f = { industry: tplState.industry, type: tplState.type, goal: tplState.goal };
+    f[key] = v;
+    return TPL.list.filter(function (t) {
+      return tplTextOk(t, tplState.q) && tplHas(t, 'industry', f.industry) && tplHas(t, 'type', f.type) && tplHas(t, 'goal', f.goal);
+    }).length;
+  }
+
   function buildTemplateFilters() {
     var box = $('#tpl-filters');
     Object.keys(TPL.FILTERS).forEach(function (key) {
       var f = TPL.FILTERS[key];
       var label = document.createElement('label');
-      label.textContent = f.label;
+      label.appendChild(document.createTextNode(f.label));
       var sel = document.createElement('select');
       sel.setAttribute('data-filter', key);
-      var all = document.createElement('option');
-      all.value = ''; all.textContent = 'Tất cả';
-      sel.appendChild(all);
-      Object.keys(f.options).forEach(function (v) {
-        var o = document.createElement('option');
-        o.value = v; o.textContent = f.options[v];
-        sel.appendChild(o);
-      });
-      sel.addEventListener('change', renderTemplateGrid);
+      sel.addEventListener('change', function () { tplState[key] = sel.value; renderTemplateGrid(true); });
       label.appendChild(sel);
       box.appendChild(label);
     });
+    var lab = document.createElement('label');
+    lab.appendChild(document.createTextNode('Sắp xếp'));
+    var ss = document.createElement('select');
+    ss.setAttribute('data-sort', '');
+    Object.keys(SORTS).forEach(function (k) {
+      var o = document.createElement('option'); o.value = k; o.textContent = SORTS[k]; ss.appendChild(o);
+    });
+    ss.addEventListener('change', function () { tplState.sort = ss.value; renderTemplateGrid(true); });
+    lab.appendChild(ss);
+    box.appendChild(lab);
+    $('#tpl-search').addEventListener('input', function (e) {
+      clearTimeout(tplTimer);
+      var val = e.target.value;
+      tplTimer = setTimeout(function () { tplState.q = val; renderTemplateGrid(true); }, 120);
+    });
+    function clearAll() {
+      tplState.industry = tplState.type = tplState.goal = tplState.q = '';
+      $('#tpl-search').value = '';
+      renderTemplateGrid(true);
+    }
+    $('#tpl-clear').addEventListener('click', clearAll);
+    $('#tpl-empty-clear').addEventListener('click', clearAll);
   }
 
-  function renderTemplateGrid() {
-    var filters = {};
-    document.querySelectorAll('#tpl-filters select').forEach(function (sel) { filters[sel.getAttribute('data-filter')] = sel.value; });
-    var grid = $('#tpl-grid');
-    grid.innerHTML = '';
-    TPL.search(filters).forEach(function (r) {
-      var t = r.template;
-      var card = document.createElement('button');
-      card.type = 'button';
-      card.className = 'tpl-card' + (t.id === currentTemplateId ? ' is-current' : '');
-      // Ảnh đại diện = ảnh chụp phần đầu trang của mẫu (tools/make-thumbs.cjs); ảnh lỗi thì hiện khối màu
-      var thumb = document.createElement('div');
-      thumb.className = 'tpl-thumb';
-      thumb.style.background = t.theme.primary;
-      var img = document.createElement('img');
-      img.src = t.thumb; img.alt = 'Phần đầu trang mẫu ' + t.name; img.loading = 'lazy'; img.decoding = 'async';
-      img.addEventListener('load', function () { thumb.classList.add('is-loaded'); });
-      img.addEventListener('error', function () { img.remove(); thumb.classList.add('is-fallback'); });
-      thumb.appendChild(img);
-      var body = document.createElement('div');
-      body.className = 'tpl-card-body';
-      var nm = document.createElement('strong');
-      nm.className = 'tpl-card-name'; nm.textContent = t.name;
-      body.appendChild(nm);
-      var tags = document.createElement('span');
-      tags.textContent = Object.keys(t.tags).map(function (k) {
-        return t.tags[k].map(function (v) { return TPL.FILTERS[k].options[v]; }).join(', ');
-      }).join(' · ');
-      body.appendChild(tags);
-      if (r.score.total) {
-        var sc = document.createElement('span');
-        sc.className = 'tpl-score';
-        sc.textContent = 'Phù hợp ' + r.score.hit + '/' + r.score.total;
-        body.appendChild(sc);
-      }
-      card.appendChild(thumb); card.appendChild(body);
-      card.addEventListener('click', function () { applyTemplate(t.id); });
-      grid.appendChild(card);
+  // Cập nhật danh sách tuỳ chọn kèm số kết quả; tuỳ chọn 0 kết quả bị vô hiệu (trừ giá trị đang chọn)
+  function syncFilterControls() {
+    document.querySelectorAll('#tpl-filters select[data-filter]').forEach(function (sel) {
+      var key = sel.getAttribute('data-filter');
+      var opts = TPL.FILTERS[key].options;
+      sel.innerHTML = '';
+      var all = document.createElement('option');
+      all.value = ''; all.textContent = 'Tất cả (' + tplCount(key, '') + ')';
+      sel.appendChild(all);
+      Object.keys(opts).forEach(function (v) {
+        var n = tplCount(key, v);
+        var o = document.createElement('option');
+        o.value = v; o.textContent = opts[v] + ' (' + n + ')';
+        if (!n && tplState[key] !== v) o.disabled = true;
+        sel.appendChild(o);
+      });
+      sel.value = tplState[key];
+      sel.classList.toggle('is-set', !!tplState[key]);
     });
-    EP.motion.stagger(grid.children);
+    document.querySelector('#tpl-filters select[data-sort]').value = tplState.sort;
+    $('#tpl-search').value = tplState.q;
+  }
+
+  function tplCard(t, badge, kind) {
+    var card = document.createElement('button');
+    card.type = 'button';
+    var cur = t.id === currentTemplateId;
+    card.className = 'tpl-card' + (cur ? ' is-current' : '');
+    card.setAttribute('data-id', t.id);
+    card.setAttribute('aria-label', 'Chọn mẫu ' + t.name + (cur ? ' (đang dùng)' : ''));
+    // Ảnh đại diện = ảnh chụp phần đầu trang của mẫu (tools/make-thumbs.cjs); ảnh lỗi thì hiện khối màu
+    var thumb = document.createElement('div');
+    thumb.className = 'tpl-thumb';
+    thumb.style.background = t.theme.primary;
+    var img = document.createElement('img');
+    img.src = t.thumb; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+    img.addEventListener('load', function () { thumb.classList.add('is-loaded'); });
+    img.addEventListener('error', function () { img.remove(); thumb.classList.add('is-fallback'); });
+    thumb.appendChild(img);
+    var peek = document.createElement('span');
+    peek.className = 'tpl-peek'; peek.setAttribute('aria-hidden', 'true'); peek.textContent = cur ? 'Đang dùng' : 'Dùng mẫu này';
+    thumb.appendChild(peek);
+    var body = document.createElement('div');
+    body.className = 'tpl-card-body';
+    var top = document.createElement('div');
+    top.className = 'tpl-card-top';
+    var nm = document.createElement('strong');
+    nm.className = 'tpl-card-name'; nm.textContent = t.name;
+    var dots = document.createElement('span');
+    dots.className = 'tpl-dots'; dots.setAttribute('aria-hidden', 'true');
+    [t.theme.primary, t.theme.accent].forEach(function (c) {
+      var d = document.createElement('i'); d.style.background = c; dots.appendChild(d);
+    });
+    top.appendChild(nm); top.appendChild(dots);
+    var desc = document.createElement('span');
+    desc.className = 'tpl-card-desc'; desc.textContent = tplDesc(t);
+    body.appendChild(top); body.appendChild(desc);
+    var badges = document.createElement('div');
+    badges.className = 'tpl-badges';
+    function add(txt, cls) { var b = document.createElement('span'); b.className = cls; b.textContent = txt; badges.appendChild(b); }
+    if (badge) add(badge, 'tpl-score' + (kind === 'near' ? ' is-near' : ''));
+    if (t.wedding) add('Thiệp cưới', 'tpl-badge');
+    if (cur) add('Đang dùng', 'tpl-badge is-current');
+    if (badges.children.length) body.appendChild(badges);
+    card.appendChild(thumb); card.appendChild(body);
+    card.addEventListener('click', function () { applyTemplate(t.id); });
+    return card;
+  }
+
+  function renderTemplateGrid(animate) {
+    var keys = ['industry', 'type', 'goal'].filter(function (k) { return tplState[k]; });
+    var exact = [], near = [];
+    TPL.list.forEach(function (t, i) {
+      if (!tplTextOk(t, tplState.q)) return;
+      var hit = keys.filter(function (k) { return tplHas(t, k, tplState[k]); }).length;
+      var r = { t: t, hit: hit, idx: i };
+      if (hit === keys.length) exact.push(r);
+      else if (hit > 0) near.push(r);
+    });
+    function cmp(a, b) {
+      if (tplState.sort === 'name') return a.t.name.localeCompare(b.t.name, 'vi');
+      if (tplState.sort === 'newest') return b.idx - a.idx;
+      return 0;
+    }
+    exact.sort(function (a, b) { return cmp(a, b) || a.idx - b.idx; });
+    near.sort(function (a, b) {
+      return tplState.sort === 'best' ? (b.hit - a.hit || a.t.name.localeCompare(b.t.name, 'vi')) : (cmp(a, b) || b.hit - a.hit);
+    });
+    syncFilterControls();
+    var grid = $('#tpl-grid'), gridNear = $('#tpl-grid-near');
+    grid.innerHTML = ''; gridNear.innerHTML = '';
+    exact.forEach(function (r) { grid.appendChild(tplCard(r.t, keys.length ? 'Khớp đủ' : '', 'exact')); });
+    near.forEach(function (r) { gridNear.appendChild(tplCard(r.t, 'Khớp ' + r.hit + '/' + keys.length, 'near')); });
+    var empty = !exact.length && !near.length;
+    grid.hidden = !exact.length;
+    $('#tpl-near').hidden = !near.length;
+    $('#tpl-near-title').textContent = 'Gần đúng (' + near.length + ') · khớp một phần bộ lọc';
+    $('#tpl-empty').hidden = !empty;
+    $('#tpl-clear').hidden = !tplActive();
+    $('#tpl-count').textContent = empty ? 'Không có mẫu nào khớp.' :
+      (exact.length + ' mẫu khớp' + (near.length ? ' · ' + near.length + ' gần đúng' : ''));
+    tplSave();
+    if (animate !== false) {
+      EP.motion.stagger(grid.children);
+      EP.motion.stagger(gridNear.children);
+      EP.motion.replay($('#tpl-count'), 'mo-fade');
+      if (empty) EP.motion.replay($('#tpl-empty'), 'mo-fade');
+    }
   }
 
   function openTemplates() {
-    renderTemplateGrid();
+    renderTemplateGrid(true);
     var dlg = $('#tpl-dialog');
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
@@ -2635,6 +2772,7 @@
   }
 
   buildPlatformButtons();
+  tplLoad();
   buildTemplateFilters();
   setTemplate(currentTemplateId);
   syncModeBoxes();
