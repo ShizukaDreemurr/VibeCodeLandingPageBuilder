@@ -2549,6 +2549,7 @@
   });
   form.querySelectorAll('input[name="aiMode"]').forEach(function (r) { r.addEventListener('change', syncModeBoxes); });
 
+  EP.version.mount($('#app-footer'));
   var savedKey = S.read('gemini_key', '');
   if (savedKey) { $('#f-apikey').value = savedKey; $('#f-remember-key').checked = true; }
 

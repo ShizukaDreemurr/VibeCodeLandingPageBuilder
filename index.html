@@ -419,6 +419,16 @@
     </dl>
   </dialog>
 
+  <footer class="app-footer" id="app-footer">
+    <span><strong>Xclipse</strong> · Landing page sự kiện trong 5 phút</span>
+    <span class="app-footer-meta">
+      <span>Phiên bản <b data-v="version"></b></span><span aria-hidden="true">·</span>
+      <span>cập nhật <span data-v="date"></span></span>
+      <span aria-hidden="true" hidden>·</span><a data-v="commit" target="_blank" rel="noopener" hidden></a>
+      <span aria-hidden="true">·</span><a data-v="source" target="_blank" rel="noopener">Mã nguồn</a>
+    </span>
+  </footer>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="vendor/firebase/firebase-app-compat.js"></script>
@@ -444,6 +454,7 @@
   <script src="js/landing-renderer.js"></script>
   <script src="js/inspector.js"></script>
   <script src="js/workspace.js"></script>
+  <script src="js/version.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

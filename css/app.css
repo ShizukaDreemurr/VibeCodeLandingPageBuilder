@@ -158,7 +158,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--text); width: 
 .editor .preview-wrap > .landing { min-height: 70vh; }
 
 /* ---------- Workspace: cột neo | vạch chia | xem trước | vạch chia | cột neo ---------- */
-.ws { display: flex; align-items: stretch; height: calc(100vh - 112px); min-height: 520px; }
+.ws { display: flex; align-items: stretch; height: calc(100vh - 148px); min-height: 520px; }
 .ws-dock { flex: none; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
 .ws-splitter { flex: none; width: 8px; cursor: col-resize; position: relative; touch-action: none; }
 .ws-splitter::after { content: ''; position: absolute; top: 12px; bottom: 12px; left: 3px; width: 2px; border-radius: 2px; background: transparent; }
@@ -781,4 +781,11 @@ html.motion-off::view-transition-group(*), html.motion-off::view-transition-old(
   .pair-del, .pair-row input { transition: background-color var(--dur-1) ease, color var(--dur-1) ease, box-shadow var(--dur-1) ease; }
 }
 .hint.is-warn { color: #8a5a00; }
+.app-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; margin: 0 8px 8px; padding: 6px 8px; font-size: 12px; color: var(--text-muted); }
+.app-footer-meta { display: inline-flex; flex-wrap: wrap; gap: 4px 6px; font-variant-numeric: tabular-nums; }
+.app-footer b { color: var(--text); font-weight: 600; }
+.app-footer a { color: inherit; text-underline-offset: 2px; }
+.app-footer a:hover { color: var(--text); }
+body.is-public .app-footer { display: none; }
+@media screen { .app-footer [data-v="commit"]:not([hidden]) { animation: xcIn var(--dur-2) var(--ease-out) both; } }
 }
