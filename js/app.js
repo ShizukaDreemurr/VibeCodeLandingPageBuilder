@@ -238,7 +238,9 @@
 
   // ---------- Bộ chọn mẫu: lọc, tìm, sắp xếp ----------
   var SORTS = { best: 'Phù hợp nhất', name: 'Tên A–Z', newest: 'Mới thêm' };
-  var tplState = { industry: '', type: '', goal: '', q: '', sort: 'best' };
+  var FKEYS = Object.keys(TPL.FILTERS); // ngành, loại, mục đích + 5 bộ lọc nâng cao
+  var tplState = { q: '', sort: 'best' };
+  FKEYS.forEach(function (k) { tplState[k] = ''; });
   var tplTimer = null;
 
   function norm(s) {
@@ -248,7 +250,7 @@
   function tplHaystack(t) {
     if (!t._hay) {
       var parts = [t.name];
-      Object.keys(t.tags).forEach(function (k) { t.tags[k].forEach(function (v) { parts.push(TPL.FILTERS[k].options[v]); }); });
+      Object.keys(t.tags).forEach(function (k) { if (TPL.FILTERS[k]) t.tags[k].forEach(function (v) { parts.push(TPL.FILTERS[k].options[v]); }); });
       try { parts.push(t.sample().name); } catch (e) { /* bỏ qua */ }
       if (t.wedding) parts.push('thiệp cưới');
       t._hay = norm(parts.join(' '));
@@ -256,7 +258,7 @@
     return t._hay;
   }
 
-  function tplHas(t, k, v) { return !v || t.tags[k].indexOf(v) !== -1; }
+  function tplHas(t, k, v) { return !v || (t.tags[k] || []).indexOf(v) !== -1; }
 
   function tplTextOk(t, q) {
     return !q || norm(q).split(/\s+/).every(function (w) { return tplHaystack(t).indexOf(w) !== -1; });
@@ -273,27 +275,33 @@
     var v = null;
     try { v = S.read('tpl_filters', null); } catch (e) { v = null; }
     if (!v || typeof v !== 'object') return;
-    ['industry', 'type', 'goal'].forEach(function (k) {
+    FKEYS.forEach(function (k) {
       if (typeof v[k] === 'string' && (v[k] === '' || TPL.FILTERS[k].options[v[k]])) tplState[k] = v[k];
     });
     if (typeof v.q === 'string') tplState.q = v.q.slice(0, 80);
     if (SORTS[v.sort]) tplState.sort = v.sort;
   }
 
-  function tplActive() { return !!(tplState.industry || tplState.type || tplState.goal || tplState.q); }
+  function tplActive() { return !!tplState.q || FKEYS.some(function (k) { return tplState[k]; }); }
 
   // Số mẫu khớp nếu chọn giá trị v cho bộ lọc key (các bộ lọc khác giữ nguyên)
   function tplCount(key, v) {
-    var f = { industry: tplState.industry, type: tplState.type, goal: tplState.goal };
+    var f = {};
+    FKEYS.forEach(function (k) { f[k] = tplState[k]; });
     f[key] = v;
     return TPL.list.filter(function (t) {
-      return tplTextOk(t, tplState.q) && tplHas(t, 'industry', f.industry) && tplHas(t, 'type', f.type) && tplHas(t, 'goal', f.goal);
+      return tplTextOk(t, tplState.q) && FKEYS.every(function (k) { return tplHas(t, k, f[k]); });
     }).length;
   }
 
   function buildTemplateFilters() {
     var box = $('#tpl-filters');
-    Object.keys(TPL.FILTERS).forEach(function (key) {
+    // Bộ lọc nâng cao (quy mô, hình thức, chi phí, đối tượng, dịp) gom vào mục thu gọn
+    var adv = document.createElement('details');
+    adv.className = 'tpl-adv';
+    adv.innerHTML = '<summary>Lọc nâng cao <span class="tpl-adv-count"></span></summary><div class="tpl-adv-grid"></div>';
+    var advGrid = adv.querySelector('.tpl-adv-grid');
+    FKEYS.forEach(function (key) {
       var f = TPL.FILTERS[key];
       var label = document.createElement('label');
       label.appendChild(document.createTextNode(f.label));
@@ -301,7 +309,7 @@
       sel.setAttribute('data-filter', key);
       sel.addEventListener('change', function () { tplState[key] = sel.value; renderTemplateGrid(true); });
       label.appendChild(sel);
-      box.appendChild(label);
+      (f.advanced ? advGrid : box).appendChild(label);
     });
     var lab = document.createElement('label');
     lab.appendChild(document.createTextNode('Sắp xếp'));
@@ -313,13 +321,19 @@
     ss.addEventListener('change', function () { tplState.sort = ss.value; renderTemplateGrid(true); });
     lab.appendChild(ss);
     box.appendChild(lab);
+    // Chỉ hiện khi dữ liệu mẫu đã có nhãn nâng cao
+    if (advGrid.children.length && TPL.list.some(function (t) { return (t.tags.scale || []).length; })) {
+      box.appendChild(adv);
+      if (FKEYS.some(function (k) { return TPL.FILTERS[k].advanced && tplState[k]; })) adv.open = true;
+    }
     $('#tpl-search').addEventListener('input', function (e) {
       clearTimeout(tplTimer);
       var val = e.target.value;
       tplTimer = setTimeout(function () { tplState.q = val; renderTemplateGrid(true); }, 120);
     });
     function clearAll() {
-      tplState.industry = tplState.type = tplState.goal = tplState.q = '';
+      FKEYS.forEach(function (k) { tplState[k] = ''; });
+      tplState.q = '';
       $('#tpl-search').value = '';
       renderTemplateGrid(true);
     }
@@ -397,7 +411,10 @@
   }
 
   function renderTemplateGrid(animate) {
-    var keys = ['industry', 'type', 'goal'].filter(function (k) { return tplState[k]; });
+    var keys = FKEYS.filter(function (k) { return tplState[k]; });
+    var advOn = FKEYS.filter(function (k) { return TPL.FILTERS[k].advanced && tplState[k]; }).length;
+    var advCount = document.querySelector('#tpl-filters .tpl-adv-count');
+    if (advCount) advCount.textContent = advOn ? '(' + advOn + ' đang bật)' : '';
     var exact = [], near = [];
     TPL.list.forEach(function (t, i) {
       if (!tplTextOk(t, tplState.q)) return;

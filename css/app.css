@@ -818,4 +818,13 @@ html.motion-off::view-transition-group(*), html.motion-off::view-transition-old(
 .app-footer a:hover { color: var(--text); }
 body.is-public .app-footer { display: none; }
 @media screen { .app-footer [data-v="commit"]:not([hidden]) { animation: xcIn var(--dur-2) var(--ease-out) both; } }
+.tpl-adv { grid-column: 1 / -1; border-top: 1px solid var(--rule); padding-top: 8px; }
+.tpl-adv > summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text); list-style: none; display: inline-flex; align-items: center; gap: 6px; }
+.tpl-adv > summary::-webkit-details-marker { display: none; }
+.tpl-adv > summary::before { content: ''; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform var(--dur-2) var(--ease-out); }
+.tpl-adv[open] > summary::before { transform: rotate(45deg); }
+.tpl-adv-count { font-weight: 500; color: var(--accent-ink); }
+.tpl-adv-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+@media (max-width: 900px) { .tpl-adv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media screen { .tpl-adv[open] .tpl-adv-grid { animation: xcIn var(--dur-2) var(--ease-out) both; } }
 }

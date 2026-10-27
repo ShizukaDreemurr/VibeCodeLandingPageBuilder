@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" preserveAspectRatio="xMidYMid slice"><defs>
+  <linearGradient id="bg" gradientTransform="rotate(25 .5 .5)"><stop offset="0" stop-color="#303a4b"/><stop offset="1" stop-color="#111720"/></linearGradient>
+  <radialGradient id="glow" cx="0.2" cy="0.25" r="0.6"><stop offset="0" stop-color="#5E25EB" stop-opacity=".55"/><stop offset="1" stop-color="#5E25EB" stop-opacity="0"/></radialGradient>
+  <linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="#111720" stop-opacity=".85"/><stop offset=".55" stop-color="#111720" stop-opacity="0"/></linearGradient>
+  <filter id="soft"><feGaussianBlur stdDeviation="22"/></filter>
+</defs>
+<rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#glow)"/>
+<circle cx="1090.2451480505988" cy="594.9354056501761" r="235.42992112226784" fill="#f5faff" opacity="0.08" filter="url(#soft)"/>
+<circle cx="1365.2462259167805" cy="160.02358635887504" r="267.16194523498416" fill="#5E25EB" opacity="0.13" filter="url(#soft)"/>
+<circle cx="725.3142331261188" cy="693.2332543423399" r="244.8076355084777" fill="#5E25EB" opacity="0.14" filter="url(#soft)"/>
+<circle cx="1283.9478554436937" cy="428.4166234312579" r="264.4343857001513" fill="#f5faff" opacity="0.16" filter="url(#soft)"/>
+<g transform="translate(2360 0) scale(-1 1)"><path d="M660 300 C 1060 260, 1300 520, 1700 460" stroke="#5E25EB" stroke-width="10" fill="none" opacity="0.85" stroke-dasharray=""/><path d="M660 360 C 1060 320, 1300 570, 1700 515" stroke="#f5faff" stroke-width="4" fill="none" opacity="0.40" stroke-dasharray="30 18"/><path d="M660 420 C 1060 380, 1300 620, 1700 570" stroke="#f5faff" stroke-width="4" fill="none" opacity="0.40" stroke-dasharray="30 18"/><path d="M660 480 C 1060 440, 1300 670, 1700 625" stroke="#5E25EB" stroke-width="10" fill="none" opacity="0.85" stroke-dasharray=""/><path d="M660 540 C 1060 500, 1300 720, 1700 680" stroke="#f5faff" stroke-width="4" fill="none" opacity="0.40" stroke-dasharray="30 18"/><path d="M660 600 C 1060 560, 1300 770, 1700 735" stroke="#f5faff" stroke-width="4" fill="none" opacity="0.40" stroke-dasharray="30 18"/><path d="M660 660 C 1060 620, 1300 820, 1700 790" stroke="#5E25EB" stroke-width="10" fill="none" opacity="0.85" stroke-dasharray=""/></g>
+<rect width="1600" height="900" fill="url(#fade)"/></svg>

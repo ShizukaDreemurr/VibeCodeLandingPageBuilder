@@ -12,7 +12,13 @@
       concert: 'Hoà nhạc / Show', exhibition: 'Triển lãm / Hội chợ', networking: 'Networking / Meetup', training: 'Khoá học / Đào tạo', party: 'Tiệc / Gala',
       sports: 'Giải đấu / Chạy bộ', charity: 'Thiện nguyện / Gây quỹ', tour: 'Tour / Trải nghiệm', birthday: 'Sinh nhật / Kỷ niệm' } },
     goal: { label: 'Mục đích', options: { lead: 'Thu lead', enroll: 'Tuyển sinh', sales: 'Bán hàng', brand: 'Thương hiệu', gratitude: 'Tri ân / mời khách',
-      community: 'Kết nối cộng đồng', recruit: 'Tuyển dụng', fundraise: 'Gây quỹ' } }
+      community: 'Kết nối cộng đồng', recruit: 'Tuyển dụng', fundraise: 'Gây quỹ' } },
+    // Bộ lọc nâng cao (theo báo cáo Deep Research): gắn nhãn ở tools/extra-tags.json
+    scale: { label: 'Quy mô', advanced: true, options: { intimate: 'Thân mật (< 50 người)', medium: 'Vừa (50–200)', large: 'Lớn (200–1.000)', mass: 'Đại chúng (> 1.000)' } },
+    format: { label: 'Hình thức', advanced: true, options: { offline: 'Trực tiếp', online: 'Trực tuyến', hybrid: 'Kết hợp' } },
+    cost: { label: 'Chi phí tham dự', advanced: true, options: { free: 'Miễn phí', paid: 'Bán vé / có phí', donation: 'Quyên góp' } },
+    audience: { label: 'Đối tượng khách', advanced: true, options: { b2b: 'Doanh nghiệp (B2B)', b2c: 'Khách tiêu dùng (B2C)', genz: 'Giới trẻ / Gen Z', family: 'Gia đình & trẻ em' } },
+    season: { label: 'Mùa / dịp lễ', advanced: true, options: { tet: 'Tết & khai xuân', wedding_season: 'Mùa cưới', summer_enroll: 'Mùa hè & tuyển sinh', year_end: 'Cuối năm & Black Friday', midautumn: 'Trung thu', holiday: 'Ngày lễ khác (8/3, 20/10, 1/6…)' } }
   };
 
   var DEFAULT_LABELS = {
@@ -156,7 +162,10 @@
     });
   });
   // Ảnh nền mặc định (vẽ sẵn, tools/make-art.cjs) và ảnh đại diện = ảnh chụp phần đầu trang (tools/make-thumbs.cjs)
+  var EXTRA = (root.EP && root.EP.templateTags) || {};
   TEMPLATES.forEach(function (t) {
+    var x = EXTRA[t.id] || {};
+    ['scale', 'format', 'cost', 'audience', 'season'].forEach(function (k) { t.tags[k] = (x[k] || []).slice(); });
     t.hero = 'assets/templates/' + t.id + '.svg';
     t.thumb = 'assets/templates/' + t.id + '-thumb.jpg';
   });

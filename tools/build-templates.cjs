@@ -6,9 +6,13 @@ const vm = require('vm');
 const { draw } = require('./make-art.cjs');
 const root = path.join(__dirname, '..');
 const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'templates.json'), 'utf8'));
+// Nhãn bộ lọc nâng cao (quy mô, hình thức, chi phí, đối tượng, dịp) cho mọi mẫu, kể cả 6 mẫu gốc
+const extraFile = path.join(__dirname, 'extra-tags.json');
+const extra = fs.existsSync(extraFile) ? JSON.parse(fs.readFileSync(extraFile, 'utf8')) : {};
 fs.writeFileSync(path.join(root, 'js/templates-data.js'),
   '/* templates-data.js — SINH TỰ ĐỘNG từ tools/templates.json bằng tools/build-templates.cjs. Đừng sửa tay. */\n' +
-  '(function (root) { root.EP = root.EP || {}; root.EP.templateData = ' + JSON.stringify(data) + '; })(typeof window !== \'undefined\' ? window : globalThis);\n');
+  '(function (root) { root.EP = root.EP || {}; root.EP.templateData = ' + JSON.stringify(data) + ';\n' +
+  '  root.EP.templateTags = ' + JSON.stringify(extra) + '; })(typeof window !== \'undefined\' ? window : globalThis);\n');
 // Nạp templates.js như trình duyệt để có đủ danh sách (6 mẫu gốc + 50 mẫu mới)
 const ctx = { window: {}, Date };
 ctx.window.EP = {}; vm.createContext(ctx);
