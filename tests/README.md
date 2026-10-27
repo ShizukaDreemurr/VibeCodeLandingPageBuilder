@@ -6,7 +6,7 @@
 | `e2e-sheet.cjs` + `mock-sheet-server.cjs` | Đồng bộ Google Sheet: 2 thiết bị, trùng, mất mạng rồi gửi lại (máy chủ giả lập) | chạy `node tests/mock-sheet-server.cjs` rồi `node tests/e2e-sheet.cjs` |
 | `e2e-templates.cjs` | Thư viện mẫu (lọc, đổi mẫu giữ nội dung), mẫu thiệp cưới, ô ảnh (bìa, diễn giả, album), ghi nguồn studio | `node tests/e2e-templates.cjs <thư-mục-có-photo.jpg>` |
 | `e2e-builder.cjs` | Bố cục (đổi thứ tự, ẩn/hiện, phần bắt buộc), sửa chữ trực tiếp, xem thử trạng thái (sắp hết chỗ, hết chỗ, hết ưu đãi, đã diễn ra) | `node tests/e2e-builder.cjs` |
-| `e2e-style.cjs` | Chế độ Đơn giản/Studio, ô màu nhận hex/rgb/rgba/hsl/tên màu, thanh trượt (kẹp giới hạn), font Google tuỳ ý, màu riêng từng phần, hoàn tác, lưu sau khi tải lại | `node tests/e2e-style.cjs`
+| `e2e-style.cjs` | Chế độ Đơn giản/Studio, ô màu nhận hex/rgb/rgba/hsl/tên màu, thanh trượt (kẹp giới hạn), ô tìm font (danh sách, lọc, font Google tuỳ ý, báo font không tồn tại), màu riêng từng phần, hoàn tác, lưu sau khi tải lại | `node tests/e2e-style.cjs`
 | `e2e-inspector.cjs` | Bấm phần tử trong bản xem trước để chỉnh: sửa chữ tại chỗ, cỡ/đậm/nghiêng/căn lề/màu, nút, ẩn (trừ phần bắt buộc), chọn cả phần qua đường dẫn, Studio có ô mã màu | `e2e-features.cjs` độ đậm, về mặc định, hoàn tác, lưu | `node tests/e2e-inspector.cjs`
 | `e2e-workspace.cjs` | Trang Thiết kế dạng phần mềm: thả nổi panel, gộp tab, kéo vạch chia cột, thu phóng (25–150%, vừa khung, Ctrl+/−/0), menu Cửa sổ (ẩn/hiện, bố cục có sẵn, khôi phục), lưu bố cục | `node tests/e2e-workspace.cjs`
 | `e2e-features.cjs` | Sự kiện của tôi (mở, nhân bản, xoá), chăm sóc lead (trạng thái, gọi/Zalo), số liệu, checklist trước xuất bản | `node tests/e2e-features.cjs` |

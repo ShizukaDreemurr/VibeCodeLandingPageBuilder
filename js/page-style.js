@@ -22,6 +22,98 @@
     dancing: { label: 'Dancing Script (viết tay)', google: 'Dancing Script', fallback: 'cursive' },
     'great-vibes': { label: 'Great Vibes (thư pháp)', google: 'Great Vibes', fallback: 'cursive' }
   };
+  // Danh mục font Google phổ biến cho ô tìm font (đã kiểm tra bộ chữ tiếng Việt; vi: false = thiếu dấu)
+  var FONT_CATS = { sans: 'Không chân', serif: 'Có chân', display: 'Tiêu đề nổi bật', hand: 'Viết tay' };
+  var CATALOG = [
+    { name: 'Be Vietnam Pro', cat: 'sans' },
+    { name: 'Inter', cat: 'sans' },
+    { name: 'Roboto', cat: 'sans' },
+    { name: 'Open Sans', cat: 'sans' },
+    { name: 'Montserrat', cat: 'sans' },
+    { name: 'Nunito', cat: 'sans' },
+    { name: 'Nunito Sans', cat: 'sans' },
+    { name: 'Quicksand', cat: 'sans' },
+    { name: 'Lexend', cat: 'sans' },
+    { name: 'Raleway', cat: 'sans' },
+    { name: 'Work Sans', cat: 'sans' },
+    { name: 'Manrope', cat: 'sans' },
+    { name: 'Plus Jakarta Sans', cat: 'sans' },
+    { name: 'Mulish', cat: 'sans' },
+    { name: 'Barlow', cat: 'sans' },
+    { name: 'Barlow Condensed', cat: 'sans' },
+    { name: 'Archivo', cat: 'sans' },
+    { name: 'Exo 2', cat: 'sans' },
+    { name: 'Josefin Sans', cat: 'sans' },
+    { name: 'Kanit', cat: 'sans' },
+    { name: 'Signika', cat: 'sans' },
+    { name: 'Space Grotesk', cat: 'sans' },
+    { name: 'Noto Sans', cat: 'sans' },
+    { name: 'Source Sans 3', cat: 'sans' },
+    { name: 'IBM Plex Sans', cat: 'sans' },
+    { name: 'Fira Sans', cat: 'sans' },
+    { name: 'Roboto Condensed', cat: 'sans' },
+    { name: 'Arimo', cat: 'sans' },
+    { name: 'Dosis', cat: 'sans' },
+    { name: 'Cabin', cat: 'sans' },
+    { name: 'Asap', cat: 'sans' },
+    { name: 'Mitr', cat: 'sans' },
+    { name: 'Poppins', cat: 'sans', vi: false },
+    { name: 'Lato', cat: 'sans', vi: false },
+    { name: 'Rubik', cat: 'sans', vi: false },
+    { name: 'DM Sans', cat: 'sans', vi: false },
+    { name: 'Outfit', cat: 'sans', vi: false },
+    { name: 'Jost', cat: 'sans', vi: false },
+    { name: 'Urbanist', cat: 'sans', vi: false },
+    { name: 'Sora', cat: 'sans', vi: false },
+    { name: 'Playfair Display', cat: 'serif' },
+    { name: 'Lora', cat: 'serif' },
+    { name: 'Merriweather', cat: 'serif' },
+    { name: 'Noto Serif', cat: 'serif' },
+    { name: 'Cormorant Garamond', cat: 'serif' },
+    { name: 'EB Garamond', cat: 'serif' },
+    { name: 'Crimson Pro', cat: 'serif' },
+    { name: 'Literata', cat: 'serif' },
+    { name: 'Source Serif 4', cat: 'serif' },
+    { name: 'Roboto Slab', cat: 'serif' },
+    { name: 'Bitter', cat: 'serif' },
+    { name: 'Alegreya', cat: 'serif' },
+    { name: 'Spectral', cat: 'serif' },
+    { name: 'Taviraj', cat: 'serif' },
+    { name: 'Prata', cat: 'serif' },
+    { name: 'Old Standard TT', cat: 'serif' },
+    { name: 'Pridi', cat: 'serif' },
+    { name: 'Libre Baskerville', cat: 'serif', vi: false },
+    { name: 'Oswald', cat: 'display' },
+    { name: 'Anton', cat: 'display' },
+    { name: 'Bungee', cat: 'display' },
+    { name: 'Paytone One', cat: 'display' },
+    { name: 'Lobster', cat: 'display' },
+    { name: 'Coiny', cat: 'display' },
+    { name: 'Lemonada', cat: 'display' },
+    { name: 'Grandstander', cat: 'display' },
+    { name: 'Yeseva One', cat: 'display' },
+    { name: 'Pattaya', cat: 'display' },
+    { name: 'Philosopher', cat: 'display' },
+    { name: 'Comfortaa', cat: 'display' },
+    { name: 'Baloo 2', cat: 'display' },
+    { name: 'Chakra Petch', cat: 'display' },
+    { name: 'Saira', cat: 'display' },
+    { name: 'Bebas Neue', cat: 'display', vi: false },
+    { name: 'Fredoka', cat: 'display', vi: false },
+    { name: 'Dancing Script', cat: 'hand' },
+    { name: 'Great Vibes', cat: 'hand' },
+    { name: 'Pacifico', cat: 'hand' },
+    { name: 'Charm', cat: 'hand' },
+    { name: 'Itim', cat: 'hand' },
+    { name: 'Patrick Hand', cat: 'hand' },
+    { name: 'Mali', cat: 'hand' },
+    { name: 'Sriracha', cat: 'hand' },
+    { name: 'Marmelad', cat: 'hand' }
+  ];
+  var FALLBACK = { sans: 'sans-serif', serif: 'serif', display: 'sans-serif', hand: 'cursive' };
+  function catalogEntry(name) { var n = String(name || '').toLowerCase(); for (var i = 0; i < CATALOG.length; i++) if (CATALOG[i].name.toLowerCase() === n) return CATALOG[i]; return null; }
+  function keyForFamily(name) { var n = String(name || '').toLowerCase(); var k = Object.keys(FONTS).filter(function (x) { return FONTS[x].google.toLowerCase() === n; })[0]; return k || null; }
+
   var SIMPLE_FONTS = ['be-vietnam', 'montserrat', 'nunito', 'playfair', 'lora'];
 
   // Bảng màu gợi ý: màu chính luôn đủ tương phản với chữ trắng (≥ 4.5:1)
@@ -185,7 +277,7 @@
   // ---------- Font: chỉ tải khi dùng ----------
   var loadedFonts = {};
   function fontFamilyName(key, custom) {
-    if (custom && /^[A-Za-z0-9 ]{2,40}$/.test(custom.trim())) return { google: custom.trim(), fallback: 'sans-serif' };
+    if (custom && /^[A-Za-z0-9 ]{2,40}$/.test(custom.trim())) { var ce = catalogEntry(custom.trim()); return { google: ce ? ce.name : custom.trim(), fallback: ce ? FALLBACK[ce.cat] : 'sans-serif' }; }
     return FONTS[key] || null;
   }
   function loadFont(f) {
@@ -277,6 +369,7 @@
     CHIP_CLEARS: CHIP_CLEARS, DEFAULTS: DEFAULTS,
     normalize: normalize, apply: apply, sectionInline: sectionInline,
     parseColor: parseColor, normalizeColor: normalizeColor, solidHex: solidHex,
-    contrast: contrast, textOn: textOn, ensureDark: ensureDark, loadFont: loadFont, fontFamilyName: fontFamilyName
+    contrast: contrast, textOn: textOn, ensureDark: ensureDark, loadFont: loadFont, fontFamilyName: fontFamilyName,
+    CATALOG: CATALOG, FONT_CATS: FONT_CATS, catalogEntry: catalogEntry, keyForFamily: keyForFamily
   };
 })(typeof window !== 'undefined' ? window : globalThis);

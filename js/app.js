@@ -655,43 +655,192 @@
     return row;
   }
 
+  // Ô chọn font dạng combobox: bấm để xem danh sách font phổ biến (mỗi tên hiện bằng chính font đó),
+  // gõ để lọc; gõ tên font Google bất kỳ rồi Enter để dùng (app kiểm tra font có tồn tại và có dấu tiếng Việt).
+  var previewLoaded = {};
+  function loadPreviews(names) {
+    var need = names.filter(function (n) { return !previewLoaded[n]; });
+    if (!need.length) return;
+    need.forEach(function (n) { previewLoaded[n] = true; });
+    // Mỗi lần tải tối đa 20 font, chỉ các ký tự của tên font (rất nhẹ)
+    for (var i = 0; i < need.length; i += 20) {
+      var chunk = need.slice(i, i + 20);
+      var text = Array.from(new Set(chunk.join('').split(''))).join('');
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?' + chunk.map(function (n) { return 'family=' + encodeURIComponent(n).replace(/%20/g, '+'); }).join('&') + '&text=' + encodeURIComponent(text) + '&display=swap';
+      document.head.appendChild(link);
+    }
+  }
+  // Kiểm tra font có trên Google Fonts không (thẻ <link> báo lỗi khi tên sai) và có dấu tiếng Việt không
+  function checkGoogleFont(name) {
+    return new Promise(function (resolve) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(name).replace(/%20/g, '+') + '&display=swap';
+      var done = false;
+      function finish(r) { if (done) return; done = true; resolve(r); }
+      link.onerror = function () { link.remove(); finish({ exists: false }); };
+      link.onload = function () {
+        var vi = null;
+        try {
+          vi = Array.prototype.some.call(link.sheet.cssRules, function (rule) { return /U\+1EA0|U\+1EA[0-9A-F]-/i.test(rule.cssText); });
+        } catch (e) { vi = null; } // trình duyệt chặn đọc CSS khác nguồn: bỏ qua bước kiểm tra dấu
+        finish({ exists: true, vi: vi });
+      };
+      document.head.appendChild(link);
+      setTimeout(function () { finish({ exists: null }); }, 8000);
+    });
+  }
+
+  var openCombo = null;
   function fontField(label, key, customKey, current, custom, keys, allowDefault) {
     var PS = EP.pageStyle;
-    var row = document.createElement('div'); row.className = 'st-row';
-    var head = document.createElement('label'); head.className = 'st-label'; head.textContent = label;
-    var sel = document.createElement('select'); sel.setAttribute('aria-label', label);
-    if (allowDefault) sel.add(new Option('Theo mẫu', ''));
-    keys.forEach(function (k) {
-      var o = new Option(PS.FONTS[k].label, k);
-      o.style.fontFamily = "'" + PS.FONTS[k].google + "'";
-      sel.add(o);
-    });
-    if (customKey) sel.add(new Option('Font Google khác…', '__custom'));
-    sel.value = custom && customKey ? '__custom' : (current || '');
-    row.appendChild(head); row.appendChild(sel);
-    var cin;
-    if (customKey) {
-      cin = document.createElement('input'); cin.type = 'text'; cin.placeholder = 'Tên font trên Google Fonts, vd: Pacifico';
-      cin.value = custom || ''; cin.hidden = sel.value !== '__custom'; cin.setAttribute('aria-label', label + ' – tên font Google');
-      cin.addEventListener('change', function () {
-        var v = cin.value.trim();
-        if (v && !/^[A-Za-z0-9 ]{2,40}$/.test(v)) { toast('Tên font chỉ gồm chữ không dấu, số và dấu cách.'); return; }
-        setStyle(customKey, v);
-      });
-      row.appendChild(cin);
-    }
-    // Xem trước font ngay khi rê/chọn
-    keys.forEach(function (k) { PS.loadFont(PS.FONTS[k]); });
-    sel.addEventListener('change', function () {
-      if (sel.value === '__custom') { cin.hidden = false; cin.focus(); return; }
+    var row = document.createElement('div'); row.className = 'st-row font-field';
+    var id = 'fc-' + key;
+    var head = document.createElement('label'); head.className = 'st-label'; head.textContent = label; head.htmlFor = id;
+    var wrap = document.createElement('div'); wrap.className = 'combo';
+    var input = document.createElement('input');
+    input.type = 'text'; input.id = id; input.className = 'combo-input'; input.autocomplete = 'off'; input.spellcheck = false;
+    input.setAttribute('role', 'combobox'); input.setAttribute('aria-autocomplete', 'list'); input.setAttribute('aria-expanded', 'false');
+    input.setAttribute('aria-label', label);
+    var curName = custom || (current && PS.FONTS[current] ? PS.FONTS[current].google : '');
+    input.value = curName || (allowDefault ? '' : 'Be Vietnam Pro');
+    input.placeholder = allowDefault ? 'Theo mẫu – gõ để tìm font…' : 'Gõ để tìm font…';
+    if (curName) input.style.fontFamily = "'" + curName + "', var(--font)";
+    var caret = document.createElement('span'); caret.className = 'combo-caret'; caret.innerHTML = EP.icon('chevron-down', 14);
+    wrap.appendChild(input); wrap.appendChild(caret);
+    row.appendChild(head); row.appendChild(wrap);
+    var note = document.createElement('small'); note.className = 'hint combo-note'; row.appendChild(note);
+
+    var list = document.createElement('div'); list.className = 'combo-list'; list.setAttribute('role', 'listbox'); list.id = id + '-list';
+    input.setAttribute('aria-controls', list.id);
+    var items = [], active = -1;
+
+    function choose(name) {
       var st = Object.assign({}, state.event.style || {});
-      st[key] = sel.value;
-      if (customKey) st[customKey] = '';
+      if (!name) { st[key] = allowDefault ? '' : 'be-vietnam'; st[customKey] = ''; }
+      else {
+        var k = PS.keyForFamily(name);
+        if (k) { st[key] = k; st[customKey] = ''; }
+        else { st[key] = allowDefault ? '' : 'be-vietnam'; st[customKey] = name; }
+      }
       state.event.style = st;
+      close();
       persist();
+      var e = name && PS.catalogEntry(name);
+      if (e && e.vi === false) toast('"' + name + '" chưa có đủ dấu tiếng Việt – chữ có dấu sẽ hiện bằng font dự phòng.');
+    }
+    function build(q) {
+      list.innerHTML = ''; items = []; active = -1;
+      q = (q || '').trim().toLowerCase();
+      var norm = function (x) { return x.toLowerCase(); };
+      var shown = [];
+      if (allowDefault && (!q || 'theo mẫu'.indexOf(q) >= 0)) addOption('', 'Theo mẫu', null);
+      Object.keys(PS.FONT_CATS).forEach(function (c) {
+        var group = PS.CATALOG.filter(function (f) { return f.cat === c && (!q || norm(f.name).indexOf(q) >= 0); });
+        if (!group.length) return;
+        var h = document.createElement('div'); h.className = 'combo-group'; h.textContent = PS.FONT_CATS[c]; h.setAttribute('role', 'presentation');
+        list.appendChild(h);
+        group.forEach(function (f) { addOption(f.name, f.name, f); shown.push(f.name); });
+      });
+      var typed = input.value.trim();
+      if (q && !PS.catalogEntry(typed)) {
+        if (/^[A-Za-z0-9 ]{2,40}$/.test(typed)) addOption(typed, 'Dùng font Google "' + typed + '"', { custom: true });
+        else if (!items.length) { var em = document.createElement('div'); em.className = 'combo-empty'; em.textContent = 'Không có font khớp. Tên font chỉ gồm chữ không dấu, số và dấu cách.'; list.appendChild(em); }
+      }
+      loadPreviews(shown);
+      highlight(items.length ? 0 : -1);
+    }
+    function addOption(value, text, f) {
+      var o = document.createElement('div');
+      o.className = 'combo-opt' + (value === curName || (!value && !curName) ? ' is-current' : '');
+      o.setAttribute('role', 'option'); o.id = id + '-o' + items.length;
+      o.dataset.value = value;
+      var t = document.createElement('span'); t.className = 'combo-name'; t.textContent = text;
+      if (value && !(f && f.custom)) t.style.fontFamily = "'" + value + "', var(--font)";
+      o.appendChild(t);
+      if (f && f.vi === false) { var b = document.createElement('span'); b.className = 'combo-tag'; b.textContent = 'thiếu dấu TV'; o.appendChild(b); }
+      if (value === curName && value) { var c = document.createElement('span'); c.className = 'combo-check'; c.innerHTML = EP.icon('check', 14); o.appendChild(c); }
+      o.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      o.addEventListener('click', function () { pick(o); });
+      o.addEventListener('mousemove', function () { highlight(items.indexOf(o)); });
+      list.appendChild(o); items.push(o);
+    }
+    function highlight(i) {
+      items.forEach(function (o, k) { o.classList.toggle('is-active', k === i); o.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+      active = i;
+      if (i >= 0) {
+        input.setAttribute('aria-activedescendant', items[i].id);
+        // Cuộn trong danh sách (không dùng scrollIntoView để khỏi cuộn cả trang)
+        var o = items[i], top = o.offsetTop, bottom = top + o.offsetHeight;
+        if (top < list.scrollTop + 28) list.scrollTop = Math.max(0, top - 28);
+        else if (bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight;
+      }
+      else input.removeAttribute('aria-activedescendant');
+    }
+    function pick(o) {
+      var v = o.dataset.value;
+      if (o.textContent.indexOf('Dùng font Google') === 0) {
+        note.textContent = 'Đang kiểm tra "' + v + '" trên Google Fonts…';
+        checkGoogleFont(v).then(function (r) {
+          if (r.exists === false) { note.textContent = 'Không tìm thấy font "' + v + '" trên Google Fonts. Kiểm tra lại tên (ví dụ: Pacifico, Lobster).'; EP.motion.replay(wrap, 'mo-shake'); return; }
+          choose(v);
+          if (r.exists && r.vi === false) toast('"' + v + '" chưa có đủ dấu tiếng Việt – chữ có dấu sẽ hiện bằng font dự phòng.');
+        });
+        close();
+        return;
+      }
+      choose(v);
+    }
+    function position() {
+      var r = input.getBoundingClientRect();
+      var below = root.innerHeight - r.bottom - 12;
+      var h = Math.min(320, Math.max(160, below));
+      list.style.left = r.left + 'px';
+      list.style.width = Math.max(r.width, 240) + 'px';
+      if (below < 180 && r.top > below) { list.style.top = ''; list.style.bottom = (root.innerHeight - r.top + 4) + 'px'; list.style.maxHeight = Math.min(320, r.top - 12) + 'px'; }
+      else { list.style.bottom = ''; list.style.top = (r.bottom + 4) + 'px'; list.style.maxHeight = h + 'px'; }
+    }
+    function open() {
+      if (openCombo && openCombo.close !== close) openCombo.close();
+      openCombo = { close: close, position: position, input: input };
+      document.body.appendChild(list);
+      input.setAttribute('aria-expanded', 'true');
+      wrap.classList.add('is-open');
+      build(input.value === curName ? '' : input.value);
+      position();
+    }
+    function close() {
+      if (!list.parentNode) return;
+      list.remove();
+      input.setAttribute('aria-expanded', 'false');
+      wrap.classList.remove('is-open');
+      if (openCombo && openCombo.close === close) openCombo = null;
+    }
+    // Bấm vào ô: bôi đen tên font hiện tại để gõ đè ngay (giữ vùng bôi đen qua lần nhả chuột đầu)
+    var keepSelection = false;
+    input.addEventListener('focus', function () { open(); input.select(); keepSelection = true; });
+    input.addEventListener('mouseup', function (e) { if (keepSelection) { e.preventDefault(); input.select(); keepSelection = false; } });
+    input.addEventListener('click', function () { if (!list.parentNode) open(); });
+    caret.addEventListener('mousedown', function (e) { e.preventDefault(); if (list.parentNode) close(); else { input.focus(); } });
+    input.addEventListener('input', function () { if (!list.parentNode) open(); build(input.value); position(); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (!list.parentNode) open(); highlight(Math.min(items.length - 1, active + 1)); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); highlight(Math.max(0, active - 1)); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (active >= 0 && items[active]) pick(items[active]); }
+      else if (e.key === 'Escape') { e.preventDefault(); input.value = curName; close(); }
     });
+    input.addEventListener('blur', function () { setTimeout(function () { if (document.activeElement !== input) { close(); input.value = curName || (allowDefault ? '' : 'Be Vietnam Pro'); } }, 120); });
     return row;
   }
+  // Cuộn trang/panel: danh sách bám theo ô; ô ra khỏi màn hình thì đóng
+  root.addEventListener('scroll', function (e) {
+    if (!openCombo || (e.target.closest && e.target.closest('.combo-list'))) return;
+    var r = openCombo.input.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > root.innerHeight) openCombo.close(); else openCombo.position();
+  }, true);
+  root.addEventListener('resize', function () { if (openCombo) openCombo.close(); });
 
   function renderStylePanel() {
     var box = $('#style-panel');
@@ -751,7 +900,7 @@
         sectionTitle('Bảng màu'), pal,
         simpleColor('Màu chính', 'primary', theme.primary),
         simpleColor('Màu nhấn', 'accent', theme.accent),
-        fontField('Font tiêu đề', 'headingFont', null, st.headingFont, '', PS.SIMPLE_FONTS, true),
+        fontField('Font tiêu đề', 'headingFont', 'headingFontCustom', st.headingFont, st.headingFontCustom, null, true),
         chipRow('Kiểu nút', O.button, st.button, pickChip('button')),
         chipRow('Bo góc', O.radius, st.radius, pickChip('radius')),
         chipRow('Căn chữ phần đầu trang', O.heroAlign, st.heroAlign || heroDefault, pick('heroAlign')),
