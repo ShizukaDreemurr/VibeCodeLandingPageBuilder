@@ -214,24 +214,30 @@
     var kind = parts[0];
     var index = Number(parts[1]);
     EP.images.pick(IMAGE_TYPES[kind]).then(function (dataUrl) {
+      var info = EP.images.lastInfo();
       var images = JSON.parse(JSON.stringify(state.event.images || {}));
       if (kind === 'hero') images.hero = dataUrl;
       if (kind === 'speaker') { images.speakers = images.speakers || {}; images.speakers[index] = dataUrl; }
       if (kind === 'gallery') { images.gallery = images.gallery || []; images.gallery[index] = dataUrl; }
-      if (EP.images.totalBytes(images) + ((state.event.brand && state.event.brand.logo) || '').length > MAX_IMAGE_BYTES) {
-        toast('Tổng dung lượng ảnh đã đầy (khoảng 900KB). Hãy bớt ảnh hoặc dùng ảnh đơn giản hơn.');
-        return;
-      }
-      state.event.images = images;
-      persist();
-      var target = kind === 'hero' ? landingEl.querySelector('.lp-hero')
-        : landingEl.querySelector('[data-slot="' + slot + '"]') && landingEl.querySelector('[data-slot="' + slot + '"]').parentElement;
-      EP.motion.replay(target, 'mo-img-in');
-      toast('Đã cập nhật ảnh.');
-    }, function (e) {
+      var budget = MAX_IMAGE_BYTES - ((state.event.brand && state.event.brand.logo) || '').length;
+      // Vượt giới hạn trang: tự nén lại các ảnh nặng nhất cho vừa, không bắt người dùng bỏ ảnh
+      var fit = EP.images.totalBytes(images) > budget ? EP.images.shrinkToFit(images, budget) : Promise.resolve({ images: images, count: 0, fits: true });
+      return fit.then(function (r) {
+        if (!r.fits) { toast('Trang đã quá nhiều ảnh, nén thêm sẽ mờ. Hãy bớt một vài ảnh album.'); return; }
+        state.event.images = r.images;
+        persist();
+        var target = kind === 'hero' ? landingEl.querySelector('.lp-hero')
+          : landingEl.querySelector('[data-slot="' + slot + '"]') && landingEl.querySelector('[data-slot="' + slot + '"]').parentElement;
+        EP.motion.replay(target, 'mo-img-in');
+        var msg = 'Đã cập nhật ảnh' + (info ? ' (tự nén ' + kb(info.before) + ' → ' + kb(info.after) + ')' : '') + '.';
+        if (r.count) msg += ' Đã nén lại thêm ' + r.count + ' ảnh khác để trang vừa dung lượng.';
+        toast(msg);
+      });
+    }).catch(function (e) {
       if (e.message !== 'Chưa chọn ảnh.') toast(e.message);
     });
   }
+  function kb(n) { return n >= 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
 
   // Lưu trạng thái, vẽ lại trang, và cập nhật bản công khai nếu đã xuất bản
   function persist() {
@@ -2259,7 +2265,8 @@
     var up = document.createElement('button'); up.type = 'button'; up.className = 'btn btn-ghost btn-small'; up.innerHTML = EP.icon('image') + (b.logo ? 'Đổi logo' : 'Tải logo lên');
     up.addEventListener('click', function () {
       EP.images.pick('logo').then(function (data) {
-        if (data.length > 120000) { toast('Logo quá nặng sau khi nén (' + Math.round(data.length / 1024) + ' KB, tối đa 120 KB). Hãy dùng logo đơn giản hơn, PNG nền trong suốt.'); return; }
+        var li = EP.images.lastInfo();
+        if (li) toast('Đã tự nén logo ' + kb(li.before) + ' → ' + kb(li.after) + (EP.images.webp ? ' (WebP, giữ nền trong suốt).' : '.'));
         saveField('logo', data); drawThumb(); up.innerHTML = EP.icon('image') + 'Đổi logo'; EP.motion.replay(thumb, 'mo-img-in'); renderBrandView();
       }, function (e) { if (e.message !== 'Chưa chọn ảnh.') toast(e.message); });
     });
