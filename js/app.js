@@ -374,7 +374,7 @@
   function startDrag(e, li, ol) {
     if (e.button !== undefined && e.button !== 0) return;
     if (e.target.closest('button, input, label, .sec-settings')) return;
-    var startY = e.clientY, dragging = false, ghost, holder, offsetY, lastTop;
+    var startY = e.clientY, dragging = false, ghost, holder, offsetY, lastTop, baseTop, raf = 0;
     function begin() {
       dragging = true;
       var r = li.getBoundingClientRect();
@@ -388,6 +388,8 @@
       ghost.style.width = r.width + 'px';
       ghost.style.left = r.left + 'px';
       ghost.style.top = r.top + 'px';
+      ghost.style.willChange = 'transform';
+      baseTop = r.top;
       document.body.appendChild(ghost);
       document.body.classList.add('is-sorting');
     }
@@ -395,7 +397,8 @@
       if (!dragging) { if (Math.abs(ev.clientY - startY) < 5) return; begin(); }
       ev.preventDefault();
       lastTop = ev.clientY - offsetY;
-      ghost.style.top = lastTop + 'px';
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(function () { ghost.style.transform = 'translate3d(0,' + (lastTop - baseTop) + 'px,0) scale(1.02)'; });
       var items = Array.prototype.filter.call(ol.children, function (x) { return x !== holder; });
       var target = null;
       for (var k = 0; k < items.length; k++) {
@@ -431,8 +434,12 @@
         if (changed) { flashKey = ghost.dataset.key; reorderSections(order); toast('Đã đổi thứ tự bố cục.'); }
       }
       if (EP.motion.reduce()) return finish();
-      var a = ghost.animate([{ top: lastTop + 'px' }, { top: dest.top + 'px' }], { duration: 180, easing: 'ease-out' });
-      a.onfinish = finish;
+      cancelAnimationFrame(raf);
+      var a = ghost.animate([
+        { transform: 'translate3d(0,' + (lastTop - baseTop) + 'px,0) scale(1.02)' },
+        { transform: 'translate3d(0,' + (dest.top - baseTop) + 'px,0) scale(1)' }
+      ], { duration: 200, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
+      a.onfinish = function () { a.cancel(); finish(); };
     }
     document.addEventListener('pointermove', move, { passive: false });
     document.addEventListener('pointerup', end);
@@ -1173,10 +1180,15 @@
   function swapLanding() { EP.motion.replay(landingEl, 'mo-swap'); }
 
   // Xem trước tức thì khi kéo thanh trượt / chọn màu: chỉ vẽ lại trang, giữ nguyên bảng điều khiển
-  var livePreview = false;
+  // Gộp các lần kéo trong cùng một khung hình: vẽ lại tối đa 1 lần/khung, không bị khựng khi kéo màu
+  var livePreview = false, liveRaf = 0;
   function liveRender() {
-    livePreview = true;
-    try { renderLanding(); } finally { livePreview = false; }
+    if (liveRaf) return;
+    liveRaf = requestAnimationFrame(function () {
+      liveRaf = 0;
+      livePreview = true;
+      try { renderLanding(); } finally { livePreview = false; }
+    });
   }
 
   function renderLanding() {
@@ -1187,6 +1199,7 @@
       renderSectionList();
       renderStylePanel();
     }
+    var scroller = landingEl.parentNode, keepTop = scroller ? scroller.scrollTop : 0;
     renderer = EP.landingRenderer.render(landingEl, {
       event: state.event,
       content: state.content,
@@ -1225,6 +1238,7 @@
       }
     });
     applyDevice();
+    if (scroller && scroller.scrollTop !== keepTop) scroller.scrollTop = keepTop;
     if (EP.inspector) EP.inspector.refresh();
     if (!livePreview) { renderBlockLib(); renderLayers(); }
     $('#btn-regenerate').disabled = false;

@@ -497,8 +497,7 @@
     if (top < 70) top = Math.min(r.bottom + 10, root.innerHeight - bh - 10);
     var left = Math.max(8, Math.min(r.left, Math.min(wrap.right, root.innerWidth) - bw - 8));
     bar.classList.toggle('no-anim', !animate);
-    bar.style.top = Math.max(8, top) + 'px';
-    bar.style.left = left + 'px';
+    bar.style.translate = Math.round(left) + 'px ' + Math.round(Math.max(8, top)) + 'px';
   }
   function schedule() { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(function () { position(false); }); }
 

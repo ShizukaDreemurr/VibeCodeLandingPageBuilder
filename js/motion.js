@@ -34,12 +34,12 @@
         if (n.animate) n.animate([{ opacity: 0, transform: 'scale(0.96)' }, { opacity: 1, transform: 'none' }], { duration: 240, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
         return;
       }
-      var dx = a.left - b.left, dy = a.top - b.top, sx = a.width / (b.width || 1), sy = a.height / (b.height || 1);
-      if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && Math.abs(sx - 1) < 0.01 && Math.abs(sy - 1) < 0.01) return;
-      n.animate([
-        { transformOrigin: 'top left', transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')' },
-        { transformOrigin: 'top left', transform: 'none' }
-      ], { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+      var dx = a.left - b.left, dy = a.top - b.top;
+      var resized = Math.abs(a.width - b.width) > 1 || Math.abs(a.height - b.height) > 1;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && !resized) return;
+      var kf = [{ transform: 'translate3d(' + dx + 'px,' + dy + 'px,0)' }, { transform: 'none' }];
+      if (resized) { kf[0].opacity = 0.6; kf[1].opacity = 1; }
+      n.animate(kf, { duration: 300, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
     });
   }
 
