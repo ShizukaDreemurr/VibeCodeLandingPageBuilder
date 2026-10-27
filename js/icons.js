@@ -33,6 +33,7 @@
     float: '<rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-3"/>',
     collapse: '<path d="M5 12h14"/><path d="m9 8 3-3 3 3M9 16l3 3 3-3"/>',
     check2: '<path d="M20 6 9 17l-5-5"/>',
+    'arrow-right': '<path d="M5 12h14M13 6l6 6-6 6"/>',
     'arrow-left': '<path d="M19 12H5M11 18l-6-6 6-6"/>',
     undo: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
     redo: '<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',

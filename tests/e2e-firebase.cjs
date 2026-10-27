@@ -25,10 +25,10 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  const G3=await page();const G4=await page();await G3.goto(url+'&emulator=1');await G4.goto(url+'&emulator=1');await G3.waitForSelector('.lp-headline');await G4.waitForSelector('.lp-headline');
  await Promise.all([reg(G3,'Đồng thời A','0355555555','a@x.com'),reg(G4,'Đồng thời B','0366666666','b@x.com')]);
  log('concurrent A',await G3.textContent('.lp-form-msg'));log('concurrent B',await G4.textContent('.lp-form-msg'));
- await O.click('[data-tab="admin"]');await O.waitForTimeout(1500);
+ await O.click('[data-tab="admin"]');if(await O.isVisible('.admin-pick'))await O.click('.admin-pick');await O.waitForTimeout(1500);
  log('owner admin rows',await O.$$eval('#admin-rows tr',r=>r.map(x=>x.cells[1]?.textContent+':'+x.cells[5]?.textContent).join(' | ')));
  log('owner metrics',await O.$$eval('.metric',m=>m.map(x=>x.textContent).join(' | ')));
- await O.selectOption('.lead-select >> nth=0','contacted');await O.waitForTimeout(800);await O.click('[data-tab="builder"]');await O.click('[data-tab="admin"]');await O.waitForTimeout(1500);
+ await O.selectOption('.lead-select >> nth=0','contacted');await O.waitForTimeout(800);await O.click('[data-tab="builder"]');await O.click('[data-tab="admin"]');if(await O.isVisible('.admin-pick'))await O.click('.admin-pick');await O.waitForTimeout(1500);
  log('lead saved cloud',await O.inputValue('.lead-select >> nth=0'));
  // other account cannot read
  const X=await page();await X.goto('http://localhost:8000/?emulator=1');

@@ -59,6 +59,7 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
   log('headline', await p.textContent('.lp-headline'));
   // admin
   await p.click('[data-tab="admin"]');
+  await p.click('.admin-pick');
   log('admin rows', await p.$$eval('#admin-rows tr', l=>l.length));
   // new page
   p.on('dialog', d=>d.accept());

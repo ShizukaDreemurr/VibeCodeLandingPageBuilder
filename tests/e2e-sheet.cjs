@@ -33,6 +33,6 @@ const URL='file:///home/user/VibeCodeLandingPageBuilder/index.html';
  log('A status recovered',await A.textContent('#sheet-status'));
  const dump=await (await fetch('http://localhost:8787/dump')).json();
  log('server rows',Object.values(dump)[0].map(r=>r.name+':'+r.status).join(', '));
- await A.click('[data-tab="admin"]');
+ await A.click('[data-tab="admin"]');if(await A.isVisible('.admin-pick'))await A.click('.admin-pick');
  log('admin sync col',await A.$$eval('#admin-rows tr td:last-child',t=>t.map(x=>x.textContent).join(',')));
  log('ERRORS',errs);await b.close();})();

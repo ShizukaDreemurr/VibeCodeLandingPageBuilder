@@ -17,12 +17,12 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  await p.click('[data-tab="events"]');log('3 cards',await p.locator('.event-card').count());
  await p.click('.event-card:has-text("bản sao") >> text=Xoá');await p.waitForTimeout(600);log('after delete',await p.locator('.event-card').count());
  // lead status
- await p.click('.event-card:has-text("Workshop") >> text=Mở / sửa');await p.click('[data-tab="admin"]');
+ await p.click('.event-card:has-text("Workshop") >> text=Mở / sửa');await p.click('[data-tab="admin"]');if(await p.isVisible('.admin-pick'))await p.click('.admin-pick:has-text("Workshop")');
  log('metrics local',await p.$$eval('.metric',m=>m.map(x=>x.textContent).join(' | ')));
  await p.selectOption('.lead-select','won');await p.waitForTimeout(200);
  log('metrics after won',await p.$$eval('.metric',m=>m.map(x=>x.textContent).join(' | ')));
  log('contact links',await p.$$eval('.contact-links a',a=>a.map(x=>x.getAttribute('href')).join(' ')));
- await p.reload();await p.click('[data-tab="admin"]');log('lead persisted',await p.inputValue('.lead-select'));
+ await p.reload();await p.click('[data-tab="admin"]');if(await p.isVisible('.admin-pick'))await p.click('.admin-pick:has-text("Workshop")');log('lead persisted',await p.inputValue('.lead-select'));
  // checklist (no Firebase on file:// still shows publish? btn hidden if !available) -> call directly
  await p.click('[data-tab="builder"]');
  log('publish btn visible',await p.isVisible('#btn-publish'));

@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '1.9.0',
+    version: '1.10.0',
     date: '2026-10-27',
-    notes: 'Trình chỉnh ảnh: cắt, xoay tuỳ ý, thu phóng, sáng/tương phản/bão hoà, lật; thanh trượt + nhập số',
+    notes: 'Danh sách đăng ký: chọn landing page trước, số liệu riêng từng trang',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

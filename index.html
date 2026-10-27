@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;700;800&family=Nunito:wght@400;600;800&family=Lora:wght@500;700&display=swap">
-  <link rel="stylesheet" href="css/tokens.css?v=1.9.0">
-  <link rel="stylesheet" href="css/app.css?v=1.9.0">
-  <link rel="stylesheet" href="css/landing.css?v=1.9.0">
+  <link rel="stylesheet" href="css/tokens.css?v=1.10.0">
+  <link rel="stylesheet" href="css/app.css?v=1.10.0">
+  <link rel="stylesheet" href="css/landing.css?v=1.10.0">
 </head>
 <body>
   <header class="topbar">
@@ -354,23 +354,38 @@
   </main>
 
   <main id="view-admin" class="admin view" hidden>
-    <div class="title-row">
-      <div>
-        <h1 id="admin-title">Danh sách đăng ký</h1>
-        <p class="subline" id="admin-source">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
+    <section id="admin-picker" class="admin-picker" aria-label="Chọn landing page">
+      <div class="title-row">
+        <div>
+          <h1>Danh sách đăng ký</h1>
+          <p class="subline">Chọn landing page để xem số liệu và danh sách đăng ký riêng của trang đó.</p>
+        </div>
       </div>
-      <div class="actions">
-        <button type="button" class="btn btn-ghost" id="btn-export"><span data-icon="download"></span>Xuất CSV</button>
-        <button type="button" class="btn btn-danger" id="btn-clear-regs"><span data-icon="trash"></span>Xoá toàn bộ</button>
+      <div class="admin-search" id="admin-search-wrap" hidden>
+        <input type="search" id="admin-search" placeholder="Tìm landing page theo tên hoặc địa điểm" aria-label="Tìm landing page">
       </div>
-    </div>
-    <div class="metric-grid" id="metric-grid"></div>
-    <div class="table-wrap">
-      <table class="table">
-        <thead><tr><th class="num">#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th class="num">Thời gian</th><th>Trạng thái</th><th>Chăm sóc</th><th>Liên hệ</th><th>Lưu ở</th></tr></thead>
-        <tbody id="admin-rows"></tbody>
-      </table>
-    </div>
+      <div id="admin-pick-list"></div>
+    </section>
+    <section id="admin-detail" class="admin-detail" hidden>
+      <button type="button" class="btn btn-ghost btn-small admin-back" id="btn-admin-back"><span data-icon="arrow-left"></span>Tất cả landing page</button>
+      <div class="title-row">
+        <div>
+          <h1 id="admin-title">Danh sách đăng ký</h1>
+          <p class="subline" id="admin-source">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="btn-export"><span data-icon="download"></span>Xuất CSV</button>
+          <button type="button" class="btn btn-danger" id="btn-clear-regs"><span data-icon="trash"></span>Xoá toàn bộ</button>
+        </div>
+      </div>
+      <div class="metric-grid" id="metric-grid"></div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th class="num">#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th class="num">Thời gian</th><th>Trạng thái</th><th>Chăm sóc</th><th>Liên hệ</th><th>Lưu ở</th></tr></thead>
+          <tbody id="admin-rows"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <dialog class="tpl-dialog check-dialog" id="check-dialog" aria-labelledby="check-title">
@@ -454,28 +469,28 @@
   <script src="vendor/firebase/firebase-auth-compat.js"></script>
   <script src="vendor/firebase/firebase-firestore-compat.js"></script>
   <script src="vendor/qrcode/qrcode.js"></script>
-  <script src="js/firebase-config.js?v=1.9.0"></script>
-  <script src="js/storage.js?v=1.9.0"></script>
-  <script src="js/validators.js?v=1.9.0"></script>
-  <script src="js/event-status.js?v=1.9.0"></script>
-  <script src="js/registrations.js?v=1.9.0"></script>
-  <script src="js/content-generator.js?v=1.9.0"></script>
-  <script src="js/ai-service.js?v=1.9.0"></script>
-  <script src="js/sheet-sync.js?v=1.9.0"></script>
-  <script src="js/cloud.js?v=1.9.0"></script>
-  <script src="js/templates-data.js?v=1.9.0"></script>
-  <script src="js/templates.js?v=1.9.0"></script>
-  <script src="js/images.js?v=1.9.0"></script>
-  <script src="js/image-editor.js?v=1.9.0"></script>
-  <script src="js/brands.js?v=1.9.0"></script>
-  <script src="js/icons.js?v=1.9.0"></script>
-  <script src="js/motion.js?v=1.9.0"></script>
-  <script src="js/page-style.js?v=1.9.0"></script>
-  <script src="js/lp-utils.js?v=1.9.0"></script>
-  <script src="js/landing-renderer.js?v=1.9.0"></script>
-  <script src="js/inspector.js?v=1.9.0"></script>
-  <script src="js/workspace.js?v=1.9.0"></script>
-  <script src="js/version.js?v=1.9.0"></script>
-  <script src="js/app.js?v=1.9.0"></script>
+  <script src="js/firebase-config.js?v=1.10.0"></script>
+  <script src="js/storage.js?v=1.10.0"></script>
+  <script src="js/validators.js?v=1.10.0"></script>
+  <script src="js/event-status.js?v=1.10.0"></script>
+  <script src="js/registrations.js?v=1.10.0"></script>
+  <script src="js/content-generator.js?v=1.10.0"></script>
+  <script src="js/ai-service.js?v=1.10.0"></script>
+  <script src="js/sheet-sync.js?v=1.10.0"></script>
+  <script src="js/cloud.js?v=1.10.0"></script>
+  <script src="js/templates-data.js?v=1.10.0"></script>
+  <script src="js/templates.js?v=1.10.0"></script>
+  <script src="js/images.js?v=1.10.0"></script>
+  <script src="js/image-editor.js?v=1.10.0"></script>
+  <script src="js/brands.js?v=1.10.0"></script>
+  <script src="js/icons.js?v=1.10.0"></script>
+  <script src="js/motion.js?v=1.10.0"></script>
+  <script src="js/page-style.js?v=1.10.0"></script>
+  <script src="js/lp-utils.js?v=1.10.0"></script>
+  <script src="js/landing-renderer.js?v=1.10.0"></script>
+  <script src="js/inspector.js?v=1.10.0"></script>
+  <script src="js/workspace.js?v=1.10.0"></script>
+  <script src="js/version.js?v=1.10.0"></script>
+  <script src="js/app.js?v=1.10.0"></script>
 </body>
 </html>
