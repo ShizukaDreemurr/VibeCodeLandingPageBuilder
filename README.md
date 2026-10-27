@@ -54,7 +54,7 @@
 ## 4. Tích hợp AI
 
 - **Chế độ**: cả **API thật** và **Mock** (người dùng chọn):
-  - API thật: Gemini (`gemini-2.5-flash` mặc định, đổi được model) — người dùng tự nhập API key, key chỉ lưu trong trình duyệt của họ, hiển thị dạng ẩn.
+  - API thật: Gemini (`gemini-3.5-flash-lite` mặc định; chọn được 10 model, chia nhóm miễn phí / nghĩ lâu / cần trả phí; model lỗi, hết lượt hoặc quá tải thì tự chuyển sang model nhanh miễn phí) — người dùng tự nhập API key, key chỉ lưu trong trình duyệt của họ, hiển thị dạng ẩn.
   - Copy prompt: prompt chuẩn được copy sẵn và mở Claude / ChatGPT / Gemini / Manus; người dùng dán JSON kết quả về.
   - Mock: giao diện hiển thị dòng *"Bản demo vòng loại – Dữ liệu mô phỏng AI"*; nội dung ghép từ công thức copywriting theo giọng văn (trang trọng / trẻ trung / gấp rút) và mẫu thiệp cưới.
 - **Kiểm soát đầu ra AI**: tách JSON khỏi lời dẫn/markdown, sửa lỗi JSON phổ biến, kiểm tra đủ trường và độ dài, thiếu thì bù bằng bản mô phỏng và báo rõ; AI không được tự bịa ngày giờ, địa điểm, giá, tên người; người dùng sửa trực tiếp trước khi xuất bản; checklist cảnh báo nếu còn nội dung mô phỏng.

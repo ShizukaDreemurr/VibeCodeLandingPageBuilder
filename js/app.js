@@ -1673,12 +1673,20 @@
     btn.textContent = 'Đang viết nội dung…';
     btn.classList.add('is-loading');
     landingEl.classList.add('is-generating');
-    setMsg('Gemini đang viết nội dung, thường mất 3–10 giây.', '');
-    EP.ai.callGemini(key, $('#f-model').value.trim() || 'gemini-2.5-flash', EP.ai.buildPrompt(ev, tone))
-      .then(function (text) {
-        var parsed = EP.ai.parseAIResponse(text, ev, tone);
+    var model = $('#f-model').value || EP.ai.DEFAULT_MODEL;
+    var info = EP.ai.modelInfo(model);
+    var switched = '';
+    setMsg(info && info.tier === 'slow' ? info.label + ' đang suy nghĩ, có thể mất 1–2 phút…' : (info ? info.label : 'Gemini') + ' đang viết nội dung, thường mất vài giây.', '');
+    EP.ai.generate(key, model, EP.ai.buildPrompt(ev, tone), function (next, why) {
+      switched = why + ' Đã tự chuyển sang ' + (EP.ai.modelInfo(next) || { label: next }).label + '.';
+      setMsg(switched + ' Đang viết…', 'warn');
+    })
+      .then(function (r) {
+        var parsed = EP.ai.parseAIResponse(r.text, ev, tone);
         saveAndRender(ev, parsed.content, tone);
-        setMsg(parsed.warnings.length ? 'Đã tạo bằng Gemini. Lưu ý: ' + parsed.warnings.join(' ') : 'Đã tạo nội dung bằng Gemini.', parsed.warnings.length ? 'warn' : 'success');
+        var name = (EP.ai.modelInfo(r.model) || { label: r.model }).label;
+        var note = (switched ? switched + ' ' : '') + (parsed.warnings.length ? 'Lưu ý: ' + parsed.warnings.join(' ') : '');
+        setMsg('Đã tạo nội dung bằng ' + name + '.' + (note ? ' ' + note : ''), note ? 'warn' : 'success');
       })
       .catch(function (e) {
         setMsg(e.message + ' Thông tin bạn nhập vẫn được giữ nguyên.', 'error');
@@ -2543,6 +2551,28 @@
 
   var savedKey = S.read('gemini_key', '');
   if (savedKey) { $('#f-apikey').value = savedKey; $('#f-remember-key').checked = true; }
+
+  // Chọn model Gemini: nhóm theo miễn phí / chậm / cần trả phí, nhớ lựa chọn
+  (function () {
+    var sel = $('#f-model'), note = $('#model-note');
+    var groups = { free: 'Miễn phí – nhanh', slow: 'Miễn phí – nghĩ lâu (1–2 phút)', paid: 'Cần bật thanh toán' };
+    Object.keys(groups).forEach(function (tier) {
+      var og = document.createElement('optgroup'); og.label = groups[tier];
+      EP.ai.MODELS.filter(function (m) { return m.tier === tier; }).forEach(function (m) {
+        var o = document.createElement('option'); o.value = m.id; o.textContent = m.label; og.appendChild(o);
+      });
+      sel.appendChild(og);
+    });
+    var saved = S.read('gemini_model', '');
+    sel.value = EP.ai.modelInfo(saved) ? saved : EP.ai.DEFAULT_MODEL;
+    function showNote() {
+      var m = EP.ai.modelInfo(sel.value);
+      note.textContent = m ? m.note + ' · mã: ' + m.id : '';
+      note.classList.toggle('is-warn', !!m && m.tier !== 'free');
+    }
+    sel.addEventListener('change', function () { S.write('gemini_model', sel.value); showNote(); EP.motion.replay(note, 'mo-pop'); });
+    showNote();
+  })();
 
   $('#btn-publish').addEventListener('click', publish);
   $('#btn-auth').addEventListener('click', function () {

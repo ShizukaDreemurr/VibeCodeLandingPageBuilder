@@ -4,7 +4,26 @@
  */
 (function (root) {
   var GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent';
-  var TIMEOUT_MS = 30000;
+  var TIMEOUT_MS = 60000;
+  // Danh sách model Gemini (AI Studio, 10/2026). tier: free = dùng được với key miễn phí,
+  // slow = miễn phí nhưng nghĩ lâu (1–2 phút), paid = cần bật thanh toán trên Google Cloud.
+  // Đã thử thật bằng key miễn phí ngày 27/10/2026.
+  var MODELS = [
+    { id: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash Lite', note: 'Nhanh (~2 giây), miễn phí – khuyên dùng', tier: 'free' },
+    { id: 'gemini-flash-lite-latest', label: 'Gemini Flash-Lite mới nhất', note: 'Luôn trỏ tới bản Flash-Lite mới nhất', tier: 'free' },
+    { id: 'gemini-3.1-flash-lite', label: 'Gemini 3.1 Flash Lite', note: 'Nhanh, tiết kiệm nhất', tier: 'free' },
+    { id: 'gemini-3-flash-preview', label: 'Gemini 3 Flash (preview)', note: 'Bản Flash đời trước', tier: 'free' },
+    { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash', note: 'Viết kỹ hơn, ~10 giây', tier: 'free' },
+    { id: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash', note: 'Thông minh nhất dòng Flash, nhưng có thể mất 1–2 phút', tier: 'slow' },
+    { id: 'gemini-flash-latest', label: 'Gemini Flash mới nhất', note: 'Đang trỏ tới 3.8 Flash, có thể mất 1–2 phút', tier: 'slow' },
+    { id: 'gemini-4-argon', label: 'Gemini 4 Argon', note: 'Mạnh nhất – cần bật thanh toán', tier: 'paid' },
+    { id: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro (preview)', note: 'Cần bật thanh toán', tier: 'paid' },
+    { id: 'gemini-pro-latest', label: 'Gemini Pro mới nhất', note: 'Cần bật thanh toán', tier: 'paid' }
+  ];
+  var DEFAULT_MODEL = 'gemini-3.5-flash-lite';
+  // Khi model đã chọn lỗi (hết lượt, cần trả phí, quá lâu…) thì tự thử các model nhanh này
+  var FALLBACKS = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest'];
+  function modelInfo(id) { return MODELS.filter(function (m) { return m.id === id; })[0] || null; }
 
   var PLATFORMS = {
     claude: { label: 'Claude', url: 'https://claude.ai/new' },
@@ -145,8 +164,10 @@
 
   // Gọi Gemini thật. Lỗi được dịch sang thông báo dễ hiểu, không lộ khoá API.
   function callGemini(apiKey, model, prompt) {
+    var info = modelInfo(model);
+    var limit = info && info.tier === 'slow' ? 180000 : TIMEOUT_MS;
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    var timer = controller && setTimeout(function () { controller.abort(); }, TIMEOUT_MS);
+    var timer = controller && setTimeout(function () { controller.abort(); }, limit);
     return fetch(GEMINI_URL.replace('{model}', encodeURIComponent(model)), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
@@ -157,19 +178,45 @@
       signal: controller ? controller.signal : undefined
     }).then(function (res) {
       if (timer) clearTimeout(timer);
-      if (res.status === 400 || res.status === 401 || res.status === 403) throw new Error('API key không hợp lệ hoặc chưa được cấp quyền.');
-      if (res.status === 404) throw new Error('Không tìm thấy model "' + model + '". Hãy chọn model khác.');
-      if (res.status === 429) throw new Error('Đã vượt giới hạn lượt gọi miễn phí. Thử lại sau ít phút.');
-      if (!res.ok) throw new Error('Dịch vụ AI đang lỗi (mã ' + res.status + ').');
+      if (res.status === 400 || res.status === 401 || res.status === 403) throw fail('API key không hợp lệ hoặc chưa được cấp quyền.', 'key');
+      if (res.status === 404) throw fail('Model "' + model + '" không còn mở cho tài khoản này.', 'model');
+      if (res.status === 429) {
+        throw fail(info && info.tier === 'paid'
+          ? 'Model "' + model + '" cần bật thanh toán trên Google AI Studio.'
+          : 'Model "' + model + '" đã hết lượt miễn phí, thử lại sau ít phút.', 'quota');
+      }
+      if (res.status === 503 || res.status === 500) throw fail('Model "' + model + '" của Google đang quá tải.', 'server');
+      if (!res.ok) throw fail('Dịch vụ AI đang lỗi (mã ' + res.status + ').', 'server');
       return res.json();
     }, function (err) {
       if (timer) clearTimeout(timer);
-      throw new Error(err && err.name === 'AbortError' ? 'AI phản hồi quá lâu (quá 30 giây).' : 'Không kết nối được tới Gemini. Kiểm tra mạng.');
+      if (err && err.kind) throw err;
+      throw err && err.name === 'AbortError'
+        ? fail('Model "' + model + '" phản hồi quá lâu (quá ' + Math.round(limit / 1000) + ' giây).', 'timeout')
+        : fail('Không kết nối được tới Gemini. Kiểm tra mạng.', 'network');
     }).then(function (data) {
       var parts = data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
       if (!parts || !parts.length) throw new Error('AI không trả về nội dung (có thể bị bộ lọc an toàn chặn).');
-      return parts.map(function (p) { return p.text || ''; }).join('');
+      return parts.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('');
     });
+  }
+  function fail(msg, kind) { var e = new Error(msg); e.kind = kind; return e; }
+
+  // Gọi model đã chọn; lỗi do model (hết lượt, cần trả phí, quá lâu, máy chủ lỗi) thì tự chuyển model nhanh.
+  // Lỗi key / mất mạng thì báo luôn. onSwitch(model, lý do) để app báo cho người dùng.
+  function generate(apiKey, model, prompt, onSwitch) {
+    var tried = [model];
+    function attempt(m) {
+      return callGemini(apiKey, m, prompt).then(function (text) { return { text: text, model: m }; }, function (e) {
+        if (e.kind === 'key' || e.kind === 'network') throw e;
+        var next = FALLBACKS.filter(function (f) { return tried.indexOf(f) < 0; })[0];
+        if (!next) throw e;
+        tried.push(next);
+        if (onSwitch) onSwitch(next, e.message);
+        return attempt(next);
+      });
+    }
+    return attempt(model);
   }
 
   root.EP = root.EP || {};
@@ -178,6 +225,10 @@
     buildPrompt: buildPrompt,
     extractJson: extractJson,
     parseAIResponse: parseAIResponse,
-    callGemini: callGemini
+    callGemini: callGemini,
+    generate: generate,
+    MODELS: MODELS,
+    DEFAULT_MODEL: DEFAULT_MODEL,
+    modelInfo: modelInfo
   };
 })(typeof window !== 'undefined' ? window : globalThis);

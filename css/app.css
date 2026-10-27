@@ -780,4 +780,5 @@ html.motion-off::view-transition-group(*), html.motion-off::view-transition-old(
   .pair-row.is-entering { animation: xcIn var(--dur-2) var(--ease-out) both; }
   .pair-del, .pair-row input { transition: background-color var(--dur-1) ease, color var(--dur-1) ease, box-shadow var(--dur-1) ease; }
 }
+.hint.is-warn { color: #8a5a00; }
 }
