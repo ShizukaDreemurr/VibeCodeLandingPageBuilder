@@ -95,6 +95,33 @@
     return { data: best, width: width };
   }
 
+  // Nén một canvas đã dựng sẵn (từ trình chỉnh ảnh) xuống ≤ max: hạ chất lượng, chưa đủ thì thu nhỏ 85%
+  function compressCanvas(canvas, slot, max) {
+    var cfg = typeof slot === 'string' ? (SLOTS[slot] || SLOTS.hero) : (slot || SLOTS.hero);
+    max = max || cfg.max;
+    var lossy = WEBP || !cfg.alpha;
+    var cur = canvas, best = null;
+    for (var round = 0; round < 12; round++) {
+      var q = cfg.quality;
+      while (true) {
+        var out = encode(cur, cfg, q);
+        if (!best || out.length < best.length) best = out;
+        if (out.length <= max) return { data: out, width: cur.width, height: cur.height };
+        if (!lossy || q <= MIN_QUALITY) break;
+        q = Math.max(MIN_QUALITY, q - 0.08);
+      }
+      if (cur.width <= MIN_WIDTH) break;
+      var next = document.createElement('canvas');
+      next.width = Math.max(MIN_WIDTH, Math.round(cur.width * 0.85));
+      next.height = Math.max(1, Math.round(cur.height * next.width / cur.width));
+      var nctx = next.getContext('2d');
+      nctx.imageSmoothingQuality = 'high';
+      nctx.drawImage(cur, 0, 0, next.width, next.height);
+      cur = next;
+    }
+    return { data: best, width: cur.width, height: cur.height };
+  }
+
   var lastInfo = null;
   // Chọn ảnh từ máy → cắt, thu nhỏ, nén cho vừa trần của loại ảnh. Trả về dataURL
   function pick(slot) {
@@ -154,7 +181,7 @@
 
   root.EP = root.EP || {};
   root.EP.images = {
-    pick: pick, recompress: recompress, shrinkToFit: shrinkToFit, totalBytes: totalBytes, SLOTS: SLOTS, webp: WEBP,
+    pick: pick, recompress: recompress, compressCanvas: compressCanvas, load: loadFrom, shrinkToFit: shrinkToFit, totalBytes: totalBytes, SLOTS: SLOTS, webp: WEBP,
     lastInfo: function () { return lastInfo; }
   };
 })(window);

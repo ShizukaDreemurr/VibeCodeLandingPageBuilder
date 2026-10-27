@@ -482,33 +482,87 @@
   }
 
   // ---------- Ảnh tuỳ chỉnh ----------
+  function slotParts(slot) { var p = slot.split(':'); return { kind: p[0], index: Number(p[1]) }; }
+  // dataURL hiện có của ô ảnh ('' nếu chưa có)
+  function slotImage(slot) {
+    var sp = slotParts(slot), images = (state && state.event.images) || {};
+    if (sp.kind === 'hero') return images.hero || '';
+    if (sp.kind === 'speaker') return (images.speakers || {})[sp.index] || '';
+    if (sp.kind === 'gallery') return (images.gallery || [])[sp.index] || '';
+    if (sp.kind === 'logo') return (state.event.brand && state.event.brand.logo) || '';
+    return '';
+  }
+  // Ghi ảnh vào ô, tự nén lại các ảnh nặng nhất nếu trang vượt giới hạn. Trả về Promise<boolean đã lưu>
+  function storeImage(slot, dataUrl) {
+    var sp = slotParts(slot), kind = sp.kind, index = sp.index;
+    var images = JSON.parse(JSON.stringify(state.event.images || {}));
+    if (kind === 'hero') { images.hero = dataUrl; delete images.noTplHero; }
+    if (kind === 'speaker') { images.speakers = images.speakers || {}; images.speakers[index] = dataUrl; }
+    if (kind === 'gallery') { images.gallery = images.gallery || []; images.gallery[index] = dataUrl; }
+    var logo = kind === 'logo' ? dataUrl : ((state.event.brand && state.event.brand.logo) || '');
+    var budget = MAX_IMAGE_BYTES - logo.length;
+    var fit = EP.images.totalBytes(images) > budget ? EP.images.shrinkToFit(images, budget) : Promise.resolve({ images: images, count: 0, fits: true });
+    return fit.then(function (r) {
+      if (!r.fits) { toast('Trang đã quá nhiều ảnh, nén thêm sẽ mờ. Hãy bớt một vài ảnh album.'); return null; }
+      state.event.images = r.images;
+      if (kind === 'logo') state.event.brand = Object.assign({}, state.event.brand, { logo: dataUrl });
+      persist();
+      var target = kind === 'hero' ? landingEl.querySelector('.lp-hero')
+        : landingEl.querySelector('[data-slot="' + slot + '"]') && landingEl.querySelector('[data-slot="' + slot + '"]').parentElement;
+      if (target) EP.motion.replay(target, 'mo-img-in');
+      return r;
+    });
+  }
   function pickImage(slot) {
-    var parts = slot.split(':');
-    var kind = parts[0];
-    var index = Number(parts[1]);
+    var kind = slotParts(slot).kind;
     EP.images.pick(IMAGE_TYPES[kind]).then(function (dataUrl) {
       var info = EP.images.lastInfo();
-      var images = JSON.parse(JSON.stringify(state.event.images || {}));
-      if (kind === 'hero') images.hero = dataUrl;
-      if (kind === 'speaker') { images.speakers = images.speakers || {}; images.speakers[index] = dataUrl; }
-      if (kind === 'gallery') { images.gallery = images.gallery || []; images.gallery[index] = dataUrl; }
-      var budget = MAX_IMAGE_BYTES - ((state.event.brand && state.event.brand.logo) || '').length;
-      // Vượt giới hạn trang: tự nén lại các ảnh nặng nhất cho vừa, không bắt người dùng bỏ ảnh
-      var fit = EP.images.totalBytes(images) > budget ? EP.images.shrinkToFit(images, budget) : Promise.resolve({ images: images, count: 0, fits: true });
-      return fit.then(function (r) {
-        if (!r.fits) { toast('Trang đã quá nhiều ảnh, nén thêm sẽ mờ. Hãy bớt một vài ảnh album.'); return; }
-        state.event.images = r.images;
-        persist();
-        var target = kind === 'hero' ? landingEl.querySelector('.lp-hero')
-          : landingEl.querySelector('[data-slot="' + slot + '"]') && landingEl.querySelector('[data-slot="' + slot + '"]').parentElement;
-        EP.motion.replay(target, 'mo-img-in');
+      return storeImage(slot, dataUrl).then(function (r) {
+        if (!r) return;
         var msg = 'Đã cập nhật ảnh' + (info ? ' (tự nén ' + kb(info.before) + ' → ' + kb(info.after) + ')' : '') + '.';
         if (r.count) msg += ' Đã nén lại thêm ' + r.count + ' ảnh khác để trang vừa dung lượng.';
         toast(msg);
+        // Ảnh diễn giả (vuông) và ảnh bìa: mời cắt/xoay ngay, bấm Áp dụng là xong
+        if (kind === 'speaker' || kind === 'hero') editImage(slot);
       });
     }).catch(function (e) {
       if (e.message !== 'Chưa chọn ảnh.') toast(e.message);
     });
+  }
+  // Mở trình chỉnh ảnh (xoay, cắt, thu phóng, sáng/tương phản/bão hoà) cho ô ảnh
+  var IMAGE_TITLES = { hero: 'Chỉnh ảnh bìa', speaker: 'Chỉnh ảnh diễn giả', gallery: 'Chỉnh ảnh album', logo: 'Chỉnh logo' };
+  function editImage(slot) {
+    if (!state) return Promise.resolve();
+    var kind = slotParts(slot).kind;
+    var slotName = kind === 'logo' ? 'logo' : IMAGE_TYPES[kind];
+    var cfg = EP.images.SLOTS[slotName];
+    var src = slotImage(slot);
+    if (!src && kind === 'hero') {
+      var art = TPL.get(state.event.templateId).hero;
+      if (art) src = new URL(art, document.baseURI).href; // ảnh có sẵn của mẫu
+    }
+    if (!src) { toast('Chưa có ảnh để chỉnh. Hãy thêm ảnh trước.'); return Promise.resolve(); }
+    var before = slotImage(slot);
+    return EP.imageEditor.open({
+      src: src, slot: cfg, alpha: !!cfg.alpha, title: IMAGE_TITLES[kind],
+      aspect: kind === 'speaker' ? 1 : kind === 'hero' ? 16 / 9 : null
+    }).then(function (dataUrl) {
+      if (!dataUrl) return;
+      return storeImage(slot, dataUrl).then(function (r) {
+        if (!r) return;
+        toast('Đã chỉnh ảnh.' + (r.count ? ' Đã nén lại thêm ' + r.count + ' ảnh khác để trang vừa dung lượng.' : ''));
+      });
+    }).catch(function (e) { toast('Không chỉnh được ảnh này: ' + (e && e.message ? e.message : e)); });
+  }
+  function removeImage(slot) {
+    var sp = slotParts(slot), images = JSON.parse(JSON.stringify(state.event.images || {}));
+    if (sp.kind === 'hero') delete images.hero;
+    if (sp.kind === 'speaker' && images.speakers) delete images.speakers[sp.index];
+    if (sp.kind === 'gallery' && images.gallery) images.gallery[sp.index] = '';
+    state.event.images = images;
+    if (sp.kind === 'logo') state.event.brand = Object.assign({}, state.event.brand, { logo: '' });
+    persist();
+    toast(sp.kind === 'hero' ? 'Đã xoá ảnh, trang dùng lại ảnh bìa có sẵn của mẫu. Bấm ↶ nếu muốn lấy lại.' : 'Đã xoá ảnh. Bấm ↶ nếu muốn lấy lại.');
   }
   function kb(n) { return n >= 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
 
@@ -1477,6 +1531,7 @@
       getCount: simCount,
       editable: true,
       onPickImage: pickImage,
+      onEditImage: editImage,
       onEditContent: editContent,
       onEditText: editText,
       appUrl: APP_URL,
@@ -2240,6 +2295,7 @@
     persist: persist,
     liveRender: liveRender,
     toast: toast,
+    imageApi: { edit: editImage, pick: pickImage, remove: removeImage, canRemove: function (slot) { return slot !== 'hero' || !!slotImage('hero'); } },
     colorField: colorField,
     fontCombo: fontCombo,
     stepper: stepper,

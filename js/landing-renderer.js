@@ -137,6 +137,15 @@
       }, [ico('image', 14), label]);
     }
 
+    // Nút "Chỉnh" ảnh (xoay, cắt, thu phóng…) cạnh nút đổi ảnh, chỉ khi đã có ảnh
+    function editButton(slot) {
+      if (!editable) return null;
+      return h('button', {
+        type: 'button', class: 'lp-img-btn lp-img-edit', 'data-edit-slot': slot, title: 'Xoay, cắt, thu phóng, chỉnh sáng…',
+        onclick: function (e) { e.preventDefault(); if (opts.onEditImage) opts.onEditImage(slot); }
+      }, [ico('pencil', 14), 'Chỉnh']);
+    }
+
     var statusBadge = h('span', { class: 'lp-badge' });
     var countText = h('strong', { class: 'lp-count' });
     var cdBoxes = {};
@@ -258,7 +267,9 @@
     var brand = ev.brand && ev.brand.name ? ev.brand : null;
     function brandLogo() {
       if (!brand || !brand.logo || !/^data:image\/(png|jpeg|webp);base64,/.test(brand.logo)) return null;
-      return mark(h('img', { class: 'lp-logo', src: brand.logo, alt: brand.name }), 'brand.logo', 'Logo thương hiệu', 'box');
+      var logo = mark(h('img', { class: 'lp-logo', src: brand.logo, alt: brand.name }), 'brand.logo', 'Logo thương hiệu', 'box');
+      if (editable) logo.setAttribute('data-el-image', 'logo');
+      return logo;
     }
     function brandFooter() {
       if (!brand) return null;
@@ -287,10 +298,12 @@
         h('span', { class: 'lp-meta-item' }, [ico('pin'), TX('span', {}, 'hero.location', 'Địa điểm', ev.location)])
       ]), 'hero.meta', 'Dòng thời gian & địa điểm', 'box'),
       h('div', { class: 'lp-hero-action' }, [cta, statusBadge]),
-      imageButton('hero', images.hero || heroArt ? 'Đổi ảnh bìa' : 'Thêm ảnh bìa')
+      imageButton('hero', images.hero || heroArt ? 'Đổi ảnh bìa' : 'Thêm ảnh bìa'),
+      heroSrc ? editButton('hero') : null
     ]);
     if (heroSrc) hero.style.setProperty('--lp-hero-image', 'url("' + heroSrc.replace(/"/g, '') + '")');
     mark(hero, 'hero', 'Phần đầu trang', 'box', { required: true });
+    if (editable && heroSrc) hero.setAttribute('data-el-image', 'hero');
 
     var cdLabels = ['ngày', 'giờ', 'phút', 'giây'];
     Object.keys(cdBoxes).forEach(function (u, i) {
@@ -323,8 +336,9 @@
           ? h('img', { class: 'lp-avatar', src: photo, alt: s.name })
           : h('div', { class: 'lp-avatar', 'aria-hidden': 'true', text: s.name.trim().split(/\s+/).pop().charAt(0).toUpperCase() });
         mark(avatar, 'speaker.avatar.' + i, 'Ảnh diễn giả', 'box');
+        if (editable && photo) avatar.setAttribute('data-el-image', 'speaker:' + i);
         return h('div', { class: 'lp-speaker' }, [
-          avatar, imageButton('speaker:' + i, photo ? 'Đổi ảnh' : '+ Ảnh'),
+          avatar, imageButton('speaker:' + i, photo ? 'Đổi ảnh' : '+ Ảnh'), photo ? editButton('speaker:' + i) : null,
           TX('strong', {}, 'speaker.name.' + i, 'Tên diễn giả', s.name),
           s.title ? TX('span', {}, 'speaker.title.' + i, 'Chức danh diễn giả', s.title) : null
         ]);
@@ -337,7 +351,11 @@
       var pics = images.gallery || [];
       var cells = [];
       for (var g = 0; g < GALLERY_SLOTS; g++) {
-        if (pics[g]) cells.push(h('div', { class: 'lp-gallery-item' }, [h('img', { src: pics[g], alt: 'Ảnh cưới ' + (g + 1), loading: 'lazy' }), imageButton('gallery:' + g, 'Đổi')]));
+        if (pics[g]) {
+          var gimg = h('img', { src: pics[g], alt: 'Ảnh cưới ' + (g + 1), loading: 'lazy' });
+          if (editable) { gimg.setAttribute('data-el-image', 'gallery:' + g); gimg.setAttribute('data-el', 'gallery.img.' + g); gimg.setAttribute('data-el-label', 'Ảnh album ' + (g + 1)); gimg.setAttribute('data-el-kind', 'box'); }
+          cells.push(h('div', { class: 'lp-gallery-item' }, [gimg, imageButton('gallery:' + g, 'Đổi'), editButton('gallery:' + g)]));
+        }
         else if (editable) cells.push(h('div', { class: 'lp-gallery-item is-empty' }, [imageButton('gallery:' + g, '+ Thêm ảnh cưới')]));
       }
       if (cells.length) gallery = h('section', { class: 'lp-section' }, [TX('h2', {}, 'gallery.title', 'Tiêu đề album', 'Khoảnh khắc của chúng mình'), h('div', { class: 'lp-gallery' }, cells)]);

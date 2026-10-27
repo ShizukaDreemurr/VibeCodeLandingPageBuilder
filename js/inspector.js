@@ -112,6 +112,22 @@
   // Kích thước chữ hiện tại (px) của phần tử
   function currentSize(n) { return Math.round(parseFloat(root.getComputedStyle(n).fontSize)) || 16; }
 
+  // Hàng nút cho ảnh. Nút "Chỉnh ảnh" mở trình chỉnh xoay/cắt/thu phóng
+  function imageRow(slot, pure) {
+    var api = cfg.imageApi;
+    var r = el('div', 'ins-row ins-imgrow');
+    var edit = ibtn('sliders', 'Chỉnh ảnh', 'Xoay, cắt, thu phóng, chỉnh sáng và màu của ảnh', function () { api.edit(slot); });
+    edit.classList.add('ins-btn-primary');
+    r.appendChild(edit);
+    r.appendChild(ibtn('refresh', 'Đổi ảnh', 'Chọn ảnh khác từ máy', function () { api.pick(slot); }));
+    if (!api.canRemove || api.canRemove(slot)) {
+      var rm = ibtn('trash', 'Xoá ảnh', 'Xoá ảnh này' + (slot === 'hero' ? ' (trở về ảnh có sẵn của mẫu)' : ''), function () { api.remove(slot); });
+      rm.classList.add('ins-btn-danger');
+      r.appendChild(rm);
+    }
+    return r;
+  }
+
   function select(key) {
     if (selectedKey === key && bar && !bar.hidden) return;
     var prev = node();
@@ -170,6 +186,11 @@
       bar.appendChild(db);
     }
 
+    // Phần tử là ảnh: hàng nút Chỉnh ảnh / Đổi ảnh / Xoá ảnh ở đầu thanh công cụ
+    var imgSlot = n.getAttribute('data-el-image');
+    var pureImg = !!imgSlot && n.tagName === 'IMG'; // ảnh thuần (avatar, logo, album) không có chữ để chỉnh
+    if (imgSlot && cfg.imageApi) bar.appendChild(imageRow(imgSlot, pureImg));
+
     var row = el('div', 'ins-row');
     if (kind === 'section') {
       buildSection(row, n.getAttribute('data-el').replace('section.', ''));
@@ -177,6 +198,7 @@
       return finish(fresh);
     }
 
+    if (!pureImg) {
     if (kind === 'text') {
       row.appendChild(ibtn('pencil', 'Sửa chữ', 'Sửa chữ ngay trên trang', function () {
         n.focus();
@@ -240,6 +262,7 @@
     rowF.appendChild(cfg.weightSelect('Độ đậm', st.fontWeight, function (v) { setProp('fontWeight', v == null ? '' : v); }, true));
     bar.appendChild(rowF);
     bar.appendChild(fc.note);
+    }
 
     // Khoảng cách & vị trí: giãn dòng/chữ/từ, thụt đầu dòng, lề trên/dưới, dịch ngang/dọc
     var det = el('details', 'ins-more');
