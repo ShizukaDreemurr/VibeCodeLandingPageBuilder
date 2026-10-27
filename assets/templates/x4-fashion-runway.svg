@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" preserveAspectRatio="xMidYMid slice"><defs>
+  <linearGradient id="bg" gradientTransform="rotate(120 .5 .5)"><stop offset="0" stop-color="#242a38"/><stop offset="1" stop-color="#090d15"/></linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.15" r="0.6"><stop offset="0" stop-color="#a21caf" stop-opacity=".55"/><stop offset="1" stop-color="#a21caf" stop-opacity="0"/></radialGradient>
+  <linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="#090d15" stop-opacity=".85"/><stop offset=".55" stop-color="#090d15" stop-opacity="0"/></linearGradient>
+  <filter id="soft"><feGaussianBlur stdDeviation="30"/></filter>
+</defs>
+<rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#glow)"/>
+<circle cx="1277.050369931385" cy="852.77993849013" r="148.50826187059283" fill="#a21caf" opacity="0.18" filter="url(#soft)"/>
+<circle cx="1463.1757341790944" cy="61.36205967050046" r="148.73763223178685" fill="#a21caf" opacity="0.12" filter="url(#soft)"/>
+<circle cx="1312.9783306503668" cy="829.3866944499314" r="242.30545468628407" fill="#f5f6f8" opacity="0.19" filter="url(#soft)"/>
+<circle cx="1388.1190323503688" cy="680.6145495269448" r="228.9202691335231" fill="#f5f6f8" opacity="0.20" filter="url(#soft)"/>
+<g transform="translate(2360 0) scale(-1 1)"><path d="M660 200 C 1010 40, 1200 400, 1680 160" stroke="#646973" stroke-width="75.5045111104846" fill="none" stroke-linecap="round" opacity="0.55"/><path d="M660 360 C 1010 200, 1200 560, 1680 320" stroke="#c36bcb" stroke-width="45.058263232931495" fill="none" stroke-linecap="round" opacity="0.36"/><path d="M660 520 C 1010 360, 1200 720, 1680 480" stroke="#646973" stroke-width="52.39453833550215" fill="none" stroke-linecap="round" opacity="0.60"/><path d="M660 680 C 1010 520, 1200 880, 1680 640" stroke="#646973" stroke-width="64.51334063895047" fill="none" stroke-linecap="round" opacity="0.61"/></g>
+<rect width="1600" height="900" fill="url(#fade)"/></svg>

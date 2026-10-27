@@ -3846,5 +3846,3505 @@
    "earlyBird": "Đặt trước sách giảm 20% và nhận bookmark có chữ ký tác giả.",
    "earlyBirdDays": 12
   }
+ },
+ {
+  "id": "x3-esports-tournament",
+  "name": "Giải đấu Esports",
+  "tags": {
+   "industry": [
+    "entertainment",
+    "tech"
+   ],
+   "type": [
+    "sports"
+   ],
+   "goal": [
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#2b1b6b",
+   "accent": "#c2255c",
+   "surface": "#f1edfb",
+   "bg": "#fbfaff",
+   "text": "#16112e",
+   "muted": "#5a5478",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Đội tuyển tham dự",
+   "agenda": "Lịch thi đấu",
+   "submit": "Đăng ký đội thi",
+   "countSuffix": " đội đã đăng ký"
+  },
+  "art": {
+   "motif": "grid",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Arena Cup 2026 - Giải đấu Liên Quân học đường",
+   "startDays": 24,
+   "startHour": 8,
+   "location": "Nhà thi đấu Phú Thọ, 1 Lữ Gia, Quận 11, TP.HCM",
+   "capacity": 64,
+   "speakers": [
+    {
+     "name": "Trần Minh Khôi",
+     "title": "Bình luận viên chính"
+    },
+    {
+     "name": "Lê Hoàng Nam",
+     "title": "Trọng tài trưởng"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Check-in và bốc thăm bảng đấu"
+    },
+    {
+     "time": "09:00",
+     "title": "Vòng bảng"
+    },
+    {
+     "time": "13:30",
+     "title": "Tứ kết và bán kết"
+    },
+    {
+     "time": "17:00",
+     "title": "Chung kết và trao giải"
+    }
+   ],
+   "earlyBird": "Đăng ký sớm được miễn lệ phí đội thi và nhận áo đấu thiết kế riêng.",
+   "earlyBirdDays": 12
+  }
+ },
+ {
+  "id": "x3-ai-product-launch",
+  "name": "Ra mắt sản phẩm AI",
+  "tags": {
+   "industry": [
+    "tech"
+   ],
+   "type": [
+    "launch"
+   ],
+   "goal": [
+    "lead",
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#0f3d56",
+   "accent": "#b4470b",
+   "surface": "#e8f3f8",
+   "bg": "#f8fcfd",
+   "text": "#0d1f29",
+   "muted": "#4b6272",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Đội ngũ sản phẩm",
+   "submit": "Nhận lời mời",
+   "countSuffix": " khách đã nhận lời mời"
+  },
+  "art": {
+   "motif": "circuit",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Ra mắt Nova Assistant - Trợ lý AI cho doanh nghiệp Việt",
+   "startDays": 18,
+   "startHour": 14,
+   "location": "GEM Center, 8 Nguyễn Bỉnh Khiêm, Quận 1, TP.HCM",
+   "capacity": 300,
+   "speakers": [
+    {
+     "name": "Phạm Quốc Bảo",
+     "title": "Nhà sáng lập kiêm CEO"
+    },
+    {
+     "name": "Đỗ Thu Hà",
+     "title": "Giám đốc sản phẩm"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "14:00",
+     "title": "Đón khách và trải nghiệm demo"
+    },
+    {
+     "time": "14:30",
+     "title": "Công bố sản phẩm"
+    },
+    {
+     "time": "15:15",
+     "title": "Demo trực tiếp với dữ liệu thật"
+    },
+    {
+     "time": "16:00",
+     "title": "Giao lưu và networking"
+    }
+   ],
+   "earlyBird": "Khách tham dự được dùng thử gói Pro miễn phí 6 tháng.",
+   "earlyBirdDays": 10
+  }
+ },
+ {
+  "id": "x3-saas-user-conference",
+  "name": "Hội nghị người dùng SaaS",
+  "tags": {
+   "industry": [
+    "tech",
+    "corporate"
+   ],
+   "type": [
+    "seminar"
+   ],
+   "goal": [
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#1d3a8a",
+   "accent": "#0f766e",
+   "surface": "#eaf0fc",
+   "bg": "#f9fbff",
+   "text": "#101a38",
+   "muted": "#4a5778",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Diễn giả khách mời",
+   "agenda": "Chương trình hội nghị",
+   "submit": "Đăng ký tham dự"
+  },
+  "art": {
+   "motif": "skyline",
+   "variant": 0
+  },
+  "sample": {
+   "name": "CloudDesk Connect 2026 - Hội nghị người dùng thường niên",
+   "startDays": 40,
+   "startHour": 8,
+   "location": "Trung tâm Hội nghị Quốc gia, Mễ Trì, Nam Từ Liêm, Hà Nội",
+   "capacity": 500,
+   "speakers": [
+    {
+     "name": "Nguyễn Anh Tuấn",
+     "title": "Giám đốc điều hành CloudDesk"
+    },
+    {
+     "name": "Vũ Mai Phương",
+     "title": "Trưởng bộ phận Thành công khách hàng"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:30",
+     "title": "Đón khách"
+    },
+    {
+     "time": "09:00",
+     "title": "Phiên toàn thể: lộ trình sản phẩm 2027"
+    },
+    {
+     "time": "11:00",
+     "title": "Câu chuyện khách hàng"
+    },
+    {
+     "time": "14:00",
+     "title": "Workshop theo nhóm"
+    },
+    {
+     "time": "16:30",
+     "title": "Tiệc networking"
+    }
+   ],
+   "earlyBird": "Vé sớm giảm 30% và tặng buổi tư vấn triển khai 1 kèm 1.",
+   "earlyBirdDays": 25
+  }
+ },
+ {
+  "id": "x3-developer-meetup",
+  "name": "Meetup lập trình viên",
+  "tags": {
+   "industry": [
+    "tech",
+    "community"
+   ],
+   "type": [
+    "networking"
+   ],
+   "goal": [
+    "community"
+   ]
+  },
+  "theme": {
+   "primary": "#14532d",
+   "accent": "#6d28d9",
+   "surface": "#eaf6ee",
+   "bg": "#f8fdf9",
+   "text": "#0e1f14",
+   "muted": "#4a6454",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "speakers": "Người chia sẻ",
+   "submit": "Tham gia meetup",
+   "countSuffix": " lập trình viên đã tham gia"
+  },
+  "art": {
+   "motif": "circuit",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Dev Night Đà Nẵng #12 - Backend và hệ thống phân tán",
+   "startDays": 14,
+   "startHour": 18,
+   "location": "Hub Startup, 15 Quang Trung, Hải Châu, Đà Nẵng",
+   "capacity": 80,
+   "speakers": [
+    {
+     "name": "Lâm Gia Huy",
+     "title": "Kỹ sư backend chính"
+    },
+    {
+     "name": "Ngô Thanh Vân",
+     "title": "Kiến trúc sư hệ thống"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "18:00",
+     "title": "Pizza và làm quen"
+    },
+    {
+     "time": "18:30",
+     "title": "Talk 1: Thiết kế hàng đợi tin nhắn"
+    },
+    {
+     "time": "19:15",
+     "title": "Talk 2: Quan sát hệ thống thực tế"
+    },
+    {
+     "time": "20:00",
+     "title": "Lightning talks và networking"
+    }
+   ],
+   "earlyBird": "Miễn phí tham dự, 30 bạn đăng ký đầu tiên nhận áo meetup.",
+   "earlyBirdDays": 7
+  }
+ },
+ {
+  "id": "x3-coworking-opening",
+  "name": "Khai trương coworking",
+  "tags": {
+   "industry": [
+    "corporate",
+    "realestate"
+   ],
+   "type": [
+    "opening"
+   ],
+   "goal": [
+    "lead",
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#7c2d12",
+   "accent": "#0e7490",
+   "surface": "#fbf0e8",
+   "bg": "#fffaf6",
+   "text": "#2a140b",
+   "muted": "#6b5144",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "about": "Về không gian",
+   "benefits": "Tiện ích nổi bật",
+   "offer": "Ưu đãi thành viên sáng lập",
+   "submit": "Đặt lịch tham quan"
+  },
+  "art": {
+   "motif": "house",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Khai trương Hive Space - Không gian làm việc chung",
+   "startDays": 21,
+   "startHour": 9,
+   "location": "Tầng 6, 72 Lê Thánh Tôn, Quận 1, TP.HCM",
+   "capacity": 120,
+   "speakers": [
+    {
+     "name": "Trương Bích Ngọc",
+     "title": "Quản lý cộng đồng"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Đón khách và tham quan"
+    },
+    {
+     "time": "10:00",
+     "title": "Cắt băng khai trương"
+    },
+    {
+     "time": "10:30",
+     "title": "Tọa đàm: làm việc linh hoạt"
+    },
+    {
+     "time": "12:00",
+     "title": "Tiệc trà và networking"
+    }
+   ],
+   "earlyBird": "Thành viên sáng lập giảm 40% trong 3 tháng đầu và tặng 10 giờ phòng họp.",
+   "earlyBirdDays": 14
+  }
+ },
+ {
+  "id": "x3-franchise-seminar",
+  "name": "Hội thảo nhượng quyền",
+  "tags": {
+   "industry": [
+    "finance",
+    "retail"
+   ],
+   "type": [
+    "seminar"
+   ],
+   "goal": [
+    "lead"
+   ]
+  },
+  "theme": {
+   "primary": "#7f1d1d",
+   "accent": "#14532d",
+   "surface": "#fbeeee",
+   "bg": "#fffafa",
+   "text": "#2b1010",
+   "muted": "#6b4a4a",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Chuyên gia nhượng quyền",
+   "agenda": "Nội dung hội thảo",
+   "submit": "Đăng ký tư vấn"
+  },
+  "art": {
+   "motif": "chart",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Hội thảo Cơ hội nhượng quyền chuỗi trà sữa Mộc Trà",
+   "startDays": 28,
+   "startHour": 9,
+   "location": "Khách sạn Sofitel Plaza, 1 Lê Duẩn, Quận 1, TP.HCM",
+   "capacity": 150,
+   "speakers": [
+    {
+     "name": "Bùi Đức Thịnh",
+     "title": "Tổng giám đốc Mộc Trà"
+    },
+    {
+     "name": "Nguyễn Thanh Lan",
+     "title": "Chuyên gia tư vấn nhượng quyền"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Tổng quan mô hình và thị trường"
+    },
+    {
+     "time": "10:00",
+     "title": "Cấu trúc đầu tư và hoàn vốn"
+    },
+    {
+     "time": "11:00",
+     "title": "Chia sẻ từ chủ cửa hàng"
+    },
+    {
+     "time": "11:45",
+     "title": "Tư vấn riêng và ký kết sơ bộ"
+    }
+   ],
+   "earlyBird": "Đăng ký sớm nhận miễn phí báo cáo khảo sát mặt bằng cho khu vực của bạn.",
+   "earlyBirdDays": 15
+  }
+ },
+ {
+  "id": "x3-trade-seminar",
+  "name": "Hội thảo xuất nhập khẩu",
+  "tags": {
+   "industry": [
+    "corporate"
+   ],
+   "type": [
+    "seminar"
+   ],
+   "goal": [
+    "lead",
+    "enroll"
+   ]
+  },
+  "theme": {
+   "primary": "#0c4a6e",
+   "accent": "#9a3412",
+   "surface": "#e9f3f9",
+   "bg": "#f8fcfe",
+   "text": "#0c1c26",
+   "muted": "#476176",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Chuyên gia thương mại",
+   "submit": "Đăng ký hội thảo"
+  },
+  "art": {
+   "motif": "globe",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Hội thảo Xuất khẩu sang EU - Quy tắc xuất xứ và logistics",
+   "startDays": 20,
+   "startHour": 8,
+   "location": "Phòng Thương mại và Công nghiệp, 9 Đào Duy Anh, Đống Đa, Hà Nội",
+   "capacity": 200,
+   "speakers": [
+    {
+     "name": "Hoàng Văn Lực",
+     "title": "Chuyên gia hải quan"
+    },
+    {
+     "name": "Phan Thị Hồng Nhung",
+     "title": "Giám đốc logistics quốc tế"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:30",
+     "title": "Đón khách"
+    },
+    {
+     "time": "09:00",
+     "title": "Cơ hội từ hiệp định EVFTA"
+    },
+    {
+     "time": "10:15",
+     "title": "Chứng nhận xuất xứ C/O"
+    },
+    {
+     "time": "11:00",
+     "title": "Tối ưu chi phí vận chuyển"
+    },
+    {
+     "time": "11:45",
+     "title": "Hỏi đáp và kết nối doanh nghiệp"
+    }
+   ],
+   "earlyBird": "Doanh nghiệp đăng ký từ 2 người trở lên được tặng cẩm nang thủ tục xuất khẩu.",
+   "earlyBirdDays": 10
+  }
+ },
+ {
+  "id": "x3-ocop-fair",
+  "name": "Hội chợ OCOP",
+  "tags": {
+   "industry": [
+    "retail",
+    "community"
+   ],
+   "type": [
+    "exhibition"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#3f6212",
+   "accent": "#b91c1c",
+   "surface": "#f1f6e6",
+   "bg": "#fbfdf6",
+   "text": "#1a2208",
+   "muted": "#566240",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "about": "Về hội chợ",
+   "benefits": "Điểm nhấn hội chợ",
+   "submit": "Đăng ký tham quan"
+  },
+  "art": {
+   "motif": "leaves",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Hội chợ Nông sản và sản phẩm OCOP Đồng bằng sông Cửu Long",
+   "startDays": 32,
+   "startHour": 8,
+   "location": "Công viên Lưu Hữu Phước, đường 30/4, Ninh Kiều, Cần Thơ",
+   "capacity": 2000,
+   "speakers": [
+    {
+     "name": "Lê Thị Kim Chi",
+     "title": "Trưởng ban tổ chức"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Khai mạc hội chợ"
+    },
+    {
+     "time": "09:00",
+     "title": "Trưng bày sản phẩm OCOP 3 sao trở lên"
+    },
+    {
+     "time": "14:00",
+     "title": "Kết nối nhà phân phối"
+    },
+    {
+     "time": "18:00",
+     "title": "Chợ đêm đặc sản miền Tây"
+    }
+   ],
+   "earlyBird": "Vào cửa miễn phí và nhận túi vải kèm phiếu mua hàng 50.000đ.",
+   "earlyBirdDays": null
+  }
+ },
+ {
+  "id": "x3-realestate-networking",
+  "name": "Networking nhà đầu tư BĐS",
+  "tags": {
+   "industry": [
+    "realestate",
+    "finance"
+   ],
+   "type": [
+    "networking"
+   ],
+   "goal": [
+    "lead"
+   ]
+  },
+  "theme": {
+   "primary": "#1e293b",
+   "accent": "#a16207",
+   "surface": "#eef1f5",
+   "bg": "#f8fafc",
+   "text": "#0f172a",
+   "muted": "#475569",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Khách mời chia sẻ",
+   "submit": "Đăng ký giữ chỗ",
+   "countSuffix": " nhà đầu tư đã đăng ký"
+  },
+  "art": {
+   "motif": "skyline",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Đêm kết nối nhà đầu tư bất động sản 2027",
+   "startDays": 16,
+   "startHour": 18,
+   "location": "Nhà hàng Skyline, tầng 38, Bitexco, Quận 1, TP.HCM",
+   "capacity": 100,
+   "speakers": [
+    {
+     "name": "Đặng Hữu Phước",
+     "title": "Chuyên gia thị trường bất động sản"
+    },
+    {
+     "name": "Tạ Minh Châu",
+     "title": "Quỹ đầu tư địa ốc"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "18:00",
+     "title": "Đón khách và cocktail"
+    },
+    {
+     "time": "18:45",
+     "title": "Nhận định thị trường 2027"
+    },
+    {
+     "time": "19:30",
+     "title": "Bàn tròn: dòng tiền và pháp lý"
+    },
+    {
+     "time": "20:15",
+     "title": "Kết nối tự do"
+    }
+   ],
+   "earlyBird": "Số lượng có hạn, đăng ký trước hạn nhận sổ tay pháp lý đầu tư.",
+   "earlyBirdDays": 9
+  }
+ },
+ {
+  "id": "x3-bank-appreciation",
+  "name": "Tri ân khách hàng ngân hàng",
+  "tags": {
+   "industry": [
+    "finance"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "gratitude",
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#0b3b5c",
+   "accent": "#b45309",
+   "surface": "#e8f1f7",
+   "bg": "#f7fbfd",
+   "text": "#0b1b26",
+   "muted": "#476073",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "about": "Lời tri ân",
+   "benefits": "Quà tặng tri ân",
+   "submit": "Xác nhận tham dự"
+  },
+  "art": {
+   "motif": "ribbon",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Đêm tri ân khách hàng thân thiết 15 năm đồng hành",
+   "startDays": 26,
+   "startHour": 18,
+   "location": "Trung tâm Hội nghị White Palace, 108 Phạm Văn Đồng, Thủ Đức, TP.HCM",
+   "capacity": 400,
+   "speakers": [
+    {
+     "name": "Nguyễn Hải Yến",
+     "title": "Giám đốc khối Khách hàng cá nhân"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "18:00",
+     "title": "Đón khách"
+    },
+    {
+     "time": "18:30",
+     "title": "Lời tri ân và video 15 năm"
+    },
+    {
+     "time": "19:00",
+     "title": "Tiệc tối và âm nhạc"
+    },
+    {
+     "time": "20:30",
+     "title": "Bốc thăm trúng thưởng"
+    }
+   ],
+   "earlyBird": "Khách hàng được tặng gói ưu đãi lãi suất tiết kiệm cộng thêm 0,3%/năm.",
+   "earlyBirdDays": null
+  }
+ },
+ {
+  "id": "x3-car-test-drive",
+  "name": "Ngày lái thử xe",
+  "tags": {
+   "industry": [
+    "retail"
+   ],
+   "type": [
+    "launch"
+   ],
+   "goal": [
+    "lead",
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#18181b",
+   "accent": "#b91c1c",
+   "surface": "#f1f1f3",
+   "bg": "#fafafa",
+   "text": "#111113",
+   "muted": "#52525b",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "offer": "Ưu đãi lái thử",
+   "submit": "Đặt lịch lái thử"
+  },
+  "art": {
+   "motif": "track",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Ngày hội lái thử Aurora SUV 2027 - Cảm nhận trước, quyết định sau",
+   "startDays": 12,
+   "startHour": 9,
+   "location": "Showroom Aurora Motors, 220 Võ Văn Kiệt, Quận 5, TP.HCM",
+   "capacity": 250,
+   "speakers": [
+    {
+     "name": "Phạm Quang Vinh",
+     "title": "Chuyên viên tư vấn kỹ thuật"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Đón khách và trưng bày xe"
+    },
+    {
+     "time": "10:00",
+     "title": "Lái thử trên cung đường riêng"
+    },
+    {
+     "time": "13:00",
+     "title": "Tư vấn tài chính trả góp"
+    },
+    {
+     "time": "15:00",
+     "title": "Bốc thăm quà tặng"
+    }
+   ],
+   "earlyBird": "Lái thử nhận ngay voucher bảo dưỡng 2.000.000đ, đặt cọc trong ngày tặng phụ kiện.",
+   "earlyBirdDays": 5
+  }
+ },
+ {
+  "id": "x3-ev-launch",
+  "name": "Ra mắt xe điện",
+  "tags": {
+   "industry": [
+    "tech",
+    "retail"
+   ],
+   "type": [
+    "launch"
+   ],
+   "goal": [
+    "brand",
+    "lead"
+   ]
+  },
+  "theme": {
+   "primary": "#064e3b",
+   "accent": "#c2410c",
+   "surface": "#e6f5ef",
+   "bg": "#f6fcf9",
+   "text": "#0a1f18",
+   "muted": "#41635a",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Khách mời",
+   "submit": "Đăng ký trải nghiệm"
+  },
+  "art": {
+   "motif": "waves",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Ra mắt mẫu xe điện đô thị Volta E1",
+   "startDays": 30,
+   "startHour": 10,
+   "location": "Crescent Mall, 101 Tôn Dật Tiên, Quận 7, TP.HCM",
+   "capacity": 350,
+   "speakers": [
+    {
+     "name": "Đinh Công Sơn",
+     "title": "Giám đốc thương hiệu Volta"
+    },
+    {
+     "name": "Mai Khánh Linh",
+     "title": "Kỹ sư trưởng pin và sạc"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "10:00",
+     "title": "Đón khách"
+    },
+    {
+     "time": "10:30",
+     "title": "Công bố mẫu xe E1"
+    },
+    {
+     "time": "11:15",
+     "title": "Trải nghiệm trạm sạc nhanh"
+    },
+    {
+     "time": "14:00",
+     "title": "Lái thử và tư vấn"
+    }
+   ],
+   "earlyBird": "Đặt trước trong ngày ra mắt được tặng gói sạc miễn phí 12 tháng.",
+   "earlyBirdDays": 20
+  }
+ },
+ {
+  "id": "x3-pharmacy-opening",
+  "name": "Khai trương nhà thuốc",
+  "tags": {
+   "industry": [
+    "health",
+    "retail"
+   ],
+   "type": [
+    "opening"
+   ],
+   "goal": [
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#0f5132",
+   "accent": "#a3340f",
+   "surface": "#e7f5ee",
+   "bg": "#f6fcf9",
+   "text": "#0a2016",
+   "muted": "#426353",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "about": "Về nhà thuốc",
+   "benefits": "Dịch vụ tại nhà thuốc",
+   "offer": "Quà khai trương",
+   "submit": "Nhận quà khai trương"
+  },
+  "art": {
+   "motif": "leaves",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Khai trương nhà thuốc An Tâm - Dược sĩ tư vấn tận tình",
+   "startDays": 9,
+   "startHour": 8,
+   "location": "45 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+   "capacity": 300,
+   "speakers": [
+    {
+     "name": "DS. Vũ Thị Hương",
+     "title": "Dược sĩ phụ trách chuyên môn"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Cắt băng khai trương"
+    },
+    {
+     "time": "09:00",
+     "title": "Đo huyết áp và đường huyết miễn phí"
+    },
+    {
+     "time": "10:30",
+     "title": "Tư vấn dùng thuốc an toàn"
+    },
+    {
+     "time": "15:00",
+     "title": "Bốc thăm quà tặng"
+    }
+   ],
+   "earlyBird": "Khách đến sớm nhận hộp vitamin tổng hợp và giảm 15% đơn đầu tiên.",
+   "earlyBirdDays": null
+  }
+ },
+ {
+  "id": "x3-dental-checkup",
+  "name": "Khám răng miễn phí",
+  "tags": {
+   "industry": [
+    "health"
+   ],
+   "type": [
+    "seminar"
+   ],
+   "goal": [
+    "lead"
+   ]
+  },
+  "theme": {
+   "primary": "#0e5a73",
+   "accent": "#be185d",
+   "surface": "#e6f4f8",
+   "bg": "#f6fcfe",
+   "text": "#0a202a",
+   "muted": "#436675",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "speakers": "Bác sĩ nha khoa",
+   "agenda": "Lịch khám",
+   "submit": "Đặt lịch khám",
+   "countSuffix": " lượt đã đặt lịch"
+  },
+  "art": {
+   "motif": "bubbles",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Ngày hội chăm sóc răng miệng - Khám và tư vấn miễn phí",
+   "startDays": 11,
+   "startHour": 8,
+   "location": "Nha khoa Nụ Cười, 88 Trần Phú, Hải Châu, Đà Nẵng",
+   "capacity": 120,
+   "speakers": [
+    {
+     "name": "BS. Nguyễn Hoài Nam",
+     "title": "Bác sĩ răng hàm mặt"
+    },
+    {
+     "name": "BS. Lê Thu Trang",
+     "title": "Bác sĩ nha khoa trẻ em"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Đón tiếp và lấy số khám"
+    },
+    {
+     "time": "08:30",
+     "title": "Khám tổng quát và chụp X-quang"
+    },
+    {
+     "time": "10:30",
+     "title": "Hướng dẫn chải răng đúng cách"
+    },
+    {
+     "time": "14:00",
+     "title": "Tư vấn niềng răng và trồng răng"
+    }
+   ],
+   "earlyBird": "Khám và lấy cao răng miễn phí cho 100 khách đầu tiên.",
+   "earlyBirdDays": 6
+  }
+ },
+ {
+  "id": "x3-mental-health-talk",
+  "name": "Tọa đàm sức khỏe tinh thần",
+  "tags": {
+   "industry": [
+    "health",
+    "community"
+   ],
+   "type": [
+    "seminar"
+   ],
+   "goal": [
+    "lead"
+   ]
+  },
+  "theme": {
+   "primary": "#4c3a7a",
+   "accent": "#0f766e",
+   "surface": "#f0ecf8",
+   "bg": "#fbfaff",
+   "text": "#1a1530",
+   "muted": "#5a5278",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Chuyên gia tâm lý",
+   "submit": "Đăng ký tham dự",
+   "success": "Cảm ơn bạn. Chúng tôi đã giữ một chỗ yên tĩnh cho bạn."
+  },
+  "art": {
+   "motif": "sun",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Tọa đàm Lắng nghe chính mình - Áp lực, lo âu và cách vượt qua",
+   "startDays": 19,
+   "startHour": 19,
+   "location": "Không gian Mộc, 36 Hai Bà Trưng, Hoàn Kiếm, Hà Nội",
+   "capacity": 90,
+   "speakers": [
+    {
+     "name": "ThS. Trần Ngọc Anh",
+     "title": "Chuyên gia tâm lý lâm sàng"
+    },
+    {
+     "name": "Hoàng Thu Thủy",
+     "title": "Người sáng lập CLB Cùng Nhau"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "19:00",
+     "title": "Đón khách và trà thảo mộc"
+    },
+    {
+     "time": "19:20",
+     "title": "Nhận diện dấu hiệu căng thẳng"
+    },
+    {
+     "time": "20:00",
+     "title": "Thực hành hít thở và thư giãn"
+    },
+    {
+     "time": "20:40",
+     "title": "Hỏi đáp ẩn danh"
+    }
+   ],
+   "earlyBird": "Miễn phí. Tặng sổ tay nhật ký cảm xúc cho người tham dự.",
+   "earlyBirdDays": 8
+  }
+ },
+ {
+  "id": "x3-parenting-workshop",
+  "name": "Workshop nuôi dạy con",
+  "tags": {
+   "industry": [
+    "education",
+    "community"
+   ],
+   "type": [
+    "workshop",
+    "training"
+   ],
+   "goal": [
+    "enroll"
+   ]
+  },
+  "theme": {
+   "primary": "#9d174d",
+   "accent": "#0f766e",
+   "surface": "#fcebf3",
+   "bg": "#fffafc",
+   "text": "#2e0f1f",
+   "muted": "#7a4a62",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "speakers": "Chuyên gia giáo dục",
+   "submit": "Đăng ký cho bố mẹ",
+   "countSuffix": " phụ huynh đã đăng ký"
+  },
+  "art": {
+   "motif": "hearts",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Workshop Kỷ luật tích cực - Dạy con không cần quát mắng",
+   "startDays": 15,
+   "startHour": 9,
+   "location": "Trung tâm Sách và Giáo dục Hạnh Phúc, 12 Nguyễn Văn Linh, Quận 7, TP.HCM",
+   "capacity": 60,
+   "speakers": [
+    {
+     "name": "ThS. Đỗ Minh Châu",
+     "title": "Chuyên gia giáo dục sớm"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Hiểu hành vi của trẻ"
+    },
+    {
+     "time": "10:00",
+     "title": "Thực hành tình huống thường gặp"
+    },
+    {
+     "time": "11:00",
+     "title": "Xây dựng nội quy gia đình"
+    },
+    {
+     "time": "11:45",
+     "title": "Giải đáp riêng"
+    }
+   ],
+   "earlyBird": "Đăng ký cả vợ chồng giảm 20% và nhận bộ thẻ trò chuyện với con.",
+   "earlyBirdDays": 8
+  }
+ },
+ {
+  "id": "x3-ielts-mock-test",
+  "name": "Thi thử IELTS",
+  "tags": {
+   "industry": [
+    "education"
+   ],
+   "type": [
+    "training"
+   ],
+   "goal": [
+    "enroll",
+    "lead"
+   ]
+  },
+  "theme": {
+   "primary": "#1e3a5f",
+   "accent": "#c2410c",
+   "surface": "#e8eef6",
+   "bg": "#f8fafd",
+   "text": "#0e1a2b",
+   "muted": "#475a73",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "agenda": "Lịch thi thử",
+   "submit": "Đăng ký thi thử",
+   "countSuffix": " thí sinh đã đăng ký"
+  },
+  "art": {
+   "motif": "books",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Thi thử IELTS miễn phí - Đánh giá trình độ và lộ trình 8 tuần",
+   "startDays": 13,
+   "startHour": 8,
+   "location": "IELTS Hub, 25 Láng Hạ, Ba Đình, Hà Nội",
+   "capacity": 80,
+   "speakers": [
+    {
+     "name": "Nguyễn Phương Thảo",
+     "title": "Giảng viên IELTS 8.5"
+    },
+    {
+     "name": "Jonathan Reed",
+     "title": "Giám khảo mô phỏng"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Check-in và nhận đề"
+    },
+    {
+     "time": "08:30",
+     "title": "Listening và Reading"
+    },
+    {
+     "time": "11:00",
+     "title": "Writing"
+    },
+    {
+     "time": "14:00",
+     "title": "Speaking 1 kèm 1 và nhận xét"
+    }
+   ],
+   "earlyBird": "Nhận bảng đánh giá chi tiết và giảm 25% học phí khóa luyện thi.",
+   "earlyBirdDays": 7
+  }
+ },
+ {
+  "id": "x3-scholarship-ceremony",
+  "name": "Lễ trao học bổng",
+  "tags": {
+   "industry": [
+    "education",
+    "community"
+   ],
+   "type": [
+    "charity"
+   ],
+   "goal": [
+    "gratitude",
+    "fundraise"
+   ]
+  },
+  "theme": {
+   "primary": "#3b2a75",
+   "accent": "#a16207",
+   "surface": "#efecf9",
+   "bg": "#faf9ff",
+   "text": "#17112e",
+   "muted": "#585078",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "about": "Về quỹ học bổng",
+   "speakers": "Nhà tài trợ",
+   "agenda": "Chương trình lễ trao",
+   "submit": "Xác nhận tham dự"
+  },
+  "art": {
+   "motif": "stars",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Lễ trao học bổng Vươn Lên - Mùa tựu trường 2026",
+   "startDays": 22,
+   "startHour": 8,
+   "location": "Hội trường Trường Đại học Cần Thơ, 3/2, Ninh Kiều, Cần Thơ",
+   "capacity": 250,
+   "speakers": [
+    {
+     "name": "PGS. Lê Văn Hòa",
+     "title": "Chủ tịch Quỹ Vươn Lên"
+    },
+    {
+     "name": "Trần Thị Mỹ Dung",
+     "title": "Đại diện nhà tài trợ"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Đón đại biểu"
+    },
+    {
+     "time": "08:30",
+     "title": "Khai mạc và chiếu phim tư liệu"
+    },
+    {
+     "time": "09:15",
+     "title": "Trao 100 suất học bổng"
+    },
+    {
+     "time": "10:30",
+     "title": "Giao lưu cùng các bạn sinh viên"
+    }
+   ],
+   "earlyBird": "Nhà hảo tâm đóng góp quỹ trước hạn được ghi danh trên bảng vàng.",
+   "earlyBirdDays": 15
+  }
+ },
+ {
+  "id": "x3-graduation-ceremony",
+  "name": "Lễ tốt nghiệp",
+  "tags": {
+   "industry": [
+    "education"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "gratitude",
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#14304f",
+   "accent": "#b91c1c",
+   "surface": "#e9eff6",
+   "bg": "#f8fafd",
+   "text": "#0c1824",
+   "muted": "#455a70",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Khách mời danh dự",
+   "agenda": "Chương trình lễ tốt nghiệp",
+   "submit": "Xác nhận tham dự",
+   "countSuffix": " khách đã xác nhận"
+  },
+  "art": {
+   "motif": "ribbon",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Lễ tốt nghiệp khóa 2022 - 2026 Khoa Quản trị Kinh doanh",
+   "startDays": 35,
+   "startHour": 8,
+   "location": "Hội trường A, Trường Đại học Kinh tế, 59C Nguyễn Đình Chiểu, Quận 3, TP.HCM",
+   "capacity": 600,
+   "speakers": [
+    {
+     "name": "TS. Nguyễn Quốc Trung",
+     "title": "Trưởng khoa"
+    },
+    {
+     "name": "Lương Gia Bảo",
+     "title": "Thủ khoa khóa 2026"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "07:30",
+     "title": "Đón tân cử nhân và phụ huynh"
+    },
+    {
+     "time": "08:30",
+     "title": "Nghi thức tuyên bố tốt nghiệp"
+    },
+    {
+     "time": "09:30",
+     "title": "Trao bằng và vinh danh"
+    },
+    {
+     "time": "11:00",
+     "title": "Chụp ảnh lưu niệm"
+    }
+   ],
+   "earlyBird": "Mỗi tân cử nhân được mời 3 khách, nhớ xác nhận trước hạn để sắp xếp chỗ ngồi.",
+   "earlyBirdDays": 20
+  }
+ },
+ {
+  "id": "x3-teachers-day",
+  "name": "Tri ân ngày nhà giáo",
+  "tags": {
+   "industry": [
+    "education"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "gratitude"
+   ]
+  },
+  "theme": {
+   "primary": "#8a2a1a",
+   "accent": "#0f5e5a",
+   "surface": "#fbeeea",
+   "bg": "#fffaf8",
+   "text": "#2b110b",
+   "muted": "#6e4a42",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "about": "Lời tri ân",
+   "agenda": "Chương trình văn nghệ",
+   "submit": "Gửi xác nhận",
+   "success": "Cảm ơn bạn. Hẹn gặp thầy cô trong ngày 20/11."
+  },
+  "art": {
+   "motif": "petals",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Chương trình Tri ân thầy cô - Kỷ niệm ngày Nhà giáo Việt Nam",
+   "startDays": 8,
+   "startHour": 15,
+   "location": "Hội trường Trường THPT Lê Quý Đôn, 110 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+   "capacity": 350,
+   "speakers": [
+    {
+     "name": "Cô Phạm Thị Lệ",
+     "title": "Hiệu trưởng nhà trường"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "15:00",
+     "title": "Đón thầy cô"
+    },
+    {
+     "time": "15:30",
+     "title": "Văn nghệ do học sinh biểu diễn"
+    },
+    {
+     "time": "16:30",
+     "title": "Dâng hoa và lời tri ân"
+    },
+    {
+     "time": "17:00",
+     "title": "Tiệc trà thân mật"
+    }
+   ],
+   "earlyBird": "Mời thầy cô cũ của nhà trường cùng về dự, chỗ ngồi được giữ sẵn.",
+   "earlyBirdDays": null
+  }
+ },
+ {
+  "id": "x3-alumni-homecoming",
+  "name": "Họp mặt cựu sinh viên",
+  "tags": {
+   "industry": [
+    "education",
+    "community"
+   ],
+   "type": [
+    "networking"
+   ],
+   "goal": [
+    "gratitude"
+   ]
+  },
+  "theme": {
+   "primary": "#6b2d1f",
+   "accent": "#1d4e89",
+   "surface": "#f9ede8",
+   "bg": "#fffaf7",
+   "text": "#26120c",
+   "muted": "#6a4c43",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "about": "Ngày về trường",
+   "speakers": "Cựu sinh viên tiêu biểu",
+   "submit": "Đăng ký về trường",
+   "countSuffix": " cựu sinh viên đã đăng ký"
+  },
+  "art": {
+   "motif": "books",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Homecoming 2026 - Cựu sinh viên về thăm mái trường",
+   "startDays": 44,
+   "startHour": 8,
+   "location": "Trường Đại học Bách khoa, 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
+   "capacity": 800,
+   "speakers": [
+    {
+     "name": "Nguyễn Đức Thành",
+     "title": "Cựu sinh viên khóa 1998, nhà sáng lập doanh nghiệp công nghệ"
+    },
+    {
+     "name": "Lê Thị Thu Hiền",
+     "title": "Cựu sinh viên khóa 2005, giám đốc tài chính"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Đón tiếp và tham quan khuôn viên"
+    },
+    {
+     "time": "09:30",
+     "title": "Gặp gỡ thầy cô cũ"
+    },
+    {
+     "time": "11:30",
+     "title": "Giao lưu cựu sinh viên tiêu biểu"
+    },
+    {
+     "time": "18:00",
+     "title": "Gala dinner kết nối"
+    }
+   ],
+   "earlyBird": "Đăng ký sớm được tặng áo kỷ niệm và ưu tiên bàn theo khóa.",
+   "earlyBirdDays": 30
+  }
+ },
+ {
+  "id": "x3-internship-open-day",
+  "name": "Ngày hội thực tập",
+  "tags": {
+   "industry": [
+    "education",
+    "corporate"
+   ],
+   "type": [
+    "networking"
+   ],
+   "goal": [
+    "recruit"
+   ]
+  },
+  "theme": {
+   "primary": "#0f4c5c",
+   "accent": "#b4400f",
+   "surface": "#e7f3f6",
+   "bg": "#f7fcfd",
+   "text": "#0b1f25",
+   "muted": "#436570",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "speakers": "Doanh nghiệp tham gia",
+   "agenda": "Lịch trong ngày",
+   "submit": "Đăng ký phỏng vấn",
+   "countSuffix": " sinh viên đã đăng ký"
+  },
+  "art": {
+   "motif": "grid",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Internship Open Day 2027 - Gặp gỡ 40 doanh nghiệp tuyển thực tập",
+   "startDays": 17,
+   "startHour": 8,
+   "location": "Hội trường Trường Đại học Ngoại thương, 91 Chùa Láng, Đống Đa, Hà Nội",
+   "capacity": 1000,
+   "speakers": [
+    {
+     "name": "Trần Thu Giang",
+     "title": "Trưởng nhân sự một tập đoàn bán lẻ"
+    },
+    {
+     "name": "Nguyễn Hữu Tài",
+     "title": "Giám đốc tuyển dụng công ty công nghệ"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Check-in và nhận sơ đồ gian hàng"
+    },
+    {
+     "time": "09:00",
+     "title": "Workshop viết CV thực tập"
+    },
+    {
+     "time": "10:30",
+     "title": "Phỏng vấn nhanh tại gian hàng"
+    },
+    {
+     "time": "14:00",
+     "title": "Trao đổi cùng mentor"
+    }
+   ],
+   "earlyBird": "Sinh viên được review CV miễn phí và có cơ hội nhận offer ngay tại sự kiện.",
+   "earlyBirdDays": 10
+  }
+ },
+ {
+  "id": "x3-volunteer-cleanup",
+  "name": "Chiến dịch dọn rác",
+  "tags": {
+   "industry": [
+    "community"
+   ],
+   "type": [
+    "charity"
+   ],
+   "goal": [
+    "community"
+   ]
+  },
+  "theme": {
+   "primary": "#115e59",
+   "accent": "#b45309",
+   "surface": "#e6f5f3",
+   "bg": "#f6fcfb",
+   "text": "#0a2120",
+   "muted": "#41635f",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "about": "Về chiến dịch",
+   "benefits": "Bạn nhận được gì",
+   "agenda": "Lịch hoạt động",
+   "submit": "Đăng ký tình nguyện",
+   "countSuffix": " tình nguyện viên đã đăng ký"
+  },
+  "art": {
+   "motif": "waves",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Chiến dịch Bờ biển xanh - Dọn rác bãi biển Mỹ Khê",
+   "startDays": 10,
+   "startHour": 6,
+   "location": "Bãi biển Mỹ Khê, Sơn Trà, Đà Nẵng",
+   "capacity": 300,
+   "speakers": [
+    {
+     "name": "Võ Thanh Tùng",
+     "title": "Trưởng nhóm tình nguyện"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "06:00",
+     "title": "Tập trung và phát dụng cụ"
+    },
+    {
+     "time": "06:30",
+     "title": "Thu gom rác theo khu vực"
+    },
+    {
+     "time": "09:00",
+     "title": "Phân loại và cân rác"
+    },
+    {
+     "time": "10:00",
+     "title": "Ăn sáng và tổng kết"
+    }
+   ],
+   "earlyBird": "Tình nguyện viên được tặng áo, găng tay, nước uống và bữa sáng.",
+   "earlyBirdDays": 5
+  }
+ },
+ {
+  "id": "x3-tree-planting",
+  "name": "Ngày hội trồng cây",
+  "tags": {
+   "industry": [
+    "community"
+   ],
+   "type": [
+    "charity"
+   ],
+   "goal": [
+    "fundraise"
+   ]
+  },
+  "theme": {
+   "primary": "#166534",
+   "accent": "#9a3412",
+   "surface": "#e8f5ec",
+   "bg": "#f7fcf9",
+   "text": "#0b2012",
+   "muted": "#456650",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "about": "Về dự án",
+   "benefits": "Giá trị dự án",
+   "offer": "Cách đóng góp",
+   "submit": "Đăng ký trồng cây",
+   "countSuffix": " người đã đăng ký"
+  },
+  "art": {
+   "motif": "leaves",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Ngày hội trồng 5.000 cây xanh - Phủ xanh đồi trọc Sóc Sơn",
+   "startDays": 27,
+   "startHour": 6,
+   "location": "Xã Minh Phú, huyện Sóc Sơn, Hà Nội",
+   "capacity": 500,
+   "speakers": [
+    {
+     "name": "Kỹ sư Lương Văn Đạt",
+     "title": "Cán bộ lâm nghiệp"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "06:00",
+     "title": "Xe đón từ Hà Nội"
+    },
+    {
+     "time": "07:30",
+     "title": "Hướng dẫn kỹ thuật trồng cây"
+    },
+    {
+     "time": "08:00",
+     "title": "Trồng cây theo nhóm"
+    },
+    {
+     "time": "11:30",
+     "title": "Cơm trưa và tổng kết"
+    }
+   ],
+   "earlyBird": "Mỗi 100.000đ đóng góp trồng thêm một cây và có biển tên gắn tại gốc cây.",
+   "earlyBirdDays": 18
+  }
+ },
+ {
+  "id": "x3-animal-adoption",
+  "name": "Ngày nhận nuôi thú cưng",
+  "tags": {
+   "industry": [
+    "community"
+   ],
+   "type": [
+    "charity"
+   ],
+   "goal": [
+    "fundraise"
+   ]
+  },
+  "theme": {
+   "primary": "#92400e",
+   "accent": "#1d4ed8",
+   "surface": "#fbf0e3",
+   "bg": "#fffaf3",
+   "text": "#2a1608",
+   "muted": "#6e5238",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "about": "Về trạm cứu hộ",
+   "speakers": "Tình nguyện viên cứu hộ",
+   "submit": "Đăng ký nhận nuôi",
+   "countSuffix": " người đã đăng ký"
+  },
+  "art": {
+   "motif": "hearts",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Ngày hội nhận nuôi Bé Cưng Có Nhà - Trạm cứu hộ Ấm Áp",
+   "startDays": 20,
+   "startHour": 9,
+   "location": "Công viên Gia Định, 1 Hoàng Minh Giám, Phú Nhuận, TP.HCM",
+   "capacity": 200,
+   "speakers": [
+    {
+     "name": "Đặng Ngọc Bích",
+     "title": "Trưởng trạm cứu hộ"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Mở cửa và gặp gỡ các bé"
+    },
+    {
+     "time": "10:30",
+     "title": "Hướng dẫn chăm sóc sau nhận nuôi"
+    },
+    {
+     "time": "13:00",
+     "title": "Phỏng vấn nhận nuôi"
+    },
+    {
+     "time": "15:00",
+     "title": "Đấu giá gây quỹ"
+    }
+   ],
+   "earlyBird": "Bé nhận nuôi được tiêm phòng, triệt sản miễn phí và tặng túi quà khởi đầu.",
+   "earlyBirdDays": 10
+  }
+ },
+ {
+  "id": "x4-kpop-dance-cover",
+  "name": "Cuộc Thi Dance Cover",
+  "tags": {
+   "industry": [
+    "entertainment"
+   ],
+   "type": [
+    "concert",
+    "party"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#4a1d8f",
+   "accent": "#c2185b",
+   "surface": "#f6f0fc",
+   "bg": "#fdfaff",
+   "text": "#1c1230",
+   "muted": "#5c5170",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Ban giám khảo",
+   "agenda": "Lịch thi đấu",
+   "submit": "Đăng ký dự thi",
+   "countSuffix": " đội đã đăng ký"
+  },
+  "art": {
+   "motif": "spotlight",
+   "variant": 1
+  },
+  "sample": {
+   "name": "K-Dance Cover Battle 2026",
+   "startDays": 28,
+   "startHour": 14,
+   "location": "Nhà thi đấu Phú Thọ, 1 Lữ Gia, Quận 11, TP.HCM",
+   "capacity": 1200,
+   "speakers": [
+    {
+     "name": "Minh Châu",
+     "title": "Biên đạo, giám khảo"
+    },
+    {
+     "name": "Hoàng Duy",
+     "title": "Cựu thành viên nhóm nhảy quốc tế"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "13:00",
+     "title": "Đón khách và check-in"
+    },
+    {
+     "time": "14:00",
+     "title": "Vòng loại các đội nhảy"
+    },
+    {
+     "time": "16:30",
+     "title": "Biểu diễn khách mời"
+    },
+    {
+     "time": "18:00",
+     "title": "Chung kết và trao giải"
+    }
+   ],
+   "earlyBird": "Vé sớm giảm 30% và tặng lightstick cho 200 khán giả đầu tiên.",
+   "earlyBirdDays": 14
+  }
+ },
+ {
+  "id": "x4-music-festival-outdoor",
+  "name": "Lễ Hội Âm Nhạc Ngoài Trời",
+  "tags": {
+   "industry": [
+    "entertainment"
+   ],
+   "type": [
+    "concert"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#0d5c63",
+   "accent": "#c2410c",
+   "surface": "#eaf6f6",
+   "bg": "#fbfefe",
+   "text": "#10282b",
+   "muted": "#476266",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Nghệ sĩ biểu diễn",
+   "agenda": "Line-up",
+   "submit": "Mua vé ngay",
+   "countSuffix": " vé đã được đặt"
+  },
+  "art": {
+   "motif": "stars",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Sóng Festival 2026",
+   "startDays": 40,
+   "startHour": 15,
+   "location": "Bãi biển Bãi Sau, Vũng Tàu",
+   "capacity": 5000,
+   "speakers": [
+    {
+     "name": "Ban nhạc Gió Biển",
+     "title": "Nghệ sĩ chính"
+    },
+    {
+     "name": "Lam Anh",
+     "title": "Ca sĩ indie"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "15:00",
+     "title": "Mở cổng và khu ẩm thực"
+    },
+    {
+     "time": "17:00",
+     "title": "Dàn nghệ sĩ indie biểu diễn"
+    },
+    {
+     "time": "19:30",
+     "title": "Đêm nhạc chính"
+    },
+    {
+     "time": "22:30",
+     "title": "Bắn pháo hoa kết thúc"
+    }
+   ],
+   "earlyBird": "Vé sớm đồng giá 450.000đ, tặng khăn lưu niệm cho 500 người đầu.",
+   "earlyBirdDays": 20
+  }
+ },
+ {
+  "id": "x4-rooftop-dj-night",
+  "name": "Đêm DJ Rooftop",
+  "tags": {
+   "industry": [
+    "entertainment",
+    "fnb"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "sales",
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#16213e",
+   "accent": "#d6336c",
+   "surface": "#eceef7",
+   "bg": "#f8f9fd",
+   "text": "#10131f",
+   "muted": "#51566b",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Line-up DJ",
+   "agenda": "Chương trình đêm",
+   "submit": "Đặt bàn",
+   "countSuffix": " khách đã đặt bàn"
+  },
+  "art": {
+   "motif": "grid",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Skyline Night Vol.5",
+   "startDays": 12,
+   "startHour": 20,
+   "location": "Rooftop Bar tầng 32, Landmark 81, Bình Thạnh, TP.HCM",
+   "capacity": 300,
+   "speakers": [
+    {
+     "name": "DJ Kaito",
+     "title": "Nghệ sĩ khách mời"
+    },
+    {
+     "name": "DJ Mây",
+     "title": "Resident DJ"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "20:00",
+     "title": "Welcome drink"
+    },
+    {
+     "time": "21:00",
+     "title": "Set house nhẹ nhàng"
+    },
+    {
+     "time": "23:00",
+     "title": "Set chính của DJ khách mời"
+    },
+    {
+     "time": "01:00",
+     "title": "Afterparty"
+    }
+   ],
+   "earlyBird": "Đặt bàn sớm tặng 2 ly cocktail signature mỗi khách.",
+   "earlyBirdDays": 7
+  }
+ },
+ {
+  "id": "x4-halloween-party",
+  "name": "Tiệc Halloween",
+  "tags": {
+   "industry": [
+    "entertainment"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#3b1f6e",
+   "accent": "#c2410c",
+   "surface": "#f3eefa",
+   "bg": "#fcfaff",
+   "text": "#1a1226",
+   "muted": "#5a4f6e",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "agenda": "Chương trình đêm tiệc",
+   "submit": "Đăng ký tham dự"
+  },
+  "art": {
+   "motif": "confetti",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Đêm Hội Hóa Trang Ma Quái",
+   "startDays": 6,
+   "startHour": 19,
+   "location": "Pub The Lantern, 25 Lê Thánh Tôn, Quận 1, TP.HCM",
+   "capacity": 250,
+   "speakers": [
+    {
+     "name": "MC Tuấn Kiệt",
+     "title": "Dẫn chương trình"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "19:00",
+     "title": "Đón khách, chụp ảnh photobooth"
+    },
+    {
+     "time": "20:00",
+     "title": "Thi hóa trang"
+    },
+    {
+     "time": "21:30",
+     "title": "Trò chơi săn kho báu"
+    },
+    {
+     "time": "23:00",
+     "title": "Trao giải trang phục đẹp nhất"
+    }
+   ],
+   "earlyBird": "Hóa trang đúng chủ đề được tặng 1 đồ uống và vào cửa miễn phí trước 20:00.",
+   "earlyBirdDays": 3
+  }
+ },
+ {
+  "id": "x4-christmas-market",
+  "name": "Chợ Giáng Sinh",
+  "tags": {
+   "industry": [
+    "retail",
+    "fnb"
+   ],
+   "type": [
+    "party",
+    "exhibition"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#14532d",
+   "accent": "#b91c1c",
+   "surface": "#eef6f0",
+   "bg": "#fbfdfb",
+   "text": "#13241a",
+   "muted": "#4b6354",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "agenda": "Lịch hoạt động",
+   "offer": "Ưu đãi gian hàng",
+   "submit": "Đăng ký gian hàng",
+   "countSuffix": " gian hàng đã đăng ký"
+  },
+  "art": {
+   "motif": "gift",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Chợ Giáng Sinh Phố Cổ",
+   "startDays": 50,
+   "startHour": 16,
+   "location": "Phố đi bộ Nguyễn Huệ, Quận 1, TP.HCM",
+   "capacity": 8000,
+   "speakers": [
+    {
+     "name": "Ban tổ chức Noel Phố",
+     "title": "Đơn vị tổ chức"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "16:00",
+     "title": "Khai mạc chợ và gian hàng quà tặng"
+    },
+    {
+     "time": "18:00",
+     "title": "Dàn đồng ca thiếu nhi"
+    },
+    {
+     "time": "19:30",
+     "title": "Ông già Noel phát quà"
+    },
+    {
+     "time": "21:00",
+     "title": "Thắp sáng cây thông"
+    }
+   ],
+   "earlyBird": "Đăng ký gian hàng sớm giảm 20% phí thuê và được ưu tiên vị trí đẹp.",
+   "earlyBirdDays": 25
+  }
+ },
+ {
+  "id": "x4-countdown-party",
+  "name": "Tiệc Đếm Ngược",
+  "tags": {
+   "industry": [
+    "entertainment"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#1e2a78",
+   "accent": "#b45309",
+   "surface": "#eef0fb",
+   "bg": "#fafaff",
+   "text": "#12163a",
+   "muted": "#4f5486",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "submit": "Giữ vé",
+   "countSuffix": " vé đã bán"
+  },
+  "art": {
+   "motif": "stars",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Countdown 2027 Rooftop Party",
+   "startDays": 58,
+   "startHour": 20,
+   "location": "Sân thượng khách sạn Rex, 141 Nguyễn Huệ, Quận 1, TP.HCM",
+   "capacity": 600,
+   "speakers": [
+    {
+     "name": "DJ Linh Đan",
+     "title": "Âm nhạc"
+    },
+    {
+     "name": "Ban nhạc Đêm Sao",
+     "title": "Biểu diễn live"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "20:00",
+     "title": "Welcome và buffet nhẹ"
+    },
+    {
+     "time": "22:00",
+     "title": "Live band"
+    },
+    {
+     "time": "23:50",
+     "title": "Đếm ngược chào năm mới"
+    },
+    {
+     "time": "00:15",
+     "title": "Bắn pháo hoa và afterparty"
+    }
+   ],
+   "earlyBird": "Mua vé nhóm 4 người tặng 1 vé, áp dụng đến hết ngày mở bán sớm.",
+   "earlyBirdDays": 30
+  }
+ },
+ {
+  "id": "x4-tet-family-festival",
+  "name": "Lễ Hội Tết Gia Đình",
+  "tags": {
+   "industry": [
+    "community"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#9f1239",
+   "accent": "#a16207",
+   "surface": "#fdf1f3",
+   "bg": "#fffaf9",
+   "text": "#2a1217",
+   "muted": "#6b4a50",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Nghệ nhân",
+   "agenda": "Chương trình lễ hội",
+   "submit": "Đăng ký tham gia",
+   "countSuffix": " gia đình đã đăng ký"
+  },
+  "art": {
+   "motif": "petals",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Tết Sum Vầy Cùng Khu Phố",
+   "startDays": 45,
+   "startHour": 8,
+   "location": "Công viên Gia Định, Phú Nhuận, TP.HCM",
+   "capacity": 1500,
+   "speakers": [
+    {
+     "name": "Bà Lê Thị Hạnh",
+     "title": "Trưởng ban tổ chức"
+    },
+    {
+     "name": "Nghệ nhân Hai Lúa",
+     "title": "Hướng dẫn gói bánh"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Khai mạc và dâng hương"
+    },
+    {
+     "time": "09:00",
+     "title": "Gói bánh chưng, bánh tét"
+    },
+    {
+     "time": "10:30",
+     "title": "Múa lân và trò chơi dân gian"
+    },
+    {
+     "time": "11:30",
+     "title": "Phát lì xì cho các em nhỏ"
+    }
+   ],
+   "earlyBird": "Gia đình đăng ký sớm được tặng bộ lì xì và câu đối xuân.",
+   "earlyBirdDays": 20
+  }
+ },
+ {
+  "id": "x4-valentine-dinner",
+  "name": "Bữa Tối Valentine",
+  "tags": {
+   "industry": [
+    "fnb"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#7f1d3a",
+   "accent": "#be185d",
+   "surface": "#fcf0f4",
+   "bg": "#fffafb",
+   "text": "#2b1019",
+   "muted": "#6b4753",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "offer": "Ưu đãi cặp đôi",
+   "submit": "Đặt bàn cho hai người",
+   "countSuffix": " bàn đã được đặt"
+  },
+  "art": {
+   "motif": "hearts",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Valentine Candlelight Dinner",
+   "startDays": 9,
+   "startHour": 18,
+   "location": "Nhà hàng Hoa Hồng, 88 Đồng Khởi, Quận 1, TP.HCM",
+   "capacity": 80,
+   "speakers": [
+    {
+     "name": "Bếp trưởng Quang Huy",
+     "title": "Thực đơn 6 món"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "18:00",
+     "title": "Đón khách với rượu vang sủi"
+    },
+    {
+     "time": "18:45",
+     "title": "Khai vị và món chính"
+    },
+    {
+     "time": "20:00",
+     "title": "Nhạc sống violin"
+    },
+    {
+     "time": "21:00",
+     "title": "Tráng miệng và quà tặng"
+    }
+   ],
+   "earlyBird": "Đặt bàn sớm tặng hoa hồng và ảnh lưu niệm cho mỗi cặp đôi.",
+   "earlyBirdDays": 5
+  }
+ },
+ {
+  "id": "x4-womens-day-workshop",
+  "name": "Workshop Ngày Phụ Nữ",
+  "tags": {
+   "industry": [
+    "beauty",
+    "personal"
+   ],
+   "type": [
+    "workshop"
+   ],
+   "goal": [
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#86198f",
+   "accent": "#0f766e",
+   "surface": "#faf0fb",
+   "bg": "#fefaff",
+   "text": "#2a1030",
+   "muted": "#664a6b",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Diễn giả",
+   "submit": "Giữ chỗ cho tôi",
+   "countSuffix": " chị em đã đăng ký"
+  },
+  "art": {
+   "motif": "ribbon",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Tôi Yêu Chính Mình - Chào 20/10",
+   "startDays": 30,
+   "startHour": 9,
+   "location": "Không gian Lotus, 15 Trần Quốc Thảo, Quận 3, TP.HCM",
+   "capacity": 100,
+   "speakers": [
+    {
+     "name": "Ngọc Mai",
+     "title": "Chuyên gia phong cách"
+    },
+    {
+     "name": "Thu Hà",
+     "title": "Huấn luyện viên sức khỏe tinh thần"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Đón khách và trà chào mừng"
+    },
+    {
+     "time": "09:30",
+     "title": "Chia sẻ tự tin và hình ảnh cá nhân"
+    },
+    {
+     "time": "11:00",
+     "title": "Thực hành chăm sóc da và trang điểm nhẹ"
+    },
+    {
+     "time": "12:00",
+     "title": "Chụp ảnh và nhận quà"
+    }
+   ],
+   "earlyBird": "Đăng ký sớm nhận bộ quà chăm sóc da trị giá 300.000đ.",
+   "earlyBirdDays": 12
+  }
+ },
+ {
+  "id": "x4-childrens-day",
+  "name": "Ngày Hội Thiếu Nhi",
+  "tags": {
+   "industry": [
+    "community"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "gratitude"
+   ]
+  },
+  "theme": {
+   "primary": "#0b5ea8",
+   "accent": "#c2410c",
+   "surface": "#ebf4fc",
+   "bg": "#f9fcff",
+   "text": "#10243a",
+   "muted": "#4a6077",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "speakers": "Khách mời",
+   "agenda": "Hoạt động của bé",
+   "submit": "Đăng ký cho bé",
+   "countSuffix": " bé đã đăng ký"
+  },
+  "art": {
+   "motif": "bubbles",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Ngày Hội Thiếu Nhi 1/6",
+   "startDays": 25,
+   "startHour": 8,
+   "location": "Công viên Tao Đàn, Quận 1, TP.HCM",
+   "capacity": 800,
+   "speakers": [
+    {
+     "name": "Chú hề Bông Bông",
+     "title": "Ảo thuật và xiếc"
+    },
+    {
+     "name": "Cô Thùy Linh",
+     "title": "Hướng dẫn thủ công"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Đón các bé và tô tượng"
+    },
+    {
+     "time": "09:30",
+     "title": "Biểu diễn ảo thuật"
+    },
+    {
+     "time": "10:30",
+     "title": "Trò chơi vận động"
+    },
+    {
+     "time": "11:30",
+     "title": "Phát quà và chụp ảnh"
+    }
+   ],
+   "earlyBird": "Miễn phí cho bé dưới 12 tuổi, đăng ký sớm nhận thêm túi quà.",
+   "earlyBirdDays": 15
+  }
+ },
+ {
+  "id": "x4-kids-birthday",
+  "name": "Sinh Nhật Bé Yêu",
+  "tags": {
+   "industry": [
+    "personal"
+   ],
+   "type": [
+    "birthday",
+    "party"
+   ],
+   "goal": [
+    "gratitude"
+   ]
+  },
+  "theme": {
+   "primary": "#a21caf",
+   "accent": "#0e7490",
+   "surface": "#fbeefc",
+   "bg": "#fffaff",
+   "text": "#2b1030",
+   "muted": "#68476c",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "countdown": "Còn bao lâu đến tiệc",
+   "speakers": "Khách đặc biệt",
+   "submit": "Xác nhận tham dự",
+   "countSuffix": " khách đã xác nhận",
+   "success": "Cảm ơn bạn, hẹn gặp bạn tại tiệc sinh nhật của bé!"
+  },
+  "art": {
+   "motif": "confetti",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Tiệc Sinh Nhật 5 Tuổi Của Bơ",
+   "startDays": 21,
+   "startHour": 15,
+   "location": "Nhà hàng Sắc Màu, 12 Nguyễn Văn Hưởng, Thảo Điền, TP.Thủ Đức",
+   "capacity": 60,
+   "speakers": [
+    {
+     "name": "Cô hề Kẹo Ngọt",
+     "title": "Hoạt náo viên"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "15:00",
+     "title": "Đón khách và tô tượng"
+    },
+    {
+     "time": "15:45",
+     "title": "Trò chơi cùng cô hề"
+    },
+    {
+     "time": "16:30",
+     "title": "Thổi nến và cắt bánh"
+    },
+    {
+     "time": "17:00",
+     "title": "Tiệc buffet nhẹ"
+    }
+   ],
+   "earlyBird": "Gia đình xác nhận sớm sẽ nhận một phần quà nhỏ từ bé Bơ.",
+   "earlyBirdDays": 10
+  }
+ },
+ {
+  "id": "x4-wedding-expo",
+  "name": "Triển Lãm Cưới",
+  "tags": {
+   "industry": [
+    "retail",
+    "art"
+   ],
+   "type": [
+    "exhibition"
+   ],
+   "goal": [
+    "lead",
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#5b3a29",
+   "accent": "#b45309",
+   "surface": "#f8f1ec",
+   "bg": "#fffbf8",
+   "text": "#241812",
+   "muted": "#6a5548",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Thương hiệu nổi bật",
+   "agenda": "Chương trình triển lãm",
+   "offer": "Ưu đãi cặp đôi",
+   "submit": "Nhận vé miễn phí",
+   "countSuffix": " cặp đôi đã đăng ký"
+  },
+  "art": {
+   "motif": "rings",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Wedding Expo Sài Gòn 2026",
+   "startDays": 38,
+   "startHour": 9,
+   "location": "Trung tâm hội nghị White Palace, 108 Phạm Văn Đồng, TP.HCM",
+   "capacity": 3000,
+   "speakers": [
+    {
+     "name": "Studio Hoa Tiên",
+     "title": "Ảnh cưới"
+    },
+    {
+     "name": "Hương Cau",
+     "title": "Váy cưới thiết kế"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Mở cửa gian hàng"
+    },
+    {
+     "time": "11:00",
+     "title": "Trình diễn váy cưới"
+    },
+    {
+     "time": "14:00",
+     "title": "Tư vấn trang trí tiệc"
+    },
+    {
+     "time": "16:00",
+     "title": "Bốc thăm trúng thưởng"
+    }
+   ],
+   "earlyBird": "Cặp đôi đăng ký sớm nhận voucher 5 triệu cho gói chụp ảnh cưới.",
+   "earlyBirdDays": 20
+  }
+ },
+ {
+  "id": "x4-tan-gia",
+  "name": "Tiệc Tân Gia",
+  "tags": {
+   "industry": [
+    "personal"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "gratitude"
+   ]
+  },
+  "theme": {
+   "primary": "#065f46",
+   "accent": "#b45309",
+   "surface": "#ecf7f2",
+   "bg": "#fafefc",
+   "text": "#10281f",
+   "muted": "#456357",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Gia chủ",
+   "submit": "Xác nhận có mặt",
+   "countSuffix": " khách đã xác nhận",
+   "success": "Cảm ơn bạn, gia đình rất mong được đón tiếp!"
+  },
+  "art": {
+   "motif": "house",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Mừng Nhà Mới Của Gia Đình Hòa",
+   "startDays": 14,
+   "startHour": 17,
+   "location": "Số 45 đường Trần Hưng Đạo, Quận 5, TP.HCM",
+   "capacity": 70,
+   "speakers": [
+    {
+     "name": "Anh Hòa và chị Lan",
+     "title": "Gia chủ"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "17:00",
+     "title": "Đón khách và tham quan nhà"
+    },
+    {
+     "time": "17:45",
+     "title": "Nghi thức mừng tân gia"
+    },
+    {
+     "time": "18:30",
+     "title": "Dùng tiệc thân mật"
+    },
+    {
+     "time": "20:00",
+     "title": "Giao lưu văn nghệ"
+    }
+   ],
+   "earlyBird": "Rất mong bạn đến chung vui. Xin xác nhận sớm để gia đình chuẩn bị chu đáo.",
+   "earlyBirdDays": 7
+  }
+ },
+ {
+  "id": "x4-pet-meetup",
+  "name": "Ngày Hội Thú Cưng",
+  "tags": {
+   "industry": [
+    "community",
+    "retail"
+   ],
+   "type": [
+    "party"
+   ],
+   "goal": [
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#7c2d12",
+   "accent": "#0369a1",
+   "surface": "#fbf1ec",
+   "bg": "#fffaf7",
+   "text": "#2a1710",
+   "muted": "#6b5045",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "speakers": "Chuyên gia",
+   "agenda": "Hoạt động trong ngày",
+   "submit": "Đăng ký cho bé cưng",
+   "countSuffix": " bé cưng đã đăng ký"
+  },
+  "art": {
+   "motif": "leaves",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Pet Fest - Ngày Hội Chó Mèo",
+   "startDays": 22,
+   "startHour": 8,
+   "location": "Công viên Yên Sở, Hoàng Mai, Hà Nội",
+   "capacity": 1000,
+   "speakers": [
+    {
+     "name": "Bác sĩ Thanh Tùng",
+     "title": "Thú y"
+    },
+    {
+     "name": "Huấn luyện viên Đức Anh",
+     "title": "Huấn luyện chó"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Đón các bé và check-in"
+    },
+    {
+     "time": "09:00",
+     "title": "Thi thời trang thú cưng"
+    },
+    {
+     "time": "10:30",
+     "title": "Tư vấn sức khỏe miễn phí"
+    },
+    {
+     "time": "11:30",
+     "title": "Chạy thi và trao giải"
+    }
+   ],
+   "earlyBird": "Đăng ký sớm được tặng bộ khăn quàng cho thú cưng và khám sức khỏe miễn phí.",
+   "earlyBirdDays": 12
+  }
+ },
+ {
+  "id": "x4-cosplay-convention",
+  "name": "Ngày Hội Cosplay",
+  "tags": {
+   "industry": [
+    "entertainment",
+    "art"
+   ],
+   "type": [
+    "exhibition",
+    "party"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#312e81",
+   "accent": "#be123c",
+   "surface": "#eeeefb",
+   "bg": "#fafaff",
+   "text": "#14143a",
+   "muted": "#505080",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Khách mời",
+   "agenda": "Lịch chương trình",
+   "submit": "Mua vé",
+   "countSuffix": " vé đã bán"
+  },
+  "art": {
+   "motif": "palette",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Anime Con Hà Nội 2026",
+   "startDays": 44,
+   "startHour": 9,
+   "location": "Cung văn hóa Hữu nghị Việt Xô, 91 Trần Hưng Đạo, Hà Nội",
+   "capacity": 4000,
+   "speakers": [
+    {
+     "name": "Khách mời Kuro",
+     "title": "Cosplayer nổi tiếng"
+    },
+    {
+     "name": "Họa sĩ Sora",
+     "title": "Minh họa manga"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Mở cửa gian hàng"
+    },
+    {
+     "time": "11:00",
+     "title": "Cuộc thi cosplay"
+    },
+    {
+     "time": "14:00",
+     "title": "Giao lưu họa sĩ"
+    },
+    {
+     "time": "17:00",
+     "title": "Trao giải cosplay xuất sắc"
+    }
+   ],
+   "earlyBird": "Mua vé sớm giảm 25% và nhận poster giới hạn.",
+   "earlyBirdDays": 21
+  }
+ },
+ {
+  "id": "x4-spa-opening",
+  "name": "Khai Trương Spa",
+  "tags": {
+   "industry": [
+    "beauty",
+    "health"
+   ],
+   "type": [
+    "opening"
+   ],
+   "goal": [
+    "brand",
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#355e4b",
+   "accent": "#a8472a",
+   "surface": "#eef5f1",
+   "bg": "#fbfdfc",
+   "text": "#14241c",
+   "muted": "#4b6256",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "offer": "Ưu đãi khai trương",
+   "submit": "Đặt lịch trải nghiệm",
+   "countSuffix": " lịch hẹn đã đặt"
+  },
+  "art": {
+   "motif": "leaves",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Khai Trương An Nhiên Spa",
+   "startDays": 16,
+   "startHour": 9,
+   "location": "Số 72 Nguyễn Gia Trí, Bình Thạnh, TP.HCM",
+   "capacity": 150,
+   "speakers": [
+    {
+     "name": "Chuyên viên Lê Thảo",
+     "title": "Trưởng bộ phận trị liệu"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Đón khách và trà thảo mộc"
+    },
+    {
+     "time": "10:00",
+     "title": "Cắt băng khánh thành"
+    },
+    {
+     "time": "11:00",
+     "title": "Trải nghiệm liệu trình miễn phí"
+    },
+    {
+     "time": "14:00",
+     "title": "Bốc thăm quà tặng"
+    }
+   ],
+   "earlyBird": "Giảm 40% liệu trình đầu tiên cho khách đặt lịch trong tuần khai trương.",
+   "earlyBirdDays": 9
+  }
+ },
+ {
+  "id": "x4-trekking-tour",
+  "name": "Tour Trekking",
+  "tags": {
+   "industry": [
+    "travel"
+   ],
+   "type": [
+    "tour",
+    "sports"
+   ],
+   "goal": [
+    "sales",
+    "enroll"
+   ]
+  },
+  "theme": {
+   "primary": "#3f4a1f",
+   "accent": "#9a3412",
+   "surface": "#f2f4e9",
+   "bg": "#fcfdf8",
+   "text": "#1c2410",
+   "muted": "#556040",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Trưởng đoàn",
+   "agenda": "Lịch trình",
+   "submit": "Giữ chỗ trong đoàn",
+   "countSuffix": " chỗ đã được giữ"
+  },
+  "art": {
+   "motif": "mountains",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Chinh Phục Tà Xùa 2 Ngày 1 Đêm",
+   "startDays": 35,
+   "startHour": 5,
+   "location": "Điểm tập trung: Bến xe Mỹ Đình, Hà Nội",
+   "capacity": 25,
+   "speakers": [
+    {
+     "name": "Hướng dẫn viên Sùng A Páo",
+     "title": "Dẫn đoàn có 8 năm kinh nghiệm"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "05:00",
+     "title": "Xuất phát từ Hà Nội"
+    },
+    {
+     "time": "10:00",
+     "title": "Bắt đầu trek lên sống lưng khủng long"
+    },
+    {
+     "time": "17:30",
+     "title": "Săn mây và cắm trại"
+    },
+    {
+     "time": "07:00",
+     "title": "Ngắm bình minh, trở về"
+    }
+   ],
+   "earlyBird": "Đặt cọc sớm giảm 300.000đ và tặng áo gió cho đoàn.",
+   "earlyBirdDays": 18
+  }
+ },
+ {
+  "id": "x4-glamping-getaway",
+  "name": "Chuyến Glamping",
+  "tags": {
+   "industry": [
+    "travel"
+   ],
+   "type": [
+    "tour"
+   ],
+   "goal": [
+    "sales",
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#0b4f6c",
+   "accent": "#c2410c",
+   "surface": "#ebf5f9",
+   "bg": "#f9fdff",
+   "text": "#102630",
+   "muted": "#476572",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "agenda": "Hành trình",
+   "offer": "Ưu đãi đặt sớm",
+   "submit": "Đặt lều",
+   "countSuffix": " lều đã được đặt"
+  },
+  "art": {
+   "motif": "sun",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Glamping Đồi Thông Đà Lạt",
+   "startDays": 27,
+   "startHour": 14,
+   "location": "Đồi Thiên Phúc, Tà Nung, Đà Lạt, Lâm Đồng",
+   "capacity": 40,
+   "speakers": [
+    {
+     "name": "Bếp trưởng Minh Quân",
+     "title": "BBQ tối"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "14:00",
+     "title": "Nhận lều và tham quan"
+    },
+    {
+     "time": "16:30",
+     "title": "Săn hoàng hôn trên đồi"
+    },
+    {
+     "time": "18:30",
+     "title": "Tiệc BBQ"
+    },
+    {
+     "time": "20:30",
+     "title": "Lửa trại và nhạc acoustic"
+    }
+   ],
+   "earlyBird": "Đặt sớm giảm 20% và tặng bữa sáng cho 2 người.",
+   "earlyBirdDays": 14
+  }
+ },
+ {
+  "id": "x4-street-food-festival",
+  "name": "Lễ Hội Ẩm Thực Đường Phố",
+  "tags": {
+   "industry": [
+    "fnb"
+   ],
+   "type": [
+    "party",
+    "exhibition"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#9a3412",
+   "accent": "#0f766e",
+   "surface": "#fcf2ec",
+   "bg": "#fffaf7",
+   "text": "#2a170d",
+   "muted": "#6b5242",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Gian hàng nổi bật",
+   "agenda": "Chương trình",
+   "submit": "Nhận vé thưởng thức",
+   "countSuffix": " vé đã được nhận"
+  },
+  "art": {
+   "motif": "sun",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Phố Ăn Vặt Sài Gòn 2026",
+   "startDays": 31,
+   "startHour": 16,
+   "location": "Phố đi bộ Bùi Viện, Quận 1, TP.HCM",
+   "capacity": 6000,
+   "speakers": [
+    {
+     "name": "Bếp Dì Ba",
+     "title": "Đặc sản miền Tây"
+    },
+    {
+     "name": "Xe Bánh Mì Hẻm",
+     "title": "Ẩm thực đường phố"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "16:00",
+     "title": "Mở cửa các gian hàng"
+    },
+    {
+     "time": "18:00",
+     "title": "Cuộc thi ăn cay"
+    },
+    {
+     "time": "19:30",
+     "title": "Nhạc sống ngoài trời"
+    },
+    {
+     "time": "21:30",
+     "title": "Bốc thăm may mắn"
+    }
+   ],
+   "earlyBird": "Mua vé thưởng thức sớm tặng thẻ 100.000đ dùng tại gian hàng.",
+   "earlyBirdDays": 15
+  }
+ },
+ {
+  "id": "x4-bakery-opening",
+  "name": "Khai Trương Tiệm Bánh",
+  "tags": {
+   "industry": [
+    "fnb"
+   ],
+   "type": [
+    "opening"
+   ],
+   "goal": [
+    "sales",
+    "brand"
+   ]
+  },
+  "theme": {
+   "primary": "#7b341e",
+   "accent": "#9d174d",
+   "surface": "#fbf2ec",
+   "bg": "#fffaf6",
+   "text": "#2a170e",
+   "muted": "#6d5143",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "offer": "Ưu đãi khai trương",
+   "submit": "Giữ phần bánh",
+   "countSuffix": " khách đã đăng ký"
+  },
+  "art": {
+   "motif": "coffee",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Khai Trương Tiệm Bánh Bơ Vàng",
+   "startDays": 11,
+   "startHour": 8,
+   "location": "Số 18 Nguyễn Thái Học, Hoàn Kiếm, Hà Nội",
+   "capacity": 200,
+   "speakers": [
+    {
+     "name": "Thợ bánh Thu Trang",
+     "title": "Chủ tiệm"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "08:00",
+     "title": "Mở cửa và bánh ra lò đầu tiên"
+    },
+    {
+     "time": "09:30",
+     "title": "Cắt băng khánh thành"
+    },
+    {
+     "time": "10:30",
+     "title": "Thử bánh miễn phí"
+    },
+    {
+     "time": "15:00",
+     "title": "Workshop trang trí bánh mini"
+    }
+   ],
+   "earlyBird": "Hai trăm khách đầu tiên nhận một chiếc bánh ngọt miễn phí.",
+   "earlyBirdDays": 6
+  }
+ },
+ {
+  "id": "x4-vegan-cooking-class",
+  "name": "Lớp Nấu Chay",
+  "tags": {
+   "industry": [
+    "fnb",
+    "health"
+   ],
+   "type": [
+    "workshop"
+   ],
+   "goal": [
+    "enroll"
+   ]
+  },
+  "theme": {
+   "primary": "#2f6b2f",
+   "accent": "#b45309",
+   "surface": "#eff7ec",
+   "bg": "#fbfef9",
+   "text": "#13260f",
+   "muted": "#4a6446",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "speakers": "Giảng viên",
+   "agenda": "Nội dung lớp học",
+   "submit": "Đăng ký lớp học",
+   "countSuffix": " học viên đã đăng ký"
+  },
+  "art": {
+   "motif": "leaves",
+   "variant": 0
+  },
+  "sample": {
+   "name": "Nấu Chay Thanh Tịnh Cho Gia Đình",
+   "startDays": 18,
+   "startHour": 9,
+   "location": "Bếp Hạt Sen, 33 Phan Đăng Lưu, Phú Nhuận, TP.HCM",
+   "capacity": 24,
+   "speakers": [
+    {
+     "name": "Cô Diệu Hạnh",
+     "title": "Đầu bếp chay"
+    },
+    {
+     "name": "Chị Bảo Ngọc",
+     "title": "Chuyên gia dinh dưỡng"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Giới thiệu nguyên liệu chay"
+    },
+    {
+     "time": "09:45",
+     "title": "Làm món nem nấm"
+    },
+    {
+     "time": "11:00",
+     "title": "Nấu canh và món chính"
+    },
+    {
+     "time": "12:00",
+     "title": "Thưởng thức bữa chay"
+    }
+   ],
+   "earlyBird": "Đăng ký sớm giảm 15% và nhận sổ tay công thức.",
+   "earlyBirdDays": 10
+  }
+ },
+ {
+  "id": "x4-makeup-masterclass",
+  "name": "Masterclass Trang Điểm",
+  "tags": {
+   "industry": [
+    "beauty"
+   ],
+   "type": [
+    "workshop",
+    "training"
+   ],
+   "goal": [
+    "enroll",
+    "lead"
+   ]
+  },
+  "theme": {
+   "primary": "#831843",
+   "accent": "#0f766e",
+   "surface": "#fcf0f5",
+   "bg": "#fffafc",
+   "text": "#2b1020",
+   "muted": "#6b4757",
+   "headingFont": "'Playfair Display', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Giảng viên",
+   "agenda": "Nội dung buổi học",
+   "submit": "Đăng ký học",
+   "countSuffix": " học viên đã đăng ký"
+  },
+  "art": {
+   "motif": "palette",
+   "variant": 1
+  },
+  "sample": {
+   "name": "Masterclass Makeup Cô Dâu Tự Nhiên",
+   "startDays": 23,
+   "startHour": 13,
+   "location": "Học viện Hồng Ngọc, 56 Hai Bà Trưng, Quận 1, TP.HCM",
+   "capacity": 30,
+   "speakers": [
+    {
+     "name": "Hương Giang",
+     "title": "Makeup artist 10 năm kinh nghiệm"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "13:00",
+     "title": "Phân tích khuôn mặt và tông da"
+    },
+    {
+     "time": "14:00",
+     "title": "Nền và che khuyết điểm"
+    },
+    {
+     "time": "15:30",
+     "title": "Thực hành mắt và môi"
+    },
+    {
+     "time": "16:30",
+     "title": "Chụp ảnh sản phẩm"
+    }
+   ],
+   "earlyBird": "Đăng ký sớm tặng bộ cọ mini và giảm 500.000đ học phí.",
+   "earlyBirdDays": 11
+  }
+ },
+ {
+  "id": "x4-perfume-workshop",
+  "name": "Workshop Pha Chế Nước Hoa",
+  "tags": {
+   "industry": [
+    "beauty",
+    "retail"
+   ],
+   "type": [
+    "workshop"
+   ],
+   "goal": [
+    "sales",
+    "enroll"
+   ]
+  },
+  "theme": {
+   "primary": "#4c1d95",
+   "accent": "#0f766e",
+   "surface": "#f4effb",
+   "bg": "#fcfaff",
+   "text": "#1b1030",
+   "muted": "#58496f",
+   "headingFont": "'Lora', Georgia, serif"
+  },
+  "labels": {
+   "speakers": "Chuyên gia",
+   "submit": "Giữ chỗ workshop",
+   "countSuffix": " người đã đăng ký"
+  },
+  "art": {
+   "motif": "petals",
+   "variant": 2
+  },
+  "sample": {
+   "name": "Tự Pha Mùi Hương Của Riêng Bạn",
+   "startDays": 15,
+   "startHour": 15,
+   "location": "Atelier Hương, 10 Lê Lợi, Hải Châu, Đà Nẵng",
+   "capacity": 20,
+   "speakers": [
+    {
+     "name": "Nhà pha chế Minh Anh",
+     "title": "Chuyên gia hương liệu"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "15:00",
+     "title": "Làm quen với các nốt hương"
+    },
+    {
+     "time": "15:45",
+     "title": "Thử và chọn hương"
+    },
+    {
+     "time": "16:30",
+     "title": "Pha chế chai nước hoa 30ml"
+    },
+    {
+     "time": "17:30",
+     "title": "Đóng gói và nhận quà"
+    }
+   ],
+   "earlyBird": "Mỗi người mang về một chai nước hoa tự pha, ưu đãi sớm giảm 100.000đ.",
+   "earlyBirdDays": 8
+  }
+ },
+ {
+  "id": "x4-fashion-runway",
+  "name": "Show Thời Trang",
+  "tags": {
+   "industry": [
+    "art",
+    "retail"
+   ],
+   "type": [
+    "exhibition",
+    "launch"
+   ],
+   "goal": [
+    "brand",
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#111827",
+   "accent": "#a21caf",
+   "surface": "#eff0f3",
+   "bg": "#fafafb",
+   "text": "#111318",
+   "muted": "#555a66",
+   "headingFont": "'Montserrat', sans-serif"
+  },
+  "labels": {
+   "speakers": "Nhà thiết kế",
+   "agenda": "Chương trình show",
+   "submit": "Đăng ký tham dự",
+   "countSuffix": " khách đã đăng ký"
+  },
+  "art": {
+   "motif": "ribbon",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Runway Thu Đông 2026",
+   "startDays": 36,
+   "startHour": 19,
+   "location": "Trung tâm triển lãm SECC, 799 Nguyễn Văn Linh, Quận 7, TP.HCM",
+   "capacity": 500,
+   "speakers": [
+    {
+     "name": "NTK Lâm Khải",
+     "title": "Nhà thiết kế"
+    },
+    {
+     "name": "Người mẫu Thanh Vân",
+     "title": "Khách mời"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "19:00",
+     "title": "Đón khách và cocktail"
+    },
+    {
+     "time": "19:45",
+     "title": "Trình diễn bộ sưu tập"
+    },
+    {
+     "time": "20:45",
+     "title": "Gặp gỡ nhà thiết kế"
+    },
+    {
+     "time": "21:30",
+     "title": "Tiệc kết thúc"
+    }
+   ],
+   "earlyBird": "Vé sớm giảm 20% và ưu tiên hàng ghế đầu cho 50 khách đầu tiên.",
+   "earlyBirdDays": 18
+  }
+ },
+ {
+  "id": "x4-clothes-swap",
+  "name": "Chợ Đổi Đồ Cũ",
+  "tags": {
+   "industry": [
+    "retail",
+    "community"
+   ],
+   "type": [
+    "exhibition"
+   ],
+   "goal": [
+    "sales"
+   ]
+  },
+  "theme": {
+   "primary": "#0f5f5a",
+   "accent": "#c2410c",
+   "surface": "#ecf7f6",
+   "bg": "#fafefe",
+   "text": "#112826",
+   "muted": "#476664",
+   "headingFont": "'Nunito', sans-serif"
+  },
+  "labels": {
+   "agenda": "Hoạt động trong ngày",
+   "submit": "Đăng ký tham gia",
+   "countSuffix": " người đã đăng ký"
+  },
+  "art": {
+   "motif": "gift",
+   "variant": 3
+  },
+  "sample": {
+   "name": "Swap Meet - Đổi Đồ Xanh",
+   "startDays": 13,
+   "startHour": 9,
+   "location": "Không gian Chill Space, 30 Lý Tự Trọng, Hải Châu, Đà Nẵng",
+   "capacity": 300,
+   "speakers": [
+    {
+     "name": "Nhóm Sống Xanh",
+     "title": "Ban tổ chức"
+    }
+   ],
+   "agenda": [
+    {
+     "time": "09:00",
+     "title": "Nhận đồ và phân loại"
+    },
+    {
+     "time": "10:00",
+     "title": "Mở chợ đổi đồ"
+    },
+    {
+     "time": "12:00",
+     "title": "Workshop sửa quần áo cũ"
+    },
+    {
+     "time": "15:00",
+     "title": "Quyên góp đồ còn lại"
+    }
+   ],
+   "earlyBird": "Mang 5 món đồ sạch được đổi lấy thẻ đổi tự do, đăng ký trước để giữ thẻ.",
+   "earlyBirdDays": 7
+  }
  }
 ]
