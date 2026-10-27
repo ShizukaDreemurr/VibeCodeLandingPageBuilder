@@ -158,6 +158,7 @@ img.lp-avatar { object-fit: cover; }
 .lp-hero, .lp-section, .lp-footer { padding-inline: max(32px, (100% - var(--lp-maxw)) / 2); }
 .lp-section { padding-block: var(--lp-pad); }
 /* Lớp phủ trung tính trên ảnh để chữ đọc được (ngoại lệ hợp lệ). */
+.lp-hero.has-art { --lp-hero-overlay: var(--lp-art-overlay, 0.18); }
 .lp-hero.has-image { /* taste-skill-ignore */ background: linear-gradient(rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62)), rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62))), var(--lp-hero-image) center / cover no-repeat, var(--lp-primary); }
 .lp-cd-box, .lp-benefits li, .lp-field input, .lp-gallery-item { border-radius: var(--lp-radius); }
 .lp-cta, .lp-submit { border-radius: var(--lp-btn-radius); }

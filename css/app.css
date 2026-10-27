@@ -361,13 +361,15 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; user-select: n
 .tpl-filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
 .tpl-filters label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500; min-width: 180px; }
 .tpl-filters select { min-height: var(--control-h); padding: 4px 10px; }
-.tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
 .tpl-card { text-align: left; font: inherit; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 0; cursor: pointer; overflow: hidden; color: var(--text); }
 .tpl-card:hover { border-color: var(--control); }
 .tpl-card.is-current { border-color: var(--text); box-shadow: inset 0 0 0 1px var(--text); }
-.tpl-thumb { height: 96px; padding: 12px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
-.tpl-thumb-title { font-weight: 600; font-size: 15px; line-height: 20px; }
-.tpl-thumb-btn { align-self: flex-start; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.tpl-thumb { aspect-ratio: 16 / 9; overflow: hidden; position: relative; }
+.tpl-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; opacity: 0; transition: opacity var(--dur-2) ease, transform var(--dur-3) var(--ease-out); }
+.tpl-thumb.is-loaded img { opacity: 1; }
+.tpl-card:hover .tpl-thumb img { transform: scale(1.03); }
+.tpl-card-name { font-size: 14px; font-weight: 600; color: var(--text); }
 .tpl-card-body { padding: 10px 12px 12px; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
 .tpl-score { font-weight: 500; color: var(--success); }
 .check-dialog { width: min(560px, calc(100vw - 32px)); }

@@ -85,7 +85,7 @@
       speakerCount: (ev.speakers || []).length || 1,
       location: ev.location
     };
-    if (ev.templateId === 'wedding') {
+    if (root.EP.templates && root.EP.templates.get(ev.templateId).wedding) {
       vars.couple = (ev.speakers || []).map(function (sp) { return sp.name.trim().split(/\s+/).pop(); }).join(' & ') || ev.name;
       return {
         headline: fill(pick(WEDDING.headlines, seed), vars),

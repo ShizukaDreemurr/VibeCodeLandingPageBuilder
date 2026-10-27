@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '1.5.0',
+    version: '1.6.0',
     date: '2026-10-27',
-    notes: 'Model Gemini mới (3.5 Flash Lite), bảng diễn giả/chương trình, thư viện khối, xuất HTML, chân trang phiên bản',
+    notes: '56 mẫu landing page có ảnh nền vẽ sẵn và ảnh đại diện chụp phần đầu trang, thêm bộ lọc ngành/loại/mục đích',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

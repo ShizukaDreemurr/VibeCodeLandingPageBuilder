@@ -8,7 +8,7 @@ const S=process.argv[2];
  const h1=await p.textContent('.lp-headline');
  await p.click('#btn-tpl');log('dialog open',await p.isVisible('#tpl-dialog'));
  await p.selectOption('[data-filter="industry"]','personal');
- log('top card',await p.textContent('.tpl-card .tpl-thumb-title'));log('score',await p.textContent('.tpl-card .tpl-score'));
+ log('top card',await p.textContent('.tpl-card .tpl-card-name'));log('score',await p.textContent('.tpl-card .tpl-score'));
  await p.click('.tpl-card >> nth=0');
  log('tpl now',await p.textContent('#tpl-name'));log('headline kept',(await p.textContent('.lp-headline'))===h1);
  log('landing class',await p.getAttribute('#landing','class'));log('studio box visible',await p.isVisible('#studio-box'));

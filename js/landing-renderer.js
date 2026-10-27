@@ -275,7 +275,10 @@
     mark(statusBadge, 'hero.badge', 'Nhãn trạng thái', 'box', { required: true });
     var ctaText = txt('hero.cta', (st.ctaText || '').trim() || L.submit);
     var cta = mark(h('a', { class: 'lp-cta', href: '#lp-register', text: ctaText }), 'hero.cta', 'Nút chính', 'button', { def: L.submit });
-    var hero = h('section', { class: 'lp-hero' + (images.hero ? ' has-image' : '') }, [
+    // Ảnh bìa: ảnh người dùng tải lên, không có thì dùng ảnh vẽ sẵn của mẫu
+    var heroArt = !images.hero && !images.noTplHero && tpl.hero ? new URL(tpl.hero, document.baseURI).href : ''; // đường dẫn tuyệt đối: url() trong biến CSS tính theo file CSS
+    var heroSrc = images.hero || heroArt;
+    var hero = h('section', { class: 'lp-hero' + (heroSrc ? ' has-image' : '') + (heroArt ? ' has-art' : '') }, [
       brandLogo(),
       editableText('h1', { class: 'lp-headline' }, 'headline', content.headline, 'Tiêu đề chính'),
       TX('p', { class: 'lp-eyebrow' }, 'hero.eyebrow', 'Tên sự kiện', ev.name),
@@ -284,9 +287,9 @@
         h('span', { class: 'lp-meta-item' }, [ico('pin'), TX('span', {}, 'hero.location', 'Địa điểm', ev.location)])
       ]), 'hero.meta', 'Dòng thời gian & địa điểm', 'box'),
       h('div', { class: 'lp-hero-action' }, [cta, statusBadge]),
-      imageButton('hero', images.hero ? 'Đổi ảnh bìa' : 'Thêm ảnh bìa')
+      imageButton('hero', images.hero || heroArt ? 'Đổi ảnh bìa' : 'Thêm ảnh bìa')
     ]);
-    if (images.hero) hero.style.setProperty('--lp-hero-image', 'url("' + images.hero.replace(/"/g, '') + '")');
+    if (heroSrc) hero.style.setProperty('--lp-hero-image', 'url("' + heroSrc.replace(/"/g, '') + '")');
     mark(hero, 'hero', 'Phần đầu trang', 'box', { required: true });
 
     var cdLabels = ['ngày', 'giờ', 'phút', 'giây'];

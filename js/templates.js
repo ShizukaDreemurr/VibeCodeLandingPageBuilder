@@ -5,9 +5,14 @@
  */
 (function (root) {
   var FILTERS = {
-    industry: { label: 'Ngành nghề', options: { tech: 'Công nghệ', education: 'Giáo dục', beauty: 'Làm đẹp / Spa', fnb: 'F&B', finance: 'Tài chính', personal: 'Sự kiện cá nhân' } },
-    type: { label: 'Loại sự kiện', options: { workshop: 'Workshop', seminar: 'Hội thảo', webinar: 'Webinar', opening: 'Khai trương', launch: 'Ra mắt sản phẩm', wedding: 'Đám cưới' } },
-    goal: { label: 'Mục đích', options: { lead: 'Thu lead', enroll: 'Tuyển sinh', sales: 'Bán hàng', brand: 'Thương hiệu', gratitude: 'Tri ân / mời khách' } }
+    industry: { label: 'Ngành nghề', options: { tech: 'Công nghệ', education: 'Giáo dục', beauty: 'Làm đẹp / Spa', fnb: 'F&B', finance: 'Tài chính', personal: 'Sự kiện cá nhân',
+      health: 'Sức khoẻ / Thể thao', realestate: 'Bất động sản', travel: 'Du lịch / Khách sạn', entertainment: 'Âm nhạc / Giải trí', community: 'Cộng đồng / Phi lợi nhuận',
+      retail: 'Thời trang / Bán lẻ', art: 'Nghệ thuật / Sáng tạo', corporate: 'Doanh nghiệp / Nhân sự' } },
+    type: { label: 'Loại sự kiện', options: { workshop: 'Workshop', seminar: 'Hội thảo', webinar: 'Webinar', opening: 'Khai trương', launch: 'Ra mắt sản phẩm', wedding: 'Đám cưới',
+      concert: 'Hoà nhạc / Show', exhibition: 'Triển lãm / Hội chợ', networking: 'Networking / Meetup', training: 'Khoá học / Đào tạo', party: 'Tiệc / Gala',
+      sports: 'Giải đấu / Chạy bộ', charity: 'Thiện nguyện / Gây quỹ', tour: 'Tour / Trải nghiệm', birthday: 'Sinh nhật / Kỷ niệm' } },
+    goal: { label: 'Mục đích', options: { lead: 'Thu lead', enroll: 'Tuyển sinh', sales: 'Bán hàng', brand: 'Thương hiệu', gratitude: 'Tri ân / mời khách',
+      community: 'Kết nối cộng đồng', recruit: 'Tuyển dụng', fundraise: 'Gây quỹ' } }
   };
 
   var DEFAULT_LABELS = {
@@ -33,6 +38,7 @@
   var TEMPLATES = [
     {
       id: 'tech',
+      art: { motif: 'circuit', variant: 0 },
       name: 'Tech Workshop',
       tags: { industry: ['tech'], type: ['workshop', 'seminar'], goal: ['lead', 'brand'] },
       theme: { primary: '#1e2a78', accent: '#d6336c', surface: '#f4f5fb', bg: '#ffffff', text: '#16193a', muted: '#5b6078' },
@@ -47,6 +53,7 @@
     },
     {
       id: 'edu',
+      art: { motif: 'books', variant: 0 },
       name: 'Hội thảo Giáo dục',
       tags: { industry: ['education'], type: ['seminar', 'workshop'], goal: ['enroll', 'lead'] },
       theme: { primary: '#0b4f8a', accent: '#c2410c', surface: '#eef6fc', bg: '#ffffff', text: '#0f2537', muted: '#4a5a6a' },
@@ -62,6 +69,7 @@
     },
     {
       id: 'beauty',
+      art: { motif: 'petals', variant: 0 },
       name: 'Workshop Làm đẹp',
       tags: { industry: ['beauty'], type: ['workshop', 'launch'], goal: ['sales', 'lead'] },
       theme: { primary: '#9d174d', accent: '#be185d', surface: '#fdf2f8', bg: '#ffffff', text: '#3b0a20', muted: '#7a4a5e' },
@@ -77,6 +85,7 @@
     },
     {
       id: 'fnb',
+      art: { motif: 'coffee', variant: 0 },
       name: 'Khai trương Cửa hàng',
       tags: { industry: ['fnb', 'beauty'], type: ['opening', 'launch'], goal: ['sales', 'brand'] },
       theme: { primary: '#991b1b', accent: '#b45309', surface: '#fff7ed', bg: '#ffffff', text: '#3b1a0a', muted: '#6b4a3a' },
@@ -92,6 +101,7 @@
     },
     {
       id: 'finance',
+      art: { motif: 'chart', variant: 0 },
       name: 'Webinar Tài chính',
       tags: { industry: ['finance'], type: ['webinar', 'seminar'], goal: ['lead', 'brand'] },
       theme: { primary: '#065f46', accent: '#0369a1', surface: '#ecfdf5', bg: '#ffffff', text: '#0b2e24', muted: '#46635a' },
@@ -107,6 +117,7 @@
     },
     {
       id: 'wedding',
+      art: { motif: 'rings', variant: 0 },
       name: 'Thiệp cưới Online',
       wedding: true,
       tags: { industry: ['personal'], type: ['wedding'], goal: ['gratitude'] },
@@ -127,6 +138,28 @@
       }
     }
   ];
+
+  // 50 mẫu bổ sung (js/templates-data.js, sinh từ tools/templates.json bằng tools/build-templates.cjs)
+  (root.EP && root.EP.templateData || []).forEach(function (d) {
+    if (TEMPLATES.some(function (t) { return t.id === d.id; })) return;
+    var smp = d.sample;
+    TEMPLATES.push({
+      id: d.id, name: d.name, tags: d.tags, theme: d.theme, labels: d.labels, wedding: !!d.wedding, art: d.art,
+      sample: function () {
+        return {
+          name: smp.name, startAt: future(smp.startDays, smp.startHour), location: smp.location, capacity: smp.capacity,
+          speakers: smp.speakers.slice(), agenda: smp.agenda.slice(), earlyBird: smp.earlyBird,
+          earlyBirdUntil: smp.earlyBirdDays == null ? '' : future(smp.earlyBirdDays, 23),
+          studioName: smp.studioName || '', studioUrl: smp.studioUrl || ''
+        };
+      }
+    });
+  });
+  // Ảnh nền mặc định (vẽ sẵn, tools/make-art.cjs) và ảnh đại diện = ảnh chụp phần đầu trang (tools/make-thumbs.cjs)
+  TEMPLATES.forEach(function (t) {
+    t.hero = 'assets/templates/' + t.id + '.svg';
+    t.thumb = 'assets/templates/' + t.id + '-thumb.jpg';
+  });
 
   function get(id) {
     return TEMPLATES.find(function (t) { return t.id === id; }) || TEMPLATES[0];

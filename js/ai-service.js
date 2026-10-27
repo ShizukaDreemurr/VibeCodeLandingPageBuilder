@@ -61,7 +61,7 @@
     var speakers = (ev.speakers || []).map(function (s) {
       return '- ' + s.name + (s.title ? ' (' + s.title + ')' : '');
     }).join('\n');
-    if (ev.templateId === 'wedding') {
+    if (root.EP.templates && root.EP.templates.get(ev.templateId).wedding) {
       return [
         'Bạn là người viết lời mời cưới tinh tế, ấm áp bằng tiếng Việt.',
         'Viết nội dung cho thiệp cưới online dưới đây.',

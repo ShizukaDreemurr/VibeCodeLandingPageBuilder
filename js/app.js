@@ -191,8 +191,8 @@
       earlyBirdUntil: f.earlyBirdUntil.value,
       sheetUrl: V.clean(f.sheetUrl.value),
       templateId: currentTemplateId,
-      studioName: currentTemplateId === 'wedding' ? V.clean(f.studioName.value) : '',
-      studioUrl: currentTemplateId === 'wedding' ? V.clean(f.studioUrl.value) : '',
+      studioName: TPL.get(currentTemplateId).wedding ? V.clean(f.studioName.value) : '',
+      studioUrl: TPL.get(currentTemplateId).wedding ? V.clean(f.studioUrl.value) : '',
       images: (state && state.event.images) || {},
       sections: (state && state.event.sections) || null,
       style: (state && state.event.style) || null,
@@ -268,18 +268,20 @@
       var card = document.createElement('button');
       card.type = 'button';
       card.className = 'tpl-card' + (t.id === currentTemplateId ? ' is-current' : '');
+      // Ảnh đại diện = ảnh chụp phần đầu trang của mẫu (tools/make-thumbs.cjs); ảnh lỗi thì hiện khối màu
       var thumb = document.createElement('div');
       thumb.className = 'tpl-thumb';
       thumb.style.background = t.theme.primary;
-      var title = document.createElement('span');
-      title.className = 'tpl-thumb-title'; title.textContent = t.name;
-      if (t.theme.headingFont) title.style.fontFamily = t.theme.headingFont;
-      var pill = document.createElement('span');
-      pill.className = 'tpl-thumb-btn'; pill.textContent = TPL.labels(t.id).submit;
-      pill.style.background = t.theme.accent; pill.style.color = '#fff';
-      thumb.appendChild(title); thumb.appendChild(pill);
+      var img = document.createElement('img');
+      img.src = t.thumb; img.alt = 'Phần đầu trang mẫu ' + t.name; img.loading = 'lazy'; img.decoding = 'async';
+      img.addEventListener('load', function () { thumb.classList.add('is-loaded'); });
+      img.addEventListener('error', function () { img.remove(); thumb.classList.add('is-fallback'); });
+      thumb.appendChild(img);
       var body = document.createElement('div');
       body.className = 'tpl-card-body';
+      var nm = document.createElement('strong');
+      nm.className = 'tpl-card-name'; nm.textContent = t.name;
+      body.appendChild(nm);
       var tags = document.createElement('span');
       tags.textContent = Object.keys(t.tags).map(function (k) {
         return t.tags[k].map(function (v) { return TPL.FILTERS[k].options[v]; }).join(', ');
@@ -316,7 +318,7 @@
     if (!form.elements.name.value.trim()) fillSample();
     if (state) {
       state.event.templateId = currentTemplateId;
-      if (currentTemplateId !== 'wedding') { state.event.studioName = ''; state.event.studioUrl = ''; }
+      if (!TPL.get(currentTemplateId).wedding) { state.event.studioName = ''; state.event.studioUrl = ''; }
       // Đổi mẫu → dùng màu & font của mẫu mới, giữ các tuỳ chỉnh bố cục khác
       if (state.event.style) { delete state.event.style.primary; delete state.event.style.accent; delete state.event.style.headingFont; }
       persist();
@@ -2401,7 +2403,7 @@
       .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'landing';
   }
   function escHtml(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  function buildExportHtml(css) {
+  function buildExportHtml(css, heroSvg) {
     var shell = document.createElement('div');
     shell.style.cssText = 'position:fixed;left:-20000px;top:0;width:1280px;visibility:hidden';
     var box = document.createElement('div');
@@ -2428,15 +2430,15 @@
         '<title>' + escHtml(state.event.name || 'Sự kiện') + '</title>\n<meta name="description" content="' + escHtml(desc) + '">\n' +
         '<meta name="generator" content="Xclipse">\n' +
         fonts.map(function (h) { return '<link rel="stylesheet" href="' + escHtml(h) + '">\n'; }).join('') +
-        '<style>\nhtml,body{margin:0}\n' + css + '\n</style>\n</head>\n<body>\n' + box.outerHTML + '\n<script>' + script + '<\/script>\n</body>\n</html>\n';
+        '<style>\nhtml,body{margin:0}\n' + css + '\n</style>\n</head>\n<body>\n' + inlineHero(box.outerHTML, heroSvg) + '\n<script>' + script + '<\/script>\n</body>\n</html>\n';
     } finally { shell.remove(); }
   }
   function exportHtml() {
     if (!state) return;
     var a = document.activeElement;
     if (a && a.isContentEditable) a.blur();
-    fetch('css/landing.css').then(function (r) { if (!r.ok) throw new Error(); return r.text(); }).then(function (css) {
-      var html = buildExportHtml(css);
+    Promise.all([fetch('css/landing.css').then(function (r) { if (!r.ok) throw new Error(); return r.text(); }), heroSvgText()]).then(function (res) {
+      var html = buildExportHtml(res[0], res[1]);
       var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
       var link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -2446,7 +2448,17 @@
       toast('Đã tải file ' + link.download + ' (' + kb(blob.size) + ').');
     }).catch(function () { toast('Không đọc được kiểu trang để xuất. Thử tải lại trang rồi xuất lại.'); });
   }
-  EP.exportHtml = function () { return fetch('css/landing.css').then(function (r) { return r.text(); }).then(buildExportHtml); };
+  EP.exportHtml = function () { return Promise.all([fetch('css/landing.css').then(function (r) { return r.text(); }), heroSvgText()]).then(function (r) { return buildExportHtml(r[0], r[1]); }); };
+  // File xuất chạy độc lập: nhúng ảnh nền vẽ sẵn của mẫu thẳng vào file (không phụ thuộc thư mục assets)
+  function heroSvgText() {
+    if (!state || (state.event.images && (state.event.images.hero || state.event.images.noTplHero))) return Promise.resolve('');
+    return fetch(TPL.get(state.event.templateId).hero).then(function (r) { return r.ok ? r.text() : ''; }, function () { return ''; });
+  }
+  function inlineHero(html, svg) {
+    if (!svg) return html;
+    var uri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+    return html.replace(/(?:https?:\/\/[^"')\s]*?\/)?assets\/templates\/[\w-]+\.svg/g, uri);
+  }
 
   $('#btn-preview').addEventListener('click', openPreview);
   $('#btn-preview-2').addEventListener('click', openPreview);
