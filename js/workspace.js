@@ -394,10 +394,15 @@
         b.setAttribute('role', checked != null ? 'menuitemcheckbox' : 'menuitem');
         if (checked != null) b.setAttribute('aria-checked', checked ? 'true' : 'false');
         b.disabled = typeof it.disabled === 'function' ? it.disabled() : !!it.disabled;
-        var mark = el('span', 'mb-check'); if (checked) mark.innerHTML = icon('check2');
-        b.appendChild(mark);
+        var ic = el('span', 'mb-icon');
+        ic.innerHTML = icon(it.icon || (checked != null ? 'check2' : 'plus'));
+        if (!it.icon && checked != null) ic.classList.add('is-check');
+        b.appendChild(ic);
         b.appendChild(el('span', 'mb-label', it.label));
-        if (it.shortcut) b.appendChild(el('kbd', 'mb-kbd', it.shortcut));
+        var tail = el('span', 'mb-tail');
+        if (it.shortcut) tail.appendChild(el('kbd', 'mb-kbd', it.shortcut));
+        if (checked) { var mk = el('span', 'mb-check'); mk.innerHTML = icon('check2'); tail.appendChild(mk); }
+        b.appendChild(tail);
         b.addEventListener('click', function () { close(); it.action(); });
         list.appendChild(b);
       });

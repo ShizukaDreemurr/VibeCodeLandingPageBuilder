@@ -2338,8 +2338,8 @@
   });
 
   // ---------- Workspace: panel cửa sổ + thanh menu ----------
-  function menuDevice(d, label, key) { return { label: label, shortcut: key, checked: function () { return device === d; }, action: function () { setDevice(d); } }; }
-  function menuZoom(z, label) { return { label: label, checked: function () { return zoom === z; }, action: function () { setZoom(z); } }; }
+  function menuDevice(d, label, key) { return { icon: { desktop: 'monitor', tablet: 'tablet', mobile: 'phone' }[d], label: label, shortcut: key, checked: function () { return device === d; }, action: function () { setDevice(d); } }; }
+  function menuZoom(z, label) { return { icon: z === 'fit' ? 'fit' : 'percent', label: label, checked: function () { return zoom === z; }, action: function () { setZoom(z); } }; }
   EP.workspace.init({
     root: $('#ws'),
     stash: $('.ws-panels'),
@@ -2347,62 +2347,62 @@
     onChange: function () { if (zoom === 'fit') applyDevice(); if (EP.inspector) EP.inspector.refresh(); },
     menus: [
       { label: 'Tệp', items: [
-        { label: 'Tạo trang mới', action: function () { resetAll(); } },
-        { label: 'Sự kiện của tôi…', action: function () { switchTab('events'); } },
-        { label: 'Đổi mẫu trang…', action: openTemplates },
-        { label: 'Brand DNA…', action: function () { switchTab('brand'); } },
+        { icon: 'plus', label: 'Tạo trang mới', action: function () { resetAll(); } },
+        { icon: 'folder', label: 'Sự kiện của tôi…', action: function () { switchTab('events'); } },
+        { icon: 'layout', label: 'Đổi mẫu trang…', action: openTemplates },
+        { icon: 'palette', label: 'Brand DNA…', action: function () { switchTab('brand'); } },
         '-',
-        { label: 'Xuất bản / cập nhật trang', disabled: function () { return !state || !C.available; }, action: publish },
-        { label: 'Mở trang đã xuất bản', disabled: function () { return !isCloudEvent(); }, action: function () { root.open($('#share-url').value, '_blank', 'noopener'); } },
-        { label: 'Tải trang dạng file HTML', disabled: function () { return !state; }, action: exportHtml },
-        { label: 'Xuất danh sách đăng ký (CSV)', disabled: function () { return !state; }, action: function () { switchTab('admin'); exportCsv(); } }
+        { icon: 'send', label: 'Xuất bản / cập nhật trang', disabled: function () { return !state || !C.available; }, action: publish },
+        { icon: 'external', label: 'Mở trang đã xuất bản', disabled: function () { return !isCloudEvent(); }, action: function () { root.open($('#share-url').value, '_blank', 'noopener'); } },
+        { icon: 'code', label: 'Tải trang dạng file HTML', disabled: function () { return !state; }, action: exportHtml },
+        { icon: 'table', label: 'Xuất danh sách đăng ký (CSV)', disabled: function () { return !state; }, action: function () { switchTab('admin'); exportCsv(); } }
       ] },
       { label: 'Sửa', items: [
-        { label: 'Hoàn tác', shortcut: 'Ctrl+Z', disabled: function () { return !undoStack.length; }, action: undo },
-        { label: 'Làm lại', shortcut: 'Ctrl+Shift+Z', disabled: function () { return !redoStack.length; }, action: redo },
+        { icon: 'undo', label: 'Hoàn tác', shortcut: 'Ctrl+Z', disabled: function () { return !undoStack.length; }, action: undo },
+        { icon: 'redo', label: 'Làm lại', shortcut: 'Ctrl+Shift+Z', disabled: function () { return !redoStack.length; }, action: redo },
         '-',
-        { label: 'Sửa thông tin & nội dung', action: function () { switchTab('builder'); } },
-        { label: 'AI viết lại nội dung', disabled: function () { return !state; }, action: function () { generate(true); } },
-        { label: 'Về giao diện gốc của mẫu', disabled: function () { return !state || !state.event.style; }, action: function () { $('#btn-style-reset').click(); } }
+        { icon: 'pencil', label: 'Sửa thông tin & nội dung', action: function () { switchTab('builder'); } },
+        { icon: 'wand', label: 'AI viết lại nội dung', disabled: function () { return !state; }, action: function () { generate(true); } },
+        { icon: 'reset', label: 'Về giao diện gốc của mẫu', disabled: function () { return !state || !state.event.style; }, action: function () { $('#btn-style-reset').click(); } }
       ] },
       { label: 'Xem', items: function () {
         return [
-          { label: 'Xem trước toàn màn hình', shortcut: 'Alt+P', disabled: function () { return !state; }, action: openPreview },
+          { icon: 'expand', label: 'Xem trước toàn màn hình', shortcut: 'Alt+P', disabled: function () { return !state; }, action: openPreview },
           '-',
           { heading: 'Thu phóng' },
-          { label: 'Phóng to', shortcut: 'Ctrl +', action: function () { stepZoom(1); } },
-          { label: 'Thu nhỏ', shortcut: 'Ctrl −', action: function () { stepZoom(-1); } },
+          { icon: 'zoom-in', label: 'Phóng to', shortcut: 'Ctrl +', action: function () { stepZoom(1); } },
+          { icon: 'zoom-out', label: 'Thu nhỏ', shortcut: 'Ctrl −', action: function () { stepZoom(-1); } },
           menuZoom('fit', 'Vừa khung'), menuZoom(1, '100%'),
           '-',
           { heading: 'Thiết bị' },
           menuDevice('desktop', 'Máy tính (1280px)'), menuDevice('tablet', 'Máy tính bảng (768px)'), menuDevice('mobile', 'Điện thoại (390px)'),
           '-',
           { heading: 'Hiệu ứng chuyển động' },
-          { label: 'Bật', checked: function () { return EP.motion.pref() === 'on'; }, action: function () { EP.motion.setPref('on'); toast('Đã bật hiệu ứng.'); } },
-          { label: 'Theo cài đặt của máy', checked: function () { return EP.motion.pref() === 'system'; }, action: function () { EP.motion.setPref('system'); toast(EP.motion.reduce() ? 'Máy đang bật "giảm chuyển động" nên hiệu ứng tắt.' : 'Hiệu ứng theo cài đặt của máy.'); } },
-          { label: 'Tắt', checked: function () { return EP.motion.pref() === 'off'; }, action: function () { EP.motion.setPref('off'); toast('Đã tắt hiệu ứng.'); } },
+          { icon: 'motion', label: 'Bật', checked: function () { return EP.motion.pref() === 'on'; }, action: function () { EP.motion.setPref('on'); toast('Đã bật hiệu ứng.'); } },
+          { icon: 'settings', label: 'Theo cài đặt của máy', checked: function () { return EP.motion.pref() === 'system'; }, action: function () { EP.motion.setPref('system'); toast(EP.motion.reduce() ? 'Máy đang bật "giảm chuyển động" nên hiệu ứng tắt.' : 'Hiệu ứng theo cài đặt của máy.'); } },
+          { icon: 'pause', label: 'Tắt', checked: function () { return EP.motion.pref() === 'off'; }, action: function () { EP.motion.setPref('off'); toast('Đã tắt hiệu ứng.'); } },
           '-',
           { heading: 'Chế độ chỉnh' },
-          { label: 'Đơn giản', checked: function () { return editorMode === 'simple'; }, action: function () { if (editorMode !== 'simple') setEditorMode('simple'); } },
-          { label: 'Studio', checked: function () { return editorMode === 'studio'; }, action: function () { if (editorMode !== 'studio') setEditorMode('studio'); } }
+          { icon: 'sliders', label: 'Đơn giản', checked: function () { return editorMode === 'simple'; }, action: function () { if (editorMode !== 'simple') setEditorMode('simple'); } },
+          { icon: 'palette', label: 'Studio', checked: function () { return editorMode === 'studio'; }, action: function () { if (editorMode !== 'studio') setEditorMode('studio'); } }
         ];
       } },
       { label: 'Cửa sổ', items: function () {
         var list = [{ heading: 'Panel' }];
         EP.workspace.panels().forEach(function (pn) {
-          list.push({ label: pn.title, checked: function () { return EP.workspace.isVisible(pn.id); }, action: function () { EP.workspace.toggle(pn.id); } });
+          list.push({ icon: { layout: 'grip', blocks: 'blocks', layers: 'layers', style: 'palette', publish: 'send' }[pn.id] || 'float', label: pn.title, checked: function () { return EP.workspace.isVisible(pn.id); }, action: function () { EP.workspace.toggle(pn.id); } });
         });
         list.push('-', { heading: 'Bố cục' },
-          { label: 'Mặc định (trái + phải)', action: function () { EP.workspace.preset('default'); } },
-          { label: 'Tất cả bên phải, gộp tab', action: function () { EP.workspace.preset('right'); } },
-          { label: 'Chia hai bên', action: function () { EP.workspace.preset('split'); } },
-          { label: 'Tập trung vào trang (ẩn panel)', action: function () { EP.workspace.preset('focus'); } },
+          { icon: 'columns', label: 'Mặc định (trái + phải)', action: function () { EP.workspace.preset('default'); } },
+          { icon: 'dock-right', label: 'Tất cả bên phải, gộp tab', action: function () { EP.workspace.preset('right'); } },
+          { icon: 'layout', label: 'Chia hai bên', action: function () { EP.workspace.preset('split'); } },
+          { icon: 'focus', label: 'Tập trung vào trang (ẩn panel)', action: function () { EP.workspace.preset('focus'); } },
           '-',
-          { label: 'Khôi phục bố cục ban đầu', action: function () { EP.workspace.reset(); toast('Đã khôi phục bố cục.'); } });
+          { icon: 'refresh', label: 'Khôi phục bố cục ban đầu', action: function () { EP.workspace.reset(); toast('Đã khôi phục bố cục.'); } });
         return list;
       } },
       { label: 'Trợ giúp', items: [
-        { label: 'Phím tắt & mẹo', action: function () { $('#help-dialog').showModal(); } }
+        { icon: 'keyboard', label: 'Phím tắt & mẹo', action: function () { $('#help-dialog').showModal(); } }
       ] }
     ]
   });

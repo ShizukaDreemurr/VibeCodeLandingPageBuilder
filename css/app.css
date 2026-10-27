@@ -212,7 +212,12 @@ body.ws-resizing, body.ws-resizing * { cursor: nwse-resize !important; user-sele
 .mb-item { font: inherit; font-size: 13px; display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 8px; height: 32px; padding: 0 10px 0 6px; border: 0; background: none; border-radius: 6px; cursor: pointer; text-align: left; color: var(--text); }
 .mb-item:hover:not(:disabled), .mb-item:focus-visible { background: var(--raised); outline: none; }
 .mb-item:disabled { color: #9a9ca0; cursor: default; }
-.mb-check { display: inline-grid; place-items: center; color: var(--text); }
+.mb-icon { display: inline-grid; place-items: center; color: var(--text-muted); }
+.mb-icon.is-check { visibility: hidden; }
+.mb-item:hover:not(:disabled) .mb-icon, .mb-item:focus-visible .mb-icon { color: var(--text); }
+.mb-item:disabled .mb-icon { opacity: 0.5; }
+.mb-tail { display: inline-flex; align-items: center; gap: 8px; }
+.mb-check { display: inline-grid; place-items: center; color: var(--accent-ink); }
 .mb-kbd { font: inherit; font-size: 12px; color: var(--text-muted); }
 .mb-sep { height: 1px; background: var(--rule); margin: 6px 4px; }
 .mb-heading { font-size: 12px; color: var(--text-muted); padding: 6px 10px 2px 30px; }
