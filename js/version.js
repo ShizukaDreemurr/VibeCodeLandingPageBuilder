@@ -4,7 +4,7 @@
  */
 (function (root) {
   var INFO = {
-    version: '1.6.0',
+    version: '1.6.1',
     date: '2026-10-27',
     notes: '56 mẫu landing page có ảnh nền vẽ sẵn và ảnh đại diện chụp phần đầu trang, thêm bộ lọc ngành/loại/mục đích',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
