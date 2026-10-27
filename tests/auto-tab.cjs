@@ -8,11 +8,8 @@ async function openTabFor(page, sel) {
       var tab = document.querySelector('[data-tab="' + view.id.replace('view-', '') + '"]');
       if (tab) tab.click();
     }
-    var pane = el && el.closest('.side-pane');
-    if (pane && pane.hidden) {
-      var st = document.querySelector('.side-tab[data-side="' + pane.id.replace('side-', '') + '"]');
-      if (st) st.click();
-    }
+    var wp = el && el.closest('.ws-panel');
+    if (wp && (wp.hidden || wp.closest('.ws-panels')) && window.EP && window.EP.workspace) window.EP.workspace.show(wp.getAttribute('data-panel'));
   }, sel).catch(() => {});
 }
 function wrap(page) {

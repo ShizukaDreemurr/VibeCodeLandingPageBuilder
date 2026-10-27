@@ -396,7 +396,7 @@
     justOpened = false;
       }
       // Tự cuộn khi kéo gần mép
-      var box = ol.closest('.editor-side');
+      var box = ol.closest('.ws-gbody');
       if (box) {
         var br = box.getBoundingClientRect();
         if (ev.clientY < br.top + 40) box.scrollTop -= 8; else if (ev.clientY > br.bottom - 40) box.scrollTop += 8;
@@ -890,9 +890,39 @@
     toast('Đã lưu chỉnh sửa.');
   }
 
-  var device = 'desktop';
+  // Thiết bị xem trước (bề rộng thật của trang) và mức thu phóng; 'fit' = tự vừa khung
+  var DEVICE_W = { desktop: 1280, tablet: 768, mobile: 390 };
+  var ZOOMS = [0.25, 0.4, 0.5, 0.6, 0.75, 0.9, 1, 1.2, 1.5];
+  var view = S.read('ws_view', {});
+  var device = DEVICE_W[view.device] ? view.device : 'desktop';
+  var zoom = view.zoom === 'fit' || ZOOMS.indexOf(view.zoom) >= 0 ? view.zoom : 'fit';
+  function currentZoom() {
+    if (zoom !== 'fit') return zoom;
+    var wrap = landingEl.parentNode;
+    var avail = (wrap ? wrap.clientWidth : 0) - 32;
+    return avail > 0 ? Math.min(1, avail / DEVICE_W[device]) : 1;
+  }
   function applyDevice() {
     ['desktop', 'tablet', 'mobile'].forEach(function (d) { landingEl.classList.toggle('device-' + d, d === device); });
+    landingEl.style.width = DEVICE_W[device] + 'px';
+    var z = currentZoom();
+    landingEl.style.zoom = z;
+    var sel = $('#zoom-select');
+    if (sel) {
+      var fitOpt = sel.querySelector('option[value="fit"]');
+      fitOpt.textContent = 'Vừa khung (' + Math.round(z * 100) + '%)';
+      sel.value = zoom === 'fit' ? 'fit' : String(zoom);
+    }
+    document.querySelectorAll('.device-toggle [data-device]').forEach(function (x) { x.classList.toggle('is-active', x.getAttribute('data-device') === device); });
+  }
+  function saveView() { S.write('ws_view', { device: device, zoom: zoom }); }
+  function setDevice(d) { device = d; saveView(); applyDevice(); if (EP.inspector) EP.inspector.refresh(); }
+  function setZoom(z) { zoom = z; saveView(); applyDevice(); if (EP.inspector) EP.inspector.refresh(); }
+  function stepZoom(dir) {
+    var cur = currentZoom(), next;
+    if (dir > 0) next = ZOOMS.filter(function (v) { return v > cur + 0.001; })[0] || ZOOMS[ZOOMS.length - 1];
+    else next = ZOOMS.filter(function (v) { return v < cur - 0.001; }).pop() || ZOOMS[0];
+    setZoom(next);
   }
 
   // Cả trang đổi (tạo mới, đổi mẫu, hoàn tác, xem thử trạng thái): hiệu ứng chuyển mượt
@@ -1704,21 +1734,82 @@
     persist();
     toast('Đã về giao diện gốc của mẫu. Bấm ↶ nếu muốn lấy lại.');
   });
-  function openSidePane(name) {
-    document.querySelectorAll('.side-tab').forEach(function (x) { x.classList.toggle('is-active', x.getAttribute('data-side') === name); });
-    $('#side-style').hidden = name !== 'style';
-    $('#side-publish').hidden = name !== 'publish';
-  }
-  document.querySelectorAll('.side-tab').forEach(function (b) {
-    b.addEventListener('click', function () { openSidePane(b.getAttribute('data-side')); });
-  });
+  function openSidePane(name) { EP.workspace.show(name); }
   $('#btn-back-info').addEventListener('click', function () { switchTab('builder'); });
   document.querySelectorAll('.device-toggle [data-device]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      device = b.getAttribute('data-device');
-      document.querySelectorAll('.device-toggle [data-device]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
-      applyDevice();
-    });
+    b.addEventListener('click', function () { setDevice(b.getAttribute('data-device')); });
+  });
+  $('#zoom-select').addEventListener('change', function (e) { setZoom(e.target.value === 'fit' ? 'fit' : Number(e.target.value)); });
+  $('#btn-zoom-in').addEventListener('click', function () { stepZoom(1); });
+  $('#btn-zoom-out').addEventListener('click', function () { stepZoom(-1); });
+  if (root.ResizeObserver) new ResizeObserver(function () { if (zoom === 'fit') applyDevice(); }).observe($('#view-editor .preview-wrap'));
+  document.addEventListener('keydown', function (e) {
+    if ($('#view-editor').hidden || !(e.ctrlKey || e.metaKey)) return;
+    if (e.key === '=' || e.key === '+') { e.preventDefault(); stepZoom(1); }
+    else if (e.key === '-') { e.preventDefault(); stepZoom(-1); }
+    else if (e.key === '0') { e.preventDefault(); setZoom('fit'); }
+    else if (e.key === '1' && e.shiftKey) { e.preventDefault(); setZoom(1); }
+  });
+
+  // ---------- Workspace: panel cửa sổ + thanh menu ----------
+  function menuDevice(d, label, key) { return { label: label, shortcut: key, checked: function () { return device === d; }, action: function () { setDevice(d); } }; }
+  function menuZoom(z, label) { return { label: label, checked: function () { return zoom === z; }, action: function () { setZoom(z); } }; }
+  EP.workspace.init({
+    root: $('#ws'),
+    stash: $('.ws-panels'),
+    menubar: $('#menubar'),
+    onChange: function () { if (zoom === 'fit') applyDevice(); if (EP.inspector) EP.inspector.refresh(); },
+    menus: [
+      { label: 'Tệp', items: [
+        { label: 'Tạo trang mới', action: function () { resetAll(); } },
+        { label: 'Sự kiện của tôi…', action: function () { switchTab('events'); } },
+        { label: 'Đổi mẫu trang…', action: openTemplates },
+        '-',
+        { label: 'Xuất bản / cập nhật trang', disabled: function () { return !state || !C.available; }, action: publish },
+        { label: 'Mở trang đã xuất bản', disabled: function () { return !isCloudEvent(); }, action: function () { root.open($('#share-url').value, '_blank', 'noopener'); } },
+        { label: 'Xuất danh sách đăng ký (CSV)', disabled: function () { return !state; }, action: function () { switchTab('admin'); exportCsv(); } }
+      ] },
+      { label: 'Sửa', items: [
+        { label: 'Hoàn tác', shortcut: 'Ctrl+Z', disabled: function () { return !undoStack.length; }, action: undo },
+        { label: 'Làm lại', shortcut: 'Ctrl+Shift+Z', disabled: function () { return !redoStack.length; }, action: redo },
+        '-',
+        { label: 'Sửa thông tin & nội dung', action: function () { switchTab('builder'); } },
+        { label: 'AI viết lại nội dung', disabled: function () { return !state; }, action: function () { generate(true); } },
+        { label: 'Về giao diện gốc của mẫu', disabled: function () { return !state || !state.event.style; }, action: function () { $('#btn-style-reset').click(); } }
+      ] },
+      { label: 'Xem', items: function () {
+        return [
+          { heading: 'Thu phóng' },
+          { label: 'Phóng to', shortcut: 'Ctrl +', action: function () { stepZoom(1); } },
+          { label: 'Thu nhỏ', shortcut: 'Ctrl −', action: function () { stepZoom(-1); } },
+          menuZoom('fit', 'Vừa khung'), menuZoom(1, '100%'),
+          '-',
+          { heading: 'Thiết bị' },
+          menuDevice('desktop', 'Máy tính (1280px)'), menuDevice('tablet', 'Máy tính bảng (768px)'), menuDevice('mobile', 'Điện thoại (390px)'),
+          '-',
+          { heading: 'Chế độ chỉnh' },
+          { label: 'Đơn giản', checked: function () { return editorMode === 'simple'; }, action: function () { if (editorMode !== 'simple') setEditorMode('simple'); } },
+          { label: 'Studio', checked: function () { return editorMode === 'studio'; }, action: function () { if (editorMode !== 'studio') setEditorMode('studio'); } }
+        ];
+      } },
+      { label: 'Cửa sổ', items: function () {
+        var list = [{ heading: 'Panel' }];
+        EP.workspace.panels().forEach(function (pn) {
+          list.push({ label: pn.title, checked: function () { return EP.workspace.isVisible(pn.id); }, action: function () { EP.workspace.toggle(pn.id); } });
+        });
+        list.push('-', { heading: 'Bố cục' },
+          { label: 'Mặc định (trái + phải)', action: function () { EP.workspace.preset('default'); } },
+          { label: 'Tất cả bên phải, gộp tab', action: function () { EP.workspace.preset('right'); } },
+          { label: 'Chia hai bên', action: function () { EP.workspace.preset('split'); } },
+          { label: 'Tập trung vào trang (ẩn panel)', action: function () { EP.workspace.preset('focus'); } },
+          '-',
+          { label: 'Khôi phục bố cục ban đầu', action: function () { EP.workspace.reset(); toast('Đã khôi phục bố cục.'); } });
+        return list;
+      } },
+      { label: 'Trợ giúp', items: [
+        { label: 'Phím tắt & mẹo', action: function () { $('#help-dialog').showModal(); } }
+      ] }
+    ]
   });
   $('#btn-new').addEventListener('click', resetAll);
   $('#btn-new-2').addEventListener('click', function () { resetAll(true); });

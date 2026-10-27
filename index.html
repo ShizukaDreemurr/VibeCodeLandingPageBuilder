@@ -189,6 +189,7 @@
   <main id="view-editor" class="editor view" hidden>
     <div class="editor-bar">
       <button type="button" class="icon-btn" id="btn-back-info" aria-label="Sửa thông tin &amp; nội dung" title="Sửa thông tin &amp; nội dung"><span data-icon="arrow-left"></span></button>
+      <nav class="menubar" id="menubar" role="menubar" aria-label="Menu trang thiết kế"></nav>
       <h1 id="editor-title">Thiết kế trang</h1>
       <span class="pill" id="editor-status">Bản nháp</span>
       <span class="mock-note" id="mock-note" hidden>Dữ liệu AI mô phỏng</span>
@@ -198,6 +199,15 @@
           <button type="button" id="btn-undo" aria-label="Hoàn tác" title="Hoàn tác (Ctrl+Z)" disabled><span data-icon="undo"></span></button>
           <button type="button" id="btn-redo" aria-label="Làm lại" title="Làm lại (Ctrl+Shift+Z)" disabled><span data-icon="redo"></span></button>
         </div>
+        <div class="zoom-ctl" role="group" aria-label="Thu phóng">
+          <button type="button" id="btn-zoom-out" aria-label="Thu nhỏ" title="Thu nhỏ (Ctrl −)"><span data-icon="minus"></span></button>
+          <select id="zoom-select" aria-label="Mức thu phóng">
+            <option value="fit">Vừa khung</option>
+            <option value="0.25">25%</option><option value="0.4">40%</option><option value="0.5">50%</option><option value="0.6">60%</option>
+            <option value="0.75">75%</option><option value="0.9">90%</option><option value="1">100%</option><option value="1.2">120%</option><option value="1.5">150%</option>
+          </select>
+          <button type="button" id="btn-zoom-in" aria-label="Phóng to" title="Phóng to (Ctrl +)"><span data-icon="plus"></span></button>
+        </div>
         <div class="device-toggle" role="group" aria-label="Kích thước màn hình">
           <button type="button" class="is-active" data-device="desktop" aria-label="Máy tính" title="Máy tính"><span data-icon="monitor"></span></button>
           <button type="button" data-device="tablet" aria-label="Máy tính bảng" title="Máy tính bảng"><span data-icon="tablet"></span></button>
@@ -206,8 +216,26 @@
         <button type="button" class="btn btn-primary btn-small" id="btn-publish" hidden disabled><span data-icon="send"></span>Xuất bản</button>
       </div>
     </div>
-    <!-- TRÁI: MẪU + BỐ CỤC -->
-    <aside class="panel editor-side">
+    <!-- Workspace: hai cột dock (trái/phải) có thể kéo đổi rộng; panel kéo thả, gộp tab, thả nổi (js/workspace.js) -->
+    <div class="ws" id="ws">
+      <div class="ws-dock" data-dock="left" aria-label="Khu neo panel bên trái"></div>
+      <div class="ws-splitter" data-split="left" role="separator" aria-orientation="vertical" aria-label="Đổi độ rộng cột trái" tabindex="0"></div>
+    <section class="preview-wrap" aria-label="Xem trước landing page">
+      <div id="landing" class="landing">
+        <div class="empty-state">
+          <p class="empty-title">Landing page sẽ hiện ở đây</p>
+          <p>Nhập thông tin sự kiện ở tab <strong>Thông tin &amp; nội dung</strong> rồi bấm <strong>Tạo landing page</strong>.</p>
+        </div>
+      </div>
+    </section>
+      <div class="ws-splitter" data-split="right" role="separator" aria-orientation="vertical" aria-label="Đổi độ rộng cột phải" tabindex="0"></div>
+      <div class="ws-dock" data-dock="right" aria-label="Khu neo panel bên phải"></div>
+    </div>
+
+    <!-- Nội dung các panel; workspace.js đặt chúng vào dock hoặc cửa sổ nổi -->
+    <div class="ws-panels" hidden>
+      <section class="ws-panel" data-panel="layout" data-title="Bố cục">
+        <div class="ws-body editor-side-body">
       <div class="tpl-bar">
         <span class="tpl-swatch" id="tpl-swatch-2" aria-hidden="true"></span>
         <div class="tpl-bar-text"><span class="hint">Mẫu trang</span><strong id="tpl-name-2">Tech Workshop</strong></div>
@@ -219,33 +247,20 @@
           <ol class="section-list" id="section-list"></ol>
         </div>
       <button type="button" class="btn btn-ghost btn-small" id="btn-regenerate-2"><span data-icon="refresh"></span>AI viết lại nội dung</button>
-    </aside>
-
-    <!-- GIỮA: KHUNG TRANG -->
-    <section class="preview-wrap" aria-label="Xem trước landing page">
-      <div id="landing" class="landing">
-        <div class="empty-state">
-          <p class="empty-title">Landing page sẽ hiện ở đây</p>
-          <p>Nhập thông tin sự kiện ở tab <strong>Thông tin &amp; nội dung</strong> rồi bấm <strong>Tạo landing page</strong>.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- PHẢI: XEM THỬ + XUẤT BẢN -->
-    <aside class="panel editor-side editor-right">
-      <div class="side-tabs" role="tablist">
-        <button type="button" class="side-tab is-active" data-side="style">Giao diện</button>
-        <button type="button" class="side-tab" data-side="publish">Xuất bản &amp; xem thử</button>
-      </div>
-      <div class="side-pane" id="side-style">
+      </section>
+      <section class="ws-panel" data-panel="style" data-title="Giao diện">
+        <div class="ws-body" id="side-style">
         <div class="mode-switch" role="radiogroup" aria-label="Chế độ chỉnh giao diện">
-          <button type="button" class="mode-btn is-active" data-mode="simple" role="radio" aria-checked="true">Đơn giản<small>Ít lựa chọn, luôn đẹp</small></button>
-          <button type="button" class="mode-btn" data-mode="studio" role="radio" aria-checked="false">Studio<small>Chỉnh mọi thông số</small></button>
+          <button type="button" class="mode-btn is-active" data-mode="simple" role="radio" aria-checked="true">Đơn giản<small>Lựa chọn chính</small></button>
+          <button type="button" class="mode-btn" data-mode="studio" role="radio" aria-checked="false">Studio<small>Mọi thông số</small></button>
         </div>
         <div id="style-panel"></div>
         <button type="button" class="btn btn-ghost btn-small" id="btn-style-reset"><span data-icon="reset"></span>Về giao diện gốc của mẫu</button>
       </div>
-      <div class="side-pane" id="side-publish" hidden>
+      </section>
+      <section class="ws-panel" data-panel="publish" data-title="Xuất bản">
+        <div class="ws-body" id="side-publish">
       <h2 class="panel-title">Xuất bản</h2>
       <p class="hint" id="publish-hint">Đăng nhập Google rồi bấm Xuất bản ở thanh trên để có link và mã QR; khách đăng ký từ mọi thiết bị.</p>
       <h2 class="panel-title">Xem thử trạng thái</h2>
@@ -271,8 +286,10 @@
         </div>
         <div class="share-qr" id="share-qr" aria-label="Mã QR của trang"></div>
       </div>
-      </div>
-    </aside>
+      
+        </div>
+      </section>
+    </div>
   </main>
 
   <main id="view-events" class="admin view" hidden>
@@ -332,6 +349,24 @@
     <div class="tpl-grid" id="tpl-grid"></div>
   </dialog>
 
+  <dialog class="tpl-dialog help-dialog" id="help-dialog" aria-labelledby="help-title">
+    <div class="tpl-dialog-head">
+      <h2 id="help-title">Phím tắt &amp; mẹo</h2>
+      <button type="button" class="icon-btn" aria-label="Đóng" onclick="this.closest('dialog').close()"><span data-icon="x"></span></button>
+    </div>
+    <dl class="help-list">
+      <dt><kbd>Ctrl</kbd> <kbd>Z</kbd></dt><dd>Hoàn tác</dd>
+      <dt><kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>Z</kbd></dt><dd>Làm lại</dd>
+      <dt><kbd>Ctrl</kbd> <kbd>+</kbd> / <kbd>Ctrl</kbd> <kbd>−</kbd></dt><dd>Phóng to / thu nhỏ bản xem trước</dd>
+      <dt><kbd>Ctrl</kbd> <kbd>0</kbd></dt><dd>Vừa khung</dd>
+      <dt><kbd>Esc</kbd></dt><dd>Đóng menu, bỏ chọn phần tử</dd>
+      <dt>Kéo tên panel</dt><dd>Thả vào mép trái/phải để neo, lên đầu panel khác để gộp tab, ra giữa để thả nổi</dd>
+      <dt>Kéo vạch chia</dt><dd>Đổi độ rộng cột; bấm đúp để về mặc định</dd>
+      <dt>Kéo góc cửa sổ nổi</dt><dd>Đổi kích thước; bấm đúp thanh tên để neo lại</dd>
+      <dt>Bấm vào trang</dt><dd>Chọn phần tử để sửa chữ, màu, cỡ chữ…</dd>
+    </dl>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="vendor/firebase/firebase-app-compat.js"></script>
@@ -354,6 +389,7 @@
   <script src="js/page-style.js"></script>
   <script src="js/landing-renderer.js"></script>
   <script src="js/inspector.js"></script>
+  <script src="js/workspace.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@
 | `e2e-builder.cjs` | Bố cục (đổi thứ tự, ẩn/hiện, phần bắt buộc), sửa chữ trực tiếp, xem thử trạng thái (sắp hết chỗ, hết chỗ, hết ưu đãi, đã diễn ra) | `node tests/e2e-builder.cjs` |
 | `e2e-style.cjs` | Chế độ Đơn giản/Studio, ô màu nhận hex/rgb/rgba/hsl/tên màu, thanh trượt (kẹp giới hạn), font Google tuỳ ý, màu riêng từng phần, hoàn tác, lưu sau khi tải lại | `node tests/e2e-style.cjs`
 | `e2e-inspector.cjs` | Bấm phần tử trong bản xem trước để chỉnh: sửa chữ tại chỗ, cỡ/đậm/nghiêng/căn lề/màu, nút, ẩn (trừ phần bắt buộc), chọn cả phần qua đường dẫn, Studio có ô mã màu | `e2e-features.cjs` độ đậm, về mặc định, hoàn tác, lưu | `node tests/e2e-inspector.cjs`
+| `e2e-workspace.cjs` | Trang Thiết kế dạng phần mềm: thả nổi panel, gộp tab, kéo vạch chia cột, thu phóng (25–150%, vừa khung, Ctrl+/−/0), menu Cửa sổ (ẩn/hiện, bố cục có sẵn, khôi phục), lưu bố cục | `node tests/e2e-workspace.cjs`
 | `e2e-features.cjs` | Sự kiện của tôi (mở, nhân bản, xoá), chăm sóc lead (trạng thái, gọi/Zalo), số liệu, checklist trước xuất bản | `node tests/e2e-features.cjs` |
 | `e2e-firebase.cjs` | Firebase: xuất bản, link/QR, khách đăng ký, số đếm tức thì, trùng SĐT/email, hết chỗ, đăng ký đồng thời, người lạ không đọc được danh sách | `python3 -m http.server 8000` rồi trong thư mục có `firebase.json`: `npx firebase emulators:exec --only firestore,auth "node tests/e2e-firebase.cjs"` |
 | `../firebase/rules.test.mjs` | 21 ca quy tắc bảo mật Firestore | xem `firebase/README.md` |
