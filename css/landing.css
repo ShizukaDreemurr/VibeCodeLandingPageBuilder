@@ -1,22 +1,26 @@
 /* landing.css — giao diện landing page (template mặc định) */
 .landing { background: var(--lp-bg); color: var(--lp-text); container-type: inline-size; }
-.lp-hero { padding: 48px 32px; background: var(--lp-primary); color: #fff; }
-.lp-eyebrow { margin: 12px 0 4px; font-weight: 600; opacity: 0.85; }
-.lp-headline { margin: 0 0 16px; font-size: clamp(26px, 5cqi, 44px); line-height: 1.2; }
-.lp-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 24px; }
+.lp-hero { background: var(--lp-primary); }
+.lp-eyebrow { margin: 0 0 20px; font-size: clamp(16px, 2.2cqi, 20px); line-height: 1.4; font-weight: 500; opacity: 0.88; max-width: 52ch; }
+.lp-headline { font-family: var(--lp-heading-font, inherit); margin: 0 0 16px; line-height: 1.1; letter-spacing: -0.02em; max-width: 22ch; text-wrap: balance; }
+.lp-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0 0 32px; font-size: clamp(15px, 1.8cqi, 17px); }
+.lp-meta-item { display: inline-flex; align-items: center; gap: 8px; }
+.lp-meta-item .lp-ic { opacity: 0.8; }
+.lp-hero-action { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
 .lp-cta, .lp-submit {
   display: inline-block; background: var(--lp-accent); color: var(--lp-accent-contrast); text-decoration: none; font: inherit; font-weight: 700;
   padding: 12px 22px; border-radius: var(--radius-small); border: 0; cursor: pointer;
 }
 .lp-submit:disabled { opacity: 0.6; cursor: wait; }
 
-.lp-badge { display: inline-block; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: #e7f6ee; color: #0d6b3c; }
-.lp-badge.is-almost { background: #fff1d6; color: #8a5200; }
-.lp-badge.is-full { background: #ffe3e3; color: #a3161c; }
-.lp-badge.is-ended { background: #e9eaf0; color: #444a63; }
+.lp-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+.lp-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #3fd08a; flex: none; }
+.lp-badge.is-almost::before { background: #ffb020; }
+.lp-badge.is-full::before { background: #ff6b6b; }
+.lp-badge.is-ended::before { background: currentColor; opacity: 0.5; }
 
-.lp-section { padding: 32px; border-bottom: 1px solid var(--lp-surface); }
-.lp-section h2 { margin: 0 0 16px; font-size: 22px; color: var(--lp-primary); }
+.lp-section { }
+.lp-section h2 { font-family: var(--lp-heading-font, inherit); margin: 0 0 24px; line-height: 1.2; text-wrap: balance; color: var(--lp-primary); }
 .lp-countdown-section { text-align: center; background: var(--lp-surface); }
 .lp-countdown { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .lp-cd-box { background: var(--lp-primary); color: #fff; border-radius: var(--radius-small); padding: 10px 14px; min-width: 72px; }
@@ -26,9 +30,10 @@
 .lp-social-proof { margin: 16px 0 0; }
 .lp-count { color: var(--lp-accent); font-size: 22px; }
 
-.lp-benefits { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
-.lp-benefits li { background: var(--lp-surface); border-radius: var(--radius-small); padding: 14px 16px 14px 44px; position: relative; }
-.lp-benefits li::before { content: '✓'; position: absolute; left: 16px; color: var(--lp-accent); font-weight: 800; }
+.lp-benefits { list-style: none; padding: 0; margin: 0; display: grid; gap: 20px; max-width: 60ch; }
+.lp-benefits li { padding-left: 36px; position: relative; font-size: 1.125em; line-height: 1.5; }
+/* Dấu đầu dòng là ký tự chữ do người dùng chọn kiểu, không phải icon giao diện. taste-skill-ignore */
+.lp-benefits li::before { content: '✓'; position: absolute; left: 0; top: 0; color: var(--lp-accent); font-weight: 800; } /* taste-skill-ignore */
 
 .lp-speakers { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
 .lp-speaker { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; }
@@ -36,10 +41,11 @@
 .lp-avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: var(--lp-primary); color: #fff; font-size: 24px; font-weight: 800; }
 
 .lp-agenda { list-style: none; padding: 0; margin: 0; }
-.lp-agenda li { display: flex; gap: 16px; padding: 10px 0; border-bottom: 1px dashed var(--lp-surface); }
-.lp-agenda-time { font-weight: 700; color: var(--lp-primary); min-width: 64px; }
+.lp-agenda { display: grid; gap: 14px; }
+.lp-agenda li { display: grid; grid-template-columns: 72px 1fr; gap: 16px; align-items: baseline; }
+.lp-agenda-time { font-weight: 700; color: var(--lp-primary); font-variant-numeric: tabular-nums; }
 
-.lp-offer { background: #fff4f8; }
+.lp-offer { background: var(--lp-surface); }
 .lp-offer-until { font-size: 14px; color: var(--lp-muted); }
 
 .lp-form { display: grid; gap: 4px; max-width: 480px; }
@@ -52,9 +58,252 @@
 .lp-form-msg.is-success { color: #12804a; }
 .lp-form-msg.is-error { color: #c0262d; }
 .lp-closed { font-weight: 700; color: var(--lp-muted); }
-.lp-footer { padding: 20px 32px; font-size: 14px; color: var(--lp-muted); text-align: center; }
+.lp-footer { padding-block: 48px; font-size: 14px; color: var(--lp-muted); text-align: center; }
 
 @container (max-width: 520px) {
-  .lp-hero, .lp-section { padding: 24px 16px; }
   .lp-cd-box { min-width: 60px; }
 }
+
+/* Phần đầu trang: nền màu chính, ảnh bìa có lớp phủ (xem bên dưới) */
+.lp-hero { position: relative; }
+img.lp-avatar { object-fit: cover; }
+
+/* Nút đổi ảnh (chỉ hiện khi soạn) */
+.lp-img-btn { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 13px; font-weight: 600; border: 1px dashed currentColor; background: rgba(255, 255, 255, 0.9); color: #16193a; border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.lp-hero .lp-img-btn { position: absolute; top: 16px; right: 16px; }
+
+/* Album ảnh cưới */
+.lp-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.lp-gallery-item { position: relative; border-radius: var(--radius-small); overflow: hidden; aspect-ratio: 4 / 3; background: var(--lp-surface); display: grid; place-items: center; }
+.lp-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.lp-gallery-item .lp-img-btn { position: absolute; bottom: 8px; right: 8px; }
+.lp-gallery-item.is-empty .lp-img-btn { position: static; }
+
+/* Chân trang: ghi nguồn studio + phễu */
+.lp-footer p { margin: 4px 0; }
+.lp-credit { display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.lp-credit-cta { color: var(--lp-accent-contrast); background: var(--lp-accent); text-decoration: none; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+.lp-made-with { display: inline-block; margin-top: 8px; color: var(--lp-primary); font-weight: 600; }
+
+/* Mẫu thiệp cưới: căn giữa, trang nhã */
+.tpl-wedding .lp-hero, .tpl-wedding .lp-section { text-align: center; }
+.tpl-wedding .lp-meta { justify-content: center; }
+.tpl-wedding .lp-benefits li { text-align: left; }
+.tpl-wedding .lp-agenda li { justify-content: center; }
+.tpl-wedding .lp-form { margin: 0 auto; text-align: left; }
+.landing.tpl-wedding:not(.st-heroHeight-compact) { --lp-hero-pad: 96px; }
+
+/* Sửa chữ trực tiếp khi soạn */
+.is-editable [contenteditable="true"] { outline: 1px dashed transparent; outline-offset: 4px; border-radius: 4px; cursor: text; }
+.is-editable [contenteditable="true"]:focus { outline: 2px solid var(--lp-accent); }
+
+/* ---------- Animation landing page (tắt khi giảm chuyển động) ---------- */
+@media screen {
+  /* Hiện dần khi cuộn tới */
+  .lp-reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .lp-reveal.is-in { opacity: 1; transform: none; }
+  .lp-reveal .lp-benefits li, .lp-reveal .lp-speaker, .lp-reveal .lp-agenda li, .lp-reveal .lp-gallery-item { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .lp-reveal.is-in .lp-benefits li, .lp-reveal.is-in .lp-speaker, .lp-reveal.is-in .lp-agenda li, .lp-reveal.is-in .lp-gallery-item { opacity: 1; transform: none; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(2) { transition-delay: 0.1s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(3) { transition-delay: 0.2s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(n+4) { transition-delay: 0.3s; }
+
+  /* Hero xuất hiện lần lượt */
+  .lp-hero > * { animation: lpUp 0.7s ease both; }
+  .lp-hero > :nth-child(2) { animation-delay: 0.08s; }
+  .lp-hero > :nth-child(3) { animation-delay: 0.16s; }
+  .lp-hero > :nth-child(4) { animation-delay: 0.24s; }
+  .lp-hero > :nth-child(n+5) { animation-delay: 0.32s; }
+  .lp-hero.has-image { background-size: auto, 110%, auto; animation: lpKen 18s ease-in-out infinite alternate; }
+
+  /* Nút chính: nhịp nhẹ thu hút, nổi lên khi rê chuột */
+  .lp-cta { animation: lpUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
+  .lp-cta, .lp-submit, .lp-credit-cta { transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; }
+  .lp-cta:hover, .lp-submit:not(:disabled):hover, .lp-credit-cta:hover { transform: translateY(-2px); filter: brightness(1.06); }
+  .lp-cta:active, .lp-submit:not(:disabled):active { transform: translateY(0) scale(0.98); }
+
+  /* Đếm ngược: số lật khi đổi; số đăng ký nảy lên khi tăng */
+  .lp-cd-num.tick { animation: lpTick 0.4s ease; }
+  .lp-count { display: inline-block; }
+  .lp-count.bump { animation: lpBump 0.7s ease; }
+  .lp-badge { transition: background-color 0.3s ease, color 0.3s ease; }
+  .lp-badge.is-almost, .lp-badge.is-full { animation: lpBlink 1.6s ease-in-out 3; }
+
+  .lp-speaker .lp-avatar { transition: transform 0.25s ease; }
+  .lp-speaker:hover .lp-avatar { transform: scale(1.07); }
+  .lp-gallery-item img { transition: transform 0.5s ease; }
+  .lp-gallery-item:hover img { transform: scale(1.05); }
+  .lp-form-msg.is-success, .lp-form-msg.is-error { animation: lpUp 0.4s ease both; }
+  .lp-field input { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+  .lp-field input:focus { outline: none; border-color: var(--lp-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-accent) 25%, transparent); }
+}
+@keyframes lpUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes lpTick { 0% { transform: translateY(-35%); opacity: 0.3; } 100% { transform: none; opacity: 1; } }
+@keyframes lpBump { 0% { transform: scale(1); } 30% { transform: scale(1.45); } 100% { transform: scale(1); } }
+@keyframes lpBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes lpKen { from { background-position: center, 50% 40%, center; } to { background-position: center, 50% 60%, center; } }
+
+/* ---------- Tuỳ chỉnh giao diện (page-style.js) ----------
+   Lựa chọn Đơn giản đặt biến qua class st-*; thông số Studio đặt biến inline trên .landing (ưu tiên hơn). */
+.landing {
+  --lp-h1: clamp(30px, 5cqi, 60px); --lp-h2: 22px; --lp-body: 16px; --lp-lh: 1.6; --lp-hw: 800; --lp-ls: 0em;
+  --lp-radius: 10px; --lp-btn-radius: var(--lp-radius); --lp-pad: 64px; --lp-maxw: 1040px;
+  --lp-hero-pad: 72px; --lp-hero-minh: auto; --lp-shadow: none; --lp-hero-text: #fff; --lp-overlay-rgb: 10, 10, 20;
+  font-family: var(--lp-body-font, inherit); font-size: var(--lp-body); line-height: var(--lp-lh);
+}
+.lp-headline { font-size: var(--lp-h1); font-weight: var(--lp-hw); letter-spacing: var(--lp-ls); }
+.lp-section h2 { font-size: var(--lp-h2); font-weight: var(--lp-hw); letter-spacing: var(--lp-ls); }
+.st-upper .lp-headline, .st-upper .lp-section h2 { text-transform: uppercase; }
+.lp-hero { color: var(--lp-hero-text); padding-block: var(--lp-hero-pad); min-height: var(--lp-hero-minh); }
+.lp-hero, .lp-section, .lp-footer { padding-inline: max(32px, (100% - var(--lp-maxw)) / 2); }
+.lp-section { padding-block: var(--lp-pad); }
+/* Lớp phủ trung tính trên ảnh để chữ đọc được (ngoại lệ hợp lệ). */
+.lp-hero.has-image { /* taste-skill-ignore */ background: linear-gradient(rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62)), rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62))), var(--lp-hero-image) center / cover no-repeat, var(--lp-primary); }
+.lp-cd-box, .lp-benefits li, .lp-field input, .lp-gallery-item { border-radius: var(--lp-radius); }
+.lp-cta, .lp-submit { border-radius: var(--lp-btn-radius); }
+.lp-benefits li, .lp-cd-box, .lp-gallery-item { box-shadow: var(--lp-shadow); }
+@container (max-width: 520px) {
+  .lp-hero, .lp-section, .lp-footer { padding-inline: 16px; }
+  .lp-section { padding-block: min(var(--lp-pad), 32px); }
+  .lp-hero { padding-block: min(var(--lp-hero-pad), 40px); }
+}
+
+.st-radius-square { --lp-radius: 2px; }
+.st-radius-round { --lp-radius: 20px; }
+.st-spacing-compact { --lp-pad: 36px; }
+.st-spacing-airy { --lp-pad: 104px; }
+.st-headingSize-s { --lp-h1: clamp(24px, 4cqi, 40px); --lp-h2: 19px; }
+.st-headingSize-l { --lp-h1: clamp(34px, 7cqi, 84px); --lp-h2: 28px; }
+.st-button-pill { --lp-btn-radius: 999px; }
+.st-button-pill .lp-cta, .st-button-pill .lp-submit { padding-left: 28px; padding-right: 28px; }
+.st-button-outline .lp-cta { background: transparent; color: var(--lp-hero-text); box-shadow: inset 0 0 0 2px var(--lp-accent); }
+.st-button-outline .lp-submit { background: transparent; color: var(--lp-primary); box-shadow: inset 0 0 0 2px var(--lp-primary); }
+.st-shadow-soft { --lp-shadow: 0 6px 20px rgba(22, 25, 58, 0.1); }
+.st-shadow-soft .lp-form { padding: 20px; border-radius: var(--lp-radius); background: #fff; box-shadow: var(--lp-shadow); }
+
+.st-heroAlign-center .lp-hero { text-align: center; }
+.st-heroAlign-center .lp-meta { justify-content: center; }
+.st-heroAlign-left .lp-hero { text-align: left; }
+.st-heroAlign-left .lp-meta { justify-content: flex-start; }
+.st-heroHeight-compact { --lp-hero-pad: 36px; }
+.st-heroHeight-full { --lp-hero-minh: min(100vh, 760px); }
+.lp-hero { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+.st-heroAlign-center .lp-hero, .tpl-wedding:not(.st-heroAlign-left) .lp-hero { align-items: center; }
+.lp-hero > * { max-width: 100%; }
+
+.st-countdown-minimal .lp-cd-box { background: transparent; color: var(--lp-primary); box-shadow: none; border-bottom: 3px solid var(--lp-accent); border-radius: 0; }
+
+/* Kiểu dấu đầu dòng do người dùng chọn. taste-skill-ignore */
+.st-bullet-star .lp-benefits li::before { content: '★'; } /* taste-skill-ignore */
+.st-bullet-arrow .lp-benefits li::before { content: '→'; } /* taste-skill-ignore */
+.st-bullet-heart .lp-benefits li::before { content: '♥'; } /* taste-skill-ignore */
+.st-bullet-dot .lp-benefits li::before { content: '●'; font-size: 0.6em; top: 0.45em; } /* taste-skill-ignore */
+.st-bullet-none .lp-benefits li::before { content: none; }
+.st-bullet-none .lp-benefits li { padding-left: 0; }
+
+/* Nền & căn lề từng phần */
+.lp-bg-plain { background: #fff; }
+.lp-bg-tint { background: var(--lp-surface); }
+
+.lp-bg-primary { background: var(--lp-primary); color: #fff; }
+.lp-bg-primary h2, .lp-bg-primary .lp-agenda-time, .lp-bg-primary .lp-cd-box { color: #fff; }
+
+.lp-bg-primary .lp-speaker span, .lp-bg-primary .lp-offer-until, .lp-bg-primary .lp-ended { color: rgba(255, 255, 255, 0.82); }
+.lp-bg-primary .lp-cd-box { background: rgba(255, 255, 255, 0.14); }
+.lp-bg-primary .lp-avatar { background: rgba(255, 255, 255, 0.2); }
+.lp-bg-primary .lp-agenda li { border-bottom-color: rgba(255, 255, 255, 0.2); }
+.lp-bg-primary .lp-form { color: var(--lp-text); }
+.lp-bg-primary.lp-section .lp-field label, .lp-bg-primary .lp-consent { color: #fff; }
+.st-shadow-soft .lp-bg-primary .lp-field label, .st-shadow-soft .lp-bg-primary .lp-consent { color: var(--lp-text); }
+.lp-bg-primary .lp-form-msg.is-success, .lp-bg-primary .lp-form-msg.is-error, .lp-bg-primary .lp-error { background: #fff; padding: 4px 8px; border-radius: 6px; }
+.lp-bg-primary .lp-submit { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5); }
+.lp-custom-text h2, .lp-custom-text .lp-agenda-time, .lp-custom-text .lp-speaker span { color: inherit; }
+.landing .lp-align-center { text-align: center; }
+.landing .lp-align-center .lp-form { margin: 0 auto; text-align: left; }
+.landing .lp-align-center .lp-agenda li, .landing .lp-align-center .lp-countdown { justify-content: center; }
+.landing .lp-align-left, .landing .lp-align-left .lp-section { text-align: left; }
+.landing .lp-align-left .lp-countdown { justify-content: flex-start; }
+
+/* Mức hiệu ứng */
+.st-motion-off *, .st-motion-off *::before { animation: none !important; transition: none !important; }
+.st-motion-subtle .lp-cta { animation: lpUp 0.7s ease 0.32s both; }
+.st-motion-subtle .lp-hero.has-image { animation: none; }
+
+/* Đang soạn: không chạy lại hiệu ứng xuất hiện mỗi lần trang vẽ lại */
+.is-editable .lp-hero > *, .is-editable .lp-cta { animation: none; }
+.st-heroAlign-center .lp-hero-action, .tpl-wedding:not(.st-heroAlign-left) .lp-hero-action { justify-content: center; }
+.st-heroAlign-center .lp-headline, .st-heroAlign-center .lp-eyebrow { margin-left: auto; margin-right: auto; }
+
+/* Bố cục biên tập khi khung rộng: tiêu đề phần ở cột trái (1/3), nội dung ở cột phải (2/3),
+   để mỗi phần dùng hết bề ngang thay vì dồn sang trái. Phần căn giữa (thiệp cưới, chọn "Giữa") giữ một cột. */
+@container (min-width: 820px) {
+  .landing:not(.tpl-wedding) .lp-section:not(.lp-countdown-section):not(.lp-align-center) {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); column-gap: 56px; align-items: start;
+  }
+  .landing:not(.tpl-wedding) .lp-section:not(.lp-countdown-section):not(.lp-align-center) > h2 { grid-column: 1; margin: 0; }
+  .landing:not(.tpl-wedding) .lp-section:not(.lp-countdown-section):not(.lp-align-center) > :not(h2) { grid-column: 2; }
+  .landing:not(.tpl-wedding) .lp-section:not(.lp-countdown-section):not(.lp-align-center) > :not(h2) + :not(h2) { margin-top: 12px; }
+}
+.lp-headline { max-width: 26ch; }
+.lp-section:not(.lp-countdown-section) > p { font-size: 1.0625em; max-width: 64ch; }
+.landing .lp-align-center > p, .tpl-wedding .lp-section > p { margin-inline: auto; }
+
+html.motion-off .landing *, html.motion-off .landing *::before { animation: none !important; transition: none !important; }
+.lp-reveal { } html.motion-off .lp-reveal { opacity: 1 !important; transform: none !important; }
+
+/* Chữ nâng cao (Studio / ô font): giãn dòng tiêu đề, độ đậm & giãn chữ nội dung, giãn từ, thụt đầu dòng, khoảng cách đoạn, căn lề */
+.landing { font-weight: var(--lp-bw, 400); letter-spacing: var(--lp-bls, normal); word-spacing: var(--lp-ws, normal); }
+.landing .lp-headline { line-height: var(--lp-hlh, 1.1); }
+.landing .lp-section h2 { line-height: var(--lp-hlh, 1.2); }
+.st-hitalic .lp-headline, .st-hitalic .lp-section h2 { font-style: italic; }
+.landing .lp-section p:not(.lp-social-proof):not(.lp-ended):not(.lp-error):not(.lp-form-msg) { text-indent: var(--lp-indent, 0); text-align: var(--lp-balign, inherit); margin-top: 0; margin-bottom: var(--lp-para, 1em); }
+.landing .lp-benefits { gap: var(--lp-para, 20px); }
+.landing .lp-benefits li { text-align: var(--lp-balign, inherit); }
+
+/* Brand DNA */
+.lp-logo { display: block; max-height: 56px; max-width: 220px; width: auto; height: auto; object-fit: contain; margin: 0 0 28px; }
+.st-heroAlign-center .lp-logo, .tpl-wedding:not(.st-heroAlign-left) .lp-logo { margin-left: auto; margin-right: auto; }
+.lp-brand { margin-bottom: 16px; }
+.lp-brand-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; color: var(--lp-text); }
+.lp-brand-line a { color: var(--lp-primary); font-weight: 600; text-decoration: none; }
+.lp-brand-line a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.lp-brand-tagline { font-style: italic; }
+
+/* ---------- Thư viện khối ---------- */
+.lp-faq { display: grid; gap: 0; max-width: 72ch; border-top: 1px solid color-mix(in srgb, var(--lp-text) 14%, transparent); }
+.lp-faq-item { border-bottom: 1px solid color-mix(in srgb, var(--lp-text) 14%, transparent); padding: 4px 0; }
+.lp-faq-item summary { cursor: pointer; font-weight: 700; padding: 14px 32px 14px 0; list-style: none; position: relative; }
+.lp-faq-item summary::-webkit-details-marker { display: none; }
+.lp-faq-item summary::after { content: ''; position: absolute; right: 6px; top: 50%; width: 9px; height: 9px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-70%) rotate(45deg); transition: transform 0.25s ease; }
+.lp-faq-item[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
+.lp-faq-item p { margin: 0 0 16px; color: var(--lp-muted); line-height: 1.6; max-width: 64ch; }
+.lp-faq-item[open] p { animation: lpFaqIn 0.3s ease; }
+@keyframes lpFaqIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+.lp-quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px 40px; }
+.lp-quote { margin: 0; padding-left: 20px; border-left: 3px solid var(--lp-accent); }
+.lp-quote blockquote { margin: 0 0 12px; font-size: 1.15em; line-height: 1.5; font-family: var(--lp-heading-font, inherit); }
+.lp-quote figcaption { font-size: 14px; color: var(--lp-muted); }
+
+.lp-sponsors { display: flex; flex-wrap: wrap; gap: 12px 40px; align-items: center; }
+.lp-sponsor { font-family: var(--lp-heading-font, inherit); font-size: 1.3em; font-weight: 800; letter-spacing: -0.01em; opacity: 0.7; transition: opacity 0.2s ease; }
+.lp-sponsor:hover { opacity: 1; }
+
+.lp-video, .lp-map { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius-small); overflow: hidden; background: var(--lp-surface); }
+.lp-map { aspect-ratio: 21 / 9; }
+.lp-video iframe, .lp-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.lp-video-empty { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 16px; text-align: center; color: var(--lp-muted); }
+.lp-map-addr { margin: -12px 0 16px; color: var(--lp-muted); }
+.landing.is-editable .lp-video iframe, .landing.is-editable .lp-map iframe { pointer-events: none; } /* đang soạn: bấm để chọn khung */
+@container (max-width: 560px) { .lp-map { aspect-ratio: 4 / 3; } }
+
+.lp-cta2 { text-align: center; background: var(--lp-primary); color: #fff; }
+.lp-cta2 h2 { color: inherit; }
+.lp-cta2 p { margin: 0 auto 24px; max-width: 56ch; opacity: 0.9; }
+
+/* Biến dữ liệu động */
+.lp-var { font-variant-numeric: tabular-nums; }
+.landing.is-editable .lp-var { background: color-mix(in srgb, var(--lp-accent) 16%, transparent); border-radius: 3px; padding: 0 2px; }
+.lp-cta, .lp-submit { transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease; }
+/* Link trong chữ có định dạng */
+.lp-section p a, .lp-section li a, .lp-section h2 a, .lp-hero p a, .lp-headline a, .lp-faq-item a { color: inherit; text-decoration: underline; text-decoration-color: var(--lp-accent); text-underline-offset: 3px; }

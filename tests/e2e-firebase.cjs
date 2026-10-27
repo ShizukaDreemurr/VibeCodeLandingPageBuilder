@@ -1,0 +1,43 @@
+const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
+(async()=>{const b=require('./auto-tab.cjs')(await chromium.launch());const errs=[];const log=(k,v)=>console.log(k.padEnd(32),v);
+ const page=async()=>{const c=await b.newContext();const p=await c.newPage();p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});return p;};
+ const reg=async(p,n,ph,em)=>{await p.fill('#lp-name',n);await p.fill('#lp-phone',ph);await p.fill('#lp-email',em);await p.check('.lp-consent input');await p.click('.lp-submit');await p.waitForFunction(()=>document.querySelector('.lp-form-msg')?.textContent||document.querySelector('.lp-form')?.hidden,null,{timeout:15000}).catch(()=>{});await p.waitForTimeout(800);};
+ const O=await page();await O.goto('http://localhost:8000/?emulator=1');
+ log('auth btn visible',await O.isVisible('#btn-auth'));
+ await O.click('#btn-sample');await O.fill('#f-capacity','2');await O.click('#btn-generate');
+ log('publish btn visible',await O.isVisible('#btn-publish'));
+ await O.evaluate(()=>EP.cloud.testSignIn('owner1'));await O.waitForTimeout(800);
+ log('user shown',await O.textContent('#user-email'));
+ await O.click('#btn-publish');await O.click('#btn-check-ok');await O.waitForSelector('#share-box:not([hidden])',{timeout:15000});
+ const url=await O.inputValue('#share-url');log('share url',url);
+ log('qr rendered',await O.isVisible('#share-qr img'));
+ const G1=await page();await G1.goto(url+'&emulator=1');await G1.waitForSelector('.lp-headline',{timeout:15000});await G1.click('.lp-cta');
+ log('guest sees headline',await G1.textContent('.lp-headline'));
+ await reg(G1,'Khách Một','0912345678','k1@gmail.com');log('guest1 msg',await G1.textContent('.lp-form-msg'));
+ await O.waitForTimeout(1500);log('owner preview count (realtime)',await O.textContent('.lp-count'));
+ const G2=await page();await G2.goto(url+'&emulator=1');await G2.waitForSelector('.lp-headline');
+ await reg(G2,'Trùng','+84912345678','other@gmail.com');log('guest2 dup phone',await G2.textContent('.lp-form-msg'));
+ await reg(G2,'Trùng mail','0987000111','K1@gmail.com');log('guest2 dup email',await G2.textContent('.lp-form-msg'));
+ await reg(G2,'Khách Hai','0987654321','k2@gmail.com');log('guest2 ok',await G2.textContent('.lp-form-msg'));
+ await G1.waitForTimeout(1000);log('guest1 sees count',await G1.textContent('.lp-count'));log('guest1 badge',await G1.textContent('.lp-badge'));
+ await reg(G2,'Khách Ba','0333444555','k3@gmail.com');log('guest2 waitlist',await G2.textContent('.lp-form-msg'));
+ // concurrent
+ const G3=await page();const G4=await page();await G3.goto(url+'&emulator=1');await G4.goto(url+'&emulator=1');await G3.waitForSelector('.lp-headline');await G4.waitForSelector('.lp-headline');
+ await Promise.all([reg(G3,'Đồng thời A','0355555555','a@x.com'),reg(G4,'Đồng thời B','0366666666','b@x.com')]);
+ log('concurrent A',await G3.textContent('.lp-form-msg'));log('concurrent B',await G4.textContent('.lp-form-msg'));
+ await O.click('[data-tab="admin"]');await O.waitForTimeout(1500);
+ log('owner admin rows',await O.$$eval('#admin-rows tr',r=>r.map(x=>x.cells[1]?.textContent+':'+x.cells[5]?.textContent).join(' | ')));
+ log('owner metrics',await O.$$eval('.metric',m=>m.map(x=>x.textContent).join(' | ')));
+ await O.selectOption('.lead-select >> nth=0','contacted');await O.waitForTimeout(800);await O.click('[data-tab="builder"]');await O.click('[data-tab="admin"]');await O.waitForTimeout(1500);
+ log('lead saved cloud',await O.inputValue('.lead-select >> nth=0'));
+ // other account cannot read
+ const X=await page();await X.goto('http://localhost:8000/?emulator=1');
+ await X.evaluate((id)=>EP.cloud.testSignIn('intruder').then(()=>EP.cloud.listRegistrations(id)).then(()=>window.__r='READ',e=>window.__r='DENIED:'+e.code),url.split('e=')[1]);await X.waitForTimeout(1500);
+ log('intruder read list',await X.evaluate(()=>window.__r));
+ // clear
+ O.on('dialog',d=>d.accept());await O.click('#btn-clear-regs');await O.waitForTimeout(1500);
+ log('after clear rows',await O.$$eval('#admin-rows tr',r=>r.length+' '+r[0].textContent));
+ await G1.waitForTimeout(800);log('guest count after clear',await G1.textContent('.lp-count'));
+ const bad=await page();await bad.goto('http://localhost:8000/?e=khongtonTai&emulator=1');await bad.waitForTimeout(2000);
+ log('missing event',await bad.textContent('#public-landing'));
+ log('ERRORS',errs);await b.close();})();

@@ -1,0 +1,56 @@
+import { initializeTestEnvironment, assertSucceeds, assertFails } from '@firebase/rules-unit-testing';
+import { doc, setDoc, getDoc, writeBatch, serverTimestamp, Timestamp, increment, collection, getDocs, updateDoc } from 'firebase/firestore';
+import fs from 'fs';
+const env = await initializeTestEnvironment({ projectId: 'demo-ep', firestore: { rules: fs.readFileSync('./firestore.rules','utf8'), host:'127.0.0.1', port:8085 } });
+const owner = env.authenticatedContext('owner1').firestore();
+const other = env.authenticatedContext('other').firestore();
+const anon = env.unauthenticatedContext().firestore();
+let n=0, fail=0; const t=async(name,p,expect)=>{n++;try{await (expect?assertSucceeds(p):assertFails(p));console.log('ok ',name)}catch(e){fail++;console.log('FAIL',name,e.message)}};
+const future = Timestamp.fromDate(new Date(Date.now()+86400e3));
+async function createEvent(db,id,cap,start=future,uid='owner1'){const b=writeBatch(db);b.set(doc(db,'events',id),{ownerUid:uid,name:'WS',capacity:cap,startAt:start});b.set(doc(db,'events',id,'stats','public'),{count:0,waitlist:0,lastRegId:''});return b.commit();}
+async function register(db,ev,phone,email,status,{bumpCount=true}={}){const st=(await getDoc(doc(db,'events',ev,'stats','public'))).data();
+ const b=writeBatch(db);b.set(doc(db,'events',ev,'registrations',phone),{name:'A',phone,email,status,createdAt:serverTimestamp()});
+ b.set(doc(db,'events',ev,'emails',email),{regId:phone});
+ b.update(doc(db,'events',ev,'stats','public'),status==='new'?{count:st.count+(bumpCount?1:2),lastRegId:phone}:{waitlist:st.waitlist+1,lastRegId:phone});return b.commit();}
+await t('anon cannot create event',createEvent(anon,'e0',0),false);
+await t('owner creates event',createEvent(owner,'e1',2),true);
+await t('other cannot hijack event',setDoc(doc(other,'events','e1'),{ownerUid:'other',name:'x',capacity:0,startAt:future}),false);
+await t('anyone reads event',getDoc(doc(anon,'events','e1')),true);
+await t('anyone reads stats',getDoc(doc(anon,'events','e1','stats','public')),true);
+await t('anon registers',register(anon,'e1','0912345678','a@gmail.com','new'),true);
+await t('dup phone rejected',register(anon,'e1','0912345678','z@gmail.com','new'),false);
+await t('dup email rejected',register(anon,'e1','0987654321','a@gmail.com','new'),false);
+await t('count +2 rejected',register(anon,'e1','0987654321','b@gmail.com','new',{bumpCount:false}),false);
+await t('wrong status (waitlist when not full)',register(anon,'e1','0987654321','b@gmail.com','waitlist'),false);
+await t('second reg',register(anon,'e1','0987654321','b@gmail.com','new'),true);
+await t('full: new rejected',register(anon,'e1','0333444555','c@gmail.com','new'),false);
+await t('full: waitlist ok',register(anon,'e1','0333444555','c@gmail.com','waitlist'),true);
+await t('bad phone rejected',register(anon,'e1','12345','d@gmail.com','waitlist'),false);
+await t('anon cannot read list',getDocs(collection(anon,'events','e1','registrations')),false);
+await t('other cannot read list',getDocs(collection(other,'events','e1','registrations')),false);
+await t('owner reads list',getDocs(collection(owner,'events','e1','registrations')),true);
+await t('anon cannot tamper stats',updateDoc(doc(anon,'events','e1','stats','public'),{count:999,waitlist:0,lastRegId:'x'}),false);
+await t('owner resets stats',updateDoc(doc(owner,'events','e1','stats','public'),{count:0,waitlist:0,lastRegId:''}),true);
+
+// --- metrics (phễu) ---
+const mref=(db)=>doc(db,'events','e1','metrics','funnel');
+await t('anon cannot create metrics',setDoc(mref(anon),{views:0,ctaClicks:0,studioClicks:0,appClicks:0}),false);
+await t('owner creates metrics',setDoc(mref(owner),{views:0,ctaClicks:0,studioClicks:0,appClicks:0}),true);
+await t('anon +1 view',updateDoc(mref(anon),{views:increment(1)}),true);
+await t('anon +1 studio click',updateDoc(mref(anon),{studioClicks:increment(1)}),true);
+await t('anon +2 view rejected',updateDoc(mref(anon),{views:increment(2)}),false);
+await t('anon two fields rejected',updateDoc(mref(anon),{views:increment(1),appClicks:increment(1)}),false);
+await t('anon set to 999 rejected',updateDoc(mref(anon),{views:999}),false);
+await t('anyone reads metrics',getDoc(mref(anon)),true);
+// --- leadStatus ---
+await register(anon,'e1','0901234567','lead@gmail.com','new');
+const rref=(db)=>doc(db,'events','e1','registrations','0901234567');
+await t('owner sets leadStatus',updateDoc(rref(owner),{leadStatus:'won'}),true);
+await t('owner bad leadStatus rejected',updateDoc(rref(owner),{leadStatus:'vip'}),false);
+await t('owner cannot edit name',updateDoc(rref(owner),{name:'X'}),false);
+await t('other cannot set lead',updateDoc(rref(other),{leadStatus:'lost'}),false);
+
+await createEvent(owner,'past',0,Timestamp.fromDate(new Date(Date.now()-1000)));
+await t('past event rejected',register(anon,'past','0912345678','a@gmail.com','new'),false);
+await t('extra field rejected',(async()=>{const b=writeBatch(anon);b.set(doc(anon,'events','past','registrations','0911111111'),{name:'A',phone:'0911111111',email:'q@gmail.com',status:'new',createdAt:serverTimestamp(),admin:true});return b.commit()})(),false);
+console.log(`\n${n-fail}/${n} passed`);await env.cleanup();process.exit(fail?1:0);

@@ -1,0 +1,38 @@
+const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
+const URL='file:///home/user/VibeCodeLandingPageBuilder/index.html';
+(async()=>{const b=require('./auto-tab.cjs')(await chromium.launch());const errs=[];
+ const mk=async()=>{const c=await b.newContext();const p=await c.newPage();p.on('pageerror',e=>errs.push(e.message));await p.goto(URL);return p;};
+ const log=(k,v)=>console.log(k.padEnd(30),v);
+ const reg=async(p,n,ph,em)=>{await p.fill('#lp-name',n);await p.fill('#lp-phone',ph);await p.fill('#lp-email',em);await p.check('.lp-consent input');await p.click('.lp-submit');await p.waitForTimeout(700);};
+ const A=await mk();
+ await A.click('#btn-sample');await A.click('.sheet-box summary');
+ await A.fill('#f-sheetUrl','https://example.com/abc');await A.click('#btn-generate');
+ log('invalid url error',await A.textContent('[data-error-for="sheetUrl"]'));
+ await A.fill('#f-sheetUrl','http://localhost:8787/exec');await A.click('#btn-sheet-test');await A.waitForTimeout(500);
+ log('test msg',await A.textContent('#sheet-msg'));
+ await A.click('#btn-generate');await A.waitForTimeout(700);
+ log('sheet status',await A.textContent('#sheet-status'));
+ await reg(A,'Nguyễn Văn A','0912345678','a@gmail.com');
+ log('A count',await A.textContent('.lp-count'));
+ // device B: same event config copied (simulate organizer opening same page on other device)
+ const st=await A.evaluate(()=>[localStorage.ep_events,localStorage.ep_current_id]);
+ const B=await mk();await B.evaluate(s=>{localStorage.ep_events=s[0];localStorage.ep_current_id=s[1];},st);await B.reload();await B.click('[data-tab="builder"]');await B.waitForTimeout(800);
+ log('B count (from sheet)',await B.textContent('.lp-count'));
+ await reg(B,'Trùng','+84912345678','x@gmail.com');
+ log('B dup msg (local ok, remote dup)',await B.textContent('.lp-form-msg'));
+ log('B count after dup',await B.textContent('.lp-count'));
+ await reg(B,'Trần B','0987654321','b@gmail.com');
+ await A.evaluate(()=>{});await A.waitForTimeout(16000);
+ log('A count after B (poll)',await A.textContent('.lp-count'));
+ // offline then recover
+ await (await fetch('http://localhost:8787/toggle')).json();
+ await reg(A,'Lê C','0333444555','c@gmail.com');
+ log('A status offline',await A.textContent('#sheet-status'));
+ log('A count offline',await A.textContent('.lp-count'));
+ await fetch('http://localhost:8787/toggle');await A.waitForTimeout(16000);
+ log('A status recovered',await A.textContent('#sheet-status'));
+ const dump=await (await fetch('http://localhost:8787/dump')).json();
+ log('server rows',Object.values(dump)[0].map(r=>r.name+':'+r.status).join(', '));
+ await A.click('[data-tab="admin"]');
+ log('admin sync col',await A.$$eval('#admin-rows tr td:last-child',t=>t.map(x=>x.textContent).join(',')));
+ log('ERRORS',errs);await b.close();})();
