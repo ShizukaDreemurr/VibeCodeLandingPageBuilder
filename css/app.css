@@ -92,15 +92,15 @@ a.btn { text-decoration: none; }
 .panel-title:not(:first-child) { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--rule); }
 .field { margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
 .field label { font-weight: 500; font-size: 14px; }
-.field input, .field textarea, .field select,
+.field input:not([type="checkbox"]):not([type="radio"]), .field textarea, .field select,
 .tpl-filters select, .sim-label select, .lead-select, .share-row input, .st-row select, .st-row input[type="text"] {
   font: inherit; font-size: 14px; min-height: var(--field-h); padding: 8px 12px; border: 1px solid #e3e5e8; border-radius: 8px;
   background: var(--surface); color: var(--text); width: 100%;
 }
 .field textarea { line-height: 22px; resize: vertical; }
 .field input::placeholder, .field textarea::placeholder, input::placeholder { color: #6b6d71; }
-.field input:hover, .field textarea:hover, .field select:hover { border-color: var(--control); }
-.field input:focus, .field textarea:focus, .field select:focus,
+.field input:not([type="checkbox"]):not([type="radio"]):hover, .field textarea:hover, .field select:hover { border-color: var(--control); }
+.field input:not([type="checkbox"]):not([type="radio"]):focus, .field textarea:focus, .field select:focus,
 .st-row input:focus, .st-row select:focus, .share-row input:focus { outline: none; border-color: var(--text); box-shadow: 0 0 0 3px var(--active); }
 [aria-invalid="true"] { border-color: var(--danger) !important; background: #fffafa !important; }
 .req { color: var(--danger); }
@@ -108,7 +108,8 @@ a.btn { text-decoration: none; }
 .error:empty { display: none; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 0; }
 .grid-2 > *, .field input { min-width: 0; }
-.check { font-weight: 400 !important; display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.check { font-weight: 400 !important; display: flex; gap: 8px; align-items: center; font-size: 14px; margin-top: 10px; cursor: pointer; }
+.check input { flex: none; cursor: pointer; }
 input[type="checkbox"], input[type="radio"] { accent-color: var(--text); width: 16px; height: 16px; margin: 0; }
 
 .segmented { border: 0; padding: 3px; margin: 0 0 16px; display: inline-flex; flex-wrap: wrap; gap: 2px; background: var(--raised); border-radius: 8px; }
