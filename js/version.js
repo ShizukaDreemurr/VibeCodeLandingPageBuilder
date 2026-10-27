@@ -8,7 +8,7 @@
     date: '2026-10-27',
     notes: 'Model Gemini mới (3.5 Flash Lite), bảng diễn giả/chương trình, thư viện khối, xuất HTML, chân trang phiên bản',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
-    branch: 'main'
+    branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
   function fmtDate(iso) {
     var d = new Date(iso);
