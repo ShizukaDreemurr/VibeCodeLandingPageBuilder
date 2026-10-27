@@ -9,7 +9,8 @@
   var SLOTS = {
     hero: { w: 1400, h: null, quality: 0.72 },
     avatar: { w: 320, h: 320, quality: 0.8 },
-    gallery: { w: 900, h: null, quality: 0.7 }
+    gallery: { w: 900, h: null, quality: 0.7 },
+    logo: { w: 480, h: null, quality: 0.9, png: true } // PNG để giữ nền trong suốt của logo
   };
 
   function pickFile() {
@@ -59,10 +60,12 @@
     canvas.width = tw;
     canvas.height = th;
     var ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff'; // nền trắng cho ảnh PNG trong suốt
-    ctx.fillRect(0, 0, tw, th);
+    if (!cfg.png) {
+      ctx.fillStyle = '#ffffff'; // nền trắng cho ảnh PNG trong suốt
+      ctx.fillRect(0, 0, tw, th);
+    }
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, tw, th);
-    return canvas.toDataURL('image/jpeg', cfg.quality);
+    return cfg.png ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', cfg.quality);
   }
 
   function pick(slot) {

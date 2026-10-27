@@ -101,6 +101,7 @@
       style: ev.style || null,
       texts: ev.texts || null,
       elStyles: ev.elStyles || null,
+      brand: ev.brand || null,
       content: { headline: content.headline, description: content.description, benefits: content.benefits, source: content.source },
       updatedAt: fb.firestore.FieldValue.serverTimestamp()
     };
@@ -149,6 +150,7 @@
           style: d.style || null,
           texts: d.texts || null,
           elStyles: d.elStyles || null,
+          brand: d.brand || null,
           ownerUid: d.ownerUid,
           published: true
         },

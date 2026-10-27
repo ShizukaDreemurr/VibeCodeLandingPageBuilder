@@ -203,11 +203,29 @@
       return mark(h(tag, attrs), key, label, opt.kind || 'text', opt);
     }
 
+    // Brand DNA: logo ở đầu trang, dòng tổ chức + liên hệ ở chân trang
+    var brand = ev.brand && ev.brand.name ? ev.brand : null;
+    function brandLogo() {
+      if (!brand || !brand.logo || !/^data:image\/(png|jpeg|webp);base64,/.test(brand.logo)) return null;
+      return mark(h('img', { class: 'lp-logo', src: brand.logo, alt: brand.name }), 'brand.logo', 'Logo thương hiệu', 'box');
+    }
+    function brandFooter() {
+      if (!brand) return null;
+      var parts = [h('span', {}, ['Tổ chức bởi ', h('strong', { text: brand.name })])];
+      if (brand.hotline) parts.push(h('a', { href: 'tel:' + brand.hotline, text: brand.hotline }));
+      if (brand.website && isSafeUrl(brand.website)) parts.push(h('a', { href: brand.website, target: '_blank', rel: 'noopener', text: brand.website.replace(/^https?:\/\//, '').replace(/\/$/, '') }));
+      if (brand.fanpage && isSafeUrl(brand.fanpage)) parts.push(h('a', { href: brand.fanpage, target: '_blank', rel: 'noopener', text: 'Fanpage' }));
+      var line = h('p', { class: 'lp-brand-line' }, parts);
+      var wrap = h('div', { class: 'lp-brand' }, [line, brand.tagline ? TX('p', { class: 'lp-brand-tagline' }, 'brand.tagline', 'Khẩu hiệu thương hiệu', brand.tagline) : null]);
+      return mark(wrap, 'brand.footer', 'Thông tin thương hiệu', 'box');
+    }
+
     // HERO (có ảnh nền nếu người dùng tải lên)
     mark(statusBadge, 'hero.badge', 'Nhãn trạng thái', 'box', { required: true });
     var ctaText = txt('hero.cta', (st.ctaText || '').trim() || L.submit);
     var cta = mark(h('a', { class: 'lp-cta', href: '#lp-register', text: ctaText }), 'hero.cta', 'Nút chính', 'button', { def: L.submit });
     var hero = h('section', { class: 'lp-hero' + (images.hero ? ' has-image' : '') }, [
+      brandLogo(),
       editableText('h1', { class: 'lp-headline' }, 'headline', content.headline, 'Tiêu đề chính'),
       TX('p', { class: 'lp-eyebrow' }, 'hero.eyebrow', 'Tên sự kiện', ev.name),
       mark(h('p', { class: 'lp-meta' }, [
@@ -349,6 +367,8 @@
 
     // CHÂN TRANG: ghi nguồn studio (thiệp cưới) + đường dẫn "Tạo trang như thế này" (phễu lan truyền)
     var footerChildren = [TX('p', {}, 'footer.info', 'Dòng chân trang', ev.name + ' · ' + ev.location)];
+    var bf = brandFooter();
+    if (bf) footerChildren.unshift(bf);
     if (ev.studioName) {
       footerChildren.push(h('p', { class: 'lp-credit' }, [
         'Ảnh cưới: ', h('strong', { text: ev.studioName }),

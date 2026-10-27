@@ -23,6 +23,7 @@
       <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Thông tin &amp; nội dung</button>
       <button type="button" class="tab" data-tab="editor" role="tab" aria-selected="false">Thiết kế trang</button>
       <button type="button" class="tab" data-tab="admin" role="tab" aria-selected="false">Danh sách đăng ký</button>
+      <button type="button" class="tab" data-tab="brand" role="tab" aria-selected="false">Brand DNA</button>
     </nav>
     <span class="user-email" id="user-email" hidden></span>
     <button type="button" class="btn btn-ghost" id="btn-auth" hidden>Đăng nhập Google</button>
@@ -123,6 +124,11 @@
 
         <div class="form-side">
         <h2 class="panel-title">Mẫu trang &amp; nội dung AI</h2>
+        <div class="field">
+          <label for="f-brand">Thương hiệu (Brand DNA)</label>
+          <select id="f-brand" name="brand"></select>
+          <p class="hint">Màu, font, logo, giọng văn và liên hệ lấy từ thương hiệu. <a href="#" id="link-brand">Quản lý Brand DNA</a></p>
+        </div>
         <div class="tpl-bar">
           <span class="tpl-swatch" id="tpl-swatch" aria-hidden="true"></span>
           <div class="tpl-bar-text"><span class="hint">Mẫu trang</span><strong id="tpl-name">Tech Workshop</strong></div>
@@ -251,6 +257,13 @@
       </section>
       <section class="ws-panel" data-panel="style" data-title="Giao diện">
         <div class="ws-body" id="side-style">
+        <div class="brand-apply">
+          <label class="st-label" for="ed-brand">Brand DNA</label>
+          <div class="brand-apply-row">
+            <select id="ed-brand" aria-label="Chọn thương hiệu để áp dụng"></select>
+            <button type="button" class="btn btn-ghost btn-small" id="btn-apply-brand">Áp dụng</button>
+          </div>
+        </div>
         <div class="mode-switch" role="radiogroup" aria-label="Chế độ chỉnh giao diện">
           <button type="button" class="mode-btn is-active" data-mode="simple" role="radio" aria-checked="true">Đơn giản<small>Lựa chọn chính</small></button>
           <button type="button" class="mode-btn" data-mode="studio" role="radio" aria-checked="false">Studio<small>Mọi thông số</small></button>
@@ -301,6 +314,21 @@
       <button type="button" class="btn btn-ghost" id="btn-new-2"><span data-icon="plus"></span>Tạo sự kiện mới</button>
     </div>
     <div class="event-grid" id="event-grid"></div>
+  </main>
+
+  <main id="view-brand" class="view brand-view" hidden>
+    <div class="title-row">
+      <div>
+        <h1>Brand DNA</h1>
+        <p class="subline">Thiết lập nhận diện thương hiệu một lần: màu, font, logo, giọng văn, liên hệ. Áp dụng cho mọi landing page chỉ với một cú bấm.</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="btn-brand-new"><span data-icon="plus"></span>Tạo thương hiệu</button>
+    </div>
+    <div class="brand-layout">
+      <nav class="brand-list" id="brand-list" aria-label="Danh sách thương hiệu"></nav>
+      <section class="brand-editor" id="brand-editor" aria-label="Chỉnh thương hiệu"></section>
+      <aside class="brand-preview" id="brand-preview" aria-label="Xem trước thương hiệu"></aside>
+    </div>
   </main>
 
   <main id="view-public" class="public-view" hidden>
@@ -384,6 +412,7 @@
   <script src="js/cloud.js"></script>
   <script src="js/templates.js"></script>
   <script src="js/images.js"></script>
+  <script src="js/brands.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/motion.js"></script>
   <script src="js/page-style.js"></script>

@@ -3,6 +3,7 @@
  */
 (function (root) {
   var EP = root.EP;
+  var B = EP.brands;
   var S = EP.storage;
   var V = EP.validators;
   var $ = function (sel) { return document.querySelector(sel); };
@@ -82,12 +83,15 @@
       sections: (state && state.event.sections) || null,
       style: (state && state.event.style) || null,
       texts: (state && state.event.texts) || null,
-      elStyles: (state && state.event.elStyles) || null
+      elStyles: (state && state.event.elStyles) || null,
+      brandId: $('#f-brand') ? $('#f-brand').value : '',
+      brand: (state && state.event.brand) || null
     };
   }
 
   function fillForm(ev) {
     var f = form.elements;
+    if ($('#f-brand')) { refreshBrandSelects(); $('#f-brand').value = ev.brandId && EP.brands.get(ev.brandId) ? ev.brandId : ''; }
     f.name.value = ev.name || '';
     f.startAt.value = ev.startAt || '';
     f.location.value = ev.location || '';
@@ -214,7 +218,7 @@
       if (kind === 'hero') images.hero = dataUrl;
       if (kind === 'speaker') { images.speakers = images.speakers || {}; images.speakers[index] = dataUrl; }
       if (kind === 'gallery') { images.gallery = images.gallery || []; images.gallery[index] = dataUrl; }
-      if (EP.images.totalBytes(images) > MAX_IMAGE_BYTES) {
+      if (EP.images.totalBytes(images) + ((state.event.brand && state.event.brand.logo) || '').length > MAX_IMAGE_BYTES) {
         toast('Tổng dung lượng ảnh đã đầy (khoảng 900KB). Hãy bớt ảnh hoặc dùng ảnh đơn giản hơn.');
         return;
       }
@@ -1298,6 +1302,8 @@
     add(ev.agenda && ev.agenda.length > 0, 'Có chương trình (agenda)', 'Chưa có chương trình – khách khó hình dung buổi sự kiện', 'warn');
     add(!!Number(ev.capacity), 'Đã đặt số chỗ tối đa (' + ev.capacity + ')', 'Chưa đặt số chỗ – trang sẽ không báo sắp hết chỗ / danh sách chờ', 'warn');
     add(!!(ev.images && ev.images.hero), 'Có ảnh bìa', 'Chưa có ảnh bìa – trang dùng nền màu mặc định', 'warn');
+    var docBytes = JSON.stringify({ e: ev, c: c }).length;
+    add(docBytes < 1000000, 'Dung lượng trang vừa đủ để xuất bản (' + Math.round(docBytes / 1024) + ' KB)', 'Trang quá nặng (' + Math.round(docBytes / 1024) + ' KB, tối đa khoảng 970 KB) – bớt ảnh hoặc dùng logo nhẹ hơn', 'block');
     add(c.source !== 'mock', 'Nội dung do AI thật viết hoặc đã chỉnh tay', 'Nội dung đang là bản AI mô phỏng – nên đọc lại hoặc sửa trực tiếp trước khi gửi khách', 'warn');
     if (TPL.get(ev.templateId).wedding) {
       add(!!ev.studioName, 'Có ghi nguồn studio ảnh cưới', 'Chưa ghi tên studio – thiệp sẽ không có nút "Đặt lịch chụp"', 'warn');
@@ -1461,6 +1467,10 @@
     if (state && state.event.id === ev.id) {
       if (state.event.style && !ev.style) ev.style = state.event.style;
     } else resetHistory();
+    // Brand DNA chọn ở bước 1: áp dụng khi mới chọn (hoặc đổi) thương hiệu; "Không dùng" thì gỡ ra
+    var prevBrand = state && state.event.id === ev.id ? state.event.brandId : null;
+    if (!ev.brandId) { ev.brand = null; }
+    else if (ev.brandId !== prevBrand && B.get(ev.brandId)) B.applyTo(ev, B.get(ev.brandId));
     state = { event: ev, content: content, tone: tone };
     recordHistory();
     if (!saveState()) setMsg('Không lưu được dữ liệu vào trình duyệt.', 'error');
@@ -1875,7 +1885,7 @@
   }
 
   // ---------- Tab ----------
-  var TAB_ORDER = ['events', 'builder', 'editor', 'admin'];
+  var TAB_ORDER = ['events', 'builder', 'editor', 'admin', 'brand'];
   var currentTab = null;
   function switchTab(name) {
     var dir = currentTab && currentTab !== name ? (TAB_ORDER.indexOf(name) > TAB_ORDER.indexOf(currentTab) ? 'forward' : 'back') : null;
@@ -1896,6 +1906,8 @@
     $('#view-editor').hidden = name !== 'editor';
     $('#view-admin').hidden = name !== 'admin';
     $('#view-events').hidden = name !== 'events';
+    $('#view-brand').hidden = name !== 'brand';
+    if (name === 'brand') renderBrandView();
     if (name === 'admin') renderAdmin();
     if (name === 'events') renderEvents();
   }
@@ -1998,6 +2010,7 @@
         { label: 'Tạo trang mới', action: function () { resetAll(); } },
         { label: 'Sự kiện của tôi…', action: function () { switchTab('events'); } },
         { label: 'Đổi mẫu trang…', action: openTemplates },
+        { label: 'Brand DNA…', action: function () { switchTab('brand'); } },
         '-',
         { label: 'Xuất bản / cập nhật trang', disabled: function () { return !state || !C.available; }, action: publish },
         { label: 'Mở trang đã xuất bản', disabled: function () { return !isCloudEvent(); }, action: function () { root.open($('#share-url').value, '_blank', 'noopener'); } },
@@ -2139,6 +2152,243 @@
   }
 
   // Mở app: có sự kiện thì vào "Sự kiện của tôi", chưa có thì vào màn tạo trang
+
+  // ---------- Brand DNA ----------
+  var brandId = null; // thương hiệu đang mở trong màn Brand DNA
+  var TONE_OPTS = [['formal', 'Trang trọng'], ['young', 'Trẻ trung'], ['urgent', 'Gấp rút']];
+
+  function refreshBrandSelects() {
+    var list = B.list();
+    ['#f-brand', '#ed-brand'].forEach(function (sel) {
+      var el = $(sel); if (!el) return;
+      var keep = el.value;
+      el.innerHTML = '';
+      el.add(new Option('Không dùng thương hiệu', ''));
+      list.forEach(function (b) { el.add(new Option(b.name || '(Chưa đặt tên)', b.id)); });
+      el.value = list.some(function (b) { return b.id === keep; }) ? keep : '';
+    });
+    if (state && $('#ed-brand')) $('#ed-brand').value = state.event.brandId && B.get(state.event.brandId) ? state.event.brandId : '';
+  }
+
+  function renderBrandView() {
+    var list = B.list();
+    if (!brandId || !B.get(brandId)) brandId = list[0] ? list[0].id : null;
+    var nav = $('#brand-list');
+    nav.innerHTML = '';
+    list.forEach(function (b) {
+      var a = document.createElement('button'); a.type = 'button';
+      a.className = 'brand-item' + (b.id === brandId ? ' is-active' : '');
+      var sw = document.createElement('span'); sw.className = 'brand-sw'; sw.style.setProperty('--sw1', b.primary || '#131416'); sw.style.setProperty('--sw2', b.accent || b.primary || '#d6336c');
+      if (b.logo) { sw.classList.add('has-logo'); sw.style.backgroundImage = 'url("' + b.logo + '")'; }
+      var t = document.createElement('span'); t.className = 'brand-item-text';
+      var n = document.createElement('strong'); n.textContent = b.name || '(Chưa đặt tên)';
+      var m = document.createElement('small'); m.textContent = b.tagline || 'Chưa có khẩu hiệu';
+      t.appendChild(n); t.appendChild(m);
+      a.appendChild(sw); a.appendChild(t);
+      a.addEventListener('click', function () { brandId = b.id; renderBrandView(); });
+      nav.appendChild(a);
+    });
+    EP.motion.stagger(nav.children);
+    var ed = $('#brand-editor'), pv = $('#brand-preview');
+    if (!brandId) {
+      ed.innerHTML = '<div class="empty-state"><p class="empty-title">Chưa có thương hiệu nào</p><p>Bấm <strong>Tạo thương hiệu</strong> để thiết lập màu, font, logo và giọng văn một lần, rồi áp dụng cho mọi landing page.</p></div>';
+      pv.innerHTML = '';
+      return;
+    }
+    buildBrandEditor(B.get(brandId));
+  }
+
+  function buildBrandEditor(b) {
+    var ed = $('#brand-editor');
+    ed.innerHTML = '';
+    var stamp = document.createElement('span'); stamp.className = 'save-stamp'; stamp.setAttribute('role', 'status');
+    function saveField(k, v, quiet) {
+      b[k] = v;
+      B.save(b);
+      drawPreview(b);
+      if (!quiet) { stamp.textContent = 'Đã lưu'; EP.motion.replay(stamp, 'mo-pop'); refreshBrandSelects(); var it = $('#brand-list .brand-item.is-active strong'); if (it && k === 'name') it.textContent = v || '(Chưa đặt tên)'; }
+    }
+    function section(title, desc) {
+      var sec = document.createElement('section'); sec.className = 'brand-sec';
+      var h = document.createElement('h2'); h.className = 'panel-title'; h.textContent = title; sec.appendChild(h);
+      if (desc) { var d = document.createElement('p'); d.className = 'hint'; d.textContent = desc; sec.appendChild(d); }
+      ed.appendChild(sec);
+      return sec;
+    }
+    function textField(sec, label, k, opts) {
+      opts = opts || {};
+      var f = document.createElement('div'); f.className = 'field';
+      var id = 'bf-' + k;
+      var l = document.createElement('label'); l.htmlFor = id; l.textContent = label;
+      if (opts.required) { var r = document.createElement('span'); r.className = 'req'; r.textContent = ' *'; l.appendChild(r); }
+      var inp = document.createElement(opts.multiline ? 'textarea' : 'input');
+      if (!opts.multiline) inp.type = opts.type || 'text'; else inp.rows = 2;
+      inp.id = id; inp.value = b[k] || ''; inp.maxLength = opts.max || 120; if (opts.placeholder) inp.placeholder = opts.placeholder;
+      var err = document.createElement('p'); err.className = 'error';
+      inp.addEventListener('input', function () { b[k] = inp.value; drawPreview(b); });
+      inp.addEventListener('change', function () {
+        var v = inp.value.trim();
+        var msg = opts.validate ? opts.validate(v) : '';
+        err.textContent = msg || '';
+        inp.toggleAttribute('aria-invalid', !!msg);
+        if (msg) return;
+        saveField(k, v);
+      });
+      f.appendChild(l); f.appendChild(inp);
+      if (opts.hint) { var h = document.createElement('p'); h.className = 'hint'; h.textContent = opts.hint; f.appendChild(h); }
+      f.appendChild(err);
+      sec.appendChild(f);
+      return inp;
+    }
+
+    // Thanh tiêu đề form: tên + dấu "Đã lưu"
+    var head = document.createElement('div'); head.className = 'brand-ed-head';
+    var h2 = document.createElement('p'); h2.className = 'hint'; h2.textContent = 'Mọi thay đổi tự lưu.';
+    head.appendChild(h2); head.appendChild(stamp);
+    ed.appendChild(head);
+
+    var s1 = section('Nhận diện');
+    textField(s1, 'Tên thương hiệu', 'name', { required: true, max: 60, placeholder: 'Ví dụ: FPT Polytechnic', validate: function (v) { return v ? '' : 'Vui lòng nhập tên thương hiệu.'; } });
+    textField(s1, 'Khẩu hiệu', 'tagline', { max: 100, placeholder: 'Ví dụ: Thực học – Thực nghiệp' });
+    var logoRow = document.createElement('div'); logoRow.className = 'field';
+    var ll = document.createElement('span'); ll.className = 'field-label'; ll.textContent = 'Logo';
+    var lbox = document.createElement('div'); lbox.className = 'logo-box';
+    var thumb = document.createElement('div'); thumb.className = 'logo-thumb';
+    function drawThumb() { thumb.innerHTML = ''; if (b.logo) { var im = document.createElement('img'); im.src = b.logo; im.alt = 'Logo ' + (b.name || ''); thumb.appendChild(im); } else thumb.textContent = 'Chưa có logo'; }
+    drawThumb();
+    var up = document.createElement('button'); up.type = 'button'; up.className = 'btn btn-ghost btn-small'; up.innerHTML = EP.icon('image') + (b.logo ? 'Đổi logo' : 'Tải logo lên');
+    up.addEventListener('click', function () {
+      EP.images.pick('logo').then(function (data) {
+        if (data.length > 120000) { toast('Logo quá nặng sau khi nén (' + Math.round(data.length / 1024) + ' KB, tối đa 120 KB). Hãy dùng logo đơn giản hơn, PNG nền trong suốt.'); return; }
+        saveField('logo', data); drawThumb(); up.innerHTML = EP.icon('image') + 'Đổi logo'; EP.motion.replay(thumb, 'mo-img-in'); renderBrandView();
+      }, function (e) { if (e.message !== 'Chưa chọn ảnh.') toast(e.message); });
+    });
+    var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'btn btn-ghost btn-small'; rm.textContent = 'Bỏ logo'; rm.hidden = !b.logo;
+    rm.addEventListener('click', function () { saveField('logo', ''); renderBrandView(); });
+    lbox.appendChild(thumb); lbox.appendChild(up); lbox.appendChild(rm);
+    logoRow.appendChild(ll); logoRow.appendChild(lbox);
+    var lh = document.createElement('p'); lh.className = 'hint'; lh.textContent = 'Nên dùng PNG nền trong suốt. Logo hiện ở đầu landing page.'; logoRow.appendChild(lh);
+    s1.appendChild(logoRow);
+
+    var s2 = section('Màu sắc', 'Để trống để dùng màu của mẫu trang. Ô màu nhận mọi mã: #hex, rgb(), hsl(), tên màu.');
+    var col = function (label, k, fb, hint, against) {
+      s2.appendChild(colorField(label, b[k], fb, hint, function (v, commit) { if (commit === false) { b[k] = v; drawPreview(b); } else saveField(k, v); }, against));
+    };
+    col('Màu chính', 'primary', '#1e2a78', 'Nền phần đầu trang, tiêu đề', function () { return '#ffffff'; });
+    col('Màu nhấn', 'accent', '#d6336c', 'Nút đăng ký, số đếm', function () { return EP.pageStyle.textOn(b.accent || '#d6336c'); });
+    col('Màu chữ', 'textColor', '#131416', '', function () { return b.bgColor || '#ffffff'; });
+    col('Màu nền trang', 'bgColor', '#ffffff', '');
+
+    var s3 = section('Chữ');
+    [['Font tiêu đề', 'headingFont'], ['Font nội dung', 'bodyFont']].forEach(function (f) {
+      var row = document.createElement('div'); row.className = 'field';
+      var l = document.createElement('label'); l.className = 'field-label'; l.htmlFor = 'bc-' + f[1]; l.textContent = f[0];
+      var c = fontCombo({ id: 'bc-' + f[1], label: f[0], allowDefault: true, value: b[f[1]] || '', onPick: function (name) { saveField(f[1], name || ''); buildBrandEditor(b); } });
+      row.appendChild(l); row.appendChild(c.wrap); row.appendChild(c.note);
+      s3.appendChild(row);
+    });
+
+    var s4 = section('Nút & hình khối');
+    s4.appendChild(chipRow('Kiểu nút', [['', 'Theo mẫu']].concat(EP.pageStyle.OPTIONS.button), b.button || '', function (v) { saveField('button', v); buildBrandEditor(b); }));
+    s4.appendChild(chipRow('Bo góc', [['', 'Theo mẫu']].concat(EP.pageStyle.OPTIONS.radius), b.radius || '', function (v) { saveField('radius', v); buildBrandEditor(b); }));
+    textField(s4, 'Chữ trên nút đăng ký', 'ctaText', { max: 32, placeholder: 'Ví dụ: Giữ chỗ ngay' });
+
+    var s5 = section('Giọng văn', 'AI viết nội dung theo đúng giọng này cho mọi sự kiện của thương hiệu.');
+    s5.appendChild(chipRow('Giọng văn mặc định', TONE_OPTS, b.tone || 'formal', function (v) { saveField('tone', v); buildBrandEditor(b); }));
+    textField(s5, 'Khách hàng mục tiêu', 'audience', { multiline: true, max: 200, placeholder: 'Ví dụ: sinh viên năm 2–4 ngành kinh tế, quan tâm việc làm' });
+    textField(s5, 'Từ / cách nói nên dùng', 'voiceUse', { max: 200, placeholder: 'Ví dụ: thực chiến, cơ hội, đồng hành' });
+    textField(s5, 'Từ / cách nói nên tránh', 'voiceAvoid', { max: 200, placeholder: 'Ví dụ: giá rẻ, siêu hot, cam kết 100%' });
+
+    var s6 = section('Liên hệ', 'Hiện ở chân landing page.');
+    textField(s6, 'Hotline', 'hotline', { type: 'tel', max: 20, placeholder: '0912 345 678', validate: function (v) { return !v || /^\+?[\d\s.\-()]{8,20}$/.test(v) ? '' : 'Số điện thoại chưa đúng.'; } });
+    textField(s6, 'Website', 'website', { max: 120, placeholder: 'fpt.edu.vn', validate: function (v) { return !v || B.safeUrl(v) ? '' : 'Địa chỉ website chưa đúng.'; } });
+    textField(s6, 'Fanpage', 'fanpage', { max: 160, placeholder: 'facebook.com/tenfanpage', validate: function (v) { return !v || B.safeUrl(v) ? '' : 'Địa chỉ fanpage chưa đúng.'; } });
+
+    var s7 = section('Xoá thương hiệu', 'Các landing page đã áp dụng vẫn giữ nguyên giao diện và thông tin thương hiệu.');
+    var del = document.createElement('button'); del.type = 'button'; del.className = 'btn btn-danger'; del.innerHTML = EP.icon('trash') + 'Xoá "' + (b.name || 'thương hiệu này') + '"';
+    del.addEventListener('click', function () {
+      if (!root.confirm('Xoá thương hiệu "' + (b.name || '') + '"? Không thể hoàn tác.')) return;
+      EP.motion.collapse($('#brand-list .brand-item.is-active'), function () { B.remove(b.id); brandId = null; refreshBrandSelects(); renderBrandView(); toast('Đã xoá thương hiệu.'); });
+    });
+    s7.appendChild(del);
+    drawPreview(b);
+  }
+
+  // Xem trước: một khối đầu trang thu nhỏ theo đúng màu, font, logo, nút của thương hiệu
+  function drawPreview(b) {
+    var pv = $('#brand-preview');
+    var PS = EP.pageStyle;
+    var primary = b.primary ? PS.solidHex(b.primary) : '#1e2a78';
+    var accent = b.accent || '#d6336c';
+    var hf = b.headingFont ? PS.fontFamilyName('', b.headingFont) : null;
+    var bf = b.bodyFont ? PS.fontFamilyName('', b.bodyFont) : null;
+    if (hf) PS.loadFont(hf); if (bf) PS.loadFont(bf);
+    pv.innerHTML = '';
+    var label = document.createElement('p'); label.className = 'st-label'; label.textContent = 'Xem trước';
+    var card = document.createElement('div'); card.className = 'bp-card';
+    card.style.setProperty('--bp-primary', primary);
+    card.style.setProperty('--bp-accent', accent);
+    card.style.setProperty('--bp-accent-ink', PS.textOn(accent));
+    card.style.setProperty('--bp-text', b.textColor || '#131416');
+    card.style.setProperty('--bp-bg', b.bgColor || '#ffffff');
+    card.style.setProperty('--bp-hfont', hf ? "'" + hf.google + "', " + hf.fallback : 'inherit');
+    card.style.setProperty('--bp-bfont', bf ? "'" + bf.google + "', " + bf.fallback : 'inherit');
+    card.style.setProperty('--bp-radius', { square: '2px', soft: '10px', round: '20px' }[b.radius] || '10px');
+    var hero = document.createElement('div'); hero.className = 'bp-hero';
+    if (b.logo) { var im = document.createElement('img'); im.className = 'bp-logo'; im.src = b.logo; im.alt = ''; hero.appendChild(im); }
+    var h = document.createElement('p'); h.className = 'bp-title'; h.textContent = 'Workshop ' + (b.name || 'thương hiệu của bạn') + ' 2026';
+    var btn = document.createElement('span'); btn.className = 'bp-btn is-' + (b.button || 'solid'); btn.textContent = b.ctaText || 'Đăng ký tham gia';
+    hero.appendChild(h); hero.appendChild(btn);
+    var body = document.createElement('div'); body.className = 'bp-body';
+    var p = document.createElement('p'); p.textContent = 'Đoạn giới thiệu sẽ hiện bằng font nội dung và màu chữ của thương hiệu.';
+    var f = document.createElement('p'); f.className = 'bp-foot';
+    f.textContent = 'Tổ chức bởi ' + (b.name || '…') + (b.hotline ? ' · ' + b.hotline : '') + (b.website ? ' · ' + b.website.replace(/^https?:\/\//, '') : '');
+    body.appendChild(p);
+    if (b.tagline) { var tg = document.createElement('p'); tg.className = 'bp-tag'; tg.textContent = b.tagline; body.appendChild(tg); }
+    body.appendChild(f);
+    card.appendChild(hero); card.appendChild(body);
+    pv.appendChild(label); pv.appendChild(card);
+    var tone = document.createElement('p'); tone.className = 'hint';
+    tone.textContent = 'Giọng văn: ' + (TONE_OPTS.filter(function (t) { return t[0] === (b.tone || 'formal'); })[0][1]) + (b.audience ? ' · cho ' + b.audience : '');
+    pv.appendChild(tone);
+  }
+
+  function newBrand() {
+    var b = B.blank();
+    b.name = 'Thương hiệu mới';
+    B.save(b);
+    brandId = b.id;
+    refreshBrandSelects();
+    if ($('#view-brand').hidden) switchTab('brand'); else renderBrandView();
+    setTimeout(function () { var i = $('#bf-name'); if (i) { i.focus(); i.select(); } }, 60);
+  }
+
+  // Áp dụng thương hiệu vào trang đang mở (trang Thiết kế)
+  function applyBrandToPage(id) {
+    if (!state) return;
+    if (!id) {
+      state.event.brandId = ''; state.event.brand = null;
+      persist(); swapLanding(); toast('Đã bỏ thương hiệu khỏi trang.');
+      return;
+    }
+    var b = B.get(id);
+    if (!b) return;
+    B.applyTo(state.event, b);
+    if (b.tone) { form.elements.tone.value = b.tone; state.tone = b.tone; }
+    $('#f-brand').value = id;
+    persist(); swapLanding();
+    toast('Đã áp dụng Brand DNA "' + b.name + '": màu, font, logo, nút và liên hệ.');
+  }
+
+  $('#btn-brand-new').addEventListener('click', newBrand);
+  $('#link-brand').addEventListener('click', function (e) { e.preventDefault(); switchTab('brand'); });
+  $('#f-brand').addEventListener('change', function () {
+    var b = B.get(this.value);
+    if (b && b.tone) form.elements.tone.value = b.tone;
+  });
+  $('#btn-apply-brand').addEventListener('click', function () { applyBrandToPage($('#ed-brand').value); });
+  refreshBrandSelects();
+
   EP.icons.hydrate();
   switchTab(Object.keys(S.read('events', {})).length ? 'events' : 'builder');
   root.addEventListener('resize', function () { EP.motion.indicator($('.tabs')); });

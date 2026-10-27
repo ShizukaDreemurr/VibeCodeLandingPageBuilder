@@ -25,6 +25,19 @@
   }
 
   // Prompt dùng chung cho Gemini API và cho nút "Copy prompt"
+  // Brand DNA → thêm khối THƯƠNG HIỆU vào prompt (tên, khẩu hiệu, khách hàng mục tiêu, từ nên dùng/tránh)
+  function brandBlock(ev) {
+    var b = ev.brand;
+    if (!b || !b.name) return [];
+    var out = ['', 'THƯƠNG HIỆU TỔ CHỨC', 'Tên: ' + b.name];
+    if (b.tagline) out.push('Khẩu hiệu: ' + b.tagline);
+    if (b.audience) out.push('Khách hàng mục tiêu: ' + b.audience);
+    if (b.voiceUse) out.push('Nên dùng các từ/cách nói: ' + b.voiceUse);
+    if (b.voiceAvoid) out.push('TRÁNH các từ/cách nói: ' + b.voiceAvoid);
+    out.push('Giữ đúng giọng của thương hiệu này trong mọi câu.');
+    return out;
+  }
+
   function buildPrompt(ev, tone) {
     var speakers = (ev.speakers || []).map(function (s) {
       return '- ' + s.name + (s.title ? ' (' + s.title + ')' : '');
@@ -40,6 +53,7 @@
         'Địa điểm: ' + ev.location,
         'Cô dâu, chú rể:\n' + (speakers || '- (chưa có)'),
         'Lời nhắn của gia đình: ' + (ev.earlyBird || 'không có'),
+      ].concat(brandBlock(ev), [
         '',
         'YÊU CẦU',
         '1. headline: lời mời ngắn gọn, tối đa 90 ký tự.',
@@ -49,7 +63,7 @@
         '',
         'Chỉ trả về đúng một khối JSON, không giải thích, không markdown:',
         '{"headline": "...", "description": "...", "benefits": ["...", "...", "..."]}'
-      ].join('\n');
+      ]).join('\n');
     }
     return [
       'Bạn là copywriter marketing sự kiện tại Việt Nam.',
@@ -61,6 +75,7 @@
       'Địa điểm: ' + ev.location,
       'Diễn giả:\n' + (speakers || '- (chưa có)'),
       'Ưu đãi đăng ký sớm: ' + (ev.earlyBird || 'không có'),
+    ].concat(brandBlock(ev), [
       '',
       'YÊU CẦU',
       '1. headline: tối đa 90 ký tự, nêu giá trị chính của sự kiện.',
@@ -70,7 +85,7 @@
       '',
       'Chỉ trả về đúng một khối JSON, không giải thích, không markdown:',
       '{"headline": "...", "description": "...", "benefits": ["...", "...", "..."]}'
-    ].join('\n');
+    ]).join('\n');
   }
 
   // Lấy JSON ra khỏi câu trả lời của AI: bỏ ```json, lời dẫn, nháy cong, dấu phẩy thừa

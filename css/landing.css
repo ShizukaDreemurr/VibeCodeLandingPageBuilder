@@ -259,3 +259,12 @@ html.motion-off .landing *, html.motion-off .landing *::before { animation: none
 .landing .lp-section p:not(.lp-social-proof):not(.lp-ended):not(.lp-error):not(.lp-form-msg) { text-indent: var(--lp-indent, 0); text-align: var(--lp-balign, inherit); margin-top: 0; margin-bottom: var(--lp-para, 1em); }
 .landing .lp-benefits { gap: var(--lp-para, 20px); }
 .landing .lp-benefits li { text-align: var(--lp-balign, inherit); }
+
+/* Brand DNA */
+.lp-logo { display: block; max-height: 56px; max-width: 220px; width: auto; height: auto; object-fit: contain; margin: 0 0 28px; }
+.st-heroAlign-center .lp-logo, .tpl-wedding:not(.st-heroAlign-left) .lp-logo { margin-left: auto; margin-right: auto; }
+.lp-brand { margin-bottom: 16px; }
+.lp-brand-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; color: var(--lp-text); }
+.lp-brand-line a { color: var(--lp-primary); font-weight: 600; text-decoration: none; }
+.lp-brand-line a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.lp-brand-tagline { font-style: italic; }
