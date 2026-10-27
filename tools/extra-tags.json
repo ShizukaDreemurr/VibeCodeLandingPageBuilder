@@ -1,0 +1,2665 @@
+{
+ "tech": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "edu": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz",
+   "family"
+  ],
+  "season": [
+   "summer_enroll"
+  ]
+ },
+ "beauty": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "fnb": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "finance": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "online"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "wedding": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "wedding_season"
+  ]
+ },
+ "hackathon": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "demo-day-startup": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "bootcamp-lap-trinh": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "trai-he-thieu-nhi": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "summer_enroll"
+  ]
+ },
+ "clb-tieng-anh": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free",
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "ngay-hoi-tuyen-sinh": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz",
+   "family"
+  ],
+  "season": [
+   "summer_enroll"
+  ]
+ },
+ "giai-chay-marathon": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c",
+   "genz"
+  ],
+  "season": []
+ },
+ "khai-truong-gym": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "retreat-yoga": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "kham-suc-khoe-mien-phi": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family",
+   "b2c"
+  ],
+  "season": []
+ },
+ "mo-ban-du-an": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "nha-mau-open-house": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "hoi-thao-chung-khoan": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "webinar-bao-hiem": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "online"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family",
+   "b2c"
+  ],
+  "season": []
+ },
+ "tiec-tat-nien": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": [
+   "tet",
+   "year_end"
+  ]
+ },
+ "ngay-hoi-viec-lam": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz",
+   "b2b"
+  ],
+  "season": []
+ },
+ "dao-tao-lanh-dao": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "chay-bo-gay-quy": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "donation"
+  ],
+  "audience": [
+   "family",
+   "b2c"
+  ],
+  "season": []
+ },
+ "gala-gay-quy": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "donation"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "hien-mau-tinh-nguyen": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "cau-lac-bo-sach": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "webinar-an-ninh-mang": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "online"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "hoi-nghi-khach-hang": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": [
+   "year_end"
+  ]
+ },
+ "hoi-thao-tai-chinh-sme": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "ngay-hoi-me-be": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "wedding-redgold": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "wedding_season"
+  ]
+ },
+ "wedding-minimal": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "wedding_season"
+  ]
+ },
+ "wedding-garden": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "wedding_season"
+  ]
+ },
+ "wedding-engagement": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "wedding_season"
+  ]
+ },
+ "party-first-birthday": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "party-longevity": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "party-class-reunion": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "show-live-concert": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "show-standup-comedy": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz",
+   "b2c"
+  ],
+  "season": []
+ },
+ "show-film-screening": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "art-exhibition-opening": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "art-photo-workshop": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c",
+   "genz"
+  ],
+  "season": []
+ },
+ "art-pottery-workshop": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "art-calligraphy-spring": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "tet"
+  ]
+ },
+ "shop-fashion-launch": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "shop-popup-market": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "food-buffet-opening": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "food-wine-tasting": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "food-tea-tasting": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "food-cooking-class": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "life-salon-opening": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "trip-tour-presentation": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "trip-resort-staycation": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "family",
+   "b2c"
+  ],
+  "season": []
+ },
+ "life-midautumn-festival": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "midautumn"
+  ]
+ },
+ "life-book-launch": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x3-esports-tournament": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "hybrid"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "x3-ai-product-launch": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "hybrid"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "x3-saas-user-conference": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "hybrid"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "x3-developer-meetup": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b",
+   "genz"
+  ],
+  "season": []
+ },
+ "x3-coworking-opening": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "x3-franchise-seminar": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "x3-trade-seminar": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "x3-ocop-fair": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "x3-realestate-networking": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "x3-bank-appreciation": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x3-car-test-drive": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x3-ev-launch": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x3-pharmacy-opening": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x3-dental-checkup": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "x3-mental-health-talk": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x3-parenting-workshop": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "x3-ielts-mock-test": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": [
+   "summer_enroll"
+  ]
+ },
+ "x3-scholarship-ceremony": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz",
+   "family"
+  ],
+  "season": [
+   "summer_enroll"
+  ]
+ },
+ "x3-graduation-ceremony": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz",
+   "family"
+  ],
+  "season": [
+   "summer_enroll"
+  ]
+ },
+ "x3-teachers-day": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": [
+   "holiday"
+  ]
+ },
+ "x3-alumni-homecoming": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "x3-internship-open-day": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz",
+   "b2b"
+  ],
+  "season": []
+ },
+ "x3-volunteer-cleanup": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "x3-tree-planting": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "donation"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x3-animal-adoption": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family",
+   "b2c"
+  ],
+  "season": []
+ },
+ "x4-kpop-dance-cover": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "x4-music-festival-outdoor": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "x4-rooftop-dj-night": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "x4-halloween-party": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": [
+   "holiday"
+  ]
+ },
+ "x4-christmas-market": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": [
+   "year_end"
+  ]
+ },
+ "x4-countdown-party": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": [
+   "year_end"
+  ]
+ },
+ "x4-tet-family-festival": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "tet"
+  ]
+ },
+ "x4-valentine-dinner": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": [
+   "holiday"
+  ]
+ },
+ "x4-womens-day-workshop": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": [
+   "holiday"
+  ]
+ },
+ "x4-childrens-day": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "holiday"
+  ]
+ },
+ "x4-kids-birthday": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "x4-wedding-expo": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": [
+   "wedding_season"
+  ]
+ },
+ "x4-tan-gia": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "x4-pet-meetup": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "x4-cosplay-convention": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "x4-spa-opening": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x4-trekking-tour": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz",
+   "b2c"
+  ],
+  "season": []
+ },
+ "x4-glamping-getaway": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "x4-street-food-festival": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c",
+   "genz"
+  ],
+  "season": []
+ },
+ "x4-bakery-opening": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x4-vegan-cooking-class": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "x4-makeup-masterclass": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": [
+   "wedding_season"
+  ]
+ },
+ "x4-perfume-workshop": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c",
+   "genz"
+  ],
+  "season": []
+ },
+ "x4-fashion-runway": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "x4-clothes-swap": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "dr-devops-cloud-summit": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-web3-gaming-forum": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-ecommerce-tech-expo": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-iot-smart-home-demo": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-microservices-masterclass": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-luyen-thi-sat-cap-toc": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": [
+   "summer_enroll"
+  ]
+ },
+ "dr-public-speaking-tre-em": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "dr-ky-nang-sales-b2b": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-lap-trinh-robot-nhi": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "dr-makeup-co-dau-master": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": [
+   "wedding_season"
+  ]
+ },
+ "dr-phun-xam-tham-my-expo": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-ra-mat-my-pham-organic": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-cham-soc-toc-chuyen-sau": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-spa-franchise-seminar": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-nail-art-artistry-class": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-barista-pha-che-pro": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-khai-truong-nha-hang-lau": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-gala-bep-truong-viet": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-tasting-menu-bo-my": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-lop-banh-sinh-nhat": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-dau-tu-bds-dong-tien": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-phan-tich-ky-thuat-coin": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-thue-doanh-nghiep-2026": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-lo-trinh-ipo-doanh-nghiep": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-day-trading-masterclass": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-tiec-sinh-nhat-18-tuoi": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "dr-ky-niem-10-nam-cuoi": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": []
+ },
+ "dr-tiec-chia-tay-ba-lo": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "dr-dinh-duong-chua-lanh": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-suc-khoe-cot-song": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-training-hlv-pilates": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-tam-ly-hoc-dam-dong": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "online"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-dua-xe-dap-dia-hinh": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-mo-ban-biet-thu-bien": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-bds-cong-nghiep-forum": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-tour-do-thi-sinh-thai": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "dr-exhibition-vat-lieu-xanh": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-gala-tri-on-nha-dau-tu": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-moi-gioi-bds-trieu-do": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-expo-du-lich-bien-he": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "dr-tour-van-hoa-di-san": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-dot-pha-lu-hanh-so": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-caravan-xuyen-viet": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-team-building-doanh-nghiep": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-edm-music-festival-he": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "dr-chuong-xoay-chua-lanh": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-trien-lam-game-pc": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "genz"
+  ],
+  "season": []
+ },
+ "dr-workshop-tai-che-rac": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-giai-cau-long-phong-trao": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b",
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-dem-nhac-cho-em": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid",
+   "donation"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-cho-phien-nong-san": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": []
+ },
+ "dr-gala-dong-huong-dau-xuan": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "family"
+  ],
+  "season": [
+   "tet"
+  ]
+ },
+ "dr-black-friday-pop-up": {
+  "scale": [
+   "mass"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": [
+   "year_end"
+  ]
+ },
+ "dr-launch-bo-tap-gym-moi": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-vip-night-tri-on-khach": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-decor-nha-cua-mua-tet": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c",
+   "family"
+  ],
+  "season": [
+   "tet"
+  ]
+ },
+ "dr-khai-truong-cua-hang-247": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-workshop-cam-hoa-tet": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": [
+   "tet"
+  ]
+ },
+ "dr-ve-ve-tranh-canvas": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-dem-tho-nhac-trinh": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-handcrafted-leather-class": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-ra-mat-bo-trang-suc": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-nen-thom-thu-gian": {
+  "scale": [
+   "intimate"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
+ },
+ "dr-digital-transformation-summit": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "paid"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": []
+ },
+ "dr-town-hall-cuoi-nam": {
+  "scale": [
+   "large"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2b"
+  ],
+  "season": [
+   "year_end"
+  ]
+ }
+}

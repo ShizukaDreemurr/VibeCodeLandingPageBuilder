@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '1.7.0',
+    version: '1.8.0',
     date: '2026-10-27',
-    notes: '106 mẫu; trang chọn mẫu lọc đúng (khớp đủ / gần đúng), tìm kiếm không dấu, đếm số mẫu từng lựa chọn, sắp xếp',
+    notes: '171 mẫu; 5 bộ lọc nâng cao: quy mô, hình thức, chi phí, đối tượng, mùa/dịp lễ',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
