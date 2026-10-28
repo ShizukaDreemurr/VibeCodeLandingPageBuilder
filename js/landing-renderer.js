@@ -267,7 +267,7 @@
     var brand = ev.brand && ev.brand.name ? ev.brand : null;
     function brandLogo() {
       if (!brand || !brand.logo || !/^data:image\/(png|jpeg|webp);base64,/.test(brand.logo)) return null;
-      var logo = mark(h('img', { class: 'lp-logo', src: brand.logo, alt: brand.name }), 'brand.logo', 'Logo thương hiệu', 'box');
+      var logo = mark(h('img', { class: 'lp-logo', src: brand.logo, alt: brand.name, width: 160, height: 56, decoding: 'async' }), 'brand.logo', 'Logo thương hiệu', 'box');
       if (editable) logo.setAttribute('data-el-image', 'logo');
       return logo;
     }
@@ -275,8 +275,8 @@
       if (!brand) return null;
       var parts = [h('span', {}, ['Tổ chức bởi ', h('strong', { text: brand.name })])];
       if (brand.hotline) parts.push(h('a', { href: 'tel:' + brand.hotline, text: brand.hotline }));
-      if (brand.website && isSafeUrl(brand.website)) parts.push(h('a', { href: brand.website, target: '_blank', rel: 'noopener', text: brand.website.replace(/^https?:\/\//, '').replace(/\/$/, '') }));
-      if (brand.fanpage && isSafeUrl(brand.fanpage)) parts.push(h('a', { href: brand.fanpage, target: '_blank', rel: 'noopener', text: 'Fanpage' }));
+      if (brand.website && isSafeUrl(brand.website)) parts.push(h('a', { href: brand.website, target: '_blank', rel: 'noopener nofollow', text: brand.website.replace(/^https?:\/\//, '').replace(/\/$/, '') }));
+      if (brand.fanpage && isSafeUrl(brand.fanpage)) parts.push(h('a', { href: brand.fanpage, target: '_blank', rel: 'noopener nofollow', text: 'Fanpage' }));
       var line = h('p', { class: 'lp-brand-line' }, parts);
       var wrap = h('div', { class: 'lp-brand' }, [line, brand.tagline ? TX('p', { class: 'lp-brand-tagline' }, 'brand.tagline', 'Khẩu hiệu thương hiệu', brand.tagline) : null]);
       return mark(wrap, 'brand.footer', 'Thông tin thương hiệu', 'box');
@@ -333,7 +333,7 @@
       h('div', { class: 'lp-speakers' }, ev.speakers.map(function (s, i) {
         var photo = speakerPhotos[i];
         var avatar = photo
-          ? h('img', { class: 'lp-avatar', src: photo, alt: s.name })
+          ? h('img', { class: 'lp-avatar', src: photo, alt: s.name, width: 64, height: 64, loading: 'lazy', decoding: 'async' })
           : h('div', { class: 'lp-avatar', 'aria-hidden': 'true', text: s.name.trim().split(/\s+/).pop().charAt(0).toUpperCase() });
         mark(avatar, 'speaker.avatar.' + i, 'Ảnh diễn giả', 'box');
         if (editable && photo) avatar.setAttribute('data-el-image', 'speaker:' + i);
@@ -352,7 +352,7 @@
       var cells = [];
       for (var g = 0; g < GALLERY_SLOTS; g++) {
         if (pics[g]) {
-          var gimg = h('img', { src: pics[g], alt: 'Ảnh cưới ' + (g + 1), loading: 'lazy' });
+          var gimg = h('img', { src: pics[g], alt: 'Ảnh sự kiện ' + (g + 1), width: 400, height: 300, loading: 'lazy', decoding: 'async' });
           if (editable) { gimg.setAttribute('data-el-image', 'gallery:' + g); gimg.setAttribute('data-el', 'gallery.img.' + g); gimg.setAttribute('data-el-label', 'Ảnh album ' + (g + 1)); gimg.setAttribute('data-el-kind', 'box'); }
           cells.push(h('div', { class: 'lp-gallery-item' }, [gimg, imageButton('gallery:' + g, 'Đổi'), editButton('gallery:' + g)]));
         }
@@ -488,7 +488,7 @@
     if (ev.studioName) {
       footerChildren.push(h('p', { class: 'lp-credit' }, [
         'Ảnh cưới: ', h('strong', { text: ev.studioName }),
-        isSafeUrl(ev.studioUrl) ? h('a', { class: 'lp-credit-cta', href: ev.studioUrl, target: '_blank', rel: 'noopener', 'data-funnel': 'studio', text: 'Đặt lịch chụp' }) : null
+        isSafeUrl(ev.studioUrl) ? h('a', { class: 'lp-credit-cta', href: ev.studioUrl, target: '_blank', rel: 'noopener nofollow', 'data-funnel': 'studio', text: 'Đặt lịch chụp' }) : null
       ]));
     }
     if (opts.appUrl) {

@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '1.10.0',
+    version: '1.11.0',
     date: '2026-10-27',
-    notes: 'Danh sách đăng ký: chọn landing page trước, số liệu riêng từng trang',
+    notes: 'Chuẩn SEO: thẻ meta, Open Graph, dữ liệu có cấu trúc Event/FAQ, robots, sitemap, trang 404, mục SEO & chia sẻ',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

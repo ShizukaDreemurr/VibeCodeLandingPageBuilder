@@ -3,16 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Xclipse – Tạo landing page sự kiện trong 5 phút</title>
+  <title>Xclipse – Tạo landing page sự kiện trong 5 phút bằng AI</title>
+  <meta name="description" content="Xclipse giúp bạn tạo landing page sự kiện bằng AI: nhập thông tin, nhận trang đăng ký có đếm ngược, mã QR và danh sách khách. Miễn phí, dùng thử ngay!">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/">
+  <meta name="theme-color" content="#131416">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Xclipse">
+  <meta property="og:title" content="Xclipse – Tạo landing page sự kiện trong 5 phút bằng AI">
+  <meta property="og:description" content="Xclipse giúp bạn tạo landing page sự kiện bằng AI: nhập thông tin, nhận trang đăng ký có đếm ngược, mã QR và danh sách khách. Miễn phí, dùng thử ngay!">
+  <meta property="og:url" content="https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/">
+  <meta property="og:image" content="https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Xclipse – tạo landing page sự kiện bằng AI">
+  <meta property="og:locale" content="vi_VN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Xclipse – Tạo landing page sự kiện trong 5 phút bằng AI">
+  <meta name="twitter:description" content="Xclipse giúp bạn tạo landing page sự kiện bằng AI: nhập thông tin, nhận trang đăng ký có đếm ngược, mã QR và danh sách khách. Miễn phí, dùng thử ngay!">
+  <meta name="twitter:image" content="https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/og-image.jpg">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Xclipse", "url": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "inLanguage": "vi", "description": "Xclipse giúp bạn tạo landing page sự kiện bằng AI: nhập thông tin, nhận trang đăng ký có đếm ngược, mã QR và danh sách khách. Miễn phí, dùng thử ngay!", "image": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/og-image.jpg", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "VND"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Xclipse", "url": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/", "logo": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/apple-touch-icon.png"}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Xclipse", "url": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/", "inLanguage": "vi"}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;700;800&family=Nunito:wght@400;600;800&family=Lora:wght@500;700&display=swap">
-  <link rel="stylesheet" href="css/tokens.css?v=1.10.0">
-  <link rel="stylesheet" href="css/app.css?v=1.10.0">
-  <link rel="stylesheet" href="css/landing.css?v=1.10.0">
+  <link rel="stylesheet" href="css/tokens.css?v=1.11.0">
+  <link rel="stylesheet" href="css/app.css?v=1.11.0">
+  <link rel="stylesheet" href="css/landing.css?v=1.11.0">
 </head>
 <body>
+  <a class="skip-link" href="#view-builder" id="skip-link">Bỏ qua, tới nội dung chính</a>
   <header class="topbar">
     <a class="brand" href="./" aria-label="Xclipse – trang chủ">
       <svg class="brand-mark" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15.5" cy="10" r="7" fill="var(--accent)"/></svg>
@@ -192,7 +216,7 @@
     <div class="editor-bar">
       <button type="button" class="icon-btn" id="btn-back-info" aria-label="Sửa thông tin &amp; nội dung" title="Sửa thông tin &amp; nội dung"><span data-icon="arrow-left"></span></button>
       <nav class="menubar" id="menubar" role="menubar" aria-label="Menu trang thiết kế"></nav>
-      <h1 id="editor-title">Thiết kế trang</h1>
+      <h2 id="editor-title">Thiết kế trang</h2>
       <span class="pill" id="editor-status">Bản nháp</span>
       <span class="mock-note" id="mock-note" hidden>Dữ liệu AI mô phỏng</span>
       <span class="sheet-status" id="sheet-status" hidden></span>
@@ -292,6 +316,36 @@
         <button type="button" class="btn btn-ghost btn-small" id="btn-export-html"><span data-icon="download"></span>Tải file HTML</button>
       </div>
       <p class="hint">File HTML chạy độc lập (mở bằng trình duyệt, đưa lên hosting bất kỳ). Đếm ngược và biến số tự chạy; nút đăng ký dẫn về trang đã xuất bản.</p>
+      <h2 class="panel-title">SEO &amp; chia sẻ</h2>
+      <p class="hint">Giúp trang hiện đẹp trên Google và khi gửi link qua Zalo, Facebook. Để trống để dùng gợi ý tự động.</p>
+      <div class="field">
+        <label for="seo-title">Tiêu đề SEO</label>
+        <input id="seo-title" type="text" autocomplete="off" aria-describedby="seo-title-count">
+        <p class="seo-count" id="seo-title-count" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for="seo-desc">Mô tả SEO</label>
+        <textarea id="seo-desc" rows="3" autocomplete="off" aria-describedby="seo-desc-count"></textarea>
+        <p class="seo-count" id="seo-desc-count" aria-live="polite"></p>
+      </div>
+      <button type="button" class="btn btn-ghost btn-small" id="btn-seo-reset">Dùng gợi ý tự động</button>
+      <div class="seo-prev" aria-label="Xem trước kết quả Google">
+        <p class="seo-prev-label">Trên Google</p>
+        <div class="serp" id="serp-prev">
+          <p class="serp-url" id="serp-url"></p>
+          <p class="serp-title" id="serp-title"></p>
+          <p class="serp-desc" id="serp-desc"></p>
+        </div>
+        <p class="seo-prev-label">Khi chia sẻ Facebook / Zalo</p>
+        <div class="fbcard" id="fb-prev">
+          <img id="fb-img" alt="" width="1200" height="630">
+          <div class="fbcard-body">
+            <p class="fbcard-host" id="fb-host"></p>
+            <p class="fbcard-title" id="fb-title"></p>
+            <p class="fbcard-desc" id="fb-desc"></p>
+          </div>
+        </div>
+      </div>
       <h2 class="panel-title">Xem thử trạng thái</h2>
         <label class="sim-label" id="sim-wrap" hidden><span data-icon="clock"></span>
           <select id="sim-state" aria-label="Xem thử trạng thái trang">
@@ -469,28 +523,29 @@
   <script src="vendor/firebase/firebase-auth-compat.js"></script>
   <script src="vendor/firebase/firebase-firestore-compat.js"></script>
   <script src="vendor/qrcode/qrcode.js"></script>
-  <script src="js/firebase-config.js?v=1.10.0"></script>
-  <script src="js/storage.js?v=1.10.0"></script>
-  <script src="js/validators.js?v=1.10.0"></script>
-  <script src="js/event-status.js?v=1.10.0"></script>
-  <script src="js/registrations.js?v=1.10.0"></script>
-  <script src="js/content-generator.js?v=1.10.0"></script>
-  <script src="js/ai-service.js?v=1.10.0"></script>
-  <script src="js/sheet-sync.js?v=1.10.0"></script>
-  <script src="js/cloud.js?v=1.10.0"></script>
-  <script src="js/templates-data.js?v=1.10.0"></script>
-  <script src="js/templates.js?v=1.10.0"></script>
-  <script src="js/images.js?v=1.10.0"></script>
-  <script src="js/image-editor.js?v=1.10.0"></script>
-  <script src="js/brands.js?v=1.10.0"></script>
-  <script src="js/icons.js?v=1.10.0"></script>
-  <script src="js/motion.js?v=1.10.0"></script>
-  <script src="js/page-style.js?v=1.10.0"></script>
-  <script src="js/lp-utils.js?v=1.10.0"></script>
-  <script src="js/landing-renderer.js?v=1.10.0"></script>
-  <script src="js/inspector.js?v=1.10.0"></script>
-  <script src="js/workspace.js?v=1.10.0"></script>
-  <script src="js/version.js?v=1.10.0"></script>
-  <script src="js/app.js?v=1.10.0"></script>
+  <script defer src="js/firebase-config.js?v=1.11.0"></script>
+  <script defer src="js/storage.js?v=1.11.0"></script>
+  <script defer src="js/validators.js?v=1.11.0"></script>
+  <script defer src="js/event-status.js?v=1.11.0"></script>
+  <script defer src="js/registrations.js?v=1.11.0"></script>
+  <script defer src="js/content-generator.js?v=1.11.0"></script>
+  <script defer src="js/ai-service.js?v=1.11.0"></script>
+  <script defer src="js/sheet-sync.js?v=1.11.0"></script>
+  <script defer src="js/cloud.js?v=1.11.0"></script>
+  <script defer src="js/templates-data.js?v=1.11.0"></script>
+  <script defer src="js/templates.js?v=1.11.0"></script>
+  <script defer src="js/images.js?v=1.11.0"></script>
+  <script defer src="js/image-editor.js?v=1.11.0"></script>
+  <script defer src="js/brands.js?v=1.11.0"></script>
+  <script defer src="js/icons.js?v=1.11.0"></script>
+  <script defer src="js/motion.js?v=1.11.0"></script>
+  <script defer src="js/page-style.js?v=1.11.0"></script>
+  <script defer src="js/lp-utils.js?v=1.11.0"></script>
+  <script defer src="js/seo.js?v=1.11.0"></script>
+  <script defer src="js/landing-renderer.js?v=1.11.0"></script>
+  <script defer src="js/inspector.js?v=1.11.0"></script>
+  <script defer src="js/workspace.js?v=1.11.0"></script>
+  <script defer src="js/version.js?v=1.11.0"></script>
+  <script defer src="js/app.js?v=1.11.0"></script>
 </body>
 </html>

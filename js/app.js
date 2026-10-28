@@ -201,6 +201,7 @@
       elStylesBy: (state && state.event.elStylesBy) || null,
       rich: (state && state.event.rich) || null,
       blocks: (state && state.event.blocks) || null,
+      seo: (state && state.event.seo) || null,
       brandId: $('#f-brand') ? $('#f-brand').value : '',
       brand: (state && state.event.brand) || null
     };
@@ -1517,6 +1518,7 @@
 
   function renderLanding() {
     if (!state) return;
+    updateSeoUi();
     $('#mock-note').hidden = state.content.source !== 'mock';
     syncSimUi();
     if (!livePreview) {
@@ -1663,6 +1665,19 @@
     var docBytes = JSON.stringify({ e: ev, c: c }).length;
     add(docBytes < 1000000, 'Dung lượng trang vừa đủ để xuất bản (' + Math.round(docBytes / 1024) + ' KB)', 'Trang quá nặng (' + Math.round(docBytes / 1024) + ' KB, tối đa khoảng 970 KB) – bớt ảnh hoặc dùng logo nhẹ hơn', 'block');
     add(c.source !== 'mock', 'Nội dung do AI thật viết hoặc đã chỉnh tay', 'Nội dung đang là bản AI mô phỏng – nên đọc lại hoặc sửa trực tiếp trước khi gửi khách', 'warn');
+    // SEO (chỉ gợi ý, không chặn xuất bản)
+    var SEO = EP.seo, sr = SEO.resolve(ev, c), tpl0 = TPL.get(ev.templateId);
+    var tl = sr.title.length, dl = sr.description.length;
+    add(tl >= 30 && tl <= 60, 'SEO: tiêu đề Google dài ' + tl + ' ký tự (30–60 là đẹp)', 'SEO: tiêu đề Google dài ' + tl + ' ký tự – nên 30–60 (sửa ở bảng Xuất bản › SEO & chia sẻ)', 'warn');
+    add(dl >= 70 && dl <= 160, 'SEO: mô tả dài ' + dl + ' ký tự (nên 150–160)', 'SEO: mô tả dài ' + dl + ' ký tự – nên 70–160, tốt nhất 150–160', 'warn');
+    add(SEO.hasShareImage(ev, tpl0), 'SEO: có ảnh để hiện khi chia sẻ link', 'SEO: chưa có ảnh chia sẻ – thêm ảnh bìa để link gửi Zalo/Facebook đẹp hơn', 'warn');
+    var hl = c.headline.length;
+    add(hl >= 20 && hl <= 70, 'SEO: tiêu đề chính (H1) dài ' + hl + ' ký tự', 'SEO: tiêu đề chính (H1) dài ' + hl + ' ký tự – nên 20–70', 'warn');
+    var sps = ev.speakers || [], photos = (ev.images && ev.images.speakers) || {};
+    var noName = sps.filter(function (sp, i) { return photos[i] && !String(sp.name || '').trim(); }).length;
+    add(noName === 0, 'SEO: ảnh diễn giả đều có tên (alt)', 'SEO: ' + noName + ' ảnh diễn giả chưa có tên – thêm tên để ảnh có mô tả (alt)', 'warn');
+    var hasFaq = currentSections().some(function (x) { return x.key === 'faq' && x.visible; });
+    add(hasFaq, 'SEO: có khối Hỏi đáp (FAQ), Google có thể hiện câu hỏi thường gặp', 'Gợi ý SEO: thêm khối Hỏi đáp (FAQ) để Google có thể hiện câu hỏi thường gặp', 'info');
     if (TPL.get(ev.templateId).wedding) {
       add(!!ev.studioName, 'Có ghi nguồn studio ảnh cưới', 'Chưa ghi tên studio – thiệp sẽ không có nút "Đặt lịch chụp"', 'warn');
     }
@@ -2782,6 +2797,75 @@
   }
   function previewOpen() { return !!(pv && !pv.root.hidden && !pv.root.classList.contains('is-leaving')); }
 
+  // ---------- SEO & chia sẻ ----------
+  var seoTimer = null;
+  // Gom mọi thẻ SEO của một sự kiện: dùng cho trang ?e=<mã> và file HTML xuất
+  function seoMeta(ev, content, container, url, count) {
+    var SEO = EP.seo, tpl = TPL.get(ev.templateId), r = SEO.resolve(ev, content);
+    var image = SEO.imageFor(ev, tpl, root.location.href);
+    var jsonld = [SEO.eventJsonLd(ev, content, { url: url, image: image, count: count })];
+    var faq = SEO.faqJsonLd(SEO.faqFromDom(container));
+    if (faq) jsonld.push(faq);
+    return { title: r.title, description: r.description, url: url, image: image, robots: 'index,follow', themeColor: tpl.theme.primary, jsonld: jsonld };
+  }
+  function seoPageUrl() { return isCloudEvent() && root.location.protocol !== 'file:' ? shareUrl(state.event.id) : ''; }
+
+  function setCount(el, text, kind) {
+    var c = EP.seo.counters(text, kind);
+    el.textContent = c.label + (c.level === 'ok' ? '' : kind === 'title' ? (c.len < 30 ? ' – hơi ngắn (nên 30–60)' : ' – quá dài, Google sẽ cắt') : (c.len < 70 ? ' – hơi ngắn (nên 150–160)' : c.len > 160 ? ' – quá dài, Google sẽ cắt' : ' – nên 150–160'));
+    el.className = 'seo-count is-' + c.level;
+  }
+  function updateSeoUi() {
+    if (!state || !$('#seo-title')) return;
+    var ev = state.event, d = EP.seo.defaults(ev, state.content), cur = EP.seo.resolve(ev, state.content), seo = ev.seo || {};
+    var ti = $('#seo-title'), de = $('#seo-desc');
+    ti.placeholder = d.title; de.placeholder = d.description;
+    if (document.activeElement !== ti) ti.value = seo.title || '';
+    if (document.activeElement !== de) de.value = seo.description || '';
+    setCount($('#seo-title-count'), cur.title, 'title');
+    setCount($('#seo-desc-count'), cur.description, 'desc');
+    var url = seoPageUrl() || ((APP_URL || 'https://xclipse.app/') + '?e=…');
+    $('#serp-url').textContent = url.replace(/^https?:\/\//, '');
+    $('#serp-title').textContent = cur.title;
+    $('#serp-desc').textContent = cur.description;
+    var host = ''; try { host = new URL(url).host; } catch (e) { host = 'xclipse'; }
+    $('#fb-host').textContent = host;
+    $('#fb-title').textContent = cur.title;
+    $('#fb-desc').textContent = cur.description;
+    var img = EP.seo.imageFor(ev, TPL.get(ev.templateId), root.location.href);
+    if ($('#fb-img').getAttribute('src') !== img) $('#fb-img').src = img;
+  }
+  function onSeoInput() {
+    if (!state) return;
+    var t = $('#seo-title').value, de = $('#seo-desc').value;
+    state.event.seo = (t.trim() || de.trim()) ? { title: t.trim(), description: de.trim() } : null;
+    // Đếm ký tự + xem trước ngay; lưu (có thể hoàn tác) sau khi ngừng gõ
+    var cur = EP.seo.resolve(state.event, state.content);
+    setCount($('#seo-title-count'), cur.title, 'title');
+    setCount($('#seo-desc-count'), cur.description, 'desc');
+    $('#serp-title').textContent = $('#fb-title').textContent = cur.title;
+    $('#serp-desc').textContent = $('#fb-desc').textContent = cur.description;
+    clearTimeout(seoTimer);
+    seoTimer = setTimeout(persist, 500);
+  }
+  $('#seo-title').addEventListener('input', onSeoInput);
+  $('#seo-desc').addEventListener('input', onSeoInput);
+  $('#btn-seo-reset').addEventListener('click', function () {
+    if (!state) return;
+    clearTimeout(seoTimer);
+    state.event.seo = null;
+    $('#seo-title').value = $('#seo-desc').value = '';
+    persist();
+  });
+  // Liên kết "Bỏ qua tới nội dung": chuyển tiêu điểm vào màn đang hiện
+  $('#skip-link').addEventListener('click', function (e) {
+    var m = document.querySelector('main:not([hidden])');
+    if (!m) return;
+    e.preventDefault();
+    m.setAttribute('tabindex', '-1');
+    m.focus();
+  });
+
   // ---------- Xuất file HTML độc lập ----------
   function slugify(s) {
     return String(s || 'landing').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D')
@@ -2810,10 +2894,12 @@
         'boxes.forEach(function(b,i){b.textContent=pad(v[i])});document.querySelectorAll(\'.lp-var[data-var="dem_nguoc"]\').forEach(function(x){x.textContent=Math.ceil(ms/86400000)})}' +
         'tick();setInterval(tick,1000);document.querySelectorAll(".lp-form").forEach(function(f){f.addEventListener("submit",function(e){e.preventDefault();' +
         'if(S.url){location.href=S.url;return}var m=f.querySelector(".lp-form-msg");if(m){m.textContent="Đây là bản trang tĩnh. Vui lòng liên hệ ban tổ chức để đăng ký.";m.className="lp-form-msg is-error"}})})})();';
-      var desc = (state.content.description || '').slice(0, 160);
+      // Thẻ SEO viết sẵn trong file (bot không chạy JS vẫn đọc được)
+      var meta = seoMeta(state.event, state.content, box, seoPageUrl(), currentCount());
       return '<!doctype html>\n<html lang="vi">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
-        '<title>' + escHtml(state.event.name || 'Sự kiện') + '</title>\n<meta name="description" content="' + escHtml(desc) + '">\n' +
+        EP.seo.headHtml(meta) +
         '<meta name="generator" content="Xclipse">\n' +
+        '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
         fonts.map(function (h) { return '<link rel="stylesheet" href="' + escHtml(h) + '">\n'; }).join('') +
         '<style>\nhtml,body{margin:0}\n' + css + '\n</style>\n</head>\n<body>\n' + inlineHero(box.outerHTML, heroSvg) + '\n<script>' + script + '<\/script>\n</body>\n</html>\n';
     } finally { shell.remove(); }
@@ -2987,13 +3073,13 @@
 
   // ---------- Trang công khai cho khách: ?e=<mã sự kiện> ----------
   if (publicEventId) {
+    var publicHeadRefresh = null;
     document.body.classList.add('is-public');
     $('#view-public').hidden = false;
     var publicEl = $('#public-landing');
     C.loadEvent(publicEventId).then(function (data) {
-      document.title = data.event.name;
       var pub = data.event;
-      stopWatch = C.watchStats(pub.id, function (st) { cloudStats = st; if (renderer) renderer.update(); });
+      stopWatch = C.watchStats(pub.id, function (st) { cloudStats = st; if (renderer) renderer.update(); if (publicHeadRefresh) publicHeadRefresh(); });
       // Đếm 1 lượt xem cho mỗi phiên trình duyệt
       try {
         if (!sessionStorage.getItem('xc_viewed_' + pub.id)) {
@@ -3010,6 +3096,18 @@
         onFunnel: function (field) { C.track(pub.id, field); },
         onRegister: function (d) { return cloudRegister(pub, d); }
       });
+      // Thẻ SEO gắn lúc chạy (bot không chạy JS sẽ không thấy; file HTML xuất có sẵn trong nguồn trang)
+      var pubUrl = root.location.origin + root.location.pathname + '?e=' + encodeURIComponent(pub.id), soldKey = '';
+      function applyPublicHead() {
+        var cnt = cloudStats ? cloudStats.count : null;
+        var k = String(Number(pub.capacity) > 0 && cnt != null && cnt >= Number(pub.capacity));
+        if (k === soldKey) return;
+        soldKey = k;
+        document.head.querySelectorAll('script[type="application/ld+json"]:not([data-xc-jsonld]), meta[property="og:image:width"], meta[property="og:image:height"], meta[property="og:image:alt"]').forEach(function (x) { x.remove(); });
+        EP.seo.applyHead(seoMeta(pub, data.content, publicEl, pubUrl, cnt));
+      }
+      applyPublicHead();
+      publicHeadRefresh = applyPublicHead;
     }, function (e) {
       publicEl.innerHTML = '';
       var box = document.createElement('div');

@@ -105,6 +105,7 @@
       rich: ev.rich || null,
       blocks: ev.blocks || null,
       brand: ev.brand || null,
+      seo: ev.seo || null,
       content: { headline: content.headline, description: content.description, benefits: content.benefits, source: content.source },
       updatedAt: fb.firestore.FieldValue.serverTimestamp()
     };
@@ -157,6 +158,7 @@
           rich: d.rich || null,
           blocks: d.blocks || null,
           brand: d.brand || null,
+          seo: d.seo || null,
           ownerUid: d.ownerUid,
           published: true
         },
