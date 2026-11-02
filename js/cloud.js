@@ -283,6 +283,31 @@
     });
   }
 
+  // ---------- Brand DNA trên tài khoản: users/{uid}/brands/{brandId} ----------
+  function brandsCol() {
+    var user = currentUser();
+    if (!available || !user) return null;
+    return db.collection('users').doc(user.uid).collection('brands');
+  }
+  function saveBrand(b) {
+    var col = brandsCol();
+    if (!col) return Promise.reject(new Error('Hãy đăng nhập Google để lưu trên tài khoản.'));
+    var data = JSON.parse(JSON.stringify(b));
+    data.cloud = true;
+    data.updatedAt = data.updatedAt || new Date().toISOString();
+    return withTimeout(col.doc(b.id).set(data));
+  }
+  function listBrands() {
+    var col = brandsCol();
+    if (!col) return Promise.resolve([]);
+    return withTimeout(col.get()).then(function (snap) { return snap.docs.map(function (d) { var x = d.data(); x.id = d.id; return x; }); });
+  }
+  function deleteBrand(id) {
+    var col = brandsCol();
+    if (!col) return Promise.resolve();
+    return withTimeout(col.doc(id).delete());
+  }
+
   // Chỉ dùng khi chạy kiểm thử với Firebase Emulator
   function testSignIn(uid) {
     if (!useEmulator) return Promise.reject(new Error('Chỉ dùng với emulator.'));
@@ -307,6 +332,9 @@
     track: track,
     getMetrics: getMetrics,
     clearRegistrations: clearRegistrations,
+    saveBrand: saveBrand,
+    listBrands: listBrands,
+    deleteBrand: deleteBrand,
     testSignIn: testSignIn
   };
 })(window);

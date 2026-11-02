@@ -27,9 +27,29 @@
     var a = all();
     var clean = { id: b.id };
     FIELDS.forEach(function (f) { clean[f] = typeof b[f] === 'string' ? b[f].slice(0, f === 'logo' ? 130000 : 300) : (b[f] || ''); });
+    var g = cleanGuideline(b.guideline);
+    if (g) clean.guideline = g;
+    if (b.cloud) clean.cloud = true;
     clean.updatedAt = new Date().toISOString();
     a[b.id] = clean;
     return S.write(KEY, a) ? clean : null;
+  }
+  // Guideline (do AI tạo từ tài liệu): chỉ giữ object gọn, tối đa ~12.000 ký tự JSON
+  var GL_MAX = 12000;
+  function cleanGuideline(g) {
+    if (!g || typeof g !== 'object' || Array.isArray(g)) return null;
+    try { return JSON.stringify(g).length <= GL_MAX ? JSON.parse(JSON.stringify(g)) : null; } catch (e) { return null; }
+  }
+  // Gộp thương hiệu từ tài khoản vào máy: bản nào mới hơn thì thắng. Trả về số bản đã cập nhật.
+  function mergeCloud(items) {
+    var a = all(), n = 0;
+    (items || []).forEach(function (c) {
+      if (!c || !c.id) return;
+      var l = a[c.id];
+      if (!l || String(c.updatedAt || '') > String(l.updatedAt || '')) { a[c.id] = Object.assign({}, c, { cloud: true }); n++; }
+    });
+    if (n) S.write(KEY, a);
+    return n;
   }
   function remove(id) { var a = all(); delete a[id]; S.write(KEY, a); }
 
@@ -75,5 +95,5 @@
   }
 
   root.EP = root.EP || {};
-  root.EP.brands = { list: list, get: get, blank: blank, save: save, remove: remove, applyTo: applyTo, snapshot: snapshot, safeUrl: safeUrl, cleanPhone: cleanPhone };
+  root.EP.brands = { list: list, get: get, blank: blank, save: save, remove: remove, mergeCloud: mergeCloud, cleanGuideline: cleanGuideline, applyTo: applyTo, snapshot: snapshot, safeUrl: safeUrl, cleanPhone: cleanPhone };
 })(typeof window !== 'undefined' ? window : globalThis);

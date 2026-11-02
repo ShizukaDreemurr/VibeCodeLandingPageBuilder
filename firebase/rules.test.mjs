@@ -53,4 +53,19 @@ await t('other cannot set lead',updateDoc(rref(other),{leadStatus:'lost'}),false
 await createEvent(owner,'past',0,Timestamp.fromDate(new Date(Date.now()-1000)));
 await t('past event rejected',register(anon,'past','0912345678','a@gmail.com','new'),false);
 await t('extra field rejected',(async()=>{const b=writeBatch(anon);b.set(doc(anon,'events','past','registrations','0911111111'),{name:'A',phone:'0911111111',email:'q@gmail.com',status:'new',createdAt:serverTimestamp(),admin:true});return b.commit()})(),false);
+// --- Brand DNA trên tài khoản ---
+const bref=(db,uid,id='b1')=>doc(db,'users',uid,'brands',id);
+const bdoc={id:'b1',name:'Xclipse',primary:'#0b4f8a',guideline:{summary:'x'},cloud:true,updatedAt:'2026-01-01T00:00:00Z'};
+await t('owner writes own brand',setDoc(bref(owner,'owner1'),bdoc),true);
+await t('owner reads own brand',getDoc(bref(owner,'owner1')),true);
+await t('owner lists own brands',getDocs(collection(owner,'users','owner1','brands')),true);
+await t('other cannot read brand',getDoc(bref(other,'owner1')),false);
+await t('other cannot write brand',setDoc(bref(other,'owner1','b2'),bdoc),false);
+await t('anon cannot read brand',getDoc(bref(anon,'owner1')),false);
+await t('anon cannot write brand',setDoc(bref(anon,'owner1','b3'),bdoc),false);
+await t('brand extra field rejected',setDoc(bref(owner,'owner1','b4'),{...bdoc,admin:true}),false);
+await t('brand huge logo rejected',setDoc(bref(owner,'owner1','b5'),{...bdoc,logo:'x'.repeat(150000)}),false);
+await t('brand guideline must be map',setDoc(bref(owner,'owner1','b6'),{...bdoc,guideline:'text'}),false);
+await t('other cannot delete brand',(async()=>{const {deleteDoc}=await import('firebase/firestore');return deleteDoc(bref(other,'owner1'))})(),false);
+await t('owner deletes brand',(async()=>{const {deleteDoc}=await import('firebase/firestore');return deleteDoc(bref(owner,'owner1'))})(),true);
 console.log(`\n${n-fail}/${n} passed`);await env.cleanup();process.exit(fail?1:0);

@@ -3144,6 +3144,22 @@
   var brandId = null; // thương hiệu đang mở trong màn Brand DNA
   var TONE_OPTS = [['formal', 'Trang trọng'], ['young', 'Trẻ trung'], ['urgent', 'Gấp rút']];
 
+  // Đồng bộ lên tài khoản (chỉ khi đã đăng nhập và thương hiệu được bật "Lưu trên tài khoản")
+  var brandSyncTimer = null;
+  function syncBrandCloud(b, now) {
+    if (!b || !b.cloud || !C.available || !C.currentUser()) return;
+    clearTimeout(brandSyncTimer);
+    function push() { var cur = B.get(b.id); if (cur) C.saveBrand(cur).catch(function () { toast('Chưa đồng bộ được thương hiệu lên tài khoản. Bản trên máy vẫn được giữ.'); }); }
+    if (now) push(); else brandSyncTimer = setTimeout(push, 900);
+  }
+  function pullBrandsFromCloud() {
+    if (!C.available || !C.currentUser()) return;
+    C.listBrands().then(function (items) {
+      if (B.mergeCloud(items)) { refreshBrandSelects(); if (!$('#view-brand').hidden) renderBrandView(); }
+    }, function () { /* offline: dùng bản trên máy */ });
+  }
+  C.onAuth(function (u) { if (u) pullBrandsFromCloud(); });
+
   function refreshBrandSelects() {
     var list = B.list();
     ['#f-brand', '#ed-brand'].forEach(function (sel) {
@@ -3191,7 +3207,8 @@
     var stamp = document.createElement('span'); stamp.className = 'save-stamp'; stamp.setAttribute('role', 'status');
     function saveField(k, v, quiet) {
       b[k] = v;
-      B.save(b);
+      var sv = B.save(b);
+      if (sv) syncBrandCloud(sv);
       drawPreview(b);
       if (!quiet) { stamp.textContent = 'Đã lưu'; EP.motion.replay(stamp, 'mo-pop'); refreshBrandSelects(); var it = $('#brand-list .brand-item.is-active strong'); if (it && k === 'name') it.textContent = v || '(Chưa đặt tên)'; }
     }
@@ -3233,6 +3250,16 @@
     var h2 = document.createElement('p'); h2.className = 'hint'; h2.textContent = 'Mọi thay đổi tự lưu.';
     head.appendChild(h2); head.appendChild(stamp);
     ed.appendChild(head);
+    if (C.available) {
+      var cl = document.createElement('label'); cl.className = 'check brand-cloud';
+      var cc = document.createElement('input'); cc.type = 'checkbox'; cc.id = 'bf-cloud'; cc.checked = !!b.cloud; cc.disabled = !C.currentUser();
+      cc.addEventListener('change', function () {
+        b.cloud = cc.checked; var sv = B.save(b);
+        if (cc.checked) { syncBrandCloud(sv, true); toast('Đã bật lưu trên tài khoản.'); } else { C.deleteBrand(b.id).catch(function () {}); toast('Đã gỡ bản trên tài khoản, bản trên máy vẫn còn.'); }
+      });
+      cl.appendChild(cc); cl.appendChild(document.createTextNode(' Lưu trên tài khoản' + (C.currentUser() ? '' : ' (đăng nhập Google để bật)')));
+      ed.appendChild(cl);
+    }
 
     var s1 = section('Nhận diện');
     textField(s1, 'Tên thương hiệu', 'name', { required: true, max: 60, placeholder: 'Ví dụ: FPT Polytechnic', validate: function (v) { return v ? '' : 'Vui lòng nhập tên thương hiệu.'; } });
@@ -3292,11 +3319,16 @@
     textField(s6, 'Website', 'website', { max: 120, placeholder: 'fpt.edu.vn', validate: function (v) { return !v || B.safeUrl(v) ? '' : 'Địa chỉ website chưa đúng.'; } });
     textField(s6, 'Fanpage', 'fanpage', { max: 160, placeholder: 'facebook.com/tenfanpage', validate: function (v) { return !v || B.safeUrl(v) ? '' : 'Địa chỉ fanpage chưa đúng.'; } });
 
+    if (b.guideline) {
+      var s6g = section('Brand guideline', 'Bộ guideline AI soạn từ tài liệu của bạn.');
+      var gv = EP.brandAi.guidelineView(b, false); gv.id = 'brand-guideline'; s6g.appendChild(gv);
+    }
+
     var s7 = section('Xoá thương hiệu', 'Các landing page đã áp dụng vẫn giữ nguyên giao diện và thông tin thương hiệu.');
     var del = document.createElement('button'); del.type = 'button'; del.className = 'btn btn-danger'; del.innerHTML = EP.icon('trash') + 'Xoá "' + (b.name || 'thương hiệu này') + '"';
     del.addEventListener('click', function () {
       if (!root.confirm('Xoá thương hiệu "' + (b.name || '') + '"? Không thể hoàn tác.')) return;
-      EP.motion.collapse($('#brand-list .brand-item.is-active'), function () { B.remove(b.id); brandId = null; refreshBrandSelects(); renderBrandView(); toast('Đã xoá thương hiệu.'); });
+      EP.motion.collapse($('#brand-list .brand-item.is-active'), function () { if (b.cloud) C.deleteBrand(b.id).catch(function () {}); B.remove(b.id); brandId = null; refreshBrandSelects(); renderBrandView(); toast('Đã xoá thương hiệu.'); });
     });
     s7.appendChild(del);
     drawPreview(b);
@@ -3368,6 +3400,14 @@
     toast('Đã áp dụng Brand DNA "' + b.name + '": màu, font, logo, nút và liên hệ.');
   }
 
+  var brandAi = EP.brandAi.mount($('#brand-ai'), {
+    toast: toast,
+    onSaved: function (b, edit) {
+      brandId = b.id; refreshBrandSelects(); renderBrandView(); syncBrandCloud(b, true);
+      toast(edit ? 'Đã tạo Brand DNA. Bạn có thể chỉnh sửa tiếp bên dưới.' : 'Đã lưu Brand DNA "' + b.name + '".');
+      var t = $(edit ? '#brand-editor' : '#brand-editor'); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start', behavior: EP.motion.reduce() ? 'auto' : 'smooth' });
+    }
+  });
   $('#btn-brand-new').addEventListener('click', newBrand);
   $('#link-brand').addEventListener('click', function (e) { e.preventDefault(); switchTab('brand'); });
   $('#f-brand').addEventListener('change', function () {

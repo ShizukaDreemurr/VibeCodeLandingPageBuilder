@@ -20,6 +20,20 @@ service cloud.firestore {
         && get(statsPath(eventId)).data.count >= get(eventPath(eventId)).data.capacity;
     }
 
+    // Brand DNA riêng của từng tài khoản: chỉ chính chủ đọc/ghi, có giới hạn kích thước
+    function brandOk(d) {
+      return d.keys().hasOnly(['id', 'name', 'tagline', 'logo', 'primary', 'accent', 'textColor', 'bgColor', 'headingFont', 'bodyFont',
+          'button', 'radius', 'tone', 'voiceUse', 'voiceAvoid', 'audience', 'ctaText', 'hotline', 'website', 'fanpage', 'guideline', 'cloud', 'updatedAt'])
+        && d.name is string && d.name.size() <= 300
+        && (!('logo' in d) || (d.logo is string && d.logo.size() <= 140000))
+        && (!('guideline' in d) || d.guideline is map)
+        && (!('updatedAt' in d) || (d.updatedAt is string && d.updatedAt.size() <= 40));
+    }
+    match /users/{uid}/brands/{brandId} {
+      allow read, delete: if signedIn() && request.auth.uid == uid;
+      allow create, update: if signedIn() && request.auth.uid == uid && brandOk(request.resource.data);
+    }
+
     match /events/{eventId} {
       allow read: if true;
       allow create: if signedIn()

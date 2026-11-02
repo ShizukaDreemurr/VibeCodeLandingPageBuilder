@@ -163,17 +163,19 @@
   }
 
   // Gọi Gemini thật. Lỗi được dịch sang thông báo dễ hiểu, không lộ khoá API.
-  function callGemini(apiKey, model, prompt) {
+  function callGemini(apiKey, model, prompt, opts) {
+    opts = opts || {};
+    var parts = typeof prompt === 'string' ? [{ text: prompt }] : prompt;
     var info = modelInfo(model);
-    var limit = info && info.tier === 'slow' ? 180000 : TIMEOUT_MS;
+    var limit = opts.timeout || (info && info.tier === 'slow' ? 180000 : TIMEOUT_MS);
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = controller && setTimeout(function () { controller.abort(); }, limit);
     return fetch(GEMINI_URL.replace('{model}', encodeURIComponent(model)), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.8, responseMimeType: 'application/json' }
+        contents: [{ parts: parts }],
+        generationConfig: { temperature: opts.temperature == null ? 0.8 : opts.temperature, responseMimeType: 'application/json' }
       }),
       signal: controller ? controller.signal : undefined
     }).then(function (res) {
@@ -204,10 +206,10 @@
 
   // Gọi model đã chọn; lỗi do model (hết lượt, cần trả phí, quá lâu, máy chủ lỗi) thì tự chuyển model nhanh.
   // Lỗi key / mất mạng thì báo luôn. onSwitch(model, lý do) để app báo cho người dùng.
-  function generate(apiKey, model, prompt, onSwitch) {
+  function generate(apiKey, model, prompt, onSwitch, opts) {
     var tried = [model];
     function attempt(m) {
-      return callGemini(apiKey, m, prompt).then(function (text) { return { text: text, model: m }; }, function (e) {
+      return callGemini(apiKey, m, prompt, opts).then(function (text) { return { text: text, model: m }; }, function (e) {
         if (e.kind === 'key' || e.kind === 'network') throw e;
         var next = FALLBACKS.filter(function (f) { return tried.indexOf(f) < 0; })[0];
         if (!next) throw e;
