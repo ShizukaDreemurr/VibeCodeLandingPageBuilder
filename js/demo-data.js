@@ -13,7 +13,7 @@
   var PREFIX = 'demo_';
   var FLAG = 'demo_seeded';
   var VERSION_KEY = 'demo_version';
-  var VERSION = '6'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
+  var VERSION = '7'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
   var MSG = 'Đây là dữ liệu mẫu để bạn xem nhanh. Bấm \'Tạo trang mới\' để làm trang của riêng bạn.';
 
   // ---------- PRNG ----------
@@ -135,7 +135,7 @@
       texts: {
         'hero.eyebrow': 'Khai trương chi nhánh thứ hai của Mộc',
         'countdown.title': 'Còn bao lâu đến ly cà phê đầu tiên?',
-        'about.title': 'Một góc cà phê mới bên Hồ Tây',
+        'about.title': '☕ Mộc có một góc mới bên Hồ Tây, hẹn bạn sáng thứ Bảy này.',
         'benefits.title': 'Sáng 28/11, bạn mang về gì?',
         'speakers.title': 'Những người đứng sau ly cà phê',
         'agenda.title': 'Một ngày ở Mộc Hồ Tây',
@@ -150,7 +150,9 @@
       },
       content: {
         headline: 'Mộc Hồ Tây TẶNG MIỄN PHÍ 200 ly cà phê cho những khách hàng ĐẦU TIÊN!',
-        description: 'Sau hai năm ở Cầu Giấy, Mộc mở thêm một góc nhìn ra Hồ Tây. Hạt cà phê rang ngay tại quầy, sáng nào mùi thơm cũng lan ra tận vỉa hè. Sáng thứ Bảy 28/11, chúng mình cắt băng lúc 8:00 và mời 200 khách đầu tiên một ly signature. Đăng ký mất 30 giây, nhận quà chỉ cần đọc số điện thoại.',
+        description: 'Sau hai năm ở Cầu Giấy, Mộc mang câu chuyện cà phê của mình đến một nơi có thêm gió hồ, khoảng trời rộng và những buổi sáng thật chậm. Vẫn là hương cà phê được rang ngay tại quầy, thơm nức mỗi sớm mai. Chỉ khác là lần này, bạn có thể nhâm nhi một ly cà phê yêu thích bên Hồ Tây. 📍 8:00 sáng, thứ Bảy ngày 28/11, Mộc chính thức khai trương và dành tặng 1 ly cà phê signature cho 200 khách đầu tiên ghé thăm. Bạn chỉ mất khoảng 30 giây để đăng ký trước. Đến quán, đọc số điện thoại là có thể nhận quà. Một góc mới đã sẵn sàng. Còn bạn, mình hẹn nhau sáng thứ Bảy nhé! 🤎',
+        // Đoạn giới thiệu chia đoạn (xuống dòng) bằng chữ có định dạng
+        descriptionHtml: 'Sau hai năm ở Cầu Giấy, Mộc mang câu chuyện cà phê của mình đến một nơi có thêm gió hồ, khoảng trời rộng và những buổi sáng thật chậm.<br><br>Vẫn là hương cà phê được rang ngay tại quầy, thơm nức mỗi sớm mai. Chỉ khác là lần này, bạn có thể nhâm nhi một ly cà phê yêu thích bên Hồ Tây.<br><br>📍 8:00 sáng, thứ Bảy ngày 28/11, Mộc chính thức khai trương và dành tặng 1 ly cà phê signature cho 200 khách đầu tiên ghé thăm.<br><br>Bạn chỉ mất khoảng 30 giây để đăng ký trước. Đến quán, đọc số điện thoại là có thể nhận quà.<br><br>Một góc mới đã sẵn sàng. Còn bạn, mình hẹn nhau sáng thứ Bảy nhé! 🤎',
         benefits: ['Ly signature đầu tiên do chúng mình mời: béo dịu, hậu ngọt, thơm mùi hạt vừa rang sáng nay', 'Ngồi cạnh barista Minh Khôi, tự tay pha phin và nếm thử 3 loại hạt: Cầu Đất, Buôn Ma Thuột, Sơn La', 'Có ngay một góc quen nhìn ra Hồ Tây: ổ cắm, wifi, ghế êm, tối thứ Bảy có nhạc acoustic'] },
       seo: { title: 'Khai trương Mộc Coffee Hồ Tây – Ly signature miễn phí', description: 'Sáng thứ Bảy 28/11, Mộc Coffee Hồ Tây khai trương. 200 khách đăng ký đầu tiên nhận ly signature miễn phí, mua 1 tặng 1 đến 11:00, workshop pha phin và nhạc acoustic.' },
       secs: ['testimonials', 'faq', 'cta2'],
@@ -283,7 +285,7 @@
       sheetUrl: '', templateId: spec.templateId,
       studioName: spec.studioName || '', studioUrl: spec.studioUrl || '',
       images: {}, sections: sections(spec.secs), style: null,
-      texts: texts, elStyles: null, elStylesBy: null, rich: null,
+      texts: texts, elStyles: null, elStylesBy: null, rich: spec.content.descriptionHtml ? { description: { plain: spec.content.description, html: spec.content.descriptionHtml } } : null,
       blocks: Object.keys(blocks).length ? blocks : null,
       brandId: '', brand: null, seo: spec.seo, published: false, demo: true, demoPublished: true
     };

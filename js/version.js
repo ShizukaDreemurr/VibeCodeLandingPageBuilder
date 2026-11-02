@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.3.4',
+    version: '2.3.5',
     date: '2026-10-27',
-    notes: 'Tiêu đề Mộc Coffee: Mộc Hồ Tây TẶNG MIỄN PHÍ 200 ly cà phê cho những khách hàng ĐẦU TIÊN!',
+    notes: 'Mộc Coffee: viết lại phần giới thiệu, chia đoạn',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
