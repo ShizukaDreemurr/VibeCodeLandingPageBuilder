@@ -514,6 +514,15 @@
     var n = node();
     if (!n || !bar || bar.hidden) return;
     var r = n.getBoundingClientRect();
+    // Màn hẹp: gắn thanh chỉnh ở đáy màn hình (bottom sheet) để không che nội dung
+    var docked = root.innerWidth <= 760;
+    bar.classList.toggle('is-docked', docked);
+    if (docked) {
+      bar.style.translate = 'none';
+      var sh = bar.offsetHeight;
+      if (r.bottom > root.innerHeight - sh - 8 && r.height < root.innerHeight - sh - 80) root.scrollBy(0, Math.round(r.bottom - (root.innerHeight - sh - 12)));
+      return;
+    }
     var wrap = cfg.landing.getBoundingClientRect();
     var bh = bar.offsetHeight, bw = bar.offsetWidth;
     var top = r.top - bh - 10;
