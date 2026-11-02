@@ -74,6 +74,12 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
     if (k === 'ai') { await p.evaluate(() => { document.getElementById('toast').hidden = true; }); await p.waitForTimeout(500); await p.screenshot({ path: shots + '/demo-landing.png' }); }
     await p.click('[data-tab="admin"]');
     await p.waitForTimeout(250);
+    if (await p.isVisible('#btn-admin-back')) { await p.click('#btn-admin-back'); await p.waitForTimeout(200); }
+    const pick = p.locator('.admin-pick[data-event-id="demo_evt_' + k + '"]');
+    ok(await pick.count() === 1, k + ': màn chọn trang có sự kiện này');
+    if (k === 'finance') await p.evaluate(() => { document.querySelector('details[data-group="ended"]').open = true; });
+    await pick.click();
+    await p.waitForTimeout(250);
     const rows = await p.$$eval('#admin-rows tr', l => l.length);
     ok(rows === EXPECT[k][0] + EXPECT[k][1], k + ': tab quản trị có ' + rows + ' dòng');
     const title = await p.textContent('#admin-title');
