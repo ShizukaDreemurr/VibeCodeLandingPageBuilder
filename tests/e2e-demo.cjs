@@ -51,8 +51,13 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
     ok(regs.every(r => /\p{L}/u.test(r.name) && r.name.split(' ').length >= 2), k + ': họ tên đầy đủ');
     ok(d.m && d.m.views > d.m.ctaClicks && d.m.ctaClicks > nNew, k + ': views > bấm nút > đăng ký');
     ok(e.published === false && e.seo && e.seo.title && e.agenda.length >= 4 && d.s.content.benefits.length === 3, k + ': published=false, SEO, agenda ≥4, 3 lợi ích');
-    const days = (new Date(e.startAt) - now) / 86400000;
-    if (k === 'finance') ok(days < 0, 'finance: đã diễn ra'); else ok(days >= 5 && days <= 40, k + ': ngày bắt đầu sau ' + days.toFixed(1) + ' ngày');
+    // Ngày CỐ ĐỊNH: không phụ thuộc lần mở đầu; các sự kiện chưa diễn ra nằm sau 20/11/2026 (kỳ chấm 09-17/11)
+    if (k === 'finance') ok(e.startAt === '2026-10-25T20:00', 'finance: đã diễn ra (cố định 25/10/2026)');
+    else {
+      ok(e.startAt >= '2026-11-27' && e.startAt <= '2026-12-31', k + ': ngày cố định ' + e.startAt);
+      ok(!e.earlyBirdUntil || (e.earlyBirdUntil > '2026-11-20' && e.earlyBirdUntil < e.startAt), k + ': hạn ưu đãi sau 20/11 và trước ngày diễn ra');
+    }
+    if (k === 'coffee') ok(e.startAt === '2026-11-28T08:00', 'Mộc Coffee khai trương cố định 08:00 28/11/2026');
   }
   ok(Object.keys(data.brands).length === 3, '3 Brand DNA trong storage');
   ok(data.out.demo_evt_ai.s.event.brand && data.out.demo_evt_coffee.s.event.brandId === 'demo_brand_moc', 'sự kiện áp Brand DNA');
@@ -122,6 +127,23 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
   await p.waitForLoadState('load'); await p.waitForTimeout(800);
   ok(await cards() === 7, 'Khôi phục dữ liệu mẫu: 6 mẫu + 1 của người dùng');
   ok(await p.evaluate(() => localStorage.ep_regs_user_1 !== null && !!JSON.parse(localStorage.ep_events).user_1), 'dữ liệu người dùng không bị đè');
+
+  // Nâng cấp bản mẫu cũ: chỉ thay mục demo_, giữ dữ liệu người dùng; không nâng cấp nếu đã xoá mẫu
+  await p.evaluate(() => {
+    const ev = JSON.parse(localStorage.ep_events);
+    ev.demo_evt_coffee.event.startAt = '2026-01-01T08:00'; ev.demo_evt_coffee.content.headline = 'Khai trương Mộc Coffee – Trải nghiệm đẳng cấp';
+    ev.user_1.content.headline = 'Tiêu đề của tôi';
+    localStorage.ep_events = JSON.stringify(ev);
+    localStorage.removeItem('ep_demo_version');
+  });
+  await p.goto(BASE);
+  const up = await p.evaluate(() => { const ev = JSON.parse(localStorage.ep_events); return { start: ev.demo_evt_coffee.event.startAt, head: ev.demo_evt_coffee.content.headline, user: ev.user_1 && ev.user_1.content.headline, n: Object.keys(ev).length, v: localStorage.ep_demo_version }; });
+  ok(up.start === '2026-11-28T08:00' && !/đẳng cấp/.test(up.head), 'demo cũ (thiếu version) được nâng cấp lên ngày/nội dung mới');
+  ok(up.user === 'Tiêu đề của tôi' && up.n === 7 && up.v === '"3"' , 'nâng cấp không động vào sự kiện của người dùng, version = 3');
+  await p.click('#demo-remove'); await p.waitForLoadState('load'); await p.waitForTimeout(500);
+  await p.evaluate(() => localStorage.removeItem('ep_demo_version'));
+  await p.goto(BASE);
+  ok(await cards() === 1, 'đã xoá dữ liệu mẫu → không nâng cấp/gieo lại dù version cũ');
 
   // Đã có dữ liệu → không gieo khi mở lần đầu
   await p.evaluate(() => { const u = JSON.parse(localStorage.ep_events).user_1; localStorage.clear(); localStorage.ep_events = JSON.stringify({ user_1: u }); });

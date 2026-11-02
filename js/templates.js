@@ -100,8 +100,8 @@
         return {
           name: 'Khai trương Mộc Coffee chi nhánh Cầu Giấy', startAt: future(7, 8), location: '25 Trần Thái Tông, Cầu Giấy, Hà Nội', capacity: 200,
           speakers: [{ name: 'Barista Minh Khôi', title: 'Quán quân Barista 2025' }],
-          agenda: [{ time: '08:00', title: 'Cắt băng khai trương' }, { time: '08:30', title: 'Mua 1 tặng 1 toàn menu' }, { time: '19:00', title: 'Đêm nhạc acoustic' }],
-          earlyBird: 'Tặng 1 ly cà phê miễn phí cho 200 khách đăng ký', earlyBirdUntil: future(6, 23)
+          agenda: [{ time: '08:00', title: 'Cắt băng và mời ly đầu tiên trong ngày' }, { time: '08:30', title: 'Mua 1 tặng 1 toàn menu đến 11:00' }, { time: '19:00', title: 'Nhạc acoustic bên ly cà phê cuối ngày' }],
+          earlyBird: 'Mời 1 ly signature miễn phí cho 200 khách đăng ký đầu tiên', earlyBirdUntil: future(6, 23)
         };
       }
     },
