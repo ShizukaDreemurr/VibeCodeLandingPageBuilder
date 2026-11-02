@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.0.0',
+    version: '2.0.1',
     date: '2026-10-27',
-    notes: 'Trang Thư viện mẫu là tab đầu tiên, dữ liệu mẫu cho giám khảo, biểu đồ đăng ký, Brand DNA từ tài liệu bằng Gemini',
+    notes: 'Landing page cuộn mượt trên điện thoại: bỏ vùng cuộn lồng, hiệu ứng ảnh bìa chạy bằng GPU, hiện nội dung sớm hơn; 4 ô đếm ngược một hàng',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

@@ -102,13 +102,13 @@ img.lp-avatar { object-fit: cover; }
 /* ---------- Animation landing page (tắt khi giảm chuyển động) ---------- */
 @media screen {
   /* Hiện dần khi cuộn tới */
-  .lp-reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .lp-reveal { opacity: 0; transform: translate3d(0, 16px, 0); transition: opacity 0.45s ease-out, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
   .lp-reveal.is-in { opacity: 1; transform: none; }
-  .lp-reveal .lp-benefits li, .lp-reveal .lp-speaker, .lp-reveal .lp-agenda li, .lp-reveal .lp-gallery-item { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .lp-reveal .lp-benefits li, .lp-reveal .lp-speaker, .lp-reveal .lp-agenda li, .lp-reveal .lp-gallery-item { opacity: 0; transform: translate3d(0, 10px, 0); transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .lp-reveal.is-in .lp-benefits li, .lp-reveal.is-in .lp-speaker, .lp-reveal.is-in .lp-agenda li, .lp-reveal.is-in .lp-gallery-item { opacity: 1; transform: none; }
-  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(2) { transition-delay: 0.1s; }
-  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(3) { transition-delay: 0.2s; }
-  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(n+4) { transition-delay: 0.3s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(2) { transition-delay: 0.05s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(3) { transition-delay: 0.1s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(n+4) { transition-delay: 0.15s; }
 
   /* Hero xuất hiện lần lượt */
   .lp-hero > * { animation: lpUp 0.7s ease both; }
@@ -116,7 +116,9 @@ img.lp-avatar { object-fit: cover; }
   .lp-hero > :nth-child(3) { animation-delay: 0.16s; }
   .lp-hero > :nth-child(4) { animation-delay: 0.24s; }
   .lp-hero > :nth-child(n+5) { animation-delay: 0.32s; }
-  .lp-hero.has-image { background-size: auto, 110%, auto; animation: lpKen 18s ease-in-out infinite alternate; }
+  /* Hiệu ứng ảnh bìa trôi chậm chạy bằng transform trên lớp riêng (GPU), không vẽ lại ảnh khi cuộn */
+  .lp-hero.has-image { position: relative; isolation: isolate; overflow: hidden; }
+  .lp-hero.has-image::before { content: ''; position: absolute; inset: -6% 0; z-index: -1; background: linear-gradient(rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62)), rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62))), var(--lp-hero-image) center / cover no-repeat; animation: lpKen 18s ease-in-out infinite alternate; will-change: transform; pointer-events: none; }
 
   /* Nút chính: nhịp nhẹ thu hút, nổi lên khi rê chuột */
   .lp-cta { animation: lpUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
@@ -143,7 +145,7 @@ img.lp-avatar { object-fit: cover; }
 @keyframes lpTick { 0% { transform: translateY(-35%); opacity: 0.3; } 100% { transform: none; opacity: 1; } }
 @keyframes lpBump { 0% { transform: scale(1); } 30% { transform: scale(1.45); } 100% { transform: scale(1); } }
 @keyframes lpBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
-@keyframes lpKen { from { background-position: center, 50% 40%, center; } to { background-position: center, 50% 60%, center; } }
+@keyframes lpKen { from { transform: translate3d(0, -3%, 0) scale(1.04); } to { transform: translate3d(0, 3%, 0) scale(1.04); } }
 
 /* ---------- Tuỳ chỉnh giao diện (page-style.js) ----------
    Lựa chọn Đơn giản đặt biến qua class st-*; thông số Studio đặt biến inline trên .landing (ưu tiên hơn). */
@@ -230,7 +232,7 @@ img.lp-avatar { object-fit: cover; }
 /* Mức hiệu ứng */
 .st-motion-off *, .st-motion-off *::before { animation: none !important; transition: none !important; }
 .st-motion-subtle .lp-cta { animation: lpUp 0.7s ease 0.32s both; }
-.st-motion-subtle .lp-hero.has-image { animation: none; }
+.st-motion-subtle .lp-hero.has-image::before { animation: none; transform: none; inset: 0; }
 
 /* Đang soạn: không chạy lại hiệu ứng xuất hiện mỗi lần trang vẽ lại */
 .is-editable .lp-hero > *, .is-editable .lp-cta { animation: none; }
@@ -310,3 +312,9 @@ html.motion-off .landing *, html.motion-off .landing *::before { animation: none
 .lp-cta, .lp-submit { transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease; }
 /* Link trong chữ có định dạng */
 .lp-section p a, .lp-section li a, .lp-section h2 a, .lp-hero p a, .lp-headline a, .lp-faq-item a { color: inherit; text-decoration: underline; text-decoration-color: var(--lp-accent); text-underline-offset: 3px; }
+/* Điện thoại: 4 ô đếm ngược luôn nằm một hàng */
+@container (max-width: 560px) {
+  .lp-countdown { flex-wrap: nowrap; gap: 8px; }
+  .lp-cd-box { flex: 1 1 0; min-width: 0; max-width: 84px; padding: 10px 4px; }
+  .lp-cd-num { font-size: 24px; }
+}

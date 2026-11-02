@@ -227,7 +227,8 @@ body.ws-resizing, body.ws-resizing * { cursor: nwse-resize !important; user-sele
 .help-list dt { color: var(--text); font-weight: 500; }
 .help-list dd { margin: 0; color: var(--text-muted); }
 kbd { font-family: var(--font); font-size: 12px; padding: 1px 6px; border-radius: 4px; background: var(--raised); box-shadow: inset 0 -1px 0 var(--border); }
-.landing { overflow: auto; }
+/* Không biến landing thành vùng cuộn riêng (cuộn lồng làm vuốt nhanh trên điện thoại bị kẹt): chỉ cắt phần tràn ngang */
+.landing { overflow-x: clip; }
 .empty-state { padding: 96px 24px; text-align: center; color: var(--text-muted); max-width: 46ch; margin: 0 auto; }
 .empty-title { font-size: 16px; font-weight: 600; color: var(--text); margin: 0 0 8px; }
 .empty-state p { margin: 0; }

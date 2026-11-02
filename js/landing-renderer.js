@@ -569,7 +569,7 @@
       if (typeof IntersectionObserver === 'function') {
         var io = new IntersectionObserver(function (entries) {
           entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } });
-        }, { threshold: 0.12 });
+        }, { threshold: 0, rootMargin: '0px 0px 25% 0px' }); // hiện trước khi phần đó vào màn hình: vuốt nhanh không thấy khoảng trắng
         revealEls.forEach(function (el) { io.observe(el); });
       } else {
         revealEls.forEach(function (el) { el.classList.add('is-in'); });
