@@ -458,7 +458,7 @@
     var acts = document.createElement('div');
     acts.className = 'tpl-pactions';
     var use = document.createElement('button');
-    use.type = 'button'; use.className = 'btn btn-primary btn-small'; use.textContent = 'Dùng mẫu này';
+    use.type = 'button'; use.className = 'btn btn-small tpl-use-cta'; use.innerHTML = EP.icon('wand', 15) + '<span>Dùng mẫu này</span>';
     use.setAttribute('aria-label', 'Dùng mẫu ' + t.name);
     use.addEventListener('click', function () { useTemplate(t.id); });
     var pvb = document.createElement('button');
@@ -3614,7 +3614,7 @@
   refreshBrandSelects();
 
   EP.icons.hydrate();
-  switchTab(Object.keys(S.read('events', {})).length ? 'events' : 'templates');
+  switchTab('templates'); // ấn tượng đầu tiên luôn là Thư viện mẫu (điểm mạnh nhất của sản phẩm)
   root.addEventListener('resize', function () { EP.motion.indicator($('.tabs')); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { EP.motion.indicator($('.tabs')); });
   C.onAuth(function () { if (!$('#view-events').hidden) renderEvents(); });

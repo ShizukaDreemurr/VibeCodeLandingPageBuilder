@@ -1163,3 +1163,20 @@ html.tpv-lock { overflow: hidden; }
 .demo-footer { display: inline-flex; gap: 4px; align-items: center; }
 .demo-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .demo-link:hover { color: var(--text); }
+
+/* Nút "Dùng mẫu này" trên thẻ mẫu: gradient thương hiệu, ánh sáng lướt, nhấc lên khi rê */
+@layer app {
+.tpl-use-cta { position: relative; overflow: hidden; isolation: isolate; border: 0; color: #fff; font-weight: 600; gap: 6px;
+  background: linear-gradient(110deg, var(--accent), #7c3aed 55%, var(--accent)); background-size: 220% 100%; box-shadow: 0 4px 14px rgba(214, 51, 108, 0.32); }
+.tpl-use-cta::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%); transform: translateX(-120%); }
+.tpl-use-cta:hover, .tpl-use-cta:focus-visible { color: #fff; box-shadow: 0 8px 22px rgba(124, 58, 237, 0.42); transform: translateY(-2px); background-position: 100% 50%; }
+.tpl-use-cta:active { transform: translateY(0) scale(0.97); }
+.tpl-use-cta .ic, .tpl-use-cta svg { flex: none; }
+@media screen {
+  .tpl-use-cta { transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) ease, background-position 0.6s ease; }
+  .tpl-pcard:hover .tpl-use-cta::after, .tpl-use-cta:hover::after, .tpl-use-cta:focus-visible::after { animation: tplShine 0.9s ease; }
+  .tpl-pcard:hover .tpl-use-cta svg { animation: tplWand 0.7s ease; }
+}
+@keyframes tplShine { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
+@keyframes tplWand { 0%, 100% { transform: none; } 30% { transform: rotate(-18deg) scale(1.15); } 60% { transform: rotate(10deg); } }
+}

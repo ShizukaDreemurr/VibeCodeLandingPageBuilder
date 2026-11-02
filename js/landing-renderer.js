@@ -492,7 +492,11 @@
       ]));
     }
     if (opts.appUrl) {
-      footerChildren.push(h('a', { class: 'lp-made-with', href: opts.appUrl, target: '_blank', rel: 'noopener', 'data-funnel': 'app', text: 'Tạo trang như thế này miễn phí bằng Xclipse →' }));
+      footerChildren.push(h('a', { class: 'lp-made-with', href: opts.appUrl, target: '_blank', rel: 'noopener', 'data-funnel': 'app' }, [
+        h('span', { class: 'lp-mw-spark', 'aria-hidden': 'true', text: '✦' }),
+        h('span', { class: 'lp-mw-text' }, ['Tạo trang như thế này ', h('strong', { text: 'miễn phí' }), ' bằng Xclipse']),
+        h('span', { class: 'lp-mw-arrow', 'aria-hidden': 'true', text: '→' })
+      ]));
     }
     var footer = mark(h('footer', { class: 'lp-footer' }, footerChildren), 'footer', 'Chân trang', 'box', { required: true });
 
