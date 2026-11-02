@@ -1162,3 +1162,71 @@ html.tpv-lock { overflow: hidden; }
 .demo-footer { display: inline-flex; gap: 4px; align-items: center; }
 .demo-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .demo-link:hover { color: var(--text); }
+
+/* ---------- Di động (≤760px / cảm ứng): vừa màn hình, nút bấm ≥44px, inspector dạng bottom sheet ---------- */
+@layer app {
+  /* Dải tab cuộn ngang, bám điểm dừng, mờ ở mép còn cuộn được */
+  @media (max-width: 1024px) {
+    .tabs { overflow-x: auto; scroll-snap-type: x proximity; scroll-padding: 0 24px; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+    .tab { scroll-snap-align: center; flex: none; }
+    .tabs.can-right { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+    .tabs.can-left { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 28px), transparent); }
+    .tabs.can-left.can-right { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
+  }
+  @media (max-width: 760px) {
+    html, body { overflow-x: clip; max-width: 100vw; }
+    .topbar { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+    .brand { min-width: 0; }
+    /* Thanh Thiết kế: nhóm nút tự xuống dòng, không tràn */
+    .editor-bar { gap: 4px 8px; }
+    .editor-bar h2 { max-width: calc(100vw - 150px); flex: 1 1 0; min-width: 0; }
+    .editor-bar-right { flex-wrap: wrap; gap: 4px 6px; justify-content: flex-start; margin-left: 0; width: 100%; }
+    .editor-bar-right > * + *, .editor-bar-right > .btn { padding-left: 0; border-left: 0; margin-left: 0; }
+    .editor-bar-right > .btn { padding: 0 12px; }
+    .zoom-ctl { flex: 1 1 auto; min-width: 0; }
+    .zoom-ctl select { min-width: 0; flex: 1 1 auto; max-width: 200px; }
+    .editor-bar .sheet-status { max-width: 100%; overflow-wrap: anywhere; }
+    .preview-wrap { padding: 8px; }
+    .ws.is-narrow .preview-wrap { min-height: 50vh; }
+    .ws-group { min-height: 0; }
+    .ws-ghead { height: 44px; }
+    /* Toast: sát mép trên (vùng an toàn), nhỏ gọn, không che ô nhập */
+    .toast { bottom: auto; top: calc(env(safe-area-inset-top, 0px) + 8px); left: 50%; max-width: calc(100vw - 32px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); font-size: 13px; line-height: 18px; padding: 8px 12px; pointer-events: none; }
+    /* Inspector: bottom sheet */
+    .inspector.is-docked { top: auto; bottom: 0; left: 0; right: 0; width: 100%; max-width: none; max-height: 50vh; max-height: 50dvh; overflow-y: auto; overscroll-behavior: contain; border-radius: 16px 16px 0 0; border-bottom: 0; padding: 8px 12px calc(12px + env(safe-area-inset-bottom, 0px)); translate: none !important; transition: none; z-index: 960; }
+    .inspector.is-docked .ins-crumbs { position: sticky; top: -8px; background: var(--surface); z-index: 1; padding-top: 4px; }
+    .inspector.is-docked .ins-crumbs .ins-btn { margin-left: auto; width: 44px; height: 44px; }
+    .inspector.is-docked .ins-name { flex: 1 1 auto; }
+    .inspector.is-docked .ins-hint { display: none; }
+    .inspector.is-docked .ins-text, .inspector.is-docked .ins-combo { min-width: 0; }
+    .inspector.is-docked .ins-color { min-width: 0; }
+    .inspector.is-docked.is-entering { animation: xcSheetIn var(--dur-2) var(--ease-out) both; }
+    body:has(.inspector.is-docked:not([hidden])) .app-footer { padding-bottom: 50vh; }
+    /* iOS không phóng to khi focus ô nhập */
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]), select, textarea, .combo-input, .ins-num, .ins-text, .ins-select { font-size: 16px !important; }
+    .tpl-search input[type="search"] { font-size: 16px; }
+    dialog { max-width: calc(100vw - 16px); }
+    .tpl-dialog, .help-dialog, .check-dialog { overflow-x: hidden; }
+  }
+  @keyframes xcSheetIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  @media (max-width: 760px) and (prefers-reduced-motion: reduce) { .inspector.is-docked.is-entering { animation: none; } }
+  html.motion-off .inspector.is-docked.is-entering { animation: none; }
+
+  /* Vùng chạm ≥44px trên màn cảm ứng (giao diện máy tính giữ nguyên) */
+  @media (pointer: coarse) {
+    .btn, .btn-small, .icon-btn, #btn-auth, #btn-new, #btn-sample, #btn-publish, .brand,
+    .device-toggle button, .history-btns button, .zoom-ctl button, .zoom-ctl select,
+    .event-card .actions .btn, .event-card .actions button, .event-card .actions a,
+    .tab, .seg-btn, .tpl-chip, .ws-tab, .ws-act, .mb-btn, .section-item button, .pick-open, .demo-link { min-height: 44px; }
+    .icon-btn, .device-toggle button, .history-btns button, .zoom-ctl button, .ws-act, .section-item button { min-width: 44px; }
+    .tab { padding: 0 8px; }
+    .brand { padding: 0 4px; }
+    .btn-small { padding: 0 12px; }
+    .zoom-ctl select { padding: 0 8px; }
+    .ins-btn { min-height: 40px; min-width: 40px; }
+    .ins-crumb { min-height: 32px; }
+    .ws-tab { padding: 0 12px; }
+    .tpl-chip { min-height: 44px; }
+    .demo-link { display: inline-flex; align-items: center; }
+  }
+}

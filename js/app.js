@@ -2635,6 +2635,21 @@
   // ---------- Tab ----------
   var TAB_ORDER = ['templates', 'events', 'builder', 'editor', 'admin', 'brand'];
   var currentTab = null;
+  // Dải tab cuộn ngang trên màn hẹp: đưa tab đang chọn vào giữa, hiện mờ ở mép còn cuộn được
+  function tabFades() {
+    var nav = $('.tabs'); if (!nav) return;
+    nav.classList.toggle('can-left', nav.scrollLeft > 4);
+    nav.classList.toggle('can-right', nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 4);
+  }
+  function revealActiveTab() {
+    var nav = $('.tabs'), act = nav && nav.querySelector('.tab.is-active');
+    if (!act || nav.scrollWidth <= nav.clientWidth + 1) { tabFades(); return; }
+    var left = Math.max(0, act.offsetLeft - (nav.clientWidth - act.offsetWidth) / 2);
+    var smooth = !document.documentElement.classList.contains('motion-off');
+    if (nav.scrollTo) nav.scrollTo({ left: left, behavior: smooth ? 'smooth' : 'auto' }); else nav.scrollLeft = left;
+    tabFades();
+  }
+  (function () { var nav = $('.tabs'); if (nav) { nav.addEventListener('scroll', tabFades, { passive: true }); root.addEventListener('resize', tabFades); setTimeout(tabFades, 0); } })();
   function switchTab(name) {
     var dir = currentTab && currentTab !== name ? (TAB_ORDER.indexOf(name) > TAB_ORDER.indexOf(currentTab) ? 'forward' : 'back') : null;
     currentTab = name;
@@ -2649,6 +2664,7 @@
       t.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     EP.motion.indicator($('.tabs'));
+    revealActiveTab();
     root.scrollTo(0, 0);
     $('#view-templates').hidden = name !== 'templates';
     $('#view-builder').hidden = name !== 'builder';

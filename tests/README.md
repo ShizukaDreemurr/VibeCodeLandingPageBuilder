@@ -27,3 +27,4 @@
 Ghi chú: các test Firebase chạy trên **Firebase Emulator** (`?emulator=1`), không đụng dữ liệu thật.
 
 `auto-tab.cjs`: ứng dụng chia tab (Thông tin / Thiết kế trang / Quản lý); helper này tự mở đúng tab trước khi test click/điền vào một phần tử.
+| `e2e-mobile.cjs` | Di động 390/360px: không tràn ngang ở mọi tab và hộp thoại, vùng chạm ≥44px, dải tab cuộn + tự đưa tab đang chọn vào giữa, toast ở mép trên, inspector dạng bottom sheet, ô nhập ≥16px | `node tests/e2e-mobile.cjs [url]` |
