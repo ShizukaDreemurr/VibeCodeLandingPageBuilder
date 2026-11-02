@@ -353,12 +353,10 @@
   function reload() { root.location.reload(); }
   function doRestore() {
     var msg = 'Khôi phục dữ liệu mẫu? Các sự kiện, đăng ký và thương hiệu mẫu sẽ được đặt lại như ban đầu. Dữ liệu của bạn không bị ảnh hưởng.';
-    if (!root.confirm(msg)) return;
-    removeDemo(); seed(); reload();
+    root.EP.popup.confirm({ tone: 'warn', title: 'Khôi phục dữ liệu mẫu?', body: msg.replace(/^Khôi phục dữ liệu mẫu\? /, ''), confirmLabel: 'Khôi phục' }).then(function (ok) { if (!ok) return; removeDemo(); seed(); reload(); });
   }
   function doRemove() {
-    if (!root.confirm('Xoá dữ liệu mẫu? Chỉ các sự kiện, đăng ký và thương hiệu mẫu bị xoá; dữ liệu của bạn được giữ nguyên.')) return;
-    removeDemo(); reload();
+    root.EP.popup.confirm({ tone: 'warn', title: 'Xoá dữ liệu mẫu?', body: 'Chỉ các sự kiện, đăng ký và thương hiệu mẫu bị xoá; dữ liệu của bạn được giữ nguyên.', confirmLabel: 'Xoá dữ liệu mẫu' }).then(function (ok) { if (!ok) return; removeDemo(); reload(); });
   }
 
   function mkBtn(text, cls, fn, id) {

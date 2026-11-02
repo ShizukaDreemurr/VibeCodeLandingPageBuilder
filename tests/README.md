@@ -28,3 +28,4 @@ Ghi chú: các test Firebase chạy trên **Firebase Emulator** (`?emulator=1`),
 
 `auto-tab.cjs`: ứng dụng chia tab (Thông tin / Thiết kế trang / Quản lý); helper này tự mở đúng tab trước khi test click/điền vào một phần tử.
 | `e2e-mobile.cjs` | Di động 390/360px: không tràn ngang ở mọi tab và hộp thoại, vùng chạm ≥44px, dải tab cuộn + tự đưa tab đang chọn vào giữa, toast ở mép trên, inspector dạng bottom sheet, ô nhập ≥16px | `node tests/e2e-mobile.cjs [url]` |
+| `e2e-popup.cjs` | Popup: chào mừng một lần, xác nhận xoá (Huỷ giữ / Đồng ý xoá, không dùng confirm gốc), popup "Đã chọn mẫu" và popup sau khi tạo trang, popup đăng ký thành công trên landing (tải .ics, danh sách chờ), Esc đóng, giữ focus trong popup, bottom sheet 390px không tràn ngang, tắt hiệu ứng, không lỗi trang. Chạy tự động mặc định bỏ qua popup (thêm `?popup=1`) | `node tests/e2e-popup.cjs [url] [thư-mục-ảnh]` |

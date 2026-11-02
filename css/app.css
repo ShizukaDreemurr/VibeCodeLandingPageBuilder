@@ -1248,3 +1248,46 @@ html.tpv-lock { overflow: hidden; }
     .demo-link { display: inline-flex; align-items: center; }
   }
 }
+
+/* ---------- Popup dùng chung (js/popup.js) ---------- */
+@layer app {
+  dialog.ep-pop { border: 0; padding: 0; background: transparent; color: var(--text); max-width: none; max-height: none; overflow: visible; font-family: var(--font); margin: auto; }
+  dialog.ep-pop::backdrop { background: rgba(19, 20, 22, .42); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: ep-pop-fade .2s ease both; }
+  .ep-pop-card { position: relative; box-sizing: border-box; width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px 26px 22px; text-align: center; box-shadow: 0 24px 60px rgba(19, 20, 22, .22); animation: ep-pop-in .42s cubic-bezier(.2, 1.3, .35, 1) both; }
+  dialog.ep-pop.is-leaving .ep-pop-card { animation: ep-pop-out .16s ease both; }
+  dialog.ep-pop.is-leaving::backdrop { opacity: 0; transition: opacity .16s; }
+  .ep-pop-icon { width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; font-weight: 700; background: var(--raised); color: var(--text); }
+  .ep-pop.is-success .ep-pop-icon { background: var(--pill-positive-bg); color: var(--success); }
+  .ep-pop.is-warn .ep-pop-icon { background: var(--pill-negative-bg); color: var(--danger); }
+  .ep-pop.is-celebrate .ep-pop-icon { background: var(--accent-soft); color: var(--accent-ink); }
+  .ep-pop-title { margin: 0 0 8px; font-size: 20px; line-height: 1.3; font-weight: 700; letter-spacing: -.01em; }
+  .ep-pop-body { color: var(--text-muted); font-size: 15px; line-height: 1.55; }
+  .ep-pop-body p { margin: 0 0 8px; }
+  .ep-pop-body ol { text-align: left; margin: 6px 0 4px; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 10px; }
+  .ep-pop-body ol li { counter-increment: s; display: flex; gap: 12px; align-items: flex-start; color: var(--text); }
+  .ep-pop-body ol li::before { content: counter(s); flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink); font-weight: 700; font-size: 13px; display: grid; place-items: center; }
+  .ep-pop-body ol li span { padding-top: 3px; }
+  .ep-pop-quote { margin: 4px 0 8px; padding: 10px 12px; background: var(--raised); border-radius: 10px; color: var(--text); font-weight: 600; }
+  .ep-pop-share { display: grid; gap: 12px; justify-items: center; }
+  .ep-pop-share input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; padding: 9px 10px; border: 1px solid var(--control); border-radius: 8px; background: var(--raised); color: var(--text); }
+  .ep-pop-share img { width: 148px; height: 148px; border: 1px solid var(--border); border-radius: 10px; }
+  .ep-pop-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+  .ep-pop-actions .btn { min-height: 42px; }
+  .btn-danger-solid { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-danger-solid:not(:disabled):hover { background: #a81d22; }
+  .ep-pop-x { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: transparent; color: var(--text-muted); font-size: 22px; line-height: 1; cursor: pointer; }
+  .ep-pop-x:hover { background: var(--raised); color: var(--text); }
+  .ep-pop-confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  @keyframes ep-pop-in { from { opacity: 0; transform: translateY(18px) scale(.9); } to { opacity: 1; transform: none; } }
+  @keyframes ep-pop-out { to { opacity: 0; transform: translateY(8px) scale(.97); } }
+  @keyframes ep-pop-fade { from { opacity: 0; } to { opacity: 1; } }
+  html.motion-off .ep-pop-card, html.motion-off dialog.ep-pop::backdrop { animation: none !important; }
+  @media (max-width: 560px) {
+    dialog.ep-pop { margin: auto 0 0; width: 100%; }
+    .ep-pop-card { width: 100%; max-height: 88vh; border-radius: 20px 20px 0 0; border-bottom: 0; padding: 26px 18px calc(18px + env(safe-area-inset-bottom)); animation-name: ep-pop-sheet; }
+    .ep-pop-actions { flex-direction: column-reverse; }
+    .ep-pop-actions .btn { width: 100%; min-height: 46px; }
+    .ep-pop-share img { width: 132px; height: 132px; }
+  }
+  @keyframes ep-pop-sheet { from { transform: translateY(100%); } to { transform: none; } }
+}

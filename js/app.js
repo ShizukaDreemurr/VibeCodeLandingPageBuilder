@@ -580,7 +580,12 @@
     setTemplate(id);
     fillSample();
     switchTab('builder');
-    toast('Đã chọn mẫu "' + TPL.get(id).name + '". Chỉnh thông tin rồi bấm Tạo landing page.');
+    var tname = TPL.get(id).name;
+    toast('Đã chọn mẫu "' + tname + '". Chỉnh thông tin rồi bấm Tạo landing page.');
+    EP.popup.once('tpl_used', 2, function () {
+      EP.popup.open({ tone: 'success', title: 'Đã chọn mẫu "' + tname + '"', body: 'Điền thông tin sự kiện rồi bấm "Tạo landing page" để AI viết nội dung cho bạn.',
+        actions: [{ label: 'Điền thông tin', primary: true }] });
+    });
   }
 
   // Xem trước toàn trang của mẫu với dữ liệu mẫu và nội dung mô phỏng (không gửi đăng ký thật)
@@ -1813,6 +1818,26 @@
     }
   }
 
+  function publishedPopup() {
+    var url = shareUrl(state.event.id);
+    var wrap = document.createElement('div'); wrap.className = 'ep-pop-share';
+    var p = document.createElement('p'); p.textContent = 'Gửi link hoặc mã QR này cho khách để họ đăng ký.'; wrap.appendChild(p);
+    var inp = document.createElement('input'); inp.readOnly = true; inp.value = url; inp.setAttribute('aria-label', 'Link trang đăng ký');
+    inp.addEventListener('focus', function () { inp.select(); });
+    wrap.appendChild(inp);
+    if (root.qrcode && root.location.protocol !== 'file:') {
+      var qr = root.qrcode(0, 'M'); qr.addData(url); qr.make();
+      var img = document.createElement('img'); img.src = qr.createDataURL(6, 2); img.alt = 'Mã QR mở trang đăng ký'; wrap.appendChild(img);
+    }
+    EP.popup.open({
+      tone: 'celebrate', icon: '🚀', title: 'Đã xuất bản!', body: wrap,
+      actions: [
+        { label: 'Sao chép link', onClick: function (btn) { copyText(url).then(function () { btn.textContent = 'Đã sao chép ✓'; }, function () { inp.select(); btn.textContent = 'Nhấn Ctrl+C để chép'; }); return false; } },
+        { label: 'Mở trang', primary: true, onClick: function () { root.open(url, '_blank', 'noopener'); } }
+      ]
+    });
+  }
+
   function updatePublishUi() {
     var btn = $('#btn-publish');
     btn.hidden = !C.available || !state;
@@ -1908,6 +1933,7 @@
         renderLanding();
         openSidePane('publish');
         toast(isNew ? 'Đã xuất bản! Gửi link hoặc mã QR cho khách.' : 'Đã cập nhật trang.');
+        if (isNew) publishedPopup();
       }, function (e) {
         toast('Không xuất bản được: ' + e.message);
       }).then(updatePublishUi);
@@ -2008,6 +2034,21 @@
     });
   }
 
+  function celebrateGenerated(isRegenerate) {
+    if (isRegenerate || !state) return;
+    var q = document.createElement('div'); q.className = 'ep-pop-quote'; q.textContent = state.content.headline || state.event.name;
+    var wrap = document.createElement('div');
+    var p = document.createElement('p'); p.textContent = 'Landing page của bạn đã sẵn sàng. Tiêu đề AI vừa viết:';
+    wrap.appendChild(p); wrap.appendChild(q);
+    EP.popup.open({
+      tone: 'celebrate', icon: '✦', title: 'Landing page đã sẵn sàng!', body: wrap,
+      actions: [
+        { label: 'Chỉnh giao diện', value: 'edit' },
+        { label: 'Xuất bản ngay', primary: true, value: 'publish', onClick: function () { setTimeout(function () { switchTab('editor'); var b = $('#btn-publish'); if (b && !b.hidden && !b.disabled) b.click(); else toast('Đăng nhập Google ở góc trên để xuất bản.'); }, 200); } }
+      ]
+    });
+  }
+
   function saveAndRender(ev, content, tone) {
     if (!state || state.event.sheetUrl !== ev.sheetUrl) { remoteCount = null; setSheetStatus(''); }
     if (state && state.event.id === ev.id && state.event.published) {
@@ -2051,6 +2092,7 @@
       regenSeed = isRegenerate ? regenSeed + 1 : 0;
       EP.motion.replay(isRegenerate ? $('#btn-regenerate-2') : btn, 'mo-sparkle');
       saveAndRender(ev, EP.contentGenerator.generate(ev, tone, regenSeed), tone);
+      celebrateGenerated(isRegenerate);
       setMsg('Đã tạo nội dung bằng AI mô phỏng (offline).', 'success');
       return;
     }
@@ -2061,6 +2103,7 @@
       try {
         var parsed = EP.ai.parseAIResponse(pasted, ev, tone);
         saveAndRender(ev, parsed.content, tone);
+        celebrateGenerated(isRegenerate);
         setMsg(parsed.warnings.length ? 'Đã dùng kết quả AI. Lưu ý: ' + parsed.warnings.join(' ') : 'Đã dùng kết quả AI bạn dán vào.', parsed.warnings.length ? 'warn' : 'success');
       } catch (e) {
         setMsg('Không đọc được kết quả: ' + e.message + ' Hãy copy lại đúng khối JSON AI trả về.', 'error');
@@ -2087,6 +2130,7 @@
       .then(function (r) {
         var parsed = EP.ai.parseAIResponse(r.text, ev, tone);
         saveAndRender(ev, parsed.content, tone);
+        celebrateGenerated(isRegenerate);
         var name = (EP.ai.modelInfo(r.model) || { label: r.model }).label;
         var note = (switched ? switched + ' ' : '') + (parsed.warnings.length ? 'Lưu ý: ' + parsed.warnings.join(' ') : '');
         setMsg('Đã tạo nội dung bằng ' + name + '.' + (note ? ' ' + note : ''), note ? 'warn' : 'success');
@@ -2475,7 +2519,10 @@
 
   // ---------- Tạo trang mới ----------
   function resetAll(skipConfirm) {
-    if (state && skipConfirm !== true && !root.confirm('Tạo trang mới cho sự kiện khác? Trang hiện tại vẫn được lưu trong "Sự kiện của tôi".')) return;
+    if (state && skipConfirm !== true) {
+      EP.popup.confirm({ tone: 'info', title: 'Tạo trang mới cho sự kiện khác?', body: 'Trang hiện tại vẫn được lưu trong "Sự kiện của tôi".', confirmLabel: 'Tạo trang mới' }).then(function (ok) { if (ok) resetAll(true); });
+      return;
+    }
     clearEditor();
     switchTab('builder');
     form.elements.name.focus();
@@ -2542,16 +2589,18 @@
   }
 
   function deleteEvent(saved, card) {
-    var msg = 'Xoá "' + saved.event.name + '" khỏi trình duyệt này? Danh sách đăng ký lưu trên máy cũng bị xoá.';
+    var msg = '"' + saved.event.name + '" sẽ bị xoá khỏi trình duyệt này? Danh sách đăng ký lưu trên máy cũng bị xoá.';
     if (saved.event.published) msg += ' Trang đã xuất bản vẫn hoạt động; đăng nhập trên thiết bị khác vẫn mở lại được.';
-    if (!root.confirm(msg)) return;
-    var all = S.read('events', {});
-    delete all[saved.event.id];
-    S.write('events', all);
-    EP.registrations.removeAll(saved.event.id);
-    if (state && state.event.id === saved.event.id) clearEditor();
-    EP.motion.collapse(card, renderEvents);
-    toast('Đã xoá sự kiện.');
+    EP.popup.confirm({ tone: 'warn', title: 'Xoá sự kiện này?', body: msg, confirmLabel: 'Xoá sự kiện' }).then(function (ok) {
+      if (!ok) return;
+      var all = S.read('events', {});
+      delete all[saved.event.id];
+      S.write('events', all);
+      EP.registrations.removeAll(saved.event.id);
+      if (state && state.event.id === saved.event.id) clearEditor();
+      EP.motion.collapse(card, renderEvents);
+      toast('Đã xoá sự kiện.');
+    });
   }
 
   function eventCard(item, actions) {
@@ -3230,7 +3279,8 @@
   $('#btn-clear-regs').addEventListener('click', function () {
     var ev = adminSel;
     if (!ev) return;
-    if (!root.confirm('Xoá toàn bộ danh sách đăng ký của "' + ev.name + '"? Không thể hoàn tác.')) return;
+    EP.popup.confirm({ tone: 'warn', title: 'Xoá toàn bộ đăng ký?', body: 'Danh sách đăng ký của "' + ev.name + '" sẽ bị xoá. Không thể hoàn tác.', confirmLabel: 'Xoá đăng ký' }).then(function (ok) {
+    if (!ok) return;
     if (isCloudEv(ev)) {
       C.clearRegistrations(ev.id).then(function () { renderAdmin(); }, function (e) { toast('Không xoá được: ' + e.message); });
       return;
@@ -3238,6 +3288,7 @@
     EP.registrations.removeAll(ev.id);
     renderAdmin();
     if (renderer && state && state.event.id === ev.id) renderer.update();
+    });
   });
   $('#btn-admin-back').addEventListener('click', function () { selectAdminEvent(null); });
   $('#admin-search').addEventListener('input', function (e) { pickerQuery = e.target.value; renderPicker(true); });
@@ -3539,8 +3590,10 @@
     var s7 = section('Xoá thương hiệu', 'Các landing page đã áp dụng vẫn giữ nguyên giao diện và thông tin thương hiệu.');
     var del = document.createElement('button'); del.type = 'button'; del.className = 'btn btn-danger'; del.innerHTML = EP.icon('trash') + 'Xoá "' + (b.name || 'thương hiệu này') + '"';
     del.addEventListener('click', function () {
-      if (!root.confirm('Xoá thương hiệu "' + (b.name || '') + '"? Không thể hoàn tác.')) return;
-      EP.motion.collapse($('#brand-list .brand-item.is-active'), function () { if (b.cloud) C.deleteBrand(b.id).catch(function () {}); B.remove(b.id); brandId = null; refreshBrandSelects(); renderBrandView(); toast('Đã xoá thương hiệu.'); });
+      EP.popup.confirm({ tone: 'warn', title: 'Xoá thương hiệu?', body: '"' + (b.name || '') + '" sẽ bị xoá. Không thể hoàn tác.', confirmLabel: 'Xoá thương hiệu' }).then(function (ok) {
+        if (!ok) return;
+        EP.motion.collapse($('#brand-list .brand-item.is-active'), function () { if (b.cloud) C.deleteBrand(b.id).catch(function () {}); B.remove(b.id); brandId = null; refreshBrandSelects(); renderBrandView(); toast('Đã xoá thương hiệu.'); });
+      });
     });
     s7.appendChild(del);
     drawPreview(b);
@@ -3636,6 +3689,21 @@
   C.onAuth(function () { if (!$('#view-events').hidden) renderEvents(); });
 
   setInterval(syncAll, SYNC_INTERVAL_MS);
+
+  // Chào mừng lần đầu (một lần mỗi trình duyệt)
+  if (!publicEventId) setTimeout(function () {
+    if (currentTab !== 'templates') return;
+    EP.popup.once('welcome', 1, function () {
+      var ol = document.createElement('ol');
+      ['Chọn một mẫu trong Thư viện mẫu', 'AI viết nội dung cho sự kiện của bạn', 'Xuất bản & nhận đăng ký qua link hoặc mã QR'].forEach(function (t) {
+        var li = document.createElement('li'); var sp = document.createElement('span'); sp.textContent = t; li.appendChild(sp); ol.appendChild(li);
+      });
+      var demoId = EP.demo && EP.demo.hasDemo && EP.demo.hasDemo() ? Object.keys(S.read('events', {})).filter(EP.demo.isDemoId)[0] : null;
+      var acts = [{ label: 'Khám phá mẫu', primary: true }];
+      if (demoId) acts.unshift({ label: 'Xem landing page mẫu', onClick: function () { var all = S.read('events', {}); if (all[demoId]) setTimeout(function () { openEvent(all[demoId]); }, 120); } });
+      EP.popup.open({ tone: 'info', icon: '👋', title: 'Chào mừng đến Xclipse', body: ol, actions: acts });
+    });
+  }, 600);
 
   // Đếm ngược mỗi giây + cập nhật khi tab khác có người đăng ký
   setInterval(function () { if (renderer) renderer.update(); }, 1000);

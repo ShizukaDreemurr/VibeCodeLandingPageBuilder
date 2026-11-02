@@ -337,3 +337,34 @@ html.motion-off .landing *, html.motion-off .landing *::before { animation: none
   .lp-cd-box { flex: 1 1 0; min-width: 0; max-width: 84px; padding: 10px 4px; }
   .lp-cd-num { font-size: 24px; }
 }
+
+/* ---------- Popup đăng ký thành công (js/landing-renderer.js; nằm trong file HTML xuất) ---------- */
+dialog.lp-pop { border: 0; padding: 0; background: transparent; color: var(--lp-text, #111); max-width: none; max-height: none; overflow: visible; margin: auto; font-family: inherit; }
+dialog.lp-pop::backdrop { background: rgba(10, 10, 20, .5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: lp-pop-fade .2s ease both; }
+.lp-pop-card { position: relative; box-sizing: border-box; width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; background: var(--lp-bg, #fff); color: var(--lp-text, #111); border-radius: 20px; padding: 30px 24px 22px; text-align: center; box-shadow: 0 28px 70px rgba(10, 10, 20, .35); animation: lp-pop-in .45s cubic-bezier(.2, 1.3, .35, 1) both; }
+.lp-pop-icon { width: 58px; height: 58px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; font-size: 28px; font-weight: 700; background: var(--lp-accent, #d6336c); color: var(--lp-accent-contrast, #fff); }
+.lp-pop.is-waitlist .lp-pop-icon { background: var(--lp-primary, #222); color: #fff; }
+.lp-pop-title { margin: 0 0 6px; font-size: 24px; line-height: 1.25; font-weight: 800; letter-spacing: -.01em; font-family: var(--lp-heading-font, inherit); }
+.lp-pop-sub { margin: 0 0 14px; opacity: .8; line-height: 1.5; }
+.lp-pop-meta { list-style: none; margin: 0 0 18px; padding: 12px 14px; display: grid; gap: 8px; text-align: left; border-radius: 12px; background: color-mix(in srgb, var(--lp-text, #111) 6%, transparent); font-size: 15px; }
+.lp-pop-meta li { display: flex; gap: 10px; align-items: flex-start; }
+.lp-pop-meta .lp-ic { flex: none; margin-top: 2px; opacity: .8; }
+.lp-pop-actions { display: grid; gap: 8px; }
+.lp-pop-btn { font: inherit; font-weight: 700; min-height: 46px; padding: 0 18px; border-radius: 12px; border: 1.5px solid color-mix(in srgb, var(--lp-text, #111) 22%, transparent); background: transparent; color: inherit; cursor: pointer; }
+.lp-pop-btn.is-primary { background: var(--lp-accent, #d6336c); border-color: var(--lp-accent, #d6336c); color: var(--lp-accent-contrast, #fff); }
+.lp-pop-btn:focus-visible { outline: 3px solid var(--lp-accent, #d6336c); outline-offset: 2px; }
+.lp-pop-burst { position: absolute; left: 50%; top: 58px; width: 0; height: 0; pointer-events: none; }
+.lp-pop-burst i { position: absolute; width: 8px; height: 8px; border-radius: 2px; background: var(--lp-accent, #d6336c); opacity: 0; animation: lp-pop-burst 1.1s ease-out both; }
+.lp-pop-burst i:nth-child(3n+1) { background: var(--lp-primary, #222); }
+.lp-pop-burst i:nth-child(3n+2) { background: #f5b83d; }
+@keyframes lp-pop-burst { 0% { opacity: 1; transform: rotate(var(--a)) translateY(0); } 100% { opacity: 0; transform: rotate(var(--a)) translateY(calc(var(--d) * -2)) rotate(300deg); } }
+@keyframes lp-pop-in { from { opacity: 0; transform: translateY(18px) scale(.9); } to { opacity: 1; transform: none; } }
+@keyframes lp-pop-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lp-pop-sheet { from { transform: translateY(100%); } to { transform: none; } }
+html.motion-off .lp-pop-card, html.motion-off dialog.lp-pop::backdrop, html.motion-off .lp-pop-burst { animation: none !important; }
+html.motion-off .lp-pop-burst { display: none; }
+@media (prefers-reduced-motion: reduce) { .lp-pop-card, dialog.lp-pop::backdrop { animation: none !important; } .lp-pop-burst { display: none; } }
+@media (max-width: 560px) {
+  dialog.lp-pop { margin: auto 0 0; width: 100%; }
+  .lp-pop-card { width: 100%; border-radius: 22px 22px 0 0; padding-bottom: calc(18px + env(safe-area-inset-bottom)); animation-name: lp-pop-sheet; }
+}
