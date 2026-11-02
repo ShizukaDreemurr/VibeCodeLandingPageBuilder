@@ -412,6 +412,76 @@
       });
     });
 
+    // Popup "Đăng ký thành công": tự chứa (file HTML xuất không nạp popup.js); chỉ ở trang xem, không ở chế độ soạn
+    function successPopup(waitlist) {
+      var q = root.location ? root.location.search : '';
+      if (editable || !container.isConnected || !document.createElement('dialog').showModal) return;
+      if (root.navigator && root.navigator.webdriver && !/[?&]popup=1\b/.test(q)) return;
+      var calm = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('motion-off');
+      var old = container.querySelector('dialog.lp-pop'); if (old) old.remove();
+      var prev = document.activeElement;
+      var dlg = h('dialog', { class: 'lp-pop' + (waitlist ? ' is-waitlist' : ''), 'aria-labelledby': 'lp-pop-t' });
+      var closeBtn = h('button', { type: 'button', class: 'lp-pop-btn is-ghost', text: 'Đóng' });
+      var icon = h('div', { class: 'lp-pop-icon', 'aria-hidden': 'true', text: waitlist ? '…' : '✓' });
+      var when = fmtDate(ev.startAt);
+      var rows = [h('li', {}, [ico('calendar'), h('span', { text: when })]), h('li', {}, [ico('pin'), h('span', { text: ev.location || '' })])];
+      var shareBtn = h('button', { type: 'button', class: 'lp-pop-btn is-ghost' });
+      var url = (opts.shareUrl || (root.location && /^https?:/.test(root.location.protocol) ? root.location.href.split('#')[0] : '')) || '';
+      var canShare = !!(root.navigator && navigator.share);
+      shareBtn.textContent = canShare ? 'Chia sẻ cho bạn bè' : 'Sao chép link để chia sẻ';
+      shareBtn.addEventListener('click', function () {
+        if (canShare) { navigator.share({ title: ev.name, text: ev.name + ' · ' + when, url: url || undefined }).catch(function () {}); return; }
+        var done = function () { shareBtn.textContent = 'Đã sao chép link ✓'; };
+        if (navigator.clipboard && url) navigator.clipboard.writeText(url).then(done, done); else done();
+      });
+      var calBtn = h('button', { type: 'button', class: 'lp-pop-btn is-primary', text: 'Thêm vào lịch' });
+      calBtn.addEventListener('click', function () {
+        var d = new Date(ev.startAt), e2 = new Date(d.getTime() + 2 * 3600 * 1000);
+        var f = function (x) { return x.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, ''); };
+        var esc = function (t) { return String(t || '').replace(/([,;\\])/g, '\\$1').replace(/\r?\n/g, '\\n'); };
+        var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Xclipse//VI', 'BEGIN:VEVENT', 'UID:' + (ev.id || 'event') + '@xclipse',
+          'DTSTAMP:' + f(new Date()), 'DTSTART:' + f(d), 'DTEND:' + f(e2), 'SUMMARY:' + esc(ev.name), 'LOCATION:' + esc(ev.location), url ? 'URL:' + url : '', 'END:VEVENT', 'END:VCALENDAR']
+          .filter(Boolean).join('\r\n');
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+        a.download = String(ev.name || 'su-kien').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.ics';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+        calBtn.textContent = 'Đã tải file lịch ✓';
+      });
+      var card = h('div', { class: 'lp-pop-card' }, [
+        icon,
+        h('h2', { id: 'lp-pop-t', class: 'lp-pop-title', text: waitlist ? 'Bạn đã vào danh sách chờ' : 'Đăng ký thành công!' }),
+        h('p', { class: 'lp-pop-sub', text: waitlist ? 'Ban tổ chức sẽ liên hệ ngay nếu có chỗ trống cho ' + ev.name + '.' : 'Hẹn gặp bạn tại ' + ev.name + '.' }),
+        h('ul', { class: 'lp-pop-meta' }, rows),
+        h('div', { class: 'lp-pop-actions' }, [calBtn, shareBtn, closeBtn])
+      ]);
+      if (!calm && !waitlist) {
+        var dots = [];
+        for (var i = 0; i < 18; i++) dots.push(h('i', { style: '--a:' + Math.round((i / 18) * 360) + 'deg;--d:' + (60 + (i * 37) % 70) + 'px;--c:' + (i % 3) }));
+        card.appendChild(h('div', { class: 'lp-pop-burst', 'aria-hidden': 'true' }, dots));
+      }
+      dlg.appendChild(card);
+      container.appendChild(dlg);
+      function close() {
+        if (!dlg.isConnected) return;
+        if (dlg.open) dlg.close();
+        dlg.remove();
+        if (prev && prev.focus && prev.isConnected) { try { prev.focus(); } catch (x) {} }
+      }
+      closeBtn.addEventListener('click', close);
+      dlg.addEventListener('cancel', function (e) { e.preventDefault(); close(); });
+      dlg.addEventListener('mousedown', function (e) { if (e.target === dlg) close(); });
+      dlg.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab') return;
+        var f = dlg.querySelectorAll('button'), first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      });
+      dlg.showModal();
+      calBtn.focus();
+    }
+
     function showResult(result) {
       form.querySelectorAll('[data-error-for]').forEach(function (p) { p.textContent = ''; });
       form.querySelectorAll('input').forEach(function (i) { i.removeAttribute('aria-invalid'); });
@@ -422,6 +492,7 @@
           : L.success;
         formMsg.classList.add('is-success');
         form.reset();
+        successPopup(!!result.waitlist);
       } else {
         Object.keys(result.errors).forEach(function (k) {
           var p = form.querySelector('[data-error-for="' + k + '"]');
