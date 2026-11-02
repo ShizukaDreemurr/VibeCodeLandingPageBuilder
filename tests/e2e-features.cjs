@@ -19,7 +19,7 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  // lead status
  await p.click('.event-card:has-text("Workshop") >> text=Mở / sửa');await p.click('[data-tab="admin"]');if(await p.isVisible('.admin-pick'))await p.click('.admin-pick:has-text("Workshop")');
  log('metrics local',await p.$$eval('.metric',m=>m.map(x=>x.textContent).join(' | ')));
- await p.selectOption('.lead-select','won');await p.waitForTimeout(200);
+ await p.click('[data-admin-view=list]');await p.selectOption('.lead-select','won');await p.waitForTimeout(200);
  log('metrics after won',await p.$$eval('.metric',m=>m.map(x=>x.textContent).join(' | ')));
  log('contact links',await p.$$eval('.contact-links a',a=>a.map(x=>x.getAttribute('href')).join(' ')));
  await p.reload();await p.click('[data-tab="admin"]');if(await p.isVisible('.admin-pick'))await p.click('.admin-pick:has-text("Workshop")');log('lead persisted',await p.inputValue('.lead-select'));

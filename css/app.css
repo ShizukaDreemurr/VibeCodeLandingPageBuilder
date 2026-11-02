@@ -880,6 +880,77 @@ body.is-public .app-footer { display: none; }
   .ie-tip { display: none; }
   .ie-row { grid-template-columns: 76px minmax(0, 1fr) 54px 12px; }
 }
+
+/* ---------- Tóm tắt đăng ký: chuyển chế độ + biểu đồ SVG (js/charts.js) ---------- */
+.seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--raised); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; }
+.seg-btn { font: inherit; font-size: 14px; min-height: 32px; padding: 0 16px; border: 0; border-radius: 7px; background: none; color: var(--text-muted); cursor: pointer; }
+.seg-btn:hover { color: var(--text); }
+.seg-btn.is-active { background: var(--surface); color: var(--text); box-shadow: 0 0 0 1px var(--border); font-weight: 600; }
+.seg-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 1px; }
+.ch-grid-wrap { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.ch-grid-wrap[hidden], .table-wrap[hidden] { display: none; }
+.ch-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; background: var(--surface); min-width: 0; display: flex; flex-direction: column; }
+.ch-card.ch-wide { grid-column: 1 / -1; }
+.ch-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ch-head h3 { margin: 0; font-size: 15px; font-weight: 600; color: var(--text); }
+.ch-toggle { font-size: 13px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.ch-toggle input { accent-color: var(--accent); }
+.ch-insight { margin: 4px 0 12px; font-size: 13px; color: var(--text-muted); }
+.ch-body { flex: 1; min-width: 0; }
+.ch-host { position: relative; }
+.ch-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ch-grid { stroke: var(--rule); stroke-width: 1; }
+.ch-axis { font: 11px var(--font); fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ch-lbl { font: 13px var(--font); fill: var(--text); }
+.ch-val { font: 12px var(--font); fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ch-hit { fill: transparent; }
+.ch-hrow:hover .ch-hit, .ch-bargrp:hover .ch-hit, .ch-pt:hover .ch-hit { fill: var(--raised); opacity: .6; }
+.ch-track { fill: var(--raised); }
+.ch-bar { fill: #e58aae; }
+.ch-bar.is-peak, .ch-hbar { fill: var(--accent); }
+.ch-line { stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.ch-area { fill: var(--accent); fill-opacity: .1; }
+.ch-dot { fill: var(--surface); stroke: var(--accent); stroke-width: 2; opacity: 0; }
+.ch-pt:hover .ch-dot { opacity: 1; }
+.ch-donut-track { stroke: var(--raised); }
+.ch-seg { cursor: default; }
+.ch-seg:hover { stroke-width: 28; }
+.ch-donut-num { font: 600 24px var(--font); fill: var(--text); }
+.ch-donut-wrap { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.ch-donut-box { width: 160px; flex: none; }
+.ch-legend { list-style: none; margin: 0; padding: 0; flex: 1; min-width: 160px; display: grid; gap: 8px; font-size: 13px; }
+.ch-legend li { display: flex; align-items: center; gap: 8px; }
+.ch-sw { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.ch-lg-name { flex: 1; color: var(--text); }
+.ch-legend b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.ch-legend em { font-style: normal; color: var(--text-muted); min-width: 52px; text-align: right; font-variant-numeric: tabular-nums; }
+.ch-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.ch-sub h4 { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.ch-empty { margin: 0; padding: 28px 8px; text-align: center; color: var(--text-muted); font-size: 13px; background: var(--raised); border-radius: var(--radius-small); }
+.ch-tip { position: absolute; z-index: 5; pointer-events: none; background: var(--primary); color: var(--primary-contrast); font-size: 12px; padding: 5px 9px; border-radius: 6px; white-space: nowrap; box-shadow: var(--shadow-float); }
+.ch-tip[hidden] { display: none; }
+.ch-data { margin-top: 8px; font-size: 12px; }
+.ch-data summary { cursor: pointer; color: var(--text-muted); width: fit-content; }
+.ch-table { border-collapse: collapse; margin-top: 6px; width: 100%; font-variant-numeric: tabular-nums; }
+.ch-table th, .ch-table td { text-align: left; padding: 3px 8px; border-bottom: 1px solid var(--rule); }
+@media (max-width: 760px) {
+  .ch-grid-wrap, .ch-two { grid-template-columns: minmax(0, 1fr); }
+  .ch-two { gap: 16px; }
+  .ch-donut-wrap { justify-content: center; }
+}
+@media screen {
+  .ch-line { stroke-dasharray: 1; animation: chDraw 900ms var(--ease-out) both; }
+  .ch-area { animation: chFade 700ms var(--ease-out) 300ms both; }
+  .ch-bar { transform-box: fill-box; transform-origin: bottom; animation: chGrowY 560ms var(--ease-out) both; }
+  .ch-hbar { transform-origin: left; animation-name: chGrowX; }
+  .ch-seg { animation: chSweep 700ms var(--ease-out) both; }
+  .ch-card { animation: xcIn var(--dur-3) var(--ease-out) both; }
+}
+@keyframes chDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes chFade { from { opacity: 0; } }
+@keyframes chGrowY { from { transform: scaleY(0); } }
+@keyframes chGrowX { from { transform: scaleX(0); } }
+@keyframes chSweep { from { stroke-dasharray: 0 100; } }
 @media screen {
   .ie-dialog.is-closing { animation: xcOut var(--dur-1) ease both; }
   .ie-dialog.is-closing::backdrop { animation: xcOut var(--dur-1) ease both; }
