@@ -43,6 +43,7 @@
       <span>Xclipse</span>
     </a>
     <nav class="tabs" role="tablist">
+      <button type="button" class="tab" data-tab="templates" role="tab" aria-selected="false">Thư viện mẫu</button>
       <button type="button" class="tab" data-tab="events" role="tab" aria-selected="false">Sự kiện của tôi</button>
       <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Thông tin &amp; nội dung</button>
       <button type="button" class="tab" data-tab="editor" role="tab" aria-selected="false">Thiết kế trang</button>
@@ -53,6 +54,40 @@
     <button type="button" class="btn btn-ghost" id="btn-auth" hidden>Đăng nhập Google</button>
     <button type="button" class="btn btn-primary" id="btn-new" aria-label="Tạo trang mới"><span data-icon="plus"></span><span class="lbl">Tạo trang mới</span></button>
   </header>
+
+  <main id="view-templates" class="view tpl-page" hidden>
+    <section class="tpl-hero" aria-labelledby="tpl-page-title">
+      <div class="tpl-hero-text">
+        <p class="tpl-eyebrow">Thư viện mẫu Xclipse</p>
+        <h1 id="tpl-page-title">Mẫu landing page sự kiện</h1>
+        <p class="tpl-hero-sub" id="tpl-page-sub">Chọn một mẫu, bấm “Dùng mẫu này” và có ngay trang đăng ký có đếm ngược, mã QR, danh sách khách. Lọc theo ngành, loại sự kiện, mục đích.</p>
+        <div class="tpl-chips" data-r="chips" role="group" aria-label="Chọn nhanh theo ngành"></div>
+      </div>
+      <div class="tpl-hero-art" id="tpl-hero-art" aria-hidden="true"></div>
+    </section>
+    <div class="tpl-search">
+      <span class="tpl-search-icon" data-icon="zoom-in" aria-hidden="true"></span>
+      <input type="search" data-r="search" placeholder="Tìm mẫu: tiệc cưới, marathon, khai trương…" aria-label="Tìm mẫu" autocomplete="off">
+    </div>
+    <div class="tpl-filters" data-r="filters"></div>
+    <div class="tpl-status">
+      <p class="tpl-count" data-r="count" role="status" aria-live="polite"></p>
+      <button type="button" class="btn btn-ghost btn-small" data-r="clear" hidden>Xoá bộ lọc</button>
+    </div>
+    <div class="tpl-results">
+      <h2 class="sr-only">Danh sách mẫu</h2>
+      <div class="tpl-pgrid" data-r="grid" aria-label="Mẫu khớp đủ"></div>
+      <details class="tpl-near" data-r="near" open hidden>
+        <summary><span data-r="near-title">Gần đúng</span></summary>
+        <div class="tpl-pgrid" data-r="grid-near"></div>
+      </details>
+      <div class="tpl-empty" data-r="empty" hidden>
+        <strong>Chưa có mẫu nào khớp</strong>
+        <p class="hint">Thử bỏ bớt một bộ lọc hoặc đổi từ khoá tìm kiếm.</p>
+        <button type="button" class="btn btn-ghost btn-small" data-r="empty-clear">Xoá bộ lọc</button>
+      </div>
+    </div>
+  </main>
 
   <main id="view-builder" class="workspace-form view">
     <!-- BƯỚC 1: FORM NHẬP + AI -->
@@ -466,23 +501,23 @@
     <p class="hint">Lọc theo ngành, loại và mục đích sự kiện. Đổi mẫu giữ nguyên nội dung đã viết.</p>
     <div class="tpl-search">
       <span class="tpl-search-icon" data-icon="zoom-in" aria-hidden="true"></span>
-      <input type="search" id="tpl-search" placeholder="Tìm mẫu: tiệc cưới, marathon, khai trương…" aria-label="Tìm mẫu" autocomplete="off">
+      <input type="search" id="tpl-search" data-r="search" placeholder="Tìm mẫu: tiệc cưới, marathon, khai trương…" aria-label="Tìm mẫu" autocomplete="off">
     </div>
-    <div class="tpl-filters" id="tpl-filters"></div>
+    <div class="tpl-filters" id="tpl-filters" data-r="filters"></div>
     <div class="tpl-status">
-      <p class="tpl-count" id="tpl-count" role="status" aria-live="polite"></p>
-      <button type="button" class="btn btn-ghost btn-small" id="tpl-clear" hidden>Xoá bộ lọc</button>
+      <p class="tpl-count" id="tpl-count" data-r="count" role="status" aria-live="polite"></p>
+      <button type="button" class="btn btn-ghost btn-small" id="tpl-clear" data-r="clear" hidden>Xoá bộ lọc</button>
     </div>
     <div class="tpl-results" id="tpl-results">
-      <div class="tpl-grid" id="tpl-grid" aria-label="Mẫu khớp đủ"></div>
-      <details class="tpl-near" id="tpl-near" open hidden>
-        <summary><span id="tpl-near-title">Gần đúng</span></summary>
-        <div class="tpl-grid" id="tpl-grid-near"></div>
+      <div class="tpl-grid" id="tpl-grid" data-r="grid" aria-label="Mẫu khớp đủ"></div>
+      <details class="tpl-near" id="tpl-near" data-r="near" open hidden>
+        <summary><span id="tpl-near-title" data-r="near-title">Gần đúng</span></summary>
+        <div class="tpl-grid" id="tpl-grid-near" data-r="grid-near"></div>
       </details>
-      <div class="tpl-empty" id="tpl-empty" hidden>
+      <div class="tpl-empty" id="tpl-empty" data-r="empty" hidden>
         <strong>Chưa có mẫu nào khớp</strong>
         <p class="hint">Thử bỏ bớt một bộ lọc hoặc đổi từ khoá tìm kiếm.</p>
-        <button type="button" class="btn btn-ghost btn-small" id="tpl-empty-clear">Xoá bộ lọc</button>
+        <button type="button" class="btn btn-ghost btn-small" id="tpl-empty-clear" data-r="empty-clear">Xoá bộ lọc</button>
       </div>
     </div>
   </dialog>

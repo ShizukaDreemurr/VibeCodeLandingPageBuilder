@@ -295,8 +295,13 @@
     }).length;
   }
 
-  function buildTemplateFilters() {
-    var box = $('#tpl-filters');
+  // Hai nơi dùng chung một bộ chọn: hộp thoại "Đổi mẫu" và trang "Thư viện mẫu". Mỗi nơi là một picker {root, page}
+  // với các phần tử đánh dấu data-r (search, filters, count, clear, grid, near, near-title, empty, empty-clear).
+  var PICK = { dlg: { root: $('#tpl-dialog'), page: false }, page: { root: $('#view-templates'), page: true } };
+  function R(P, role) { return P.root.querySelector('[data-r="' + role + '"]'); }
+
+  function buildTemplateFilters(P) {
+    var box = R(P, 'filters');
     // Bộ lọc nâng cao (quy mô, hình thức, chi phí, đối tượng, dịp) gom vào mục thu gọn
     var adv = document.createElement('details');
     adv.className = 'tpl-adv';
@@ -308,7 +313,7 @@
       label.appendChild(document.createTextNode(f.label));
       var sel = document.createElement('select');
       sel.setAttribute('data-filter', key);
-      sel.addEventListener('change', function () { tplState[key] = sel.value; renderTemplateGrid(true); });
+      sel.addEventListener('change', function () { tplState[key] = sel.value; renderTemplateGrid(P, true); });
       label.appendChild(sel);
       (f.advanced ? advGrid : box).appendChild(label);
     });
@@ -319,7 +324,7 @@
     Object.keys(SORTS).forEach(function (k) {
       var o = document.createElement('option'); o.value = k; o.textContent = SORTS[k]; ss.appendChild(o);
     });
-    ss.addEventListener('change', function () { tplState.sort = ss.value; renderTemplateGrid(true); });
+    ss.addEventListener('change', function () { tplState.sort = ss.value; renderTemplateGrid(P, true); });
     lab.appendChild(ss);
     box.appendChild(lab);
     // Chỉ hiện khi dữ liệu mẫu đã có nhãn nâng cao
@@ -327,24 +332,24 @@
       box.appendChild(adv);
       if (FKEYS.some(function (k) { return TPL.FILTERS[k].advanced && tplState[k]; })) adv.open = true;
     }
-    $('#tpl-search').addEventListener('input', function (e) {
+    R(P, 'search').addEventListener('input', function (e) {
       clearTimeout(tplTimer);
       var val = e.target.value;
-      tplTimer = setTimeout(function () { tplState.q = val; renderTemplateGrid(true); }, 120);
+      tplTimer = setTimeout(function () { tplState.q = val; renderTemplateGrid(P, true); }, 120);
     });
     function clearAll() {
       FKEYS.forEach(function (k) { tplState[k] = ''; });
       tplState.q = '';
-      $('#tpl-search').value = '';
-      renderTemplateGrid(true);
+      R(P, 'search').value = '';
+      renderTemplateGrid(P, true);
     }
-    $('#tpl-clear').addEventListener('click', clearAll);
-    $('#tpl-empty-clear').addEventListener('click', clearAll);
+    R(P, 'clear').addEventListener('click', clearAll);
+    R(P, 'empty-clear').addEventListener('click', clearAll);
   }
 
   // Cập nhật danh sách tuỳ chọn kèm số kết quả; tuỳ chọn 0 kết quả bị vô hiệu (trừ giá trị đang chọn)
-  function syncFilterControls() {
-    document.querySelectorAll('#tpl-filters select[data-filter]').forEach(function (sel) {
+  function syncFilterControls(P) {
+    P.root.querySelectorAll('[data-r="filters"] select[data-filter]').forEach(function (sel) {
       var key = sel.getAttribute('data-filter');
       var opts = TPL.FILTERS[key].options;
       sel.innerHTML = '';
@@ -361,17 +366,11 @@
       sel.value = tplState[key];
       sel.classList.toggle('is-set', !!tplState[key]);
     });
-    document.querySelector('#tpl-filters select[data-sort]').value = tplState.sort;
-    $('#tpl-search').value = tplState.q;
+    P.root.querySelector('[data-r="filters"] select[data-sort]').value = tplState.sort;
+    R(P, 'search').value = tplState.q;
   }
 
-  function tplCard(t, badge, kind) {
-    var card = document.createElement('button');
-    card.type = 'button';
-    var cur = t.id === currentTemplateId;
-    card.className = 'tpl-card' + (cur ? ' is-current' : '');
-    card.setAttribute('data-id', t.id);
-    card.setAttribute('aria-label', 'Chọn mẫu ' + t.name + (cur ? ' (đang dùng)' : ''));
+  function tplThumb(t) {
     // Ảnh đại diện = ảnh chụp phần đầu trang của mẫu (tools/make-thumbs.cjs); ảnh lỗi thì hiện khối màu
     var thumb = document.createElement('div');
     thumb.className = 'tpl-thumb';
@@ -381,6 +380,27 @@
     img.addEventListener('load', function () { thumb.classList.add('is-loaded'); });
     img.addEventListener('error', function () { img.remove(); thumb.classList.add('is-fallback'); });
     thumb.appendChild(img);
+    return thumb;
+  }
+
+  function tplDots(t) {
+    var dots = document.createElement('span');
+    dots.className = 'tpl-dots'; dots.setAttribute('aria-hidden', 'true');
+    [t.theme.primary, t.theme.accent].forEach(function (c) {
+      var d = document.createElement('i'); d.style.background = c; dots.appendChild(d);
+    });
+    return dots;
+  }
+
+  function tplCard(P, t, badge, kind) {
+    if (P.page) return tplPageCard(t, badge, kind);
+    var card = document.createElement('button');
+    card.type = 'button';
+    var cur = t.id === currentTemplateId;
+    card.className = 'tpl-card' + (cur ? ' is-current' : '');
+    card.setAttribute('data-id', t.id);
+    card.setAttribute('aria-label', 'Chọn mẫu ' + t.name + (cur ? ' (đang dùng)' : ''));
+    var thumb = tplThumb(t);
     var peek = document.createElement('span');
     peek.className = 'tpl-peek'; peek.setAttribute('aria-hidden', 'true'); peek.textContent = cur ? 'Đang dùng' : 'Dùng mẫu này';
     thumb.appendChild(peek);
@@ -390,12 +410,7 @@
     top.className = 'tpl-card-top';
     var nm = document.createElement('strong');
     nm.className = 'tpl-card-name'; nm.textContent = t.name;
-    var dots = document.createElement('span');
-    dots.className = 'tpl-dots'; dots.setAttribute('aria-hidden', 'true');
-    [t.theme.primary, t.theme.accent].forEach(function (c) {
-      var d = document.createElement('i'); d.style.background = c; dots.appendChild(d);
-    });
-    top.appendChild(nm); top.appendChild(dots);
+    top.appendChild(nm); top.appendChild(tplDots(t));
     var desc = document.createElement('span');
     desc.className = 'tpl-card-desc'; desc.textContent = tplDesc(t);
     body.appendChild(top); body.appendChild(desc);
@@ -411,10 +426,55 @@
     return card;
   }
 
-  function renderTemplateGrid(animate) {
+  // Thẻ lớn của trang Thư viện mẫu: ảnh đầu trang, tên, nhãn, bảng màu, nút "Dùng mẫu này" + "Xem trước"
+  function tplPageCard(t, badge, kind) {
+    var card = document.createElement('article');
+    card.className = 'tpl-pcard';
+    card.setAttribute('data-id', t.id);
+    var shot = document.createElement('button');
+    shot.type = 'button'; shot.className = 'tpl-pshot';
+    shot.setAttribute('aria-label', 'Xem trước mẫu ' + t.name);
+    var thumb = tplThumb(t);
+    var peek = document.createElement('span');
+    peek.className = 'tpl-peek'; peek.setAttribute('aria-hidden', 'true'); peek.textContent = 'Xem trước';
+    thumb.appendChild(peek);
+    shot.appendChild(thumb);
+    shot.addEventListener('click', function () { openTplPreview(t.id, shot); });
+    var body = document.createElement('div');
+    body.className = 'tpl-pbody';
+    var top = document.createElement('div');
+    top.className = 'tpl-card-top';
+    var nm = document.createElement('h3');
+    nm.className = 'tpl-card-name'; nm.textContent = t.name;
+    top.appendChild(nm); top.appendChild(tplDots(t));
+    var tags = document.createElement('div');
+    tags.className = 'tpl-ptags';
+    ['industry', 'type', 'goal'].forEach(function (k) {
+      if (t.tags[k] && t.tags[k].length) {
+        var s = document.createElement('span'); s.className = 'tpl-badge'; s.textContent = TPL.FILTERS[k].options[t.tags[k][0]]; tags.appendChild(s);
+      }
+    });
+    if (badge) { var sc = document.createElement('span'); sc.className = 'tpl-score' + (kind === 'near' ? ' is-near' : ''); sc.textContent = badge; tags.appendChild(sc); }
+    var acts = document.createElement('div');
+    acts.className = 'tpl-pactions';
+    var use = document.createElement('button');
+    use.type = 'button'; use.className = 'btn btn-primary btn-small'; use.textContent = 'Dùng mẫu này';
+    use.setAttribute('aria-label', 'Dùng mẫu ' + t.name);
+    use.addEventListener('click', function () { useTemplate(t.id); });
+    var pvb = document.createElement('button');
+    pvb.type = 'button'; pvb.className = 'btn btn-ghost btn-small'; pvb.textContent = 'Xem trước';
+    pvb.setAttribute('aria-label', 'Xem trước mẫu ' + t.name);
+    pvb.addEventListener('click', function () { openTplPreview(t.id, pvb); });
+    acts.appendChild(use); acts.appendChild(pvb);
+    body.appendChild(top); body.appendChild(tags); body.appendChild(acts);
+    card.appendChild(shot); card.appendChild(body);
+    return card;
+  }
+
+  function renderTemplateGrid(P, animate) {
     var keys = FKEYS.filter(function (k) { return tplState[k]; });
     var advOn = FKEYS.filter(function (k) { return TPL.FILTERS[k].advanced && tplState[k]; }).length;
-    var advCount = document.querySelector('#tpl-filters .tpl-adv-count');
+    var advCount = R(P, 'filters').querySelector('.tpl-adv-count');
     if (advCount) advCount.textContent = advOn ? '(' + advOn + ' đang bật)' : '';
     var exact = [], near = [];
     TPL.list.forEach(function (t, i) {
@@ -433,30 +493,31 @@
     near.sort(function (a, b) {
       return tplState.sort === 'best' ? (b.hit - a.hit || a.t.name.localeCompare(b.t.name, 'vi')) : (cmp(a, b) || b.hit - a.hit);
     });
-    syncFilterControls();
-    var grid = $('#tpl-grid'), gridNear = $('#tpl-grid-near');
+    syncFilterControls(P);
+    var grid = R(P, 'grid'), gridNear = R(P, 'grid-near');
     grid.innerHTML = ''; gridNear.innerHTML = '';
-    exact.forEach(function (r) { grid.appendChild(tplCard(r.t, keys.length ? 'Khớp đủ' : '', 'exact')); });
-    near.forEach(function (r) { gridNear.appendChild(tplCard(r.t, 'Khớp ' + r.hit + '/' + keys.length, 'near')); });
+    exact.forEach(function (r) { grid.appendChild(tplCard(P, r.t, keys.length ? 'Khớp đủ' : '', 'exact')); });
+    near.forEach(function (r) { gridNear.appendChild(tplCard(P, r.t, 'Khớp ' + r.hit + '/' + keys.length, 'near')); });
     var empty = !exact.length && !near.length;
     grid.hidden = !exact.length;
-    $('#tpl-near').hidden = !near.length;
-    $('#tpl-near-title').textContent = 'Gần đúng (' + near.length + ') · khớp một phần bộ lọc';
-    $('#tpl-empty').hidden = !empty;
-    $('#tpl-clear').hidden = !tplActive();
-    $('#tpl-count').textContent = empty ? 'Không có mẫu nào khớp.' :
+    R(P, 'near').hidden = !near.length;
+    R(P, 'near-title').textContent = 'Gần đúng (' + near.length + ') · khớp một phần bộ lọc';
+    R(P, 'empty').hidden = !empty;
+    R(P, 'clear').hidden = !tplActive();
+    R(P, 'count').textContent = empty ? 'Không có mẫu nào khớp.' :
       (exact.length + ' mẫu khớp' + (near.length ? ' · ' + near.length + ' gần đúng' : ''));
+    if (P.page) syncChips();
     tplSave();
     if (animate !== false) {
       EP.motion.stagger(grid.children);
       EP.motion.stagger(gridNear.children);
-      EP.motion.replay($('#tpl-count'), 'mo-fade');
-      if (empty) EP.motion.replay($('#tpl-empty'), 'mo-fade');
+      EP.motion.replay(R(P, 'count'), 'mo-fade');
+      if (empty) EP.motion.replay(R(P, 'empty'), 'mo-fade');
     }
   }
 
   function openTemplates() {
-    renderTemplateGrid(true);
+    renderTemplateGrid(PICK.dlg, true);
     var dlg = $('#tpl-dialog');
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
@@ -465,6 +526,122 @@
     var dlg = $('#tpl-dialog');
     if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
   }
+
+  // ---------- Trang Thư viện mẫu (tab đầu tiên) ----------
+  var CHIP_MAX = 8;
+  function buildTemplatePage() {
+    var n = TPL.list.length;
+    $('#tpl-page-title').textContent = n + ' mẫu landing page sự kiện';
+    // Chip chọn nhanh: các ngành có nhiều mẫu nhất
+    var ind = TPL.FILTERS.industry.options;
+    var counts = Object.keys(ind).map(function (k) {
+      return { k: k, n: TPL.list.filter(function (t) { return tplHas(t, 'industry', k); }).length };
+    }).filter(function (c) { return c.n; }).sort(function (a, b) { return b.n - a.n; }).slice(0, CHIP_MAX);
+    var box = R(PICK.page, 'chips');
+    function chip(key, label, num) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'tpl-chip'; b.setAttribute('data-chip', key);
+      b.innerHTML = '<span></span><b></b>';
+      b.firstChild.textContent = label; b.lastChild.textContent = num;
+      b.addEventListener('click', function () {
+        tplState.industry = key && tplState.industry !== key ? key : '';
+        renderTemplateGrid(PICK.page, true);
+      });
+      box.appendChild(b);
+    }
+    chip('', 'Tất cả', n);
+    counts.forEach(function (c) { chip(c.k, ind[c.k], c.n); });
+    // Ba ảnh chụp mẫu xếp chồng làm hình trang trí ở đầu trang
+    var art = $('#tpl-hero-art');
+    TPL.list.filter(function (t) { return t.thumb; }).slice(0, 3).forEach(function (t, i) {
+      var im = document.createElement('img');
+      im.src = t.thumb; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.style.setProperty('--k', i);
+      art.appendChild(im);
+    });
+    buildTemplateFilters(PICK.page);
+  }
+  function syncChips() {
+    R(PICK.page, 'chips').querySelectorAll('.tpl-chip').forEach(function (b) {
+      var on = (b.getAttribute('data-chip') || '') === tplState.industry;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  function showTemplatePage() { renderTemplateGrid(PICK.page, true); }
+  function leaveTemplatePage() {
+    closeTplPreview(true);
+    ['grid', 'grid-near'].forEach(function (r) { R(PICK.page, r).innerHTML = ''; });
+  }
+
+  // "Dùng mẫu này": bắt đầu landing page mới bằng mẫu, điền dữ liệu mẫu vào form, sang tab Thông tin
+  function useTemplate(id) {
+    closeTplPreview(true);
+    clearEditor(); // sự kiện đang mở vẫn được giữ trong "Sự kiện của tôi"
+    setTemplate(id);
+    fillSample();
+    switchTab('builder');
+    toast('Đã chọn mẫu "' + TPL.get(id).name + '". Chỉnh thông tin rồi bấm Tạo landing page.');
+  }
+
+  // Xem trước toàn trang của mẫu với dữ liệu mẫu và nội dung mô phỏng (không gửi đăng ký thật)
+  var tpv = null;
+  function openTplPreview(id, opener) {
+    var t = TPL.get(id);
+    var ev = t.sample();
+    ev.id = 'tpl-preview-' + t.id; ev.templateId = t.id; ev.sheetUrl = '';
+    ev.images = ev.images || {};
+    var seats = ev.capacity ? Math.floor(Number(ev.capacity) * 0.42) : 36;
+    if (!tpv) {
+      tpv = { root: document.createElement('div') };
+      tpv.root.className = 'pv-overlay tpl-pv';
+      tpv.root.setAttribute('role', 'dialog');
+      tpv.root.setAttribute('aria-modal', 'true');
+      tpv.root.hidden = true;
+      tpv.root.innerHTML = '<div class="pv-bar"><strong class="pv-title"></strong><span class="pv-note">Dữ liệu mẫu · form không gửi đăng ký thật</span>' +
+        '<button type="button" class="btn btn-primary btn-small tpv-use">Dùng mẫu này</button>' +
+        '<button type="button" class="btn btn-ghost btn-small pv-close">' + EP.icon('x', 14) + 'Đóng (Esc)</button></div>' +
+        '<div class="pv-stage"><div class="pv-frame is-desktop"><div class="landing"></div></div></div>';
+      document.body.appendChild(tpv.root);
+      tpv.landing = tpv.root.querySelector('.landing');
+      tpv.root.querySelector('.pv-close').addEventListener('click', function () { closeTplPreview(); });
+      tpv.root.querySelector('.tpv-use').addEventListener('click', function () { useTemplate(tpv.id); });
+    }
+    tpv.id = t.id;
+    tpv.opener = opener || null;
+    tpv.root.setAttribute('aria-label', 'Xem trước mẫu ' + t.name);
+    tpv.root.querySelector('.pv-title').textContent = t.name;
+    tpv.root.querySelector('.tpv-use').setAttribute('aria-label', 'Dùng mẫu ' + t.name);
+    var content = EP.contentGenerator.generate(ev, form.elements.tone.value, 0);
+    var r = EP.landingRenderer.render(tpv.landing, {
+      event: ev, content: content, now: function () { return new Date(); }, getCount: function () { return seats; }, editable: false, appUrl: APP_URL,
+      onRegister: function () { return { ok: false, errors: { form: 'Đây là bản xem trước – chọn "Dùng mẫu này" để tạo trang của bạn.' } }; }
+    });
+    clearInterval(tpv.timer);
+    tpv.timer = setInterval(r.update, 1000);
+    tpv.root.hidden = false;
+    tpv.root.classList.remove('is-leaving');
+    EP.motion.replay(tpv.root, 'is-entering');
+    document.documentElement.classList.add('tpv-lock');
+    tpv.root.querySelector('.pv-stage').scrollTop = 0;
+    tpv.root.querySelector('.tpv-use').focus();
+  }
+  function tplPreviewOpen() { return !!(tpv && !tpv.root.hidden && !tpv.root.classList.contains('is-leaving')); }
+  function closeTplPreview(instant) {
+    if (!tpv || tpv.root.hidden) return;
+    clearInterval(tpv.timer);
+    document.documentElement.classList.remove('tpv-lock');
+    var back = tpv.opener;
+    function done() { tpv.root.hidden = true; tpv.root.classList.remove('is-leaving'); tpv.landing.innerHTML = ''; }
+    if (instant === true || EP.motion.reduce()) done();
+    else {
+      tpv.root.classList.add('is-leaving');
+      setTimeout(function () { if (tpv.root.classList.contains('is-leaving')) done(); }, 200);
+    }
+    if (back && back.isConnected && instant !== true) back.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && tplPreviewOpen()) { e.preventDefault(); closeTplPreview(); }
+  });
 
   // Đổi mẫu: giữ nguyên nội dung, chỉ đổi giao diện; form trống thì điền dữ liệu mẫu của mẫu đó
   function applyTemplate(id) {
@@ -2455,7 +2632,7 @@
   }
 
   // ---------- Tab ----------
-  var TAB_ORDER = ['events', 'builder', 'editor', 'admin', 'brand'];
+  var TAB_ORDER = ['templates', 'events', 'builder', 'editor', 'admin', 'brand'];
   var currentTab = null;
   function switchTab(name) {
     var dir = currentTab && currentTab !== name ? (TAB_ORDER.indexOf(name) > TAB_ORDER.indexOf(currentTab) ? 'forward' : 'back') : null;
@@ -2472,11 +2649,13 @@
     });
     EP.motion.indicator($('.tabs'));
     root.scrollTo(0, 0);
+    $('#view-templates').hidden = name !== 'templates';
     $('#view-builder').hidden = name !== 'builder';
     $('#view-editor').hidden = name !== 'editor';
     $('#view-admin').hidden = name !== 'admin';
     $('#view-events').hidden = name !== 'events';
     $('#view-brand').hidden = name !== 'brand';
+    if (name === 'templates') showTemplatePage(); else leaveTemplatePage();
     if (name === 'brand') renderBrandView();
     if (name !== 'admin') stopAdminWatchers();
     if (name === 'admin') renderAdmin();
@@ -3137,7 +3316,8 @@
 
   buildPlatformButtons();
   tplLoad();
-  buildTemplateFilters();
+  buildTemplateFilters(PICK.dlg);
+  buildTemplatePage();
   setTemplate(currentTemplateId);
   syncModeBoxes();
   C.onAuth(updateAuthUi);
@@ -3433,7 +3613,7 @@
   refreshBrandSelects();
 
   EP.icons.hydrate();
-  switchTab(Object.keys(S.read('events', {})).length ? 'events' : 'builder');
+  switchTab(Object.keys(S.read('events', {})).length ? 'events' : 'templates');
   root.addEventListener('resize', function () { EP.motion.indicator($('.tabs')); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { EP.motion.indicator($('.tabs')); });
   C.onAuth(function () { if (!$('#view-events').hidden) renderEvents(); });
