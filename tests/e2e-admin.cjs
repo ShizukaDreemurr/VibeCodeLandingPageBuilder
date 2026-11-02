@@ -15,7 +15,7 @@ const ok = (name, cond, extra) => { if (cond) console.log('✓', name); else { f
   p.on('dialog', d => d.accept());
   await p.goto(URL);
   // Sự kiện đang mở trong trình soạn thảo
-  await p.click('#btn-sample'); await p.click('#btn-generate');
+  await p.click('[data-tab="builder"]'); await p.click('#btn-sample'); await p.click('#btn-generate');
   const cur = await p.evaluate(() => localStorage.getItem('ep_current_id'));
   const curName = await p.inputValue('#f-name');
 

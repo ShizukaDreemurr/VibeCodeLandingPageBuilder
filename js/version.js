@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '1.11.0',
+    version: '2.0.0',
     date: '2026-10-27',
-    notes: 'Chuẩn SEO: thẻ meta, Open Graph, dữ liệu có cấu trúc Event/FAQ, robots, sitemap, trang 404, mục SEO & chia sẻ',
+    notes: 'Trang Thư viện mẫu là tab đầu tiên, dữ liệu mẫu cho giám khảo, biểu đồ đăng ký, Brand DNA từ tài liệu bằng Gemini',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
