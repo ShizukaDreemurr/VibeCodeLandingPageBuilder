@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.3.5',
+    version: '2.3.6',
     date: '2026-10-27',
-    notes: 'Mộc Coffee: viết lại phần giới thiệu, chia đoạn',
+    notes: 'Tăng khoảng cách dòng tiêu đề landing page cho chữ có dấu',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
