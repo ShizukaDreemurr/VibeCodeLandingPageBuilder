@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.1.0',
+    version: '2.2.0',
     date: '2026-10-27',
-    notes: 'Luôn mở Thư viện mẫu đầu tiên, nút Dùng mẫu này và Tạo trang như thế này sống động, sửa giao diện điện thoại',
+    notes: 'Popup: chào mừng, chọn mẫu, tạo xong, xuất bản, xác nhận xoá, đăng ký thành công kèm thêm vào lịch',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
