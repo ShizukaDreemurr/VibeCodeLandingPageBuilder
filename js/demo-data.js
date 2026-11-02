@@ -13,7 +13,7 @@
   var PREFIX = 'demo_';
   var FLAG = 'demo_seeded';
   var VERSION_KEY = 'demo_version';
-  var VERSION = '4'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
+  var VERSION = '5'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
   var MSG = 'Đây là dữ liệu mẫu để bạn xem nhanh. Bấm \'Tạo trang mới\' để làm trang của riêng bạn.';
 
   // ---------- PRNG ----------
@@ -130,7 +130,7 @@
     { key: 'coffee', templateId: 'fnb', brand: 'demo_brand_moc', date: '2026-11-28T08:00', ebUntil: '2026-11-26T23:59', launch: '2026-10-20T08:00', tone: 'young',
       name: 'Khai trương Mộc Coffee Hồ Tây', location: '25 Quảng An, Tây Hồ, Hà Nội', capacity: 200,
       speakers: [{ name: 'Barista Minh Khôi', title: 'Quán quân Barista Hà Nội 2025, 9 năm pha chế' }, { name: 'Nguyễn Hà My', title: 'Nhà sáng lập, tự chọn từng mẻ hạt của Mộc' }, { name: 'Đức Anh', title: 'Ca sĩ acoustic, ban nhạc Chiều Hồ Tây' }],
-      agenda: [['08:00', 'Cắt băng và mời ly đầu tiên trong ngày'], ['08:30', 'Mua 1 tặng 1 toàn menu đến 11:00, rủ cả team đi cùng'], ['10:00', 'Barista Minh Khôi dạy pha phin: tự tay pha, mang ly mình pha về bàn'], ['14:00', 'Nếm mù 3 vùng hạt, đoán xem bạn hợp vị nào'], ['17:00', 'Giờ vàng: 100 khách đầu tiên nhận gói hạt rang mang về'], ['19:00', 'Nhạc acoustic bên hồ, hồ lên đèn']],
+      agenda: [['08:00', 'Cắt băng và mời ly đầu tiên trong ngày'], ['08:30', 'Mua 1 tặng 1 toàn menu đến 11:00, rủ cả team đi cùng'], ['10:00', 'Barista Minh Khôi dạy pha phin: tự tay pha, mang ly mình pha về bàn'], ['14:00', 'Bịt mắt nếm thử 3 loại hạt cà phê, xem bạn hợp với loại nào nhất'], ['17:00', 'Giờ vàng: 100 khách đầu tiên nhận gói hạt rang mang về'], ['19:00', 'Nhạc acoustic bên hồ, hồ lên đèn']],
       earlyBird: 'Ly signature (giá 55.000đ) mời miễn phí cho 200 khách đăng ký đầu tiên. Đến quầy, đọc số điện thoại đã đăng ký là nhận ly.',
       texts: {
         'hero.eyebrow': 'Khai trương chi nhánh thứ hai của Mộc',
@@ -151,7 +151,7 @@
       content: {
         headline: 'Mộc Coffee Hồ Tây mời 200 người ly cà phê đầu tiên',
         description: 'Sau hai năm ở Cầu Giấy, Mộc mở thêm một góc nhìn ra Hồ Tây. Hạt cà phê rang ngay tại quầy, sáng nào mùi thơm cũng lan ra tận vỉa hè. Sáng thứ Bảy 28/11, chúng mình cắt băng lúc 8:00 và mời 200 khách đầu tiên một ly signature. Đăng ký mất 30 giây, nhận quà chỉ cần đọc số điện thoại.',
-        benefits: ['Ly signature đầu tiên do chúng mình mời: béo dịu, hậu ngọt, thơm mùi hạt vừa rang sáng nay', 'Ngồi cạnh barista Minh Khôi, tự tay pha phin và nếm 3 vùng hạt: Cầu Đất, Buôn Ma Thuột, Sơn La', 'Có ngay một góc quen nhìn ra Hồ Tây: ổ cắm, wifi, ghế êm, tối thứ Bảy có nhạc acoustic'] },
+        benefits: ['Ly signature đầu tiên do chúng mình mời: béo dịu, hậu ngọt, thơm mùi hạt vừa rang sáng nay', 'Ngồi cạnh barista Minh Khôi, tự tay pha phin và nếm thử 3 loại hạt: Cầu Đất, Buôn Ma Thuột, Sơn La', 'Có ngay một góc quen nhìn ra Hồ Tây: ổ cắm, wifi, ghế êm, tối thứ Bảy có nhạc acoustic'] },
       seo: { title: 'Khai trương Mộc Coffee Hồ Tây – Ly signature miễn phí', description: 'Sáng thứ Bảy 28/11, Mộc Coffee Hồ Tây khai trương. 200 khách đăng ký đầu tiên nhận ly signature miễn phí, mua 1 tặng 1 đến 11:00, workshop pha phin và nhạc acoustic.' },
       secs: ['testimonials', 'faq', 'cta2'],
       faq: [['Đăng ký rồi có phải đến đúng 8:00 không?', 'Không. Bạn ghé lúc nào trong ngày 28/11 cũng được. Đến quầy đọc số điện thoại đã đăng ký là nhận ly. Quà dành cho 200 người đăng ký đầu tiên nên bạn đăng ký sớm cho chắc phần.'], ['Tôi đi một mình thì có ngại không?', 'Nhiều khách quen của Mộc đi một mình với cái laptop. Dọc cửa sổ có ổ cắm ở mọi bàn và wifi miễn phí, bạn cứ ngồi lâu.'], ['Gửi xe ở đâu?', 'Bãi xe máy miễn phí ngay trước quán. Ô tô đỗ ở khu cách quán 50 m.'], ['Mang thú cưng được không?', 'Khu sân vườn đón thú cưng nhỏ có dây dắt. Khu trong nhà chưa nhận.']],

@@ -25,7 +25,7 @@ Chú ý (mùi cà phê lan ra vỉa hè) → Quan tâm (hai năm ở Cầu Giấ
 | Trước (liệt kê tính năng) | Sau (kết quả và cảm giác) |
 |---|---|
 | Khám phá không gian thưởng thức cà phê tinh tế, đậm đà bản sắc Mộc Coffee | Có ngay một góc quen nhìn ra Hồ Tây: ổ cắm, wifi, ghế êm, tối thứ Bảy có nhạc acoustic |
-| Giao lưu học hỏi kỹ năng pha chế cùng quán quân Barista Minh Khôi | Ngồi cạnh barista Minh Khôi, tự tay pha phin và nếm 3 vùng hạt: Cầu Đất, Buôn Ma Thuột, Sơn La |
+| Giao lưu học hỏi kỹ năng pha chế cùng quán quân Barista Minh Khôi | Ngồi cạnh barista Minh Khôi, tự tay pha phin và nếm thử 3 loại hạt: Cầu Đất, Buôn Ma Thuột, Sơn La |
 | Nhận 1 ly cà phê miễn phí | Ly signature đầu tiên do chúng mình mời: béo dịu, hậu ngọt, thơm mùi hạt vừa rang sáng nay |
 
 ## Ưu đãi và khan hiếm trung thực
