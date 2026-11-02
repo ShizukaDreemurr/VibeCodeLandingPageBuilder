@@ -2218,6 +2218,7 @@
       }));
       return;
     }
+    lastMetrics = S.read('metrics_' + ev.id, null); // số liệu phễu lưu trên máy (dữ liệu mẫu)
     drawAdmin(ev, EP.registrations.list(ev.id));
   }
 

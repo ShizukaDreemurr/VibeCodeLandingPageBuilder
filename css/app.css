@@ -963,3 +963,11 @@ details.admin-group[open] > summary.admin-group-title::before { transform: rotat
 .fbcard-title { font-size: 15px; line-height: 20px; font-weight: 600; color: #050505; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fbcard-desc { font-size: 13px; line-height: 18px; color: #65676b; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 .checklist li.is-info::before { color: var(--text-muted); --mk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 7.5h.01'/%3E%3C/svg%3E"); }
+
+/* Dữ liệu mẫu (demo-data.js) */
+.demo-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 0 0 16px; padding: 10px 14px; background: var(--accent-soft); border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; }
+.demo-banner p { margin: 0; flex: 1 1 320px; color: var(--text); }
+.demo-banner-actions { display: flex; gap: 8px; }
+.demo-footer { display: inline-flex; gap: 4px; align-items: center; }
+.demo-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.demo-link:hover { color: var(--text); }
