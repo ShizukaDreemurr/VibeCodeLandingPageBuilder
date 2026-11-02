@@ -13,7 +13,7 @@
   var PREFIX = 'demo_';
   var FLAG = 'demo_seeded';
   var VERSION_KEY = 'demo_version';
-  var VERSION = '3'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
+  var VERSION = '4'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
   var MSG = 'Đây là dữ liệu mẫu để bạn xem nhanh. Bấm \'Tạo trang mới\' để làm trang của riêng bạn.';
 
   // ---------- PRNG ----------
@@ -285,7 +285,7 @@
       images: {}, sections: sections(spec.secs), style: null,
       texts: texts, elStyles: null, elStylesBy: null, rich: null,
       blocks: Object.keys(blocks).length ? blocks : null,
-      brandId: '', brand: null, seo: spec.seo, published: false, demo: true
+      brandId: '', brand: null, seo: spec.seo, published: false, demo: true, demoPublished: true
     };
     var brand = spec.brand && BRANDS.filter(function (b) { return b.id === spec.brand; })[0];
     if (brand && EP.brands && EP.brands.applyTo) EP.brands.applyTo(ev, brand);
@@ -438,5 +438,16 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ui); else ui();
 
-  EP.demo = { VERSION: VERSION, upgrade: upgradeIfStale, seed: seed, remove: removeDemo, restore: function () { removeDemo(); seed(); }, hasDemo: hasDemo, isDemoId: isDemoId, brands: BRANDS };
+  // Trang mẫu "đã xuất bản sẵn": dựng lại từ dữ liệu đóng gói (không cần máy chủ), ai mở link ?e=<id> cũng xem được
+  function publicEvent(id) {
+    var now = new Date();
+    for (var i = 0; i < SPECS.length; i++) {
+      if (PREFIX + 'evt_' + SPECS[i].key !== id) continue;
+      var st = buildEvent(SPECS[i], i, now);
+      return { event: st.event, content: st.content, regs: buildRegs(SPECS[i], i, now, new Date(st.event.startAt).getTime(), st.event.id) };
+    }
+    return null;
+  }
+
+  EP.demo = { publicEvent: publicEvent, VERSION: VERSION, upgrade: upgradeIfStale, seed: seed, remove: removeDemo, restore: function () { removeDemo(); seed(); }, hasDemo: hasDemo, isDemoId: isDemoId, brands: BRANDS };
 })(window);

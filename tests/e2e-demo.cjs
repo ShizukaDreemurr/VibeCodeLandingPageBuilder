@@ -139,7 +139,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
   await p.goto(BASE);
   const up = await p.evaluate(() => { const ev = JSON.parse(localStorage.ep_events); return { start: ev.demo_evt_coffee.event.startAt, head: ev.demo_evt_coffee.content.headline, user: ev.user_1 && ev.user_1.content.headline, n: Object.keys(ev).length, v: localStorage.ep_demo_version }; });
   ok(up.start === '2026-11-28T08:00' && !/đẳng cấp/.test(up.head), 'demo cũ (thiếu version) được nâng cấp lên ngày/nội dung mới');
-  ok(up.user === 'Tiêu đề của tôi' && up.n === 7 && up.v === '"3"' , 'nâng cấp không động vào sự kiện của người dùng, version = 3');
+  ok(up.user === 'Tiêu đề của tôi' && up.n === 7 && up.v === JSON.stringify(await p.evaluate(() => EP.demo.VERSION)), 'nâng cấp không động vào sự kiện của người dùng, đúng phiên bản dữ liệu mẫu');
   await p.click('#demo-remove'); await p.waitForLoadState('load'); await p.waitForTimeout(500);
   await p.evaluate(() => localStorage.removeItem('ep_demo_version'));
   await p.goto(BASE);

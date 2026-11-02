@@ -1796,15 +1796,17 @@
     return root.location.origin + root.location.pathname + '?e=' + encodeURIComponent(eventId);
   }
 
+  // Trang mẫu (dữ liệu demo) coi như đã xuất bản sẵn: có link chia sẻ chạy không cần máy chủ
+  function isDemoPublished() { return !!(state && state.event.demo && state.event.demoPublished && EP.demo && EP.demo.isDemoId(state.event.id)); }
   function showShare() {
     var box = $('#share-box');
-    if (!isCloudEvent()) { box.hidden = true; return; }
+    if (!isCloudEvent() && !isDemoPublished()) { box.hidden = true; return; }
     var url = shareUrl(state.event.id);
     var isFile = root.location.protocol === 'file:';
     box.hidden = false;
     $('#share-url').value = isFile ? '(Cần mở app qua GitHub Pages để có link chia sẻ)' : url;
     $('#btn-open-link').href = isFile ? '#' : url;
-    $('#share-note').textContent = 'Số người đăng ký trên trang cập nhật tức thì trên mọi thiết bị.';
+    $('#share-note').textContent = isCloudEvent() ? 'Số người đăng ký trên trang cập nhật tức thì trên mọi thiết bị.' : 'Trang mẫu đã xuất bản sẵn để xem và chia sẻ. Lượt đăng ký thử trên link này được lưu trên máy người mở.';
     var qrBox = $('#share-qr');
     qrBox.innerHTML = '';
     if (!isFile && root.qrcode) {
@@ -1845,8 +1847,9 @@
     btn.classList.remove('is-loading');
     btn.innerHTML = EP.icon('send') + (isCloudEvent() ? 'Cập nhật trang' : 'Xuất bản');
     var pill = $('#editor-status');
-    pill.textContent = isCloudEvent() ? 'Đã xuất bản' : 'Bản nháp';
-    pill.className = 'pill' + (isCloudEvent() ? ' is-positive' : '');
+    var live = isCloudEvent() || isDemoPublished();
+    pill.textContent = live ? 'Đã xuất bản' : 'Bản nháp';
+    pill.className = 'pill' + (live ? ' is-positive' : '');
     $('#editor-title').textContent = state ? state.event.name : 'Thiết kế trang';
     showShare();
   }
@@ -2619,7 +2622,7 @@
     item.badges.forEach(function (b) { var s = document.createElement('span'); s.className = 'badge ' + (b.cls || ''); s.textContent = b.text; badges.appendChild(s); });
     body.appendChild(h3); body.appendChild(meta); body.appendChild(badges);
     var act = document.createElement('div'); act.className = 'actions';
-    actions.forEach(function (a) {
+    actions.filter(Boolean).forEach(function (a) {
       var btn = document.createElement('button');
       btn.type = 'button'; btn.className = 'btn btn-small ' + (a.cls || 'btn-ghost'); btn.textContent = a.text;
       btn.addEventListener('click', a.fn);
@@ -2639,11 +2642,13 @@
     list.forEach(function (saved) {
       var ev = saved.event;
       localIds[ev.id] = true;
-      var badges = [{ text: ev.published ? 'Đã xuất bản' : 'Bản nháp', cls: ev.published ? 'is-live' : '' }];
+      var live = ev.published || (ev.demo && ev.demoPublished);
+      var badges = [{ text: live ? 'Đã xuất bản' : 'Bản nháp', cls: live ? 'is-live' : '' }];
       if (new Date(ev.startAt) <= new Date()) badges.push({ text: 'Đã diễn ra', cls: 'is-ended' });
-      if (!ev.published) badges.push({ text: EP.registrations.confirmedCount(ev.id) + ' đăng ký (trên máy)' });
+      if (!ev.published) badges.push({ text: EP.registrations.confirmedCount(ev.id) + ' đăng ký' + (live ? '' : ' (trên máy)') });
       grid.appendChild(eventCard({ name: ev.name, startAt: ev.startAt, templateId: ev.templateId, badges: badges }, [
         { text: 'Mở / sửa', cls: 'btn-primary', fn: function () { openEvent(all[ev.id]); } },
+        live && !ev.published ? { text: 'Mở link chia sẻ', fn: function () { root.open(shareUrl(ev.id), '_blank', 'noopener'); } } : null,
         { text: 'Nhân bản', fn: function () { duplicateEvent(all[ev.id]); } },
         { text: 'Xoá', cls: 'btn-danger', fn: function (e) { deleteEvent(all[ev.id], e.target.closest('.event-card')); } }
       ]));
@@ -3346,6 +3351,23 @@
     document.body.classList.add('is-public');
     $('#view-public').hidden = false;
     var publicEl = $('#public-landing');
+    // Trang mẫu đã xuất bản sẵn: lấy từ dữ liệu đóng gói, đăng ký lưu trên máy người mở
+    var demoPub = EP.demo && EP.demo.isDemoId(publicEventId) ? EP.demo.publicEvent(publicEventId) : null;
+    if (demoPub) {
+      var dev = demoPub.event;
+      if (!EP.registrations.list(dev.id).length) S.write('regs_' + dev.id, demoPub.regs);
+      renderer = EP.landingRenderer.render(publicEl, {
+        event: dev, content: demoPub.content,
+        now: function () { return new Date(); },
+        getCount: function () { return EP.registrations.confirmedCount(dev.id); },
+        appUrl: APP_URL,
+        onRegister: function (d) { return EP.registrations.register(dev, d, new Date(), EP.registrations.confirmedCount(dev.id)); }
+      });
+      var demoUrl = root.location.origin + root.location.pathname + '?e=' + encodeURIComponent(dev.id);
+      EP.seo.applyHead(seoMeta(dev, demoPub.content, publicEl, demoUrl, EP.registrations.confirmedCount(dev.id)));
+      setInterval(function () { if (renderer) renderer.update(); }, 1000);
+      return;
+    }
     C.loadEvent(publicEventId).then(function (data) {
       var pub = data.event;
       stopWatch = C.watchStats(pub.id, function (st) { cloudStats = st; if (renderer) renderer.update(); if (publicHeadRefresh) publicHeadRefresh(); });
