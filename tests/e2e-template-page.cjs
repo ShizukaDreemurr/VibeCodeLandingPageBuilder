@@ -98,7 +98,7 @@ const ok = (c, m) => { if (!c) { failed++; console.log('✗ ' + m); } else conso
 
   // ---- Có sự kiện → vào tab Sự kiện của tôi; tab Thư viện vẫn mở được ----
   await p.reload(); await settle();
-  ok(await p.isVisible('#view-events'), 'đã có sự kiện → mở Sự kiện của tôi');
+  ok(await p.isVisible('#view-templates'), 'đã có sự kiện → vẫn mở Thư viện mẫu đầu tiên');
   await p.click('[data-tab="templates"]'); await settle();
   ok(await p.isVisible('#view-templates') && await p.locator('.tpl-pcard').count() === total, 'tab Thư viện mẫu mở lại đủ thẻ');
   ok((await p.$$eval('h1', h => h.filter(x => x.getClientRects().length).length)) === 1, 'vẫn đúng một h1 hiện');

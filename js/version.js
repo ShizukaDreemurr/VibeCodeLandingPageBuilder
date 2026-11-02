@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.0.1',
+    version: '2.1.0',
     date: '2026-10-27',
-    notes: 'Landing page cuộn mượt trên điện thoại: bỏ vùng cuộn lồng, hiệu ứng ảnh bìa chạy bằng GPU, hiện nội dung sớm hơn; 4 ô đếm ngược một hàng',
+    notes: 'Luôn mở Thư viện mẫu đầu tiên, nút Dùng mẫu này và Tạo trang như thế này sống động, sửa giao diện điện thoại',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

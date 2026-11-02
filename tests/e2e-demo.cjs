@@ -13,7 +13,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
   p.on('pageerror', e => errs.push(e.message));
   p.on('console', m => m.type() === 'error' && !/fonts|net::|Failed to load/.test(m.text()) && errs.push(m.text()));
   p.on('dialog', d => d.accept());
-  const cards = () => p.$$eval('.event-card', l => l.length);
+  const cards = async () => { if (await p.isVisible('[data-tab="events"]')) { await p.click('[data-tab="events"]'); await p.waitForTimeout(300); } return p.$$eval('.event-card', l => l.length); };
 
   // Trình duyệt tự động không có ?demo=1 → không gieo
   await p.goto(BASE);
@@ -22,7 +22,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
   // Lần đầu có ?demo=1
   await p.evaluate(() => localStorage.clear());
   await p.goto(BASE + '?demo=1');
-  ok(await p.isVisible('#view-events'), 'mở thẳng tab Sự kiện của tôi');
+  ok(await p.isVisible('#view-templates'), 'mở Thư viện mẫu đầu tiên'); await p.click('[data-tab="events"]'); await p.waitForTimeout(300);
   ok(await cards() === 6, 'danh sách có 6 sự kiện');
   ok(await p.isVisible('#demo-banner') && (await p.textContent('#demo-banner')).includes('dữ liệu mẫu'), 'banner dữ liệu mẫu hiện');
   ok(await p.isVisible('#demo-restore') && await p.isVisible('#demo-remove'), 'chân trang có Khôi phục / Xoá dữ liệu mẫu');
@@ -109,8 +109,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
   await p.reload();
   ok(await cards() === 7, 'thêm 1 sự kiện riêng → 7');
   await p.click('#demo-remove');
-  await p.waitForLoadState('load');
-  await p.waitForSelector('.event-card');
+  await p.waitForLoadState('load'); await p.waitForTimeout(800);
   ok(await cards() === 1, 'Xoá dữ liệu mẫu: chỉ còn sự kiện của người dùng');
   const left = await p.evaluate(() => ({ keys: Object.keys(localStorage).filter(k => k.includes('demo_evt') || k.includes('demo_reg')), brands: Object.keys(JSON.parse(localStorage.ep_brands)), regs: localStorage.ep_regs_user_1 !== null }));
   ok(left.keys.length === 0, 'không còn khoá demo trong localStorage');
@@ -120,8 +119,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
 
   // Khôi phục
   await p.click('#demo-restore');
-  await p.waitForLoadState('load');
-  await p.waitForSelector('.event-card');
+  await p.waitForLoadState('load'); await p.waitForTimeout(800);
   ok(await cards() === 7, 'Khôi phục dữ liệu mẫu: 6 mẫu + 1 của người dùng');
   ok(await p.evaluate(() => localStorage.ep_regs_user_1 !== null && !!JSON.parse(localStorage.ep_events).user_1), 'dữ liệu người dùng không bị đè');
 

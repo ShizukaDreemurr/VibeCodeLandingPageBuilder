@@ -6,8 +6,8 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  await p.click('#btn-sample');await p.click('#btn-generate');
  await p.fill('#lp-name','Lead Một');await p.fill('#lp-phone','0912345678');await p.fill('#lp-email','l1@gmail.com');await p.check('.lp-consent input');await p.click('.lp-submit');await p.waitForTimeout(300);
  // second event via template
- await p.click('#btn-new');await p.click('#btn-tpl');await p.click('.tpl-card:has-text("Thiệp cưới")');await p.click('#btn-generate');
- await p.reload();log('reload opens events tab',await p.isVisible('#view-events'));
+ await p.click('#btn-new');await p.click('#btn-tpl');await p.click('#tpl-dialog .tpl-card:has-text("Thiệp cưới Online")');await p.click('#btn-generate');
+ await p.reload();log('reload opens templates tab',await p.isVisible('#view-templates'));await p.click('[data-tab="events"]');
  log('event cards',await p.$$eval('.event-card h3',h=>h.map(x=>x.textContent).join(' | ')));
  log('badges',await p.$$eval('.event-card .badges',h=>h.map(x=>x.textContent).join(' | ')));
  await p.click('.event-card:has-text("Workshop") >> text=Mở / sửa');log('opened',await p.inputValue('#f-name'));
