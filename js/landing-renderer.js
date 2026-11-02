@@ -354,8 +354,10 @@
         if (editable && photo) avatar.setAttribute('data-el-image', 'speaker:' + i);
         return h('div', { class: 'lp-speaker' }, [
           avatar, imageButton('speaker:' + i, photo ? 'Đổi ảnh' : '+ Ảnh'), photo ? editButton('speaker:' + i) : null,
-          TX('strong', {}, 'speaker.name.' + i, 'Tên diễn giả', s.name),
-          s.title ? TX('span', {}, 'speaker.title.' + i, 'Chức danh diễn giả', s.title) : null
+          h('div', { class: 'lp-speaker-info' }, [
+            TX('strong', {}, 'speaker.name.' + i, 'Tên diễn giả', s.name),
+            s.title ? TX('span', {}, 'speaker.title.' + i, 'Chức danh diễn giả', s.title) : null
+          ])
         ]);
       }))
     ]);
@@ -653,7 +655,8 @@
     ]);
 
     // CHÂN TRANG: ghi nguồn studio (thiệp cưới) + đường dẫn "Tạo trang như thế này" (phễu lan truyền)
-    var footerChildren = [TX('p', {}, 'footer.info', 'Dòng chân trang', ev.name + ' · ' + ev.location)];
+    // Tên sự kiện và địa chỉ tách 2 dòng: trên điện thoại không bị ngắt giữa chừng
+    var footerChildren = [TX('p', { class: 'lp-foot-name' }, 'footer.info', 'Dòng chân trang', ev.name), TX('p', { class: 'lp-foot-addr' }, 'footer.addr', 'Địa chỉ ở chân trang', ev.location)];
     var bf = brandFooter();
     if (bf) footerChildren.unshift(bf);
     if (ev.studioName) {
@@ -665,7 +668,7 @@
     if (opts.appUrl) {
       footerChildren.push(h('a', { class: 'lp-made-with', href: opts.appUrl, target: '_blank', rel: 'noopener', 'data-funnel': 'app' }, [
         h('span', { class: 'lp-mw-spark', 'aria-hidden': 'true', text: '✦' }),
-        h('span', { class: 'lp-mw-text' }, ['Tạo trang như thế này ', h('strong', { text: 'miễn phí' }), ' bằng Xclipse']),
+        h('span', { class: 'lp-mw-text' }, ['Tạo trang ', h('span', { class: 'lp-mw-long', text: 'như thế này ' }), h('strong', { text: 'miễn phí' }), ' bằng ', h('span', { class: 'lp-mw-brand', text: 'Xclipse' })]),
         h('span', { class: 'lp-mw-arrow', 'aria-hidden': 'true', text: '→' })
       ]));
     }

@@ -3363,6 +3363,7 @@
         appUrl: APP_URL,
         onRegister: function (d) { return EP.registrations.register(dev, d, new Date(), EP.registrations.confirmedCount(dev.id)); }
       });
+      document.body.style.background = root.getComputedStyle(publicEl).backgroundColor;
       var demoUrl = root.location.origin + root.location.pathname + '?e=' + encodeURIComponent(dev.id);
       EP.seo.applyHead(seoMeta(dev, demoPub.content, publicEl, demoUrl, EP.registrations.confirmedCount(dev.id)));
       setInterval(function () { if (renderer) renderer.update(); }, 1000);

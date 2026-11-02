@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.3.1',
+    version: '2.3.2',
     date: '2026-10-27',
-    notes: 'Landing page mẫu (Mộc Coffee…) đã xuất bản sẵn, có link chia sẻ và QR',
+    notes: 'Landing page trên điện thoại: diễn giả mỗi người một hàng, bỏ khoảng trắng cuối trang, nút Xclipse một dòng, địa chỉ chân trang tách dòng',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
