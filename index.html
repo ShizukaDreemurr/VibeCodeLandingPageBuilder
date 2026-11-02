@@ -434,7 +434,12 @@
         </div>
       </div>
       <div class="metric-grid" id="metric-grid"></div>
-      <div class="table-wrap">
+      <div class="seg" id="admin-seg" role="group" aria-label="Chế độ xem">
+        <button type="button" class="seg-btn is-active" data-admin-view="summary" aria-pressed="true">Tóm tắt</button>
+        <button type="button" class="seg-btn" data-admin-view="list" aria-pressed="false">Danh sách</button>
+      </div>
+      <div class="ch-grid-wrap" id="admin-summary"></div>
+      <div class="table-wrap" id="admin-table" hidden>
         <table class="table">
           <thead><tr><th class="num">#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th class="num">Thời gian</th><th>Trạng thái</th><th>Chăm sóc</th><th>Liên hệ</th><th>Lưu ở</th></tr></thead>
           <tbody id="admin-rows"></tbody>
@@ -548,6 +553,7 @@
   <script defer src="js/inspector.js?v=1.11.0"></script>
   <script defer src="js/workspace.js?v=1.11.0"></script>
   <script defer src="js/version.js?v=1.11.0"></script>
+  <script defer src="js/charts.js?v=1.11.0"></script>
   <script defer src="js/app.js?v=1.11.0"></script>
 </body>
 </html>

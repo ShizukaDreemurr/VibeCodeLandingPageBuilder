@@ -2161,7 +2161,20 @@
       if (c[0] === 'Đã đăng ký' && c[1] > 0) st.classList.add('is-data'); // chỉ tô màu khi có dữ liệu thật
     });
     EP.motion.stagger(grid.children);
+    if (EP.charts) EP.charts.renderSummary($('#admin-summary'), regs, m, { leadText: LEAD_TEXT, statusText: STATUS_TEXT });
   }
+
+  function setAdminView(v) {
+    $('#admin-summary').hidden = v !== 'summary';
+    $('#admin-table').hidden = v !== 'list';
+    Array.prototype.forEach.call(document.querySelectorAll('#admin-seg .seg-btn'), function (b) {
+      var on = b.getAttribute('data-admin-view') === v;
+      b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('#admin-seg .seg-btn'), function (b) {
+    b.addEventListener('click', function () { setAdminView(b.getAttribute('data-admin-view')); });
+  });
 
   function setLead(ev, r, value) {
     r.leadStatus = value;
@@ -2193,6 +2206,8 @@
     lastMetrics = null;
     $('#metric-grid').innerHTML = '';
     $('#admin-title').textContent = 'Danh sách đăng ký – ' + ev.name;
+    $('#admin-summary').innerHTML = '';
+    if (EP.charts) EP.charts.reset();
     $('#admin-source').textContent = isCloudEv(ev)
       ? 'Dữ liệu lưu trên máy chủ Firebase, xem được trên mọi thiết bị khi đăng nhập đúng tài khoản.'
       : 'Dữ liệu chỉ lưu trên trình duyệt này (localStorage). Xuất bản trang để nhận đăng ký từ mọi thiết bị.';
