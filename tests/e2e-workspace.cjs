@@ -3,7 +3,7 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
 const SP=process.argv[2]||require('os').tmpdir();
 (async()=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:1440,height:900}})).newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
 const log=(k,v)=>console.log(k.padEnd(28),v);
-await p.goto('http://localhost:8000/');await p.click('#btn-sample');await p.click('#btn-generate');await p.waitForTimeout(800);
+await p.goto('http://localhost:8000/');await p.click('[data-tab="builder"]');await p.click('#btn-sample');await p.click('#btn-generate');await p.waitForTimeout(800);
 log('groups',await p.$$eval('.ws-group',g=>g.map(x=>x.getAttribute('aria-label')+'@'+x.parentNode.className).join(' | ')));
 log('zoom fit',await p.$eval('#landing',l=>l.style.zoom+' w='+l.style.width)+' '+await p.$eval('#zoom-select',s=>s.selectedOptions[0].textContent));
 await p.screenshot({path:SP+'/ws1.png'});

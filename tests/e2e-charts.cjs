@@ -24,7 +24,7 @@ const count = (arr, f) => arr.reduce((m, x) => { const k = f(x); m[k] = (m[k] ||
   p.on('pageerror', e => errs.push(e.message));
   p.on('console', m => { if (m.type() === 'error' && !/favicon|Failed to load resource/.test(m.text())) errs.push(m.text()); });
   await p.goto(URL);
-  await p.click('#btn-sample'); await p.click('#btn-generate'); await p.waitForTimeout(600);
+  await p.click('[data-tab="builder"]'); await p.click('#btn-sample'); await p.click('#btn-generate'); await p.waitForTimeout(600);
   const id = await p.evaluate(() => JSON.parse(localStorage.getItem('ep_current_id')));
   const seed = (rows) => p.evaluate(([id, rows]) => {
     const base = new Date(); base.setHours(0, 0, 0, 0); base.setDate(base.getDate() - 5);
