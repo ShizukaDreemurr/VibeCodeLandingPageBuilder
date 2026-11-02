@@ -13,7 +13,7 @@
   var PREFIX = 'demo_';
   var FLAG = 'demo_seeded';
   var VERSION_KEY = 'demo_version';
-  var VERSION = '5'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
+  var VERSION = '6'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
   var MSG = 'Đây là dữ liệu mẫu để bạn xem nhanh. Bấm \'Tạo trang mới\' để làm trang của riêng bạn.';
 
   // ---------- PRNG ----------
@@ -149,7 +149,7 @@
         'cta2.btn': 'Giữ ly của tôi'
       },
       content: {
-        headline: 'Mộc Coffee Hồ Tây mời 200 người ly cà phê đầu tiên',
+        headline: 'Mộc Hồ Tây TẶNG MIỄN PHÍ 200 ly cà phê cho những khách hàng ĐẦU TIÊN!',
         description: 'Sau hai năm ở Cầu Giấy, Mộc mở thêm một góc nhìn ra Hồ Tây. Hạt cà phê rang ngay tại quầy, sáng nào mùi thơm cũng lan ra tận vỉa hè. Sáng thứ Bảy 28/11, chúng mình cắt băng lúc 8:00 và mời 200 khách đầu tiên một ly signature. Đăng ký mất 30 giây, nhận quà chỉ cần đọc số điện thoại.',
         benefits: ['Ly signature đầu tiên do chúng mình mời: béo dịu, hậu ngọt, thơm mùi hạt vừa rang sáng nay', 'Ngồi cạnh barista Minh Khôi, tự tay pha phin và nếm thử 3 loại hạt: Cầu Đất, Buôn Ma Thuột, Sơn La', 'Có ngay một góc quen nhìn ra Hồ Tây: ổ cắm, wifi, ghế êm, tối thứ Bảy có nhạc acoustic'] },
       seo: { title: 'Khai trương Mộc Coffee Hồ Tây – Ly signature miễn phí', description: 'Sáng thứ Bảy 28/11, Mộc Coffee Hồ Tây khai trương. 200 khách đăng ký đầu tiên nhận ly signature miễn phí, mua 1 tặng 1 đến 11:00, workshop pha phin và nhạc acoustic.' },

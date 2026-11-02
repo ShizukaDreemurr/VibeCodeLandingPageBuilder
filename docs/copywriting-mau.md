@@ -8,12 +8,12 @@ Nguyên tắc chung: gọi người đọc là "bạn", câu ngắn, có con s�
 
 Các phương án đã cân nhắc:
 - "Một buổi khai trương đáng nhớ của Mộc Coffee" (gợi ý của giảng viên: tự nhiên nhưng thiếu con số, thiếu lý do hành động).
-- "Mộc Coffee Hồ Tây mời 200 người ly cà phê đầu tiên" (chọn: có lợi ích là ly miễn phí, có con số 200 là sức chứa thật nên tạo khan hiếm, có địa điểm cụ thể, 11 từ).
+- "Mộc Hồ Tây TẶNG MIỄN PHÍ 200 ly cà phê cho những khách hàng ĐẦU TIÊN!" (chọn: có lợi ích là ly miễn phí, có con số 200 là sức chứa thật nên tạo khan hiếm, có địa điểm cụ thể, 11 từ).
 - "28/11, ly cà phê đầu tiên bên Hồ Tây mời bạn" (hay nhưng không nói rõ ai được mời).
 
 | | Trước | Sau |
 |---|---|---|
-| Tiêu đề | Khai trương Mộc Coffee Cầu Giấy – Trải nghiệm không gian cà phê đẳng cấp | Mộc Coffee Hồ Tây mời 200 người ly cà phê đầu tiên |
+| Tiêu đề | Khai trương Mộc Coffee Cầu Giấy – Trải nghiệm không gian cà phê đẳng cấp | Mộc Hồ Tây TẶNG MIỄN PHÍ 200 ly cà phê cho những khách hàng ĐẦU TIÊN! |
 | Dòng phụ (eyebrow) | Tên sự kiện lặp lại | Khai trương chi nhánh thứ hai của Mộc |
 
 ## Đoạn giới thiệu (AIDA)

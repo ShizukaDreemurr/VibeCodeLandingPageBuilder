@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.3.3',
+    version: '2.3.4',
     date: '2026-10-27',
-    notes: 'Sửa lịch trình Mộc Coffee: bịt mắt nếm thử 3 loại hạt cà phê',
+    notes: 'Tiêu đề Mộc Coffee: Mộc Hồ Tây TẶNG MIỄN PHÍ 200 ly cà phê cho những khách hàng ĐẦU TIÊN!',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
