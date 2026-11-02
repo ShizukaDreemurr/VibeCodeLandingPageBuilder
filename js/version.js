@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.2.0',
+    version: '2.3.0',
     date: '2026-10-27',
-    notes: 'Popup: chào mừng, chọn mẫu, tạo xong, xuất bản, xác nhận xoá, đăng ký thành công kèm thêm vào lịch',
+    notes: 'Nội dung landing page viết lại theo kỹ năng content marketing, popup form đăng ký từ nút CTA, thanh đăng ký dính đáy trên điện thoại, ngày sự kiện mẫu cố định',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
