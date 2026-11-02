@@ -3140,7 +3140,7 @@
     document.body.appendChild(shell);
     try {
       EP.landingRenderer.render(box, {
-        event: state.event, content: state.content, now: function () { return new Date(); }, getCount: currentCount, editable: false, appUrl: APP_URL,
+        event: state.event, content: state.content, now: function () { return new Date(); }, getCount: currentCount, editable: false, appUrl: APP_URL, keepPopup: true,
         onRegister: function () { return { ok: false, errors: {} }; }
       });
       box.querySelectorAll('.lp-reveal').forEach(function (x) { x.classList.remove('lp-reveal'); });
@@ -3153,7 +3153,14 @@
         'function tick(){var ms=Math.max(0,start-new Date()),s=Math.floor(ms/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];' +
         'boxes.forEach(function(b,i){b.textContent=pad(v[i])});document.querySelectorAll(\'.lp-var[data-var="dem_nguoc"]\').forEach(function(x){x.textContent=Math.ceil(ms/86400000)})}' +
         'tick();setInterval(tick,1000);document.querySelectorAll(".lp-form").forEach(function(f){f.addEventListener("submit",function(e){e.preventDefault();' +
-        'if(S.url){location.href=S.url;return}var m=f.querySelector(".lp-form-msg");if(m){m.textContent="Đây là bản trang tĩnh. Vui lòng liên hệ ban tổ chức để đăng ký.";m.className="lp-form-msg is-error"}})})})();';
+        'if(S.url){location.href=S.url;return}var m=f.querySelector(".lp-form-msg");if(m){m.textContent="Đây là bản trang tĩnh. Vui lòng liên hệ ban tổ chức để đăng ký.";m.className="lp-form-msg is-error"}})});' +
+        // Popup đăng ký: mọi nút CTA mở popup; Esc / nút đóng / bấm nền để đóng; trả tiêu điểm
+        'var D=document.querySelector("dialog.lp-reg");if(D&&D.showModal){var P=null;function cl(){D.close();if(P&&P.focus)P.focus()}' +
+        'document.querySelectorAll(".lp-cta,.lp-sticky-btn").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();P=document.activeElement;D.showModal();var n=D.querySelector("input");if(n&&!(matchMedia&&matchMedia("(pointer:coarse)").matches))n.focus()})});' +
+        'var X=D.querySelector(".lp-reg-x");if(X)X.addEventListener("click",cl);D.addEventListener("cancel",function(e){e.preventDefault();cl()});D.addEventListener("mousedown",function(e){if(e.target===D)cl()})}' +
+        // Thanh CTA dính: hiện sau hero, ẩn gần form và chân trang
+        'var T=document.querySelector(".lp-sticky");if(T&&window.IntersectionObserver){var V={h:1,r:0,f:0};var io=new IntersectionObserver(function(es){es.forEach(function(en){V[en.target.getAttribute("data-k")]=en.isIntersecting});T.classList.toggle("is-on",!V.h&&!V.r&&!V.f)});' +
+        '[[".lp-hero","h"],["#lp-register","r"],[".lp-footer","f"]].forEach(function(p){var el=document.querySelector(p[0]);if(el){el.setAttribute("data-k",p[1]);io.observe(el)}})}})();';
       // Thẻ SEO viết sẵn trong file (bot không chạy JS vẫn đọc được)
       var meta = seoMeta(state.event, state.content, box, seoPageUrl(), currentCount());
       return '<!doctype html>\n<html lang="vi">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +

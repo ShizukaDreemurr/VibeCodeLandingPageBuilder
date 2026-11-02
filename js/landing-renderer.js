@@ -93,14 +93,27 @@
     return n;
   }
 
+  function giftIcon() {
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('width', '26'); svg.setAttribute('height', '26');
+    svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '1.8');
+    svg.setAttribute('stroke-linecap', 'round'); svg.setAttribute('stroke-linejoin', 'round');
+    ['M20 12v9H4v-9', 'M2 7h20v5H2z', 'M12 21V7', 'M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7z', 'M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z'].forEach(function (d) {
+      var path = document.createElementNS(ns, 'path'); path.setAttribute('d', d); svg.appendChild(path);
+    });
+    return svg;
+  }
+
   function pad(n) { return String(n).padStart(2, '0'); }
 
   function isSafeUrl(url) { return /^https?:\/\/\S+$/i.test(url || ''); }
 
-  function field(name, label, type, placeholder) {
+  function field(name, label, type, placeholder, idp) {
+    idp = idp || 'lp-';
     return h('div', { class: 'lp-field' }, [
-      h('label', { for: 'lp-' + name, text: label }),
-      h('input', { id: 'lp-' + name, name: name, type: type, placeholder: placeholder, autocomplete: 'on' }),
+      h('label', { for: idp + name, text: label }),
+      h('input', { id: idp + name, name: name, type: type, placeholder: placeholder, autocomplete: 'on' }),
       h('p', { class: 'lp-error', 'data-error-for': name, 'aria-live': 'polite' })
     ]);
   }
@@ -147,6 +160,8 @@
     }
 
     var statusBadge = h('span', { class: 'lp-badge' });
+    var chipText = h('span', { class: 'lp-chip-text' });
+    var proofChip = h('span', { class: 'lp-chip', hidden: true }, [h('i', { class: 'lp-chip-dot', 'aria-hidden': 'true' }), chipText]);
     var countText = h('strong', { class: 'lp-count' });
     var cdBoxes = {};
     var countdownEl = h('div', { class: 'lp-countdown', role: 'timer' },
@@ -297,7 +312,7 @@
         h('span', { class: 'lp-meta-item' }, [ico('calendar'), TX('span', {}, 'hero.date', 'Thời gian', fmtDate(ev.startAt))]),
         h('span', { class: 'lp-meta-item' }, [ico('pin'), TX('span', {}, 'hero.location', 'Địa điểm', ev.location)])
       ]), 'hero.meta', 'Dòng thời gian & địa điểm', 'box'),
-      h('div', { class: 'lp-hero-action' }, [cta, statusBadge]),
+      h('div', { class: 'lp-hero-action' }, [cta, statusBadge, proofChip]),
       imageButton('hero', images.hero || heroArt ? 'Đổi ảnh bìa' : 'Thêm ảnh bìa'),
       heroSrc ? editButton('hero') : null
     ]);
@@ -371,46 +386,67 @@
       }))
     ]) : null;
 
+    var offerLeft = h('p', { class: 'lp-offer-left', hidden: true });
     var offer = ev.earlyBird ? h('section', { class: 'lp-section lp-offer' }, [
-      TX('h2', {}, 'offer.title', 'Tiêu đề ưu đãi', L.offer), TX('p', {}, 'offer.text', 'Nội dung ưu đãi', ev.earlyBird, { multiline: true }),
-      ev.earlyBirdUntil ? TX('p', { class: 'lp-offer-until' }, 'offer.until', 'Hạn ưu đãi', 'Áp dụng đến ' + fmtDate(ev.earlyBirdUntil)) : null
+      TX('h2', {}, 'offer.title', 'Tiêu đề ưu đãi', L.offer),
+      h('div', { class: 'lp-offer-card' }, [
+        h('span', { class: 'lp-offer-ico', 'aria-hidden': 'true' }, [giftIcon()]),
+        h('div', { class: 'lp-offer-body' }, [
+          TX('p', { class: 'lp-offer-text' }, 'offer.text', 'Nội dung ưu đãi', ev.earlyBird, { multiline: true }),
+          ev.earlyBirdUntil ? TX('p', { class: 'lp-offer-until' }, 'offer.until', 'Hạn ưu đãi', 'Áp dụng đến ' + fmtDate(ev.earlyBirdUntil)) : null
+        ]),
+        offerLeft
+      ])
     ]) : null;
 
     // FORM ĐĂNG KÝ / XÁC NHẬN THAM DỰ
-    var formMsg = h('p', { class: 'lp-form-msg', role: 'status', 'aria-live': 'polite' });
+    // Một bộ dựng dùng cho cả form trong trang (main) lẫn form trong popup đăng ký: cùng kiểm tra, cùng đường gửi (opts.onRegister).
     var submitText = txt('form.submit', L.submit);
-    var submitBtn = mark(h('button', { type: 'submit', class: 'lp-submit', text: submitText }), 'form.submit', 'Nút gửi đăng ký', 'button', { required: true, def: L.submit });
-    var form = h('form', { class: 'lp-form', novalidate: true }, [
-      field('name', txt('form.label.name', 'Họ và tên'), 'text', 'Nguyễn Văn A'),
-      field('phone', txt('form.label.phone', 'Số điện thoại'), 'tel', '0912345678'),
-      field('email', txt('form.label.email', 'Email'), 'email', 'ten@gmail.com'),
-      h('label', { class: 'lp-consent' }, [
-        h('input', { type: 'checkbox', name: 'consent' }),
-        TX('span', {}, 'form.consent', 'Dòng đồng ý', ' Tôi đồng ý để ban tổ chức dùng thông tin này để liên hệ xác nhận tham dự.', { multiline: true })
-      ]),
-      h('p', { class: 'lp-error', 'data-error-for': 'consent' }),
-      submitBtn, formMsg
-    ]);
-    [['name', 'Họ và tên'], ['phone', 'Số điện thoại'], ['email', 'Email']].forEach(function (f) {
-      mark(form.querySelector('label[for="lp-' + f[0] + '"]'), 'form.label.' + f[0], 'Nhãn ô ' + f[1], 'text', { def: f[1] });
-    });
-    mark(form, 'form', 'Khung form đăng ký', 'box', { required: true });
-    var formClosed = h('p', { class: 'lp-closed', hidden: true, text: 'Sự kiện đã diễn ra. Cảm ơn bạn đã quan tâm!' });
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (submitBtn.disabled) return; // chặn bấm liên tục
-      submitBtn.disabled = true;
-      var data = {
-        name: form.elements.name.value, phone: form.elements.phone.value,
-        email: form.elements.email.value, consent: form.elements.consent.checked
-      };
-      submitBtn.textContent = 'Đang gửi…';
-      // onRegister có thể trả kết quả ngay hoặc Promise (khi chờ máy chủ)
-      Promise.resolve(opts.onRegister(data)).then(showResult, function () {
-        showResult({ ok: false, errors: { form: 'Có lỗi xảy ra, vui lòng thử lại.' } });
+    var insts = [];
+    function buildReg(isMain) {
+      var idp = isMain ? 'lp-' : 'lpp-';
+      var formMsg = h('p', { class: 'lp-form-msg', role: 'status', 'aria-live': 'polite' });
+      var submitBtn = h('button', { type: 'submit', class: 'lp-submit', text: submitText });
+      if (isMain) mark(submitBtn, 'form.submit', 'Nút gửi đăng ký', 'button', { required: true, def: L.submit });
+      var consentDef = ' Tôi đồng ý để ban tổ chức dùng thông tin này để liên hệ xác nhận tham dự.';
+      var form = h('form', { class: 'lp-form', novalidate: true }, [
+        field('name', txt('form.label.name', 'Họ và tên'), 'text', 'Nguyễn Văn A', idp),
+        field('phone', txt('form.label.phone', 'Số điện thoại'), 'tel', '0912345678', idp),
+        field('email', txt('form.label.email', 'Email'), 'email', 'ten@gmail.com', idp),
+        h('label', { class: 'lp-consent' }, [
+          h('input', { type: 'checkbox', name: 'consent' }),
+          isMain ? TX('span', {}, 'form.consent', 'Dòng đồng ý', consentDef, { multiline: true }) : h('span', { text: txt('form.consent', consentDef) })
+        ]),
+        h('p', { class: 'lp-error', 'data-error-for': 'consent' }),
+        submitBtn, formMsg
+      ]);
+      if (isMain) {
+        [['name', 'Họ và tên'], ['phone', 'Số điện thoại'], ['email', 'Email']].forEach(function (f) {
+          mark(form.querySelector('label[for="lp-' + f[0] + '"]'), 'form.label.' + f[0], 'Nhãn ô ' + f[1], 'text', { def: f[1] });
+        });
+        mark(form, 'form', 'Khung form đăng ký', 'box', { required: true });
+      }
+      var closed = h('p', { class: 'lp-closed', hidden: true, text: 'Sự kiện đã diễn ra. Cảm ơn bạn đã quan tâm!' });
+      var inst = { main: isMain, form: form, submitBtn: submitBtn, formMsg: formMsg, closed: closed };
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (submitBtn.disabled) return; // chặn bấm liên tục
+        submitBtn.disabled = true;
+        var data = {
+          name: form.elements.name.value, phone: form.elements.phone.value,
+          email: form.elements.email.value, consent: form.elements.consent.checked
+        };
+        submitBtn.textContent = 'Đang gửi…';
+        // onRegister có thể trả kết quả ngay hoặc Promise (khi chờ máy chủ)
+        Promise.resolve(opts.onRegister(data)).then(function (r) { showResult(inst, r); }, function () {
+          showResult(inst, { ok: false, errors: { form: 'Có lỗi xảy ra, vui lòng thử lại.' } });
+        });
       });
-    });
+      insts.push(inst);
+      return inst;
+    }
+    var mainReg = buildReg(true);
+    var form = mainReg.form, submitBtn = mainReg.submitBtn, formClosed = mainReg.closed;
 
     // Popup "Đăng ký thành công": tự chứa (file HTML xuất không nạp popup.js); chỉ ở trang xem, không ở chế độ soạn
     function successPopup(waitlist) {
@@ -482,7 +518,8 @@
       calBtn.focus();
     }
 
-    function showResult(result) {
+    function showResult(inst, result) {
+      var form = inst.form, formMsg = inst.formMsg, submitBtn = inst.submitBtn;
       form.querySelectorAll('[data-error-for]').forEach(function (p) { p.textContent = ''; });
       form.querySelectorAll('input').forEach(function (i) { i.removeAttribute('aria-invalid'); });
       formMsg.className = 'lp-form-msg';
@@ -492,6 +529,7 @@
           : L.success;
         formMsg.classList.add('is-success');
         form.reset();
+        if (!inst.main) closeReg(); // đóng popup đăng ký (trả tiêu điểm) rồi mới hiện popup thành công
         successPopup(!!result.waitlist);
       } else {
         Object.keys(result.errors).forEach(function (k) {
@@ -504,9 +542,71 @@
       submitBtn.disabled = !ES.getStatus(ev, opts.getCount(), opts.now()).canRegister;
     }
 
+    // ---------- Popup đăng ký (mở từ mọi nút .lp-cta và thanh dính; không mở khi đang soạn) ----------
+    var regDlg = null, regInst = null, regPrev = null;
+    var regSeats = h('p', { class: 'lp-reg-seats', hidden: true });
+    function buildRegDialog() {
+      regInst = buildReg(false);
+      var rows = [h('li', {}, [ico('calendar'), h('span', { text: fmtDate(ev.startAt) })]), h('li', {}, [ico('pin'), h('span', { text: ev.location || '' })])];
+      var dlg = h('dialog', { class: 'lp-reg', 'aria-labelledby': 'lp-reg-t', 'aria-modal': 'true', role: 'dialog' });
+      var closeBtn = h('button', { type: 'button', class: 'lp-reg-x', 'aria-label': 'Đóng' }, [ico('x', 18)]);
+      closeBtn.addEventListener('click', function () { closeReg(); });
+      var offerLine = ev.earlyBird ? h('p', { class: 'lp-reg-offer' }, [h('span', { class: 'lp-reg-offer-ico', 'aria-hidden': 'true' }, [giftIcon()]), h('span', { text: txt('offer.text', ev.earlyBird) })]) : null;
+      var card = h('div', { class: 'lp-reg-card', tabindex: '-1' }, [
+        closeBtn,
+        h('p', { class: 'lp-reg-kicker', text: ev.name }),
+        h('h2', { id: 'lp-reg-t', class: 'lp-reg-title', text: txt('register.title', L.register) }),
+        h('ul', { class: 'lp-reg-meta' }, rows),
+        offerLine, regSeats,
+        regInst.form, regInst.closed,
+        h('p', { class: 'lp-reg-trust' }, [h('span', { 'aria-hidden': 'true', class: 'lp-reg-lock' }, [ico('lock', 14)]), h('span', { text: 'Chúng tôi chỉ dùng thông tin để xác nhận chỗ' })])
+      ]);
+      dlg.appendChild(card);
+      dlg.addEventListener('cancel', function (e) { e.preventDefault(); closeReg(); });
+      dlg.addEventListener('mousedown', function (e) { if (e.target === dlg) closeReg(); });
+      dlg.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab') return;
+        var f = Array.prototype.filter.call(dlg.querySelectorAll('button, input, a[href]'), function (x) { return !x.disabled && x.offsetParent !== null; });
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === card)) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      });
+      return dlg;
+    }
+    function openReg() {
+      if (editable || regDlg) return;
+      if (!document.createElement('dialog').showModal) { var r = container.querySelector('#lp-register'); if (r && r.scrollIntoView) r.scrollIntoView(); return; }
+      regPrev = document.activeElement;
+      regDlg = buildRegDialog();
+      container.appendChild(regDlg);
+      update();
+      regDlg.showModal();
+      var first = regInst.form.hidden ? regDlg.querySelector('.lp-reg-x') : regInst.form.elements.name;
+      var coarse = root.matchMedia && root.matchMedia('(pointer: coarse)').matches;
+      (coarse ? regDlg.querySelector('.lp-reg-card') : first).focus();
+    }
+    function closeReg() {
+      if (!regDlg) return;
+      var dlg = regDlg, prev = regPrev, inst = regInst;
+      regDlg = regInst = regPrev = null;
+      insts.splice(insts.indexOf(inst), 1);
+      if (dlg.open) dlg.close();
+      dlg.remove();
+      if (prev && prev.focus && prev.isConnected) { try { prev.focus(); } catch (x) {} }
+    }
+    // Bản xuất HTML: giữ sẵn popup trong mã nguồn (script của file xuất tự mở/đóng)
+    if (opts.keepPopup && !editable) { var kd = buildRegDialog(); container.appendChild(kd); regDlg = null; regInst = null; }
+
     var register = h('section', { class: 'lp-section lp-register', id: 'lp-register' }, [
       TX('h2', {}, 'register.title', 'Tiêu đề phần đăng ký', L.register), form, formClosed
     ]);
+
+    // Thanh CTA dính đáy (điện thoại): hiện khi cuộn qua hero, ẩn gần form đăng ký / chân trang
+    var stickyInfo1 = h('strong', { class: 'lp-sticky-main' }), stickyInfo2 = h('span', { class: 'lp-sticky-sub' });
+    var stickyBtn = h('button', { type: 'button', class: 'lp-sticky-btn', text: ctaText });
+    var sticky = h('div', { class: 'lp-sticky', 'aria-hidden': 'true' }, [h('div', { class: 'lp-sticky-info' }, [stickyInfo1, stickyInfo2]), stickyBtn]);
+    var stickyWrap = h('div', { class: 'lp-sticky-wrap' }, [sticky]);
 
     // ---------- Thư viện khối ----------
     var blocks = ev.blocks || {};
@@ -592,6 +692,13 @@
       }
     });
     container.appendChild(footer);
+    if (!editable) container.appendChild(stickyWrap);
+
+    // Trang xem: mọi nút CTA mở popup đăng ký (href #lp-register chỉ còn là phương án dự phòng khi không có JS)
+    if (!editable) {
+      container.querySelectorAll('.lp-cta').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); openReg(); }); });
+      stickyBtn.addEventListener('click', function () { if (opts.onFunnel) opts.onFunnel('ctaClicks'); openReg(); });
+    }
 
     // Đang soạn: bấm nút/link không chuyển trang (để chọn & chỉnh)
     if (editable) container.querySelectorAll('a[href]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); }); });
@@ -623,12 +730,52 @@
         cdBoxes[u].textContent = v;
       });
 
-      if (offer) offer.hidden = !ES.isEarlyBirdActive(ev, now);
-      form.hidden = !status.canRegister;
-      formClosed.hidden = status.canRegister;
-      if (!submitBtn.disabled || submitBtn.textContent !== 'Đang gửi…') {
-        submitBtn.textContent = status.waitlist ? 'Vào danh sách chờ' : submitText;
-      }
+      var offerOn = ES.isEarlyBirdActive(ev, now);
+      if (offer) offer.hidden = !offerOn;
+      insts.forEach(function (inst) {
+        inst.form.hidden = !status.canRegister;
+        inst.closed.hidden = status.canRegister;
+        if (!inst.submitBtn.disabled || inst.submitBtn.textContent !== 'Đang gửi…') {
+          inst.submitBtn.textContent = status.waitlist ? 'Vào danh sách chờ' : submitText;
+        }
+      });
+
+      // Số chỗ còn lại, chip social proof, đếm ngược ưu đãi, thanh dính
+      var cap = Number(ev.capacity) || 0, left = cap ? Math.max(0, cap - count) : null;
+      var seats = !cap || status.code === 'ended' ? '' : (left > 0 ? 'Còn ' + left.toLocaleString('vi-VN') + ' chỗ' : 'Đã hết chỗ');
+      regSeats.textContent = seats; regSeats.hidden = !seats;
+      regSeats.className = 'lp-reg-seats' + (left != null && left <= Math.ceil(cap * 0.1) ? ' is-hot' : '');
+      chipText.textContent = count.toLocaleString('vi-VN') + ' ' + String(L.countSuffix || ' người đã đăng ký').trim();
+      proofChip.hidden = !(count > 0) || status.code === 'ended';
+      if (ev.earlyBirdUntil && offerOn) {
+        var dl = Math.ceil((new Date(ev.earlyBirdUntil) - now) / 86400000);
+        offerLeft.textContent = dl <= 1 ? 'Hết hạn hôm nay' : 'Còn ' + dl + ' ngày';
+        offerLeft.hidden = false;
+      } else offerLeft.hidden = true;
+      var cdn = ES.countdown(ev, now), short = '';
+      if (cdn) short = cdn.days > 0 ? 'Còn ' + cdn.days + ' ngày' : (cdn.hours > 0 ? 'Còn ' + cdn.hours + ' giờ' : 'Còn ' + cdn.minutes + ' phút');
+      stickyInfo1.textContent = seats && left > 0 ? seats : (status.code === 'ended' ? 'Sự kiện đã diễn ra' : (seats || ev.name));
+      stickyInfo2.textContent = status.code === 'ended' ? '' : short;
+      stickyBtn.textContent = status.code === 'ended' ? 'Xem thông tin' : (status.waitlist ? 'Vào danh sách chờ' : ctaText);
+      if (regInst) { /* popup đang mở: form/closed đã cập nhật ở trên */ }
+    }
+
+    // Thanh dính: IntersectionObserver (không lắng nghe scroll)
+    if (!editable && typeof IntersectionObserver === 'function') {
+      var vis = { hero: true, reg: false, foot: false };
+      var applySticky = function () {
+        var on = !vis.hero && !vis.reg && !vis.foot;
+        sticky.classList.toggle('is-on', on);
+        sticky.setAttribute('aria-hidden', on ? 'false' : 'true');
+        stickyBtn.tabIndex = on ? 0 : -1;
+      };
+      var sio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { vis[en.target === hero ? 'hero' : en.target === footer ? 'foot' : 'reg'] = en.isIntersecting; });
+        applySticky();
+      }, { threshold: 0 });
+      sio.observe(hero); sio.observe(footer);
+      if (register.isConnected) sio.observe(register);
+      applySticky();
     }
 
     // Hiệu ứng: chỉ ở trang xem (không làm phiền khi đang soạn)
@@ -639,7 +786,7 @@
       el.classList.add(cls);
     }
     if (!editable && st.motion !== 'off') {
-      var revealEls = Array.prototype.slice.call(container.children).filter(function (el) { return el !== hero && el.tagName !== 'STYLE'; });
+      var revealEls = Array.prototype.slice.call(container.children).filter(function (el) { return el !== hero && el.tagName !== 'STYLE' && el.tagName !== 'DIALOG' && el !== stickyWrap; });
       revealEls.forEach(function (el) { el.classList.add('lp-reveal'); });
       if (typeof IntersectionObserver === 'function') {
         var io = new IntersectionObserver(function (entries) {

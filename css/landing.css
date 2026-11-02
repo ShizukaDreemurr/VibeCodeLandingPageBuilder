@@ -368,3 +368,109 @@ html.motion-off .lp-pop-burst { display: none; }
   dialog.lp-pop { margin: auto 0 0; width: 100%; }
   .lp-pop-card { width: 100%; border-radius: 22px 22px 0 0; padding-bottom: calc(18px + env(safe-area-inset-bottom)); animation-name: lp-pop-sheet; }
 }
+
+/* ---------- Tối ưu chuyển đổi: chip, thẻ ưu đãi, thẻ lợi ích, thanh CTA dính, popup đăng ký ----------
+   Chỉ dùng transform/opacity (GPU). Không thêm vùng cuộn overflow và không animate background-position. */
+.lp-hero-action { row-gap: 14px; }
+.lp-chip { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; padding: 6px 12px 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); color: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22); }
+.lp-chip[hidden] { display: none; }
+.lp-chip-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lp-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-accent) 35%, transparent); flex: none; }
+
+/* Lợi ích dạng thẻ */
+.lp-benefits { counter-reset: lpb; max-width: none; gap: 14px; grid-template-columns: 1fr; }
+.lp-benefits li { counter-increment: lpb; padding: 16px 18px 16px 62px; min-height: 60px; font-size: 1.0625em;
+  background: color-mix(in srgb, currentColor 5%, transparent); border: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+.lp-benefits li::before { left: 16px; top: 16px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; font-size: 15px; line-height: 1;
+  background: var(--lp-accent); color: var(--lp-accent-contrast); }
+.st-bullet-none .lp-benefits li { padding-left: 18px; }
+.st-bullet-dot .lp-benefits li::before { top: 16px; font-size: 10px; }
+@container (min-width: 820px) {
+  .lp-benefits { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+  .lp-benefits li { padding: 64px 20px 22px; }
+  .lp-benefits li::before { left: 20px; top: 20px; width: 34px; height: 34px; }
+  .lp-benefits li::after { content: counter(lpb, decimal-leading-zero); position: absolute; right: 18px; top: 16px; font-weight: 800; font-size: 1.6em; line-height: 1; opacity: 0.14; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .st-bullet-none .lp-benefits li { padding-top: 22px; }
+}
+
+/* Ưu đãi: thẻ quà nổi bật */
+.lp-offer-card { --lp-para: 2px; position: relative; display: flex; align-items: flex-start; gap: 16px; padding: 20px 20px 20px 18px; max-width: 640px;
+  background: #fff; color: var(--lp-text); border-radius: calc(var(--lp-radius) + 4px); box-shadow: 0 0 0 2px var(--lp-accent), 0 14px 34px rgba(22, 25, 58, 0.14); overflow: hidden; }
+
+.lp-offer-ico { flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--lp-accent); color: var(--lp-accent-contrast); margin-left: 6px; }
+.lp-offer-body { flex: 1 1 auto; min-width: 0; }
+.landing .lp-offer-card .lp-offer-text { font-size: 1.125em; font-weight: 700; line-height: 1.4; color: var(--lp-text); }
+.landing .lp-offer-card .lp-offer-until { font-size: 14px; color: var(--lp-muted); }
+.lp-offer-left { flex: none; align-self: flex-start; margin: 0; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 800; white-space: nowrap; background: color-mix(in srgb, var(--lp-accent) 14%, #fff); color: var(--lp-text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-accent) 55%, transparent); }
+.lp-offer-left[hidden] { display: none; }
+@container (max-width: 520px) {
+  .lp-offer-card { flex-wrap: wrap; gap: 12px; padding: 16px; }
+  .lp-offer-left { order: -1; margin-left: auto; }
+  .lp-offer-ico { width: 44px; height: 44px; margin-left: 4px; }
+  .lp-offer-body { flex-basis: 100%; }
+}
+
+/* Nhịp điệu chữ & khoảng cách trên điện thoại */
+@container (max-width: 520px) {
+  .lp-headline { margin-bottom: 14px; line-height: 1.15; }
+  .lp-eyebrow { margin-bottom: 14px; font-size: 16px; }
+  .lp-meta { flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .lp-hero-action { flex-direction: row; gap: 12px 14px; width: 100%; }
+  .lp-hero-action .lp-cta { flex: 1 1 100%; text-align: center; padding: 15px 22px; font-size: 17px; }
+  .lp-section h2 { margin-bottom: 16px; }
+  .lp-section { padding-block: 40px; }
+  .lp-footer { padding-bottom: 96px; }
+}
+.lp-cta { box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18); }
+
+/* Thanh CTA dính đáy (chỉ điện thoại) */
+.lp-sticky-wrap { display: none; }
+@container (max-width: 720px) {
+  .lp-sticky-wrap { display: block; position: sticky; bottom: 0; height: 0; z-index: 40; }
+}
+.lp-sticky { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--lp-bg); color: var(--lp-text);
+  box-shadow: 0 -1px 0 rgba(22, 25, 58, 0.08), 0 -10px 28px rgba(22, 25, 58, 0.14);
+  transform: translate3d(0, 105%, 0); visibility: hidden; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.3s; will-change: transform; }
+.lp-sticky.is-on { transform: none; visibility: visible; transition-delay: 0s; }
+.lp-sticky-info { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.lp-sticky-main { font-size: 15px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lp-sticky-sub { font-size: 13px; color: var(--lp-muted); }
+.lp-sticky-sub:empty { display: none; }
+.lp-sticky-btn { flex: none; font: inherit; font-weight: 700; min-height: 46px; padding: 0 22px; border: 0; border-radius: var(--lp-btn-radius); cursor: pointer; background: var(--lp-accent); color: var(--lp-accent-contrast); }
+.lp-sticky-btn:focus-visible { outline: 3px solid var(--lp-primary); outline-offset: 2px; }
+.lp-sticky-btn:active { transform: scale(0.97); }
+
+/* Popup đăng ký */
+dialog.lp-reg { border: 0; padding: 0; background: transparent; color: var(--lp-text, #111); max-width: none; max-height: none; overflow: visible; margin: auto; font-family: var(--lp-body-font, inherit); font-size: 16px; line-height: 1.5; }
+dialog.lp-reg::backdrop { background: rgba(10, 10, 20, 0.55); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); animation: lp-pop-fade 0.2s ease both; }
+.lp-reg-card { position: relative; box-sizing: border-box; width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain;
+  background: var(--lp-bg, #fff); color: var(--lp-text, #111); border-radius: 20px; padding: 28px 24px 20px; box-shadow: 0 28px 70px rgba(10, 10, 20, 0.35); animation: lp-pop-in 0.4s cubic-bezier(0.2, 1.2, 0.35, 1) both; outline: none; text-align: left; }
+.lp-reg-x { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--lp-text, #111) 8%, transparent); color: inherit; cursor: pointer; }
+.lp-reg-x:hover { background: color-mix(in srgb, var(--lp-text, #111) 14%, transparent); }
+.lp-reg-x:focus-visible { outline: 3px solid var(--lp-accent); outline-offset: 2px; }
+.lp-reg-kicker { margin: 0 44px 4px 0; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--lp-muted); }
+.lp-reg-title { margin: 0 44px 12px 0; font-family: var(--lp-heading-font, inherit); font-size: 24px; line-height: 1.2; font-weight: 800; color: var(--lp-primary); text-wrap: balance; }
+.lp-reg-meta { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 6px; font-size: 15px; }
+.lp-reg-meta li { display: flex; gap: 10px; align-items: flex-start; }
+.lp-reg-meta .lp-ic { flex: none; margin-top: 3px; opacity: 0.75; }
+.lp-reg-offer { display: flex; gap: 10px; align-items: center; margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; font-weight: 700; font-size: 15px; line-height: 1.35; background: color-mix(in srgb, var(--lp-accent) 14%, var(--lp-bg, #fff)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-accent) 50%, transparent); }
+.lp-reg-offer-ico { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--lp-accent); color: var(--lp-accent-contrast); }
+.lp-reg-offer-ico svg { width: 20px; height: 20px; }
+.lp-reg-seats { margin: 0 0 14px; font-weight: 800; font-size: 14px; color: var(--lp-primary); }
+.lp-reg-seats::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: #3fd08a; vertical-align: 1px; }
+.lp-reg-seats.is-hot { color: #c0262d; }
+.lp-reg-seats.is-hot::before { background: #ff6b6b; }
+.lp-reg-seats[hidden], .lp-reg-card [hidden] { display: none; }
+.lp-reg-card .lp-form { max-width: none; margin: 0; padding: 0; background: none; box-shadow: none; text-align: left; }
+.lp-reg-card .lp-field label, .lp-reg-card .lp-consent { color: var(--lp-text); }
+.lp-reg-card .lp-field input { font-size: 16px; height: 46px; min-height: 0; box-sizing: border-box; padding: 0 12px; background: #fff; color: #16193a; }
+.lp-reg-card .lp-submit { width: 100%; min-height: 50px; margin-top: 6px; font-size: 17px; }
+.lp-reg-trust { display: flex; align-items: center; gap: 8px; margin: 14px 0 0; font-size: 13px; color: var(--lp-muted); }
+.lp-reg-trust .lp-ic { display: block; }
+.lp-reg-card .lp-closed { margin: 8px 0 0; font-size: 17px; }
+html.motion-off .lp-reg-card, html.motion-off dialog.lp-reg::backdrop, .st-motion-off dialog.lp-reg::backdrop, .st-motion-off .lp-reg-card { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .lp-reg-card, dialog.lp-reg::backdrop { animation: none !important; } .lp-sticky { transition: none; } }
+@media (max-width: 560px) {
+  dialog.lp-reg { margin: auto 0 0; width: 100%; }
+  .lp-reg-card { width: 100%; max-height: 92vh; max-height: 92dvh; border-radius: 22px 22px 0 0; padding: 24px 18px calc(18px + env(safe-area-inset-bottom)); animation-name: lp-pop-sheet; animation-duration: 0.35s; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+}

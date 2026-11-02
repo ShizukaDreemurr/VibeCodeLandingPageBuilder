@@ -11,7 +11,7 @@ const { chromium } = require(require('child_process').execSync('npm root -g').to
  await O.click('#btn-publish');await O.click('#btn-check-ok');await O.waitForSelector('#share-box:not([hidden])',{timeout:15000});
  const url=await O.inputValue('#share-url');log('share url',url);
  log('qr rendered',await O.isVisible('#share-qr img'));
- const G1=await page();await G1.goto(url+'&emulator=1');await G1.waitForSelector('.lp-headline',{timeout:15000});await G1.click('.lp-cta');
+ const G1=await page();await G1.goto(url+'&emulator=1');await G1.waitForSelector('.lp-headline',{timeout:15000});await G1.click('.lp-cta');await G1.keyboard.press('Escape');
  log('guest sees headline',await G1.textContent('.lp-headline'));
  await reg(G1,'Khách Một','0912345678','k1@gmail.com');log('guest1 msg',await G1.textContent('.lp-form-msg'));
  await O.waitForTimeout(1500);log('owner preview count (realtime)',await O.textContent('.lp-count'));
