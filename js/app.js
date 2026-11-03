@@ -24,7 +24,7 @@
   var TPL = EP.templates;
   var currentTemplateId = (state && state.event.templateId) || 'tech';
   var MAX_IMAGE_BYTES = 900000; // giới hạn 1MB/tài liệu của Firestore, chừa chỗ cho nội dung
-  var IMAGE_TYPES = { hero: 'hero', speaker: 'avatar', gallery: 'gallery' };
+  var IMAGE_TYPES = { hero: 'hero', speaker: 'avatar', gallery: 'gallery', about: 'about', offer: 'offer' };
   var APP_URL = /^https?:$/.test(root.location.protocol) ? root.location.origin + root.location.pathname : null;
 
   // ---------- Lưu nhiều sự kiện trên trình duyệt ----------
@@ -672,6 +672,8 @@
     if (sp.kind === 'hero') return images.hero || '';
     if (sp.kind === 'speaker') return (images.speakers || {})[sp.index] || '';
     if (sp.kind === 'gallery') return (images.gallery || [])[sp.index] || '';
+    if (sp.kind === 'about') return images.about || '';
+    if (sp.kind === 'offer') return images.offer || '';
     if (sp.kind === 'logo') return (state.event.brand && state.event.brand.logo) || '';
     return '';
   }
@@ -682,6 +684,8 @@
     if (kind === 'hero') { images.hero = dataUrl; delete images.noTplHero; }
     if (kind === 'speaker') { images.speakers = images.speakers || {}; images.speakers[index] = dataUrl; }
     if (kind === 'gallery') { images.gallery = images.gallery || []; images.gallery[index] = dataUrl; }
+    if (kind === 'about') images.about = dataUrl;
+    if (kind === 'offer') images.offer = dataUrl;
     var logo = kind === 'logo' ? dataUrl : ((state.event.brand && state.event.brand.logo) || '');
     var budget = MAX_IMAGE_BYTES - logo.length;
     var fit = EP.images.totalBytes(images) > budget ? EP.images.shrinkToFit(images, budget) : Promise.resolve({ images: images, count: 0, fits: true });
@@ -696,9 +700,10 @@
       return r;
     });
   }
-  function pickImage(slot) {
+  function pickImage(slot, file) {
+    if (!state) return;
     var kind = slotParts(slot).kind;
-    EP.images.pick(IMAGE_TYPES[kind]).then(function (dataUrl) {
+    (file ? EP.images.fromFile(file, IMAGE_TYPES[kind]) : EP.images.pick(IMAGE_TYPES[kind])).then(function (dataUrl) {
       var info = EP.images.lastInfo();
       return storeImage(slot, dataUrl).then(function (r) {
         if (!r) return;
@@ -706,14 +711,14 @@
         if (r.count) msg += ' Đã nén lại thêm ' + r.count + ' ảnh khác để trang vừa dung lượng.';
         toast(msg);
         // Ảnh diễn giả (vuông) và ảnh bìa: mời cắt/xoay ngay, bấm Áp dụng là xong
-        if (kind === 'speaker' || kind === 'hero') editImage(slot);
+        if (kind === 'speaker' || kind === 'hero' || kind === 'about' || kind === 'offer') editImage(slot);
       });
     }).catch(function (e) {
       if (e.message !== 'Chưa chọn ảnh.') toast(e.message);
     });
   }
   // Mở trình chỉnh ảnh (xoay, cắt, thu phóng, sáng/tương phản/bão hoà) cho ô ảnh
-  var IMAGE_TITLES = { hero: 'Chỉnh ảnh bìa', speaker: 'Chỉnh ảnh diễn giả', gallery: 'Chỉnh ảnh album', logo: 'Chỉnh logo' };
+  var IMAGE_TITLES = { hero: 'Chỉnh ảnh bìa', speaker: 'Chỉnh ảnh diễn giả', gallery: 'Chỉnh ảnh album', about: 'Chỉnh ảnh giới thiệu', offer: 'Chỉnh ảnh quà tặng', logo: 'Chỉnh logo' };
   function editImage(slot) {
     if (!state) return Promise.resolve();
     var kind = slotParts(slot).kind;
@@ -728,7 +733,7 @@
     var before = slotImage(slot);
     return EP.imageEditor.open({
       src: src, slot: cfg, alpha: !!cfg.alpha, title: IMAGE_TITLES[kind],
-      aspect: kind === 'speaker' ? 1 : kind === 'hero' ? 16 / 9 : null
+      aspect: kind === 'speaker' || kind === 'offer' ? 1 : kind === 'hero' ? 16 / 9 : kind === 'about' ? 4 / 3 : null
     }).then(function (dataUrl) {
       if (!dataUrl) return;
       return storeImage(slot, dataUrl).then(function (r) {
@@ -742,10 +747,85 @@
     if (sp.kind === 'hero') delete images.hero;
     if (sp.kind === 'speaker' && images.speakers) delete images.speakers[sp.index];
     if (sp.kind === 'gallery' && images.gallery) images.gallery[sp.index] = '';
+    if (sp.kind === 'about') delete images.about;
+    if (sp.kind === 'offer') delete images.offer;
     state.event.images = images;
     if (sp.kind === 'logo') state.event.brand = Object.assign({}, state.event.brand, { logo: '' });
     persist();
     toast(sp.kind === 'hero' ? 'Đã xoá ảnh, trang dùng lại ảnh bìa có sẵn của mẫu. Bấm ↶ nếu muốn lấy lại.' : 'Đã xoá ảnh. Bấm ↶ nếu muốn lấy lại.');
+  }
+
+  // ---------- Thẻ / panel "Hình ảnh": mọi ô ảnh của trang ở một chỗ (bìa, giới thiệu, quà tặng, diễn giả, album) ----------
+  function imageSlotList() {
+    var ev = state.event, list = [
+      { slot: 'hero', label: 'Ảnh bìa', hint: 'Ảnh lớn đầu trang', has: !!(ev.images && ev.images.hero) },
+      { slot: 'about', label: 'Ảnh giới thiệu', hint: 'Cạnh đoạn giới thiệu', has: !!(ev.images && ev.images.about) },
+      { slot: 'offer', label: 'Ảnh quà tặng / ưu đãi', hint: ev.earlyBird ? 'Trong thẻ ưu đãi' : 'Hiện khi trang có ưu đãi', has: !!(ev.images && ev.images.offer) }
+    ];
+    (ev.speakers || []).forEach(function (s, i) { list.push({ slot: 'speaker:' + i, label: 'Diễn giả: ' + s.name, hint: '', has: !!((ev.images && ev.images.speakers) || {})[i] }); });
+    for (var g = 0; g < 6; g++) list.push({ slot: 'gallery:' + g, label: 'Album ' + (g + 1), hint: '', has: !!((ev.images && ev.images.gallery) || [])[g], group: 'Album ảnh sự kiện (tối đa 6 ảnh)' });
+    return list;
+  }
+  var imgFocusSlot = null;
+  function renderImagePanels() {
+    var ae = document.activeElement, keep = ae && ae.classList && ae.classList.contains('img-tile') ? ae.getAttribute('data-slot') : null;
+    if (keep && !imgFocusSlot) imgFocusSlot = keep; // vẽ lại không làm mất tiêu điểm bàn phím
+    document.querySelectorAll('[data-img-host]').forEach(function (host) {
+      host.innerHTML = '';
+      if (!state) {
+        var off = document.createElement('p'); off.className = 'hint img-off'; off.textContent = 'Tạo landing page trước để thêm ảnh.';
+        host.appendChild(off); return;
+      }
+      var grid = null, groupName = null;
+      imageSlotList().forEach(function (it) {
+        if (it.group !== groupName || !grid) {
+          groupName = it.group;
+          if (it.group) { var gh = document.createElement('p'); gh.className = 'img-group'; gh.textContent = it.group; host.appendChild(gh); }
+          grid = document.createElement('div'); grid.className = 'img-grid'; host.appendChild(grid);
+        }
+        grid.appendChild(imageTile(it));
+      });
+    });
+    if (imgFocusSlot) {
+      var f = document.querySelector('[data-img-host] .img-tile[data-slot="' + imgFocusSlot + '"]');
+      if (f && (document.activeElement === document.body || !document.activeElement || !document.activeElement.isConnected)) f.focus();
+      imgFocusSlot = null;
+    }
+  }
+  function imageTile(it) {
+    var src = slotImage(it.slot), tile = document.createElement('div');
+    tile.className = 'img-tile' + (src ? ' has-img' : ''); tile.tabIndex = 0; tile.setAttribute('role', 'button'); tile.setAttribute('data-slot', it.slot);
+    tile.setAttribute('aria-label', (src ? 'Đổi ' : 'Thêm ') + it.label.toLowerCase() + '. Có thể kéo thả ảnh vào đây.');
+    var thumb = document.createElement('div'); thumb.className = 'img-thumb';
+    if (src) { var im = document.createElement('img'); im.src = src; im.alt = ''; im.loading = 'lazy'; thumb.appendChild(im); }
+    else { var plus = document.createElement('span'); plus.className = 'img-plus'; plus.setAttribute('aria-hidden', 'true'); plus.textContent = '+'; thumb.appendChild(plus); }
+    if (src) { var badge = document.createElement('span'); badge.className = 'img-size'; badge.textContent = kb(Math.round(src.length * 0.75)); thumb.appendChild(badge); }
+    var acts = document.createElement('div'); acts.className = 'img-acts';
+    function act(text, title, fn) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = text; b.title = title; b.setAttribute('aria-label', text + ' ' + it.label);
+      b.addEventListener('click', function (e) { e.stopPropagation(); imgFocusSlot = it.slot; fn(); });
+      b.addEventListener('keydown', function (e) { e.stopPropagation(); });
+      acts.appendChild(b);
+    }
+    if (src) { act('Đổi', 'Chọn ảnh khác', function () { pickImage(it.slot); }); act('Chỉnh', 'Xoay, cắt, thu phóng', function () { editImage(it.slot); }); act('Xoá', 'Xoá ảnh này', function () { removeImage(it.slot); }); }
+    thumb.appendChild(acts);
+    var cap = document.createElement('span'); cap.className = 'img-cap'; cap.textContent = it.label;
+    tile.appendChild(thumb); tile.appendChild(cap);
+    if (it.hint) { var hh = document.createElement('span'); hh.className = 'img-hint'; hh.textContent = it.hint; tile.appendChild(hh); }
+    tile.addEventListener('click', function () { imgFocusSlot = it.slot; pickImage(it.slot); });
+    tile.addEventListener('keydown', function (e) {
+      if (e.target !== tile) return;
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); imgFocusSlot = it.slot; pickImage(it.slot); }
+      else if ((e.key === 'Delete' || e.key === 'Backspace') && src) { e.preventDefault(); imgFocusSlot = it.slot; removeImage(it.slot); }
+    });
+    ['dragenter', 'dragover'].forEach(function (t) { tile.addEventListener(t, function (e) { e.preventDefault(); tile.classList.add('is-drop'); }); });
+    ['dragleave', 'drop'].forEach(function (t) { tile.addEventListener(t, function () { tile.classList.remove('is-drop'); }); });
+    tile.addEventListener('drop', function (e) {
+      e.preventDefault();
+      var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (file) { imgFocusSlot = it.slot; pickImage(it.slot, file); }
+    });
+    return tile;
   }
   function kb(n) { return n >= 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
 
@@ -991,8 +1071,7 @@
     ol.innerHTML = '';
     var list = currentSections();
     list.forEach(function (s, i) {
-      if (s.key === 'gallery' && !isWedding) return;
-      var m = meta[s.key];
+            var m = meta[s.key];
       if (m.block && !s.visible) return; // khối chưa thêm: nằm ở panel Khối
       var li = document.createElement('li');
       li.className = 'section-item' + (s.visible ? '' : ' is-hidden') + (firstTime ? ' is-entering' : '');
@@ -1706,6 +1785,7 @@
     if (!livePreview) {
       renderSectionList();
       renderStylePanel();
+      renderImagePanels();
     }
     var scroller = landingEl.parentNode, keepTop = scroller ? scroller.scrollTop : 0;
     renderer = EP.landingRenderer.render(landingEl, {
@@ -1714,7 +1794,7 @@
       now: simNow,
       getCount: simCount,
       editable: true,
-      onPickImage: pickImage,
+      onPickImage: function (slot) { pickImage(slot); },
       onEditImage: editImage,
       onEditContent: editContent,
       onEditText: editText,
@@ -2536,6 +2616,7 @@
   function clearEditor() {
     S.remove('current_id');
     state = null;
+    renderImagePanels();
     resetHistory();
     openSettings = null;
     renderStylePanel();
@@ -2750,7 +2831,7 @@
     persist: persist,
     liveRender: liveRender,
     toast: toast,
-    imageApi: { edit: editImage, pick: pickImage, remove: removeImage, canRemove: function (slot) { return slot !== 'hero' || !!slotImage('hero'); } },
+    imageApi: { edit: editImage, pick: function (slot) { pickImage(slot); }, remove: removeImage, canRemove: function (slot) { return slot !== 'hero' || !!slotImage('hero'); } },
     colorField: colorField,
     fontCombo: fontCombo,
     stepper: stepper,
@@ -3157,7 +3238,7 @@
         'var boxes=document.querySelectorAll(".lp-cd-num");function pad(n){return String(n).padStart(2,"0")}' +
         'function tick(){var ms=Math.max(0,start-new Date()),s=Math.floor(ms/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];' +
         'boxes.forEach(function(b,i){b.textContent=pad(v[i])});document.querySelectorAll(\'.lp-var[data-var="dem_nguoc"]\').forEach(function(x){x.textContent=Math.ceil(ms/86400000)})}' +
-        'tick();setInterval(tick,1000);document.querySelectorAll(".lp-form").forEach(function(f){f.addEventListener("submit",function(e){e.preventDefault();' +
+        'tick();setInterval(tick,1000);(' + EP.landingRenderer.lightboxInit.toString().replace(/<\/script/gi, '<\\/script') + ')(document.querySelector(".landing"));document.querySelectorAll(".lp-form").forEach(function(f){f.addEventListener("submit",function(e){e.preventDefault();' +
         'if(S.url){location.href=S.url;return}var m=f.querySelector(".lp-form-msg");if(m){m.textContent="Đây là bản trang tĩnh. Vui lòng liên hệ ban tổ chức để đăng ký.";m.className="lp-form-msg is-error"}})});' +
         // Popup đăng ký: mọi nút CTA mở popup; Esc / nút đóng / bấm nền để đóng; trả tiêu điểm
         'var D=document.querySelector("dialog.lp-reg");if(D&&D.showModal){var P=null;function cl(){D.close();if(P&&P.focus)P.focus()}' +
@@ -3217,6 +3298,7 @@
   // ---------- Workspace: panel cửa sổ + thanh menu ----------
   function menuDevice(d, label, key) { return { icon: { desktop: 'monitor', tablet: 'tablet', mobile: 'phone' }[d], label: label, shortcut: key, checked: function () { return device === d; }, action: function () { setDevice(d); } }; }
   function menuZoom(z, label) { return { icon: z === 'fit' ? 'fit' : 'percent', label: label, checked: function () { return zoom === z; }, action: function () { setZoom(z); } }; }
+  renderImagePanels();
   EP.workspace.init({
     root: $('#ws'),
     stash: $('.ws-panels'),
@@ -3267,7 +3349,7 @@
       { label: 'Cửa sổ', items: function () {
         var list = [{ heading: 'Panel' }];
         EP.workspace.panels().forEach(function (pn) {
-          list.push({ icon: { layout: 'grip', blocks: 'blocks', layers: 'layers', style: 'palette', publish: 'send' }[pn.id] || 'float', label: pn.title, checked: function () { return EP.workspace.isVisible(pn.id); }, action: function () { EP.workspace.toggle(pn.id); } });
+          list.push({ icon: { layout: 'grip', blocks: 'blocks', layers: 'layers', images: 'image', style: 'palette', publish: 'send' }[pn.id] || 'float', label: pn.title, checked: function () { return EP.workspace.isVisible(pn.id); }, action: function () { EP.workspace.toggle(pn.id); } });
         });
         list.push('-', { heading: 'Bố cục' },
           { icon: 'columns', label: 'Mặc định (trái + phải)', action: function () { EP.workspace.preset('default'); } },
