@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.3.6',
+    version: '2.4.0',
     date: '2026-10-27',
-    notes: 'Tăng khoảng cách dòng tiêu đề landing page cho chữ có dấu',
+    notes: 'Ô thêm ảnh (giới thiệu, ưu đãi, album); mở app không còn nhảy tab: khách vào Thư viện mẫu, người đã đăng nhập vào Sự kiện của tôi',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

@@ -31,9 +31,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;700;800&family=Nunito:wght@400;600;800&family=Lora:wght@500;700&display=swap">
-  <link rel="stylesheet" href="css/tokens.css?v=2.3.6">
-  <link rel="stylesheet" href="css/app.css?v=2.3.6">
-  <link rel="stylesheet" href="css/landing.css?v=2.3.6">
+  <link rel="stylesheet" href="css/tokens.css?v=2.4.0">
+  <link rel="stylesheet" href="css/app.css?v=2.4.0">
+  <link rel="stylesheet" href="css/landing.css?v=2.4.0">
+  <script>/* chọn tab đầu trước khi vẽ: link chia sẻ ẩn app; người từng đăng nhập vào thẳng "Sự kiện của tôi" */
+  (function(d){try{if(/[?&]e=/.test(location.search))d.className+=' boot-public';else if(localStorage.getItem('ep_signed_in')==='1')d.className+=' boot-events';}catch(e){}})(document.documentElement);</script>
+  <style>.boot-public main.view,.boot-events #view-templates{display:none!important}</style>
 </head>
 <body>
   <a class="skip-link" href="#view-builder" id="skip-link">Bỏ qua, tới nội dung chính</a>
@@ -43,9 +46,9 @@
       <span>Xclipse</span>
     </a>
     <nav class="tabs" role="tablist">
-      <button type="button" class="tab" data-tab="templates" role="tab" aria-selected="false">Thư viện mẫu</button>
+      <button type="button" class="tab is-active" data-tab="templates" role="tab" aria-selected="true">Thư viện mẫu</button>
       <button type="button" class="tab" data-tab="events" role="tab" aria-selected="false">Sự kiện của tôi</button>
-      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Thông tin &amp; nội dung</button>
+      <button type="button" class="tab" data-tab="builder" role="tab" aria-selected="false">Thông tin &amp; nội dung</button>
       <button type="button" class="tab" data-tab="editor" role="tab" aria-selected="false">Thiết kế trang</button>
       <button type="button" class="tab" data-tab="admin" role="tab" aria-selected="false">Danh sách đăng ký</button>
       <button type="button" class="tab" data-tab="brand" role="tab" aria-selected="false">Brand DNA</button>
@@ -55,7 +58,7 @@
     <button type="button" class="btn btn-primary" id="btn-new" aria-label="Tạo trang mới"><span data-icon="plus"></span><span class="lbl">Tạo trang mới</span></button>
   </header>
 
-  <main id="view-templates" class="view tpl-page" hidden>
+  <main id="view-templates" class="view tpl-page">
     <section class="tpl-hero" aria-labelledby="tpl-page-title">
       <div class="tpl-hero-text">
         <p class="tpl-eyebrow">Thư viện mẫu Xclipse</p>
@@ -89,7 +92,7 @@
     </div>
   </main>
 
-  <main id="view-builder" class="workspace-form view">
+  <main id="view-builder" class="workspace-form view" hidden>
     <!-- BƯỚC 1: FORM NHẬP + AI -->
     <div class="title-row">
       <div>
@@ -577,33 +580,33 @@
   <script src="vendor/firebase/firebase-auth-compat.js"></script>
   <script src="vendor/firebase/firebase-firestore-compat.js"></script>
   <script src="vendor/qrcode/qrcode.js"></script>
-  <script defer src="js/firebase-config.js?v=2.3.6"></script>
-  <script defer src="js/storage.js?v=2.3.6"></script>
-  <script defer src="js/validators.js?v=2.3.6"></script>
-  <script defer src="js/event-status.js?v=2.3.6"></script>
-  <script defer src="js/registrations.js?v=2.3.6"></script>
-  <script defer src="js/content-generator.js?v=2.3.6"></script>
-  <script defer src="js/ai-service.js?v=2.3.6"></script>
-  <script defer src="js/sheet-sync.js?v=2.3.6"></script>
-  <script defer src="js/cloud.js?v=2.3.6"></script>
-  <script defer src="js/templates-data.js?v=2.3.6"></script>
-  <script defer src="js/templates.js?v=2.3.6"></script>
-  <script defer src="js/images.js?v=2.3.6"></script>
-  <script defer src="js/image-editor.js?v=2.3.6"></script>
-  <script defer src="js/brands.js?v=2.3.6"></script>
-  <script defer src="js/brand-ai.js?v=2.3.6"></script>
-  <script defer src="js/icons.js?v=2.3.6"></script>
-  <script defer src="js/motion.js?v=2.3.6"></script>
-  <script defer src="js/page-style.js?v=2.3.6"></script>
-  <script defer src="js/lp-utils.js?v=2.3.6"></script>
-  <script defer src="js/seo.js?v=2.3.6"></script>
-  <script defer src="js/landing-renderer.js?v=2.3.6"></script>
-  <script defer src="js/inspector.js?v=2.3.6"></script>
-  <script defer src="js/workspace.js?v=2.3.6"></script>
-  <script defer src="js/version.js?v=2.3.6"></script>
-  <script defer src="js/charts.js?v=2.3.6"></script>
-  <script defer src="js/demo-data.js?v=2.3.6"></script>
-  <script defer src="js/popup.js?v=2.3.6"></script>
-  <script defer src="js/app.js?v=2.3.6"></script>
+  <script defer src="js/firebase-config.js?v=2.4.0"></script>
+  <script defer src="js/storage.js?v=2.4.0"></script>
+  <script defer src="js/validators.js?v=2.4.0"></script>
+  <script defer src="js/event-status.js?v=2.4.0"></script>
+  <script defer src="js/registrations.js?v=2.4.0"></script>
+  <script defer src="js/content-generator.js?v=2.4.0"></script>
+  <script defer src="js/ai-service.js?v=2.4.0"></script>
+  <script defer src="js/sheet-sync.js?v=2.4.0"></script>
+  <script defer src="js/cloud.js?v=2.4.0"></script>
+  <script defer src="js/templates-data.js?v=2.4.0"></script>
+  <script defer src="js/templates.js?v=2.4.0"></script>
+  <script defer src="js/images.js?v=2.4.0"></script>
+  <script defer src="js/image-editor.js?v=2.4.0"></script>
+  <script defer src="js/brands.js?v=2.4.0"></script>
+  <script defer src="js/brand-ai.js?v=2.4.0"></script>
+  <script defer src="js/icons.js?v=2.4.0"></script>
+  <script defer src="js/motion.js?v=2.4.0"></script>
+  <script defer src="js/page-style.js?v=2.4.0"></script>
+  <script defer src="js/lp-utils.js?v=2.4.0"></script>
+  <script defer src="js/seo.js?v=2.4.0"></script>
+  <script defer src="js/landing-renderer.js?v=2.4.0"></script>
+  <script defer src="js/inspector.js?v=2.4.0"></script>
+  <script defer src="js/workspace.js?v=2.4.0"></script>
+  <script defer src="js/version.js?v=2.4.0"></script>
+  <script defer src="js/charts.js?v=2.4.0"></script>
+  <script defer src="js/demo-data.js?v=2.4.0"></script>
+  <script defer src="js/popup.js?v=2.4.0"></script>
+  <script defer src="js/app.js?v=2.4.0"></script>
 </body>
 </html>

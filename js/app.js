@@ -3795,7 +3795,21 @@
   refreshBrandSelects();
 
   EP.icons.hydrate();
-  switchTab('templates'); // ấn tượng đầu tiên luôn là Thư viện mẫu (điểm mạnh nhất của sản phẩm)
+  // Tab đầu: khách -> Thư viện mẫu; đã đăng nhập -> Sự kiện của tôi. Gợi ý từ lần trước để không nhảy tab.
+  var bootUserNav = false, docEl = document.documentElement;
+  function startTab(signedIn) {
+    if (bootUserNav || publicEventId) return;
+    var cur = document.querySelector('.tab.is-active'); cur = cur && cur.getAttribute('data-tab');
+    if (cur && cur !== 'templates' && cur !== 'events') return; // người dùng đã chọn mẫu / mở trang khác
+    switchTab(signedIn ? 'events' : 'templates');
+  }
+  startTab(docEl.classList.contains('boot-events'));
+  docEl.classList.remove('boot-events');
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) { t.addEventListener('click', function () { bootUserNav = true; }); });
+  C.onAuth(function (u) {
+    try { if (u) localStorage.setItem('ep_signed_in', '1'); else localStorage.removeItem('ep_signed_in'); } catch (e) {}
+    startTab(!!u); bootUserNav = true; // chỉ quyết định một lần
+  });
   root.addEventListener('resize', function () { EP.motion.indicator($('.tabs')); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { EP.motion.indicator($('.tabs')); });
   C.onAuth(function () { if (!$('#view-events').hidden) renderEvents(); });
