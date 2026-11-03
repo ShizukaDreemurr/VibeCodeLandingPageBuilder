@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.5.2',
+    version: '2.6.0',
     date: '2026-10-27',
-    notes: 'Landing page: phần giới thiệu ảnh lớn 2 cột, tablet 1 cột rộng, thẻ ưu đãi gọn trên điện thoại; link chia sẻ không còn lộ giao diện builder',
+    notes: 'Thư viện ảnh kiểu Canva: mọi nút thêm ảnh mở chung một cửa sổ, xem lại ảnh đã tải lên, tìm, đổi tên, xoá, tải thêm',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

@@ -17,6 +17,12 @@ function wrap(page) {
     const orig = page[m].bind(page);
     page[m] = async (sel, ...rest) => { if (typeof sel === 'string') await openTabFor(page, sel); return orig(sel, ...rest); };
   });
+  // Mọi nơi thêm/đổi ảnh giờ mở Thư viện ảnh; test chờ hộp chọn tệp thì tự bấm "Tải ảnh lên" trong thư viện.
+  const wfe = page.waitForEvent.bind(page);
+  page.waitForEvent = (ev, ...rest) => {
+    if (ev === 'filechooser' && !page.__noAutoUpload) page.waitForSelector('dialog.ml-dialog[open] .ml-upload', { timeout: 8000 }).then(() => page.locator('dialog.ml-dialog[open] .ml-upload').click()).catch(() => {});
+    return wfe(ev, ...rest);
+  };
   return page;
 }
 module.exports = function (browser) {
