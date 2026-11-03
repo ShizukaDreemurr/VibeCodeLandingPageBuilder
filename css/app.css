@@ -1291,3 +1291,32 @@ html.tpv-lock { overflow: hidden; }
   }
   @keyframes ep-pop-sheet { from { transform: translateY(100%); } to { transform: none; } }
 }
+
+/* ---------- Thẻ / panel "Hình ảnh" ---------- */
+@layer app {
+  .img-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface); margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .img-card-title { margin: 0; font-size: 15px; line-height: 20px; }
+  .img-group { margin: 12px 0 6px; font-size: 13px; font-weight: 600; color: var(--text); }
+  .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; margin-top: 6px; }
+  .img-tile { display: flex; flex-direction: column; gap: 4px; cursor: pointer; border-radius: 10px; outline: none; animation: img-tile-in 0.35s ease both; }
+  .img-thumb { position: relative; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; border: 1.5px dashed var(--border); background: var(--bg, #f6f7f8); display: grid; place-items: center; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+  .img-tile.has-img .img-thumb { border-style: solid; }
+  .img-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; animation: img-tile-in 0.4s ease both; }
+  .img-plus { font-size: 28px; line-height: 1; color: var(--text-muted); }
+  .img-tile:hover .img-thumb, .img-tile:focus-visible .img-thumb { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12); border-color: var(--accent); }
+  .img-tile:focus-visible .img-thumb { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .img-tile.is-drop .img-thumb { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.03); }
+  .img-size { position: absolute; top: 4px; left: 4px; padding: 1px 6px; border-radius: 999px; background: rgba(0, 0, 0, 0.62); color: #fff; font-size: 11px; font-weight: 600; line-height: 16px; }
+  .img-acts { position: absolute; inset: auto 0 0 0; display: flex; gap: 4px; justify-content: center; padding: 6px 4px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.6)); opacity: 0; transition: opacity 0.15s ease; }
+  .img-tile:hover .img-acts, .img-tile:focus-within .img-acts { opacity: 1; }
+  @media (hover: none) { .img-acts { opacity: 1; } }
+  .img-acts button { border: 0; border-radius: 999px; padding: 2px 8px; font: inherit; font-size: 12px; font-weight: 600; min-height: 24px; background: #fff; color: #131416; cursor: pointer; }
+  .img-acts button:hover { background: var(--accent-soft); }
+  .img-acts button:focus-visible { outline: 2px solid var(--accent); }
+  .img-cap { font-size: 12.5px; font-weight: 600; line-height: 16px; overflow-wrap: anywhere; }
+  .img-hint { font-size: 11.5px; line-height: 15px; color: var(--text-muted); }
+  .ws-panel .img-grid { grid-template-columns: repeat(2, 1fr); }
+  @keyframes img-tile-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+  html.motion-off .img-tile, html.motion-off .img-thumb img, html.motion-off .img-thumb { animation: none !important; transition: none !important; }
+  html.motion-off .img-tile:hover .img-thumb, html.motion-off .img-tile.is-drop .img-thumb { transform: none; }
+}

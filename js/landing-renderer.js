@@ -5,7 +5,7 @@
 (function (root) {
   var ES = root.EP.eventStatus;
   var T = root.EP.templates;
-  var GALLERY_SLOTS = 4;
+  var GALLERY_SLOTS = 6;
   var scopeSeq = 0;
 
   // Thứ tự mặc định các phần giữa hero và footer. locked = bắt buộc theo đề, không cho ẩn.
@@ -14,7 +14,7 @@
     { key: 'about', label: 'Giới thiệu' },
     { key: 'benefits', label: '3 lợi ích' },
     { key: 'speakers', label: 'Diễn giả' },
-    { key: 'gallery', label: 'Album ảnh (thiệp cưới)' },
+    { key: 'gallery', label: 'Hình ảnh sự kiện (album)' },
     { key: 'agenda', label: 'Chương trình (agenda)', locked: true },
     { key: 'offer', label: 'Ưu đãi đăng ký sớm' },
     { key: 'register', label: 'Form đăng ký', locked: true },
@@ -116,6 +116,64 @@
       h('input', { id: idp + name, name: name, type: type, placeholder: placeholder, autocomplete: 'on' }),
       h('p', { class: 'lp-error', 'data-error-for': name, 'aria-live': 'polite' })
     ]);
+  }
+
+  // Xem ảnh toàn màn hình (album). Hàm TỰ CHỨA, không dùng biến ngoài: file HTML xuất nhúng nguyên văn hàm này.
+  function lightboxInit(root) {
+    if (!root || root.__lb) return;
+    var items = [].slice.call(root.querySelectorAll('.lp-gallery-open'));
+    if (!items.length) return;
+    root.__lb = 1;
+    var box = null, img, count, prevBtn, nextBtn, idx = 0, opener = null, sx = null;
+    function mk(tag, cls, txt, label) {
+      var e = document.createElement(tag); e.className = cls;
+      if (txt) e.textContent = txt;
+      if (label) { e.setAttribute('aria-label', label); e.type = 'button'; }
+      return e;
+    }
+    function show(i) {
+      idx = (i + items.length) % items.length;
+      var src = items[idx].querySelector('img');
+      img.src = src.currentSrc || src.src; img.alt = src.alt;
+      count.textContent = (idx + 1) + ' / ' + items.length;
+      img.classList.remove('is-in'); void img.offsetWidth; img.classList.add('is-in');
+      prevBtn.hidden = nextBtn.hidden = items.length < 2;
+    }
+    function close() {
+      if (!box) return;
+      document.removeEventListener('keydown', onKey, true);
+      box.remove(); box = null; document.documentElement.classList.remove('lp-lb-open');
+      if (opener && opener.focus) opener.focus();
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); }
+      else if (e.key === 'ArrowRight') show(idx + 1);
+      else if (e.key === 'ArrowLeft') show(idx - 1);
+      else if (e.key === 'Tab') { var f = [].slice.call(box.querySelectorAll('button:not([hidden])')); if (!f.length) return; var k = f.indexOf(document.activeElement); e.preventDefault(); f[(k + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus(); }
+    }
+    function open(i) {
+      opener = document.activeElement;
+      box = mk('div', 'lp-lightbox'); box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Xem ảnh sự kiện');
+      img = mk('img', 'lp-lb-img'); count = mk('span', 'lp-lb-count');
+      var x = mk('button', 'lp-lb-btn lp-lb-x', '✕', 'Đóng');
+      prevBtn = mk('button', 'lp-lb-btn lp-lb-prev', '‹', 'Ảnh trước'); nextBtn = mk('button', 'lp-lb-btn lp-lb-next', '›', 'Ảnh sau');
+      box.appendChild(img); box.appendChild(count); box.appendChild(x); box.appendChild(prevBtn); box.appendChild(nextBtn);
+      x.addEventListener('click', close);
+      prevBtn.addEventListener('click', function (e) { e.stopPropagation(); show(idx - 1); });
+      nextBtn.addEventListener('click', function (e) { e.stopPropagation(); show(idx + 1); });
+      box.addEventListener('click', function (e) { if (e.target === box) close(); });
+      box.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+      box.addEventListener('touchend', function (e) {
+        if (sx == null) return;
+        var dx = e.changedTouches[0].clientX - sx; sx = null;
+        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
+      });
+      (root.classList.contains('landing') ? root : document.body).appendChild(box);
+      document.documentElement.classList.add('lp-lb-open');
+      document.addEventListener('keydown', onKey, true);
+      show(i); x.focus();
+    }
+    items.forEach(function (b, i) { b.addEventListener('click', function (e) { e.preventDefault(); open(i); }); });
   }
 
   /*
@@ -332,10 +390,17 @@
       mark(h('p', { class: 'lp-social-proof' }, [countText, TX('span', {}, 'countdown.suffix', 'Chữ sau số đăng ký', L.countSuffix)]), 'countdown.proof', 'Dòng số người đăng ký', 'box', { required: true })
     ]);
 
-    var about = h('section', { class: 'lp-section' }, [
-      TX('h2', {}, 'about.title', 'Tiêu đề phần giới thiệu', L.about),
-      editableText('p', {}, 'description', content.description, 'Đoạn giới thiệu')
-    ]);
+    var aboutText = editableText('p', {}, 'description', content.description, 'Đoạn giới thiệu');
+    var aboutPhoto = null, aboutKids;
+    if (images.about) {
+      aboutPhoto = h('figure', { class: 'lp-about-media' }, [
+        mark(h('img', { src: images.about, alt: 'Ảnh giới thiệu sự kiện', width: 800, height: 600, loading: 'lazy', decoding: 'async' }), 'about.img', 'Ảnh giới thiệu', 'box'),
+        imageButton('about', 'Đổi ảnh'), editButton('about')
+      ]);
+      if (editable) aboutPhoto.querySelector('img').setAttribute('data-el-image', 'about');
+      aboutKids = [h('div', { class: 'lp-about has-media' }, [aboutPhoto, h('div', { class: 'lp-about-body' }, [aboutText])])];
+    } else aboutKids = [aboutText, editable ? h('p', { class: 'lp-slot-add' }, [imageButton('about', '+ Thêm ảnh giới thiệu')]) : null];
+    var about = h('section', { class: 'lp-section' }, [TX('h2', {}, 'about.title', 'Tiêu đề phần giới thiệu', L.about)].concat(aboutKids));
 
     var benefits = h('section', { class: 'lp-section' }, [
       TX('h2', {}, 'benefits.title', 'Tiêu đề phần lợi ích', L.benefits),
@@ -362,20 +427,28 @@
       }))
     ]);
 
-    // ALBUM ẢNH (mẫu thiệp cưới)
+    // ALBUM ẢNH (mọi mẫu): 1–6 ảnh, bấm để xem toàn màn hình. Trang công khai không có ảnh thì không có phần này.
     var gallery = null;
-    if (tpl.wedding) {
-      var pics = images.gallery || [];
+    var pics = images.gallery || [], filled = 0, lastFilled = -1;
+    for (var gi = 0; gi < GALLERY_SLOTS; gi++) if (pics[gi]) { filled++; lastFilled = gi; }
+    if (filled || editable) {
       var cells = [];
-      for (var g = 0; g < GALLERY_SLOTS; g++) {
+      var shown = editable ? Math.min(GALLERY_SLOTS, Math.max(tpl.wedding ? 4 : 2, lastFilled + 2)) : GALLERY_SLOTS;
+      for (var g = 0; g < shown; g++) {
         if (pics[g]) {
-          var gimg = h('img', { src: pics[g], alt: 'Ảnh sự kiện ' + (g + 1), width: 400, height: 300, loading: 'lazy', decoding: 'async' });
+          var gimg = h('img', { src: pics[g], alt: 'Hình ảnh sự kiện ' + (cells.length + 1), width: 400, height: 300, loading: 'lazy', decoding: 'async' });
           if (editable) { gimg.setAttribute('data-el-image', 'gallery:' + g); gimg.setAttribute('data-el', 'gallery.img.' + g); gimg.setAttribute('data-el-label', 'Ảnh album ' + (g + 1)); gimg.setAttribute('data-el-kind', 'box'); }
-          cells.push(h('div', { class: 'lp-gallery-item' }, [gimg, imageButton('gallery:' + g, 'Đổi'), editButton('gallery:' + g)]));
+          cells.push(h('div', { class: 'lp-gallery-item' }, [
+            editable ? gimg : h('button', { type: 'button', class: 'lp-gallery-open', 'aria-label': 'Phóng to hình ảnh sự kiện ' + (cells.length + 1) }, [gimg]),
+            imageButton('gallery:' + g, 'Đổi'), editButton('gallery:' + g)
+          ]));
         }
-        else if (editable) cells.push(h('div', { class: 'lp-gallery-item is-empty' }, [imageButton('gallery:' + g, '+ Thêm ảnh cưới')]));
+        else if (editable) cells.push(h('div', { class: 'lp-gallery-item is-empty' }, [imageButton('gallery:' + g, '+ Thêm ảnh')]));
       }
-      if (cells.length) gallery = h('section', { class: 'lp-section' }, [TX('h2', {}, 'gallery.title', 'Tiêu đề album', 'Khoảnh khắc của chúng mình'), h('div', { class: 'lp-gallery' }, cells)]);
+      gallery = h('section', { class: 'lp-section lp-gallery-section' }, [
+        TX('h2', {}, 'gallery.title', 'Tiêu đề album', tpl.wedding ? 'Khoảnh khắc của chúng mình' : 'Hình ảnh sự kiện'),
+        h('div', { class: 'lp-gallery' + (editable ? ' is-editing' : ''), 'data-count': editable ? null : String(filled) }, cells)
+      ]);
     }
 
     var agenda = ev.agenda && ev.agenda.length ? h('section', { class: 'lp-section' }, [
@@ -392,10 +465,16 @@
     var offer = ev.earlyBird ? h('section', { class: 'lp-section lp-offer' }, [
       TX('h2', {}, 'offer.title', 'Tiêu đề ưu đãi', L.offer),
       h('div', { class: 'lp-offer-card' }, [
-        h('span', { class: 'lp-offer-ico', 'aria-hidden': 'true' }, [giftIcon()]),
+        images.offer
+          ? h('figure', { class: 'lp-offer-photo' }, [
+            (function (im) { if (editable) im.setAttribute('data-el-image', 'offer'); return im; })(mark(h('img', { src: images.offer, alt: 'Ảnh quà tặng / ưu đãi', width: 96, height: 96, loading: 'lazy', decoding: 'async' }), 'offer.img', 'Ảnh quà tặng / ưu đãi', 'box')),
+            imageButton('offer', 'Đổi'), editButton('offer')
+          ])
+          : h('span', { class: 'lp-offer-ico', 'aria-hidden': 'true' }, [giftIcon()]),
         h('div', { class: 'lp-offer-body' }, [
           TX('p', { class: 'lp-offer-text' }, 'offer.text', 'Nội dung ưu đãi', ev.earlyBird, { multiline: true }),
-          ev.earlyBirdUntil ? TX('p', { class: 'lp-offer-until' }, 'offer.until', 'Hạn ưu đãi', 'Áp dụng đến ' + fmtDate(ev.earlyBirdUntil)) : null
+          ev.earlyBirdUntil ? TX('p', { class: 'lp-offer-until' }, 'offer.until', 'Hạn ưu đãi', 'Áp dụng đến ' + fmtDate(ev.earlyBirdUntil)) : null,
+          !images.offer && editable ? h('p', { class: 'lp-slot-add' }, [imageButton('offer', '+ Thêm ảnh quà tặng')]) : null
         ]),
         offerLeft
       ])
@@ -695,6 +774,7 @@
       }
     });
     container.appendChild(footer);
+    if (!editable) lightboxInit(container);
     if (!editable) container.appendChild(stickyWrap);
 
     // Trang xem: mọi nút CTA mở popup đăng ký (href #lp-register chỉ còn là phương án dự phòng khi không có JS)
@@ -806,5 +886,5 @@
   }
 
   root.EP = root.EP || {};
-  root.EP.landingRenderer = { render: render, h: h, SECTIONS: SECTIONS, normalizeSections: normalizeSections, BLOCK_ITEMS: BLOCK_ITEMS, MAX_ITEMS: MAX_ITEMS, blockCount: blockCount, videoEmbed: videoEmbed };
+  root.EP.landingRenderer = { render: render, h: h, SECTIONS: SECTIONS, normalizeSections: normalizeSections, BLOCK_ITEMS: BLOCK_ITEMS, MAX_ITEMS: MAX_ITEMS, blockCount: blockCount, videoEmbed: videoEmbed, lightboxInit: lightboxInit };
 })(typeof window !== 'undefined' ? window : globalThis);
