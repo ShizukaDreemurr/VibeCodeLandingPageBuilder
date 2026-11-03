@@ -13,7 +13,7 @@
   var PREFIX = 'demo_';
   var FLAG = 'demo_seeded';
   var VERSION_KEY = 'demo_version';
-  var VERSION = '7'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
+  var VERSION = '8'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
   var MSG = 'Đây là dữ liệu mẫu để bạn xem nhanh. Bấm \'Tạo trang mới\' để làm trang của riêng bạn.';
 
   // ---------- PRNG ----------
@@ -107,7 +107,7 @@
     var order = ['countdown', 'about', 'benefits', 'speakers', 'gallery', 'agenda', 'offer', 'testimonials', 'faq', 'sponsors', 'map', 'cta2', 'register'];
     return order.map(function (k) {
       var optional = ['testimonials', 'faq', 'sponsors', 'map', 'cta2'].indexOf(k) >= 0;
-      return { key: k, visible: k === 'gallery' ? false : (optional ? opt.indexOf(k) >= 0 : true) };
+      return { key: k, visible: k === 'gallery' ? opt.indexOf('gallery') >= 0 : (optional ? opt.indexOf(k) >= 0 : true) };
     });
   }
 
@@ -127,7 +127,7 @@
       faq: [['Chưa dùng AI bao giờ thì có theo kịp không?', 'Có. Chúng mình bắt đầu từ thao tác đầu tiên và mỗi bài thực hành đều có mẫu để làm theo. Người chưa dùng AI vẫn ra về với một kế hoạch hoàn chỉnh.'], ['Có cần mang laptop không?', 'Nên mang. Mỗi bàn có ổ cắm và wifi riêng nên bạn khỏi lo hết pin giữa buổi.'], ['Học phí và thanh toán thế nào?', 'Bạn đăng ký trước, chưa phải trả tiền. Ban tổ chức gọi xác nhận trong 24 giờ và gửi hướng dẫn thanh toán. Suất giảm 30% được giữ đến hết 30/11.']],
       quotes: [['“Mình áp dụng bộ prompt vào kế hoạch tuần sau và tiết kiệm gần nửa ngày viết bài.”', 'Thu Hà · Marketing Manager, học viên khoá trước'], ['“Diễn giả nói thẳng việc nào giao cho AI, việc nào phải tự làm. Nghe là áp dụng được.”', 'Quốc Bảo · chủ shop online, học viên khoá trước']],
       regs: 105, sheet: false, funnel: 11 },
-    { key: 'coffee', templateId: 'fnb', brand: 'demo_brand_moc', date: '2026-11-28T08:00', ebUntil: '2026-11-26T23:59', launch: '2026-10-20T08:00', tone: 'young',
+    { key: 'coffee', templateId: 'fnb', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['opening', 'barista', 'tasting', 'beans', 'acoustic'] }, brand: 'demo_brand_moc', date: '2026-11-28T08:00', ebUntil: '2026-11-26T23:59', launch: '2026-10-20T08:00', tone: 'young',
       name: 'Khai trương Mộc Coffee Hồ Tây', location: '25 Quảng An, Tây Hồ, Hà Nội', capacity: 200,
       speakers: [{ name: 'Barista Minh Khôi', title: 'Quán quân Barista Hà Nội 2025, 9 năm pha chế' }, { name: 'Nguyễn Hà My', title: 'Nhà sáng lập, tự chọn từng mẻ hạt của Mộc' }, { name: 'Đức Anh', title: 'Ca sĩ acoustic, ban nhạc Chiều Hồ Tây' }],
       agenda: [['08:00', 'Cắt băng và mời ly đầu tiên trong ngày'], ['08:30', 'Mua 1 tặng 1 toàn menu đến 11:00, rủ cả team đi cùng'], ['10:00', 'Barista Minh Khôi dạy pha phin: tự tay pha, mang ly mình pha về bàn'], ['14:00', 'Bịt mắt nếm thử 3 loại hạt cà phê, xem bạn hợp với loại nào nhất'], ['17:00', 'Giờ vàng: 100 khách đầu tiên nhận gói hạt rang mang về'], ['19:00', 'Nhạc acoustic bên hồ, hồ lên đèn']],
@@ -259,6 +259,13 @@
     });
   }
 
+  // Ảnh minh hoạ (tạo bằng Gemini) nằm trong assets/demo; đường dẫn tuyệt đối để dùng được cả trong url() của CSS
+  function demoPics(p) {
+    if (!p) return {};
+    var abs = function (n) { try { return new URL('assets/demo/moc-' + n + '.webp', document.baseURI).href; } catch (e) { return 'assets/demo/moc-' + n + '.webp'; } };
+    return { hero: abs(p.hero), about: abs(p.about), offer: abs(p.offer), gallery: p.gallery.map(abs) };
+  }
+
   function buildEvent(spec, idx, now) {
     var id = PREFIX + 'evt_' + spec.key;
     var texts = {};
@@ -284,7 +291,7 @@
       earlyBirdUntil: spec.ebUntil || '',
       sheetUrl: '', templateId: spec.templateId,
       studioName: spec.studioName || '', studioUrl: spec.studioUrl || '',
-      images: {}, sections: sections(spec.secs), style: null,
+      images: demoPics(spec.pics), sections: sections(spec.pics ? spec.secs.concat('gallery') : spec.secs), style: null,
       texts: texts, elStyles: null, elStylesBy: null, rich: spec.content.descriptionHtml ? { description: { plain: spec.content.description, html: spec.content.descriptionHtml } } : null,
       blocks: Object.keys(blocks).length ? blocks : null,
       brandId: '', brand: null, seo: spec.seo, published: false, demo: true, demoPublished: true
