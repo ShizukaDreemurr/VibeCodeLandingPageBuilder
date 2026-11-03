@@ -177,8 +177,11 @@
   pairTable($('#f-speakers'), { label: 'Danh sách diễn giả', cols: ['Tên diễn giả', 'Chức danh'], placeholders: ['Nguyễn Văn An', 'Chuyên gia AI Marketing'], addText: 'Thêm diễn giả' });
   pairTable($('#f-agenda'), { label: 'Chương trình', cols: ['Giờ', 'Nội dung'], placeholders: ['08:30', 'Đón khách & check-in'], addText: 'Thêm mục' });
 
+  // Mẫu mang sẵn ảnh + nội dung (vd. Mộc Coffee): giữ tới khi tạo trang đầu tiên, rồi dữ liệu nằm trong sự kiện
+  var pendingTpl = null;
   function readForm(existingId) {
     var f = form.elements;
+    var base = (state && state.event) || pendingTpl || {};
     return {
       id: existingId || S.newId('evt'),
       name: V.clean(f.name.value),
@@ -193,15 +196,15 @@
       templateId: currentTemplateId,
       studioName: TPL.get(currentTemplateId).wedding ? V.clean(f.studioName.value) : '',
       studioUrl: TPL.get(currentTemplateId).wedding ? V.clean(f.studioUrl.value) : '',
-      images: (state && state.event.images) || {},
-      sections: (state && state.event.sections) || null,
-      style: (state && state.event.style) || null,
-      texts: (state && state.event.texts) || null,
-      elStyles: (state && state.event.elStyles) || null,
-      elStylesBy: (state && state.event.elStylesBy) || null,
-      rich: (state && state.event.rich) || null,
-      blocks: (state && state.event.blocks) || null,
-      seo: (state && state.event.seo) || null,
+      images: base.images || {},
+      sections: base.sections || null,
+      style: base.style || null,
+      texts: base.texts || null,
+      elStyles: base.elStyles || null,
+      elStylesBy: base.elStylesBy || null,
+      rich: base.rich || null,
+      blocks: base.blocks || null,
+      seo: base.seo || null,
       brandId: $('#f-brand') ? $('#f-brand').value : '',
       brand: (state && state.event.brand) || null
     };
@@ -227,6 +230,7 @@
   // ---------- Thư viện mẫu ----------
   function setTemplate(id) {
     currentTemplateId = TPL.get(id).id;
+    if (pendingTpl && pendingTpl.templateId !== currentTemplateId) pendingTpl = null;
     var t = TPL.get(currentTemplateId);
     $('#tpl-name').textContent = t.name;
     $('#tpl-swatch').style.setProperty('--sw1', t.theme.primary);
@@ -2179,7 +2183,10 @@
     if (mode === 'mock') {
       regenSeed = isRegenerate ? regenSeed + 1 : 0;
       EP.motion.replay(isRegenerate ? $('#btn-regenerate-2') : btn, 'mo-sparkle');
-      saveAndRender(ev, EP.contentGenerator.generate(ev, tone, regenSeed), tone);
+      var gen = EP.contentGenerator.generate(ev, tone, regenSeed);
+      if (!isRegenerate && !state && pendingTpl && pendingTpl.content) gen = Object.assign({}, gen, pendingTpl.content);
+      saveAndRender(ev, gen, tone);
+      pendingTpl = null;
       celebrateGenerated(isRegenerate);
       setMsg('Đã tạo nội dung bằng AI mô phỏng (offline).', 'success');
       return;
@@ -2619,6 +2626,7 @@
 
   // Đóng sự kiện đang mở (không xoá dữ liệu)
   function clearEditor() {
+    pendingTpl = null;
     S.remove('current_id');
     state = null;
     renderImagePanels();
@@ -2769,6 +2777,12 @@
     sample.templateId = currentTemplateId;
     sample.sheetUrl = form.elements.sheetUrl.value;
     fillForm(sample);
+    var extra = null;
+    if (sample.images || sample.texts || sample.content) {
+      extra = JSON.parse(JSON.stringify({ images: sample.images, sections: sample.sections, style: sample.style, texts: sample.texts, rich: sample.rich, blocks: sample.blocks, seo: sample.seo, content: sample.content }));
+      extra.templateId = currentTemplateId;
+    }
+    pendingTpl = extra;
     showErrors({});
   }
 

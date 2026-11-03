@@ -342,6 +342,12 @@
     };
   }
 
+  // Mẫu "Khai trương quán cà phê (Mộc)" trong thư viện dùng lại đúng dữ liệu của trang demo (một nguồn duy nhất)
+  function templateSample(key) {
+    var spec = SPECS.filter(function (k) { return k.key === key; })[0];
+    return spec ? buildEvent(spec, 0, new Date()) : null;
+  }
+
   function buildMetrics(spec, regs, idx) {
     var rng = mulberry32(104729 * (idx + 3));
     var n = regs.length;
@@ -494,5 +500,5 @@
     return null;
   }
 
-  EP.demo = { publicEvent: publicEvent, VERSION: VERSION, upgrade: upgradeIfStale, seed: seed, remove: removeDemo, restore: function () { removeDemo(); seed(); }, hasDemo: hasDemo, isDemoId: isDemoId, brands: BRANDS };
+  EP.demo = { templateSample: templateSample, publicEvent: publicEvent, VERSION: VERSION, upgrade: upgradeIfStale, seed: seed, remove: removeDemo, restore: function () { removeDemo(); seed(); }, hasDemo: hasDemo, isDemoId: isDemoId, brands: BRANDS };
 })(window);
