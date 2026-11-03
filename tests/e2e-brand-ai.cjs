@@ -38,6 +38,7 @@ const CANNED = {
   });
   await p.goto(URL);
   await p.click('[data-tab="brand"]');
+  await p.evaluate(() => { document.getElementById('brand-ai-wrap').open = true; });
   check('card visible', await p.isVisible('#brand-ai #bai-drop'));
 
   // --- kiểm tra tệp ---
