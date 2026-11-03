@@ -498,7 +498,7 @@ body.is-public .topbar, body.is-public #view-builder, body.is-public #view-admin
   .section-item { transition: background-color var(--dur-1) ease, opacity var(--dur-2) ease; }
 
   /* Xuất hiện: ngắn, chỉ mờ + dịch 4px */
-  .view:not([hidden]) { animation: xcIn var(--dur-2) var(--ease-out) both; }
+  .view:not([hidden]) { animation: xcViewIn var(--dur-2) var(--ease-out) both; }
   .side-pane:not([hidden]), .sec-settings.is-opening, .st-group.is-toggled[open] > .st-body,
   .ai-box:not([hidden]), .studio-box:not([hidden]), .share-box:not([hidden]), .sim-banner:not([hidden]) { animation: xcIn var(--dur-2) var(--ease-out) both; }
   .toast:not([hidden]) { animation: xcToastIn var(--dur-2) var(--ease-out) both; }
@@ -540,6 +540,8 @@ body.is-public .topbar, body.is-public #view-builder, body.is-public #view-admin
   .landing.is-generating::after { content: 'AI đang viết nội dung…'; position: absolute; inset: 0; display: grid; place-items: center; font-weight: 600; color: var(--text); background: rgba(255, 255, 255, 0.82); animation: xcBreathe 1.4s var(--ease-in-out) infinite; z-index: 5; }
   .btn.is-loading::after { content: ''; width: 12px; height: 12px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: xcSpin 700ms linear infinite; }
 }
+/* Màn hình chuyển tab: chỉ dịch, KHÔNG đổi độ mờ (mờ từ 0 làm lộ nền và nháy trắng) */
+@keyframes xcViewIn { from { transform: translateY(4px); } to { transform: none; } }
 @keyframes xcIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes xcOut { to { opacity: 0; transform: translateY(2px); } }
 @keyframes xcSwap { from { opacity: 0.4; } to { opacity: 1; } }
@@ -576,9 +578,9 @@ html[data-vt="device"]::view-transition-old(root), html[data-vt="device"]::view-
 @keyframes vtFadeOut { to { opacity: 0; } }
 @keyframes vtFadeIn { from { opacity: 0; transform: scale(0.985); } }
 @keyframes vtOutLeft { to { opacity: 0; transform: translateX(-32px); } }
-@keyframes vtInRight { from { opacity: 0; transform: translateX(48px); } }
+@keyframes vtInRight { from { transform: translateX(32px); } }
 @keyframes vtOutRight { to { opacity: 0; transform: translateX(32px); } }
-@keyframes vtInLeft { from { opacity: 0; transform: translateX(-48px); } }
+@keyframes vtInLeft { from { transform: translateX(-32px); } }
 html.motion-off::view-transition-group(*), html.motion-off::view-transition-old(*), html.motion-off::view-transition-new(*) { animation: none !important; }
 
 /* Kéo thả panel: bóng mờ bật ra, khung đích nhịp nhẹ, cửa sổ đang kéo nghiêng nhẹ */
@@ -1321,4 +1323,23 @@ html.tpv-lock { overflow: hidden; }
   @keyframes img-tile-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
   html.motion-off .img-tile, html.motion-off .img-thumb img, html.motion-off .img-thumb { animation: none !important; transition: none !important; }
   html.motion-off .img-tile:hover .img-thumb, html.motion-off .img-tile.is-drop .img-thumb { transform: none; }
+}
+
+/* ---------- Thanh và panel luôn cố định (không trôi khi zoom/cuộn) ---------- */
+@layer app {
+  html, body { overflow-x: clip; }
+  .topbar { position: sticky; top: 0; z-index: 50; }
+  @media (min-width: 761px) {
+    .editor.view:not([hidden]) { height: calc(100dvh - 56px); min-height: 0; overflow: hidden; }
+    .editor.view .ws { flex: 1 1 auto; height: auto; min-height: 0; }
+    .editor-bar { flex: none; }
+    .editor .preview-wrap { min-height: 0; overflow: auto; }
+  }
+  /* Bố cục xếp chồng (<1100px): trang cuộn, nhưng thanh công cụ Thiết kế dính ngay dưới thanh trên */
+  @media (max-width: 1100px) {
+    .editor.view:not([hidden]) { height: auto; overflow: visible; }
+    .editor-bar { position: static; }
+    @media (min-width: 761px) { .editor-bar { position: sticky; top: var(--topbar-h, 48px); z-index: 40; background: var(--ground); } }
+    .editor .ws { height: auto; }
+  }
 }
