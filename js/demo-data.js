@@ -330,7 +330,7 @@
       images: demoPics(spec), sections: sections(picsReady(spec) ? spec.secs.concat('gallery') : spec.secs), style: null,
       texts: texts, elStyles: null, elStylesBy: null, rich: spec.content.descriptionHtml ? { description: { plain: spec.content.description, html: spec.content.descriptionHtml } } : null,
       blocks: Object.keys(blocks).length ? blocks : null,
-      brandId: '', brand: null, seo: spec.seo, published: false, demo: true, demoPublished: true
+      brandId: '', brand: null, seo: spec.seo && !picsReady(spec) && spec.seo.image ? Object.assign({}, spec.seo, { image: '' }) : spec.seo, published: false, demo: true, demoPublished: true
     };
     var brand = spec.brand && BRANDS.filter(function (b) { return b.id === spec.brand; })[0];
     if (brand && EP.brands && EP.brands.applyTo) EP.brands.applyTo(ev, brand);

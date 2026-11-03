@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.6.1',
+    version: '2.6.2',
     date: '2026-10-27',
-    notes: 'Link chia sẻ trang mẫu có trang tĩnh riêng (s/<mã>/) mang sẵn tiêu đề, mô tả, ảnh cho Facebook và Zalo',
+    notes: 'Thêm trang mẫu Hackathon và Demo Day; meta SEO và chia sẻ chuẩn cho 8 trang mẫu nổi bật',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
