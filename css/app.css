@@ -1330,9 +1330,9 @@ html.tpv-lock { overflow: hidden; }
   html, body { overflow-x: clip; }
   .topbar { position: sticky; top: 0; z-index: 50; }
   @media (min-width: 761px) {
-    .editor.view:not([hidden]) { height: calc(100dvh - 56px); min-height: 0; overflow: hidden; }
+    .editor.view:not([hidden]) { height: calc(100dvh - var(--topbar-h, 56px)); min-height: 0; overflow: hidden; }
     .editor.view .ws { flex: 1 1 auto; height: auto; min-height: 0; }
-    .editor-bar { flex: none; }
+    .editor-bar { flex: none; position: sticky; top: var(--topbar-h, 48px); z-index: 40; background: var(--ground); }
     .editor .preview-wrap { min-height: 0; overflow: auto; }
   }
   /* Bố cục xếp chồng (<1100px): trang cuộn, nhưng thanh công cụ Thiết kế dính ngay dưới thanh trên */
