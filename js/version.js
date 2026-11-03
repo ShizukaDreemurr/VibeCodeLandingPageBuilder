@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.5.1',
+    version: '2.5.2',
     date: '2026-10-27',
-    notes: 'Trang Thiết kế khoá vừa 1 màn hình: thanh trên và thanh thiết kế luôn liền nhau, không nảy tách khi kéo',
+    notes: 'Landing page: phần giới thiệu ảnh lớn 2 cột, tablet 1 cột rộng, thẻ ưu đãi gọn trên điện thoại; link chia sẻ không còn lộ giao diện builder',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

@@ -260,7 +260,7 @@ html.motion-off .lp-made-with, html.motion-off .lp-made-with::after, html.motion
 
 /* Bố cục biên tập khi khung rộng: tiêu đề phần ở cột trái (1/3), nội dung ở cột phải (2/3),
    để mỗi phần dùng hết bề ngang thay vì dồn sang trái. Phần căn giữa (thiệp cưới, chọn "Giữa") giữ một cột. */
-@container (min-width: 820px) {
+@container (min-width: 960px) {
   .landing:not(.tpl-wedding) .lp-section:not(.lp-countdown-section):not(.lp-align-center) {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); column-gap: 56px; align-items: start;
   }
@@ -384,7 +384,7 @@ html.motion-off .lp-pop-burst { display: none; }
   background: var(--lp-accent); color: var(--lp-accent-contrast); }
 .st-bullet-none .lp-benefits li { padding-left: 18px; }
 .st-bullet-dot .lp-benefits li::before { top: 16px; font-size: 10px; }
-@container (min-width: 820px) {
+@container (min-width: 960px) {
   .lp-benefits { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
   .lp-benefits li { padding: 64px 20px 22px; }
   .lp-benefits li::before { left: 20px; top: 20px; width: 34px; height: 34px; }
@@ -404,7 +404,8 @@ html.motion-off .lp-pop-burst { display: none; }
 .lp-offer-left[hidden] { display: none; }
 @container (max-width: 520px) {
   .lp-offer-card { flex-wrap: wrap; gap: 12px; padding: 16px; }
-  .lp-offer-left { order: -1; margin-left: auto; }
+  .lp-offer-left { order: 1; margin-left: auto; align-self: center; }
+  .lp-offer-body { order: 2; }
   .lp-offer-ico { width: 44px; height: 44px; margin-left: 4px; }
   .lp-offer-body { flex-basis: 100%; }
 }
@@ -554,3 +555,13 @@ html.motion-off .lp-gallery-item, html.motion-off .lp-about-media, html.motion-o
 @keyframes lp-lb-fade { from { opacity: 0; } to { opacity: 1; } }
 html.lp-lb-open { overflow: hidden; }
 @media (max-width: 560px) { .lp-lb-prev, .lp-lb-next { top: auto; bottom: 18px; margin-top: 0; } .lp-lb-img { max-height: 76vh; } }
+
+/* Giới thiệu có ảnh, khung rộng: 2 cột bằng nhau – trái: tiêu đề + ảnh lớn, phải: đoạn giới thiệu (không còn cột trống) */
+@container (min-width: 960px) {
+  .landing:not(.tpl-wedding) .lp-section.lp-about-section:not(.lp-align-center) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); row-gap: 24px; }
+  .landing .lp-about-section .lp-about.has-media { display: contents; }
+  .landing:not(.tpl-wedding) .lp-about-section:not(.lp-align-center) > h2 { grid-row: 1; }
+  .landing .lp-about-section .lp-about-media { grid-column: 1; grid-row: 2; margin: 0; }
+  .landing .lp-about-section .lp-about-body { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  .landing .lp-about-section .lp-about-body > p { max-width: none; }
+}

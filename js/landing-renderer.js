@@ -400,7 +400,7 @@
       if (editable) aboutPhoto.querySelector('img').setAttribute('data-el-image', 'about');
       aboutKids = [h('div', { class: 'lp-about has-media' }, [aboutPhoto, h('div', { class: 'lp-about-body' }, [aboutText])])];
     } else aboutKids = [aboutText, editable ? h('p', { class: 'lp-slot-add' }, [imageButton('about', '+ Thêm ảnh giới thiệu')]) : null];
-    var about = h('section', { class: 'lp-section' }, [TX('h2', {}, 'about.title', 'Tiêu đề phần giới thiệu', L.about)].concat(aboutKids));
+    var about = h('section', { class: 'lp-section' + (aboutPhoto ? ' lp-about-section' : '') }, [TX('h2', {}, 'about.title', 'Tiêu đề phần giới thiệu', L.about)].concat(aboutKids));
 
     var benefits = h('section', { class: 'lp-section' }, [
       TX('h2', {}, 'benefits.title', 'Tiêu đề phần lợi ích', L.benefits),
