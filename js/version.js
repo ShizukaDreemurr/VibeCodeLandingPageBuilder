@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.6.2',
+    version: '2.7.0',
     date: '2026-10-27',
-    notes: 'Thêm trang mẫu Hackathon và Demo Day; meta SEO và chia sẻ chuẩn cho 8 trang mẫu nổi bật',
+    notes: 'Mẫu mới: Khai trương quán cà phê (Mộc) – có sẵn ảnh thật, nội dung, FAQ và meta chia sẻ',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
