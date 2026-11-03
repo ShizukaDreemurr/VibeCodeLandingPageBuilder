@@ -4,7 +4,7 @@ const shots = process.argv[2] || '.';
 const BASE = (process.argv[3] || 'http://localhost:8765/') + 'index.html';
 let failed = 0;
 const ok = (c, m) => { if (c) console.log('✓', m); else { failed++; console.log('✗', m); } };
-const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14], wedding: [86, 0], finance: [118, 0] };
+const EXPECT = { ai: [105, 0], hackathon: [96, 0], demoday: [128, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14], wedding: [86, 0], finance: [118, 0] };
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 1400, height: 900 } });
@@ -23,7 +23,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
   await p.evaluate(() => localStorage.clear());
   await p.goto(BASE + '?demo=1');
   ok(await p.isVisible('#view-templates'), 'mở Thư viện mẫu đầu tiên'); await p.click('[data-tab="events"]'); await p.waitForTimeout(300);
-  ok(await cards() === 6, 'danh sách có 6 sự kiện');
+  ok(await cards() === 8, 'danh sách có 8 sự kiện');
   ok(await p.isVisible('#demo-banner') && (await p.textContent('#demo-banner')).includes('dữ liệu mẫu'), 'banner dữ liệu mẫu hiện');
   ok(await p.isVisible('#demo-restore') && await p.isVisible('#demo-remove'), 'chân trang có Khôi phục / Xoá dữ liệu mẫu');
   await p.waitForTimeout(600);
@@ -35,7 +35,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
     return { out, brands: JSON.parse(localStorage.ep_brands), cur: JSON.parse(localStorage.ep_current_id) };
   });
   const ids = Object.keys(data.out);
-  ok(ids.length === 6 && ids.every(i => i.startsWith('demo_')), '6 sự kiện id demo_*');
+  ok(ids.length === 8 && ids.every(i => i.startsWith('demo_')), '8 sự kiện id demo_*');
   const now = Date.now(), vnPhone = /^0(3|5|7|8|9)\d{8}$/, mail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const LEAD = ['new', 'contacted', 'won', 'lost'];
   for (const k of Object.keys(EXPECT)) {
@@ -100,7 +100,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
 
   // Tải lại không nhân đôi
   await p.reload();
-  ok(await cards() === 6, 'tải lại vẫn 6 sự kiện (không nhân đôi)');
+  ok(await cards() === 8, 'tải lại vẫn 8 sự kiện (không nhân đôi)');
   ok(await p.evaluate(() => Object.keys(JSON.parse(localStorage.ep_brands)).length) === 3, 'tải lại vẫn 3 thương hiệu');
 
   // Thêm dữ liệu riêng, rồi Xoá dữ liệu mẫu
@@ -112,7 +112,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
     localStorage.ep_regs_user_1 = JSON.stringify([{ id: 'r1', name: 'Tôi', phone: '0912345678', email: 'a@gmail.com', status: 'new', createdAt: new Date().toISOString() }]);
   });
   await p.reload();
-  ok(await cards() === 7, 'thêm 1 sự kiện riêng → 7');
+  ok(await cards() === 9, 'thêm 1 sự kiện riêng → 9');
   await p.click('#demo-remove');
   await p.waitForLoadState('load'); await p.waitForTimeout(800);
   ok(await cards() === 1, 'Xoá dữ liệu mẫu: chỉ còn sự kiện của người dùng');
@@ -125,7 +125,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
   // Khôi phục
   await p.click('#demo-restore');
   await p.waitForLoadState('load'); await p.waitForTimeout(800);
-  ok(await cards() === 7, 'Khôi phục dữ liệu mẫu: 6 mẫu + 1 của người dùng');
+  ok(await cards() === 9, 'Khôi phục dữ liệu mẫu: 8 mẫu + 1 của người dùng');
   ok(await p.evaluate(() => localStorage.ep_regs_user_1 !== null && !!JSON.parse(localStorage.ep_events).user_1), 'dữ liệu người dùng không bị đè');
 
   // Nâng cấp bản mẫu cũ: chỉ thay mục demo_, giữ dữ liệu người dùng; không nâng cấp nếu đã xoá mẫu
@@ -139,7 +139,7 @@ const EXPECT = { ai: [105, 0], coffee: [64, 0], edu: [112, 0], beauty: [40, 14],
   await p.goto(BASE);
   const up = await p.evaluate(() => { const ev = JSON.parse(localStorage.ep_events); return { start: ev.demo_evt_coffee.event.startAt, head: ev.demo_evt_coffee.content.headline, user: ev.user_1 && ev.user_1.content.headline, n: Object.keys(ev).length, v: localStorage.ep_demo_version }; });
   ok(up.start === '2026-11-28T08:00' && !/đẳng cấp/.test(up.head), 'demo cũ (thiếu version) được nâng cấp lên ngày/nội dung mới');
-  ok(up.user === 'Tiêu đề của tôi' && up.n === 7 && up.v === JSON.stringify(await p.evaluate(() => EP.demo.VERSION)), 'nâng cấp không động vào sự kiện của người dùng, đúng phiên bản dữ liệu mẫu');
+  ok(up.user === 'Tiêu đề của tôi' && up.n === 9 && up.v === JSON.stringify(await p.evaluate(() => EP.demo.VERSION)), 'nâng cấp không động vào sự kiện của người dùng, đúng phiên bản dữ liệu mẫu');
   await p.click('#demo-remove'); await p.waitForLoadState('load'); await p.waitForTimeout(500);
   await p.evaluate(() => localStorage.removeItem('ep_demo_version'));
   await p.goto(BASE);

@@ -13,7 +13,7 @@
   var PREFIX = 'demo_';
   var FLAG = 'demo_seeded';
   var VERSION_KEY = 'demo_version';
-  var VERSION = '8'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
+  var VERSION = '9'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
   var MSG = 'Đây là dữ liệu mẫu để bạn xem nhanh. Bấm \'Tạo trang mới\' để làm trang của riêng bạn.';
 
   // ---------- PRNG ----------
@@ -112,7 +112,7 @@
   }
 
   var SPECS = [
-    { key: 'ai', templateId: 'tech', brand: 'demo_brand_techup', date: '2026-12-05T09:00', ebUntil: '2026-11-30T23:59', launch: '2026-10-20T08:00', tone: 'young',
+    { key: 'ai', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'tech', brand: 'demo_brand_techup', date: '2026-12-05T09:00', ebUntil: '2026-11-30T23:59', launch: '2026-10-20T08:00', tone: 'young',
       name: 'Workshop AI Marketing 2026', location: 'Hội trường Lotus, 12 Duy Tân, Cầu Giấy, Hà Nội', capacity: 150,
       speakers: [{ name: 'Nguyễn Hoài Nam', title: 'Head of Growth, startup thương mại điện tử' }, { name: 'Lê Thu Phương', title: 'Chuyên gia nội dung AI, 8 năm làm agency' }, { name: 'Trần Quang Vinh', title: 'Data Lead, nền tảng quảng cáo số' }],
       agenda: [['08:30', 'Check-in, nhận bộ tài liệu và ly cà phê đầu ngày'], ['09:00', 'Mở màn: 5 việc nên giao cho AI, 3 việc đừng bao giờ'], ['09:30', 'Viết nội dung có kiểm duyệt: giữ giọng thương hiệu ngay từ bản nháp'], ['10:30', 'Giải lao, làm quen người cùng nghề'], ['10:45', 'Thực hành: dựng chiến dịch 7 ngày từ bộ prompt mẫu'], ['11:45', 'Hỏi đáp và mang tài liệu về']],
@@ -122,12 +122,12 @@
         headline: 'Chỉ 45 phút để dựng xong kế hoạch marketing 7 ngày cùng AI',
         description: 'AI viết bài nhanh, nhưng bài ra vẫn nghe như robot và bạn lại mất cả buổi ngồi sửa. Sáng nay, 3 người đang làm nghề chỉ bạn cách giao đúng việc cho AI mà vẫn giữ giọng thương hiệu. Bạn thực hành trên bài toán của chính mình và về nhà với bộ prompt chạy được từ thứ Hai.',
         benefits: ['Rời phòng với kế hoạch chiến dịch 7 ngày của riêng bạn, dựng trong 45 phút thực hành', 'Bộ 30 prompt đã kiểm chứng: mở file, dán, chạy, bớt gần nửa buổi viết nội dung mỗi tuần', 'Hỏi thẳng 3 người đang làm nghề về đúng tình huống của bạn, không lý thuyết suông'] },
-      seo: { title: 'Workshop AI Marketing 2026 – TechUp Academy', description: 'Một buổi sáng thực hành dựng kế hoạch marketing 7 ngày với AI, mang về 30 prompt dùng ngay. 150 chỗ tại Cầu Giấy, giảm 30% cho 50 người đầu tiên.' },
+      seo: { title: 'Workshop AI Marketing 2026 – Thực hành dựng kế hoạch 7 ngày', description: 'Workshop AI Marketing 2026 tại Cầu Giấy, Hà Nội: thực hành dựng kế hoạch 7 ngày cùng AI, mang về 30 prompt dùng ngay. Giảm 30% cho 50 người đầu, đăng ký ngay!', ogTitle: 'Chỉ 45 phút để AI viết đúng giọng thương hiệu của bạn', ogDescription: 'Sáng 5/12 tại Hà Nội, 3 người đang làm nghề chỉ bạn cách giao việc cho AI và về nhà với kế hoạch marketing 7 ngày của riêng mình. Giữ chỗ trong 30 giây.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/ai-hero.webp' },
       secs: ['testimonials', 'faq', 'map'],
       faq: [['Chưa dùng AI bao giờ thì có theo kịp không?', 'Có. Chúng mình bắt đầu từ thao tác đầu tiên và mỗi bài thực hành đều có mẫu để làm theo. Người chưa dùng AI vẫn ra về với một kế hoạch hoàn chỉnh.'], ['Có cần mang laptop không?', 'Nên mang. Mỗi bàn có ổ cắm và wifi riêng nên bạn khỏi lo hết pin giữa buổi.'], ['Học phí và thanh toán thế nào?', 'Bạn đăng ký trước, chưa phải trả tiền. Ban tổ chức gọi xác nhận trong 24 giờ và gửi hướng dẫn thanh toán. Suất giảm 30% được giữ đến hết 30/11.']],
       quotes: [['“Mình áp dụng bộ prompt vào kế hoạch tuần sau và tiết kiệm gần nửa ngày viết bài.”', 'Thu Hà · Marketing Manager, học viên khoá trước'], ['“Diễn giả nói thẳng việc nào giao cho AI, việc nào phải tự làm. Nghe là áp dụng được.”', 'Quốc Bảo · chủ shop online, học viên khoá trước']],
       regs: 105, sheet: false, funnel: 11 },
-    { key: 'coffee', templateId: 'fnb', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['opening', 'barista', 'tasting', 'beans', 'acoustic'] }, brand: 'demo_brand_moc', date: '2026-11-28T08:00', ebUntil: '2026-11-26T23:59', launch: '2026-10-20T08:00', tone: 'young',
+    { key: 'coffee', picPrefix: 'moc', templateId: 'fnb', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['opening', 'barista', 'tasting', 'beans', 'acoustic'] }, brand: 'demo_brand_moc', date: '2026-11-28T08:00', ebUntil: '2026-11-26T23:59', launch: '2026-10-20T08:00', tone: 'young',
       name: 'Khai trương Mộc Coffee Hồ Tây', location: '25 Quảng An, Tây Hồ, Hà Nội', capacity: 200,
       speakers: [{ name: 'Barista Minh Khôi', title: 'Quán quân Barista Hà Nội 2025, 9 năm pha chế' }, { name: 'Nguyễn Hà My', title: 'Nhà sáng lập, tự chọn từng mẻ hạt của Mộc' }, { name: 'Đức Anh', title: 'Ca sĩ acoustic, ban nhạc Chiều Hồ Tây' }],
       agenda: [['08:00', 'Cắt băng và mời ly đầu tiên trong ngày'], ['08:30', 'Mua 1 tặng 1 toàn menu đến 11:00, rủ cả team đi cùng'], ['10:00', 'Barista Minh Khôi dạy pha phin: tự tay pha, mang ly mình pha về bàn'], ['14:00', 'Bịt mắt nếm thử 3 loại hạt cà phê, xem bạn hợp với loại nào nhất'], ['17:00', 'Giờ vàng: 100 khách đầu tiên nhận gói hạt rang mang về'], ['19:00', 'Nhạc acoustic bên hồ, hồ lên đèn']],
@@ -159,7 +159,7 @@
       faq: [['Đăng ký rồi có phải đến đúng 8:00 không?', 'Không. Bạn ghé lúc nào trong ngày 28/11 cũng được. Đến quầy đọc số điện thoại đã đăng ký là nhận ly. Quà dành cho 200 người đăng ký đầu tiên nên bạn đăng ký sớm cho chắc phần.'], ['Tôi đi một mình thì có ngại không?', 'Nhiều khách quen của Mộc đi một mình với cái laptop. Dọc cửa sổ có ổ cắm ở mọi bàn và wifi miễn phí, bạn cứ ngồi lâu.'], ['Gửi xe ở đâu?', 'Bãi xe máy miễn phí ngay trước quán. Ô tô đỗ ở khu cách quán 50 m.'], ['Mang thú cưng được không?', 'Khu sân vườn đón thú cưng nhỏ có dây dắt. Khu trong nhà chưa nhận.']],
       quotes: [['“Mình ngồi làm ở Mộc Cầu Giấy hai năm vì ly bạc xỉu ở đây chưa bao giờ bị loãng.”', 'Thu Trang · nhân viên thiết kế, khách quen Cầu Giấy'], ['“Sáng nào cũng ghé lấy ly phin mang lên văn phòng. Nghe có chi nhánh gần nhà là đăng ký liền.”', 'Anh Tuấn · kế toán, khách quen Cầu Giấy']],
       regs: 64, funnel: 12 },
-    { key: 'edu', templateId: 'edu', brand: '', date: '2026-12-12T14:00', ebUntil: '2026-12-05T23:59', launch: '2026-10-20T08:00', tone: 'formal',
+    { key: 'edu', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'edu', brand: '', date: '2026-12-12T14:00', ebUntil: '2026-12-05T23:59', launch: '2026-10-20T08:00', tone: 'formal',
       name: 'Hội thảo Định hướng Du học Úc & Canada 2027', location: 'Saigon Learning Hub, 88 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', capacity: 120,
       speakers: [{ name: 'ThS. Lê Minh Châu', title: 'Chuyên gia tư vấn du học, 12 năm kinh nghiệm' }, { name: 'Phạm Quỳnh Anh', title: 'Cựu sinh viên học bổng toàn phần tại Melbourne' }, { name: 'Ông David Nguyễn', title: 'Đại diện tuyển sinh khu vực Canada' }],
       agenda: [['14:00', 'Đón tiếp, nhận bộ tài liệu theo từng quốc gia'], ['14:30', 'Úc hay Canada: ngành nào đang mở rộng cửa năm 2027'], ['15:15', 'Quỳnh Anh kể cách làm hồ sơ học bổng toàn phần'], ['16:00', 'Giải lao, hỏi nhanh tại các gian tư vấn'], ['16:20', 'Chi phí thật, visa và lộ trình hồ sơ 12 tháng'], ['17:00', 'Ngồi riêng với chuyên gia theo hồ sơ của con bạn']],
@@ -169,13 +169,13 @@
         headline: 'Du học Úc hay Canada? Chốt trong một buổi chiều',
         description: 'Chọn sai nước, sai ngân sách là điều tốn kém nhất của mùa du học. Chiều 12/12, bạn nghe thẳng từ chuyên gia tư vấn 12 năm, một cựu sinh viên học bổng toàn phần và đại diện tuyển sinh Canada. Có tư vấn riêng theo hồ sơ, không bán khoá học tại chỗ.',
         benefits: ['Về nhà với bảng mốc thời gian, điểm số và chứng chỉ cho từng nước, không còn lo trễ hạn', 'Nghe Quỳnh Anh kể từng bước làm hồ sơ học bổng toàn phần Melbourne, bước nào làm trước', 'Ngồi riêng với chuyên gia để chốt ngân sách, visa và phương án dự phòng cho hồ sơ của con bạn'] },
-      seo: { title: 'Hội thảo Du học Úc & Canada 2027 tại TP.HCM', description: 'Hội thảo miễn phí chiều 12/12 tại Quận 3: lộ trình, học bổng, chi phí du học Úc và Canada 2027, có tư vấn riêng theo hồ sơ. 120 chỗ.' },
+      seo: { title: 'Hội thảo Du học Úc & Canada 2027 – Miễn phí tại TP.HCM', description: 'Hội thảo du học Úc và Canada 2027 miễn phí chiều 12/12 tại Quận 3, TP.HCM: lộ trình, học bổng, chi phí, tư vấn riêng theo hồ sơ. Chỉ 120 chỗ, giữ chỗ ngay!', ogTitle: 'Du học Úc hay Canada? Chốt trong một buổi chiều', ogDescription: 'Cùng chuyên gia 12 năm kinh nghiệm và cựu sinh viên học bổng toàn phần, tìm đúng nước, đúng ngân sách cho con. Chiều 12/12, miễn phí, giữ chỗ cho gia đình bạn.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/edu-hero.webp' },
       secs: ['testimonials', 'faq', 'sponsors'],
       faq: [['Hội thảo có thu phí không?', 'Không. Bạn chỉ cần đăng ký trước để ban tổ chức chuẩn bị chỗ ngồi và tài liệu.'], ['Con mới học lớp 10, 11 có nên đi không?', 'Nên. Biết sớm cần môn nào, chứng chỉ nào giúp con chuẩn bị từ bây giờ thay vì chạy nước rút năm lớp 12.'], ['Phụ huynh đi một mình được không?', 'Được. Mỗi gia đình đăng ký một suất, đi cùng con hoặc đi riêng đều được.']],
       quotes: [['“Con mình xác định được ngành và trường chỉ sau một buổi, đỡ cả tháng tìm hiểu.”', 'Chị Thu Hằng · phụ huynh khoá trước'], ['“Phần chia sẻ hồ sơ học bổng rất chi tiết, mình chỉnh lại bài luận ngay hôm sau.”', 'Gia Bảo · du học sinh Úc']],
       sponsorNames: ['Đại học Melbourne (mẫu)', 'Hiệp hội Du học Việt Nam (mẫu)', 'Ngân hàng An Bình (mẫu)', 'Hội đồng Anh (mẫu)'],
       regs: 112, funnel: 9 },
-    { key: 'beauty', templateId: 'beauty', brand: '', date: '2026-12-02T15:00', ebUntil: '2026-11-25T23:59', launch: '2026-10-20T08:00', tone: 'formal',
+    { key: 'beauty', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'beauty', brand: '', date: '2026-12-02T15:00', ebUntil: '2026-11-25T23:59', launch: '2026-10-20T08:00', tone: 'formal',
       name: 'Workshop Chăm sóc da mùa hanh khô', location: 'Lumi Skin Studio, 42 Lê Lợi, Quận 1, TP.HCM', capacity: 40,
       speakers: [{ name: 'BS. Hoàng Yến', title: 'Bác sĩ da liễu, 10 năm khám và điều trị' }, { name: 'Ngô Bảo Trân', title: 'Chuyên viên chăm sóc da, Lumi Skin Studio' }],
       agenda: [['15:00', 'Check-in, tách trà thảo mộc ấm'], ['15:30', 'Vì sao da bạn bong dù đã thoa kem dày'], ['16:15', 'Quy trình 5 bước gọn, đúng thứ tự'], ['17:00', 'Nằm thử liệu trình phục hồi mẫu'], ['17:45', 'Hỏi đáp riêng và nhận quà']],
@@ -185,12 +185,12 @@
         headline: 'Da khô mãi không khỏi? Một buổi chiều để tìm ra nguyên nhân',
         description: 'Trời hanh, da căng rát, bong từng mảng, thoa kem dày hơn mà vẫn không đỡ. Thường là lớp màng bảo vệ da đang yếu, không phải thiếu kem. Bác sĩ da liễu sẽ soi da cho từng người, trong nhóm tối đa 40 khách để ai cũng được hỏi.',
         benefits: ['Được soi da miễn phí, biết da đang thiếu nước hay thiếu dầu trước khi mua thêm món nào', 'Ra về với quy trình 5 bước gọn, đúng thứ tự, khỏi lo mua trùng công dụng', 'Thử liệu trình phục hồi mẫu trong phòng riêng yên tĩnh, kèm tách trà thảo mộc ấm'] },
-      seo: { title: 'Workshop Chăm sóc da mùa hanh khô – Lumi Skin Studio', description: 'Workshop 40 chỗ cùng bác sĩ da liễu: soi da miễn phí, quy trình 5 bước và liệu trình phục hồi mẫu tại Quận 1, TP.HCM. Đã hết chỗ, vào danh sách chờ.' },
+      seo: { title: 'Workshop Chăm sóc da mùa hanh khô – Soi da miễn phí', description: 'Workshop chăm sóc da mùa hanh khô cùng bác sĩ da liễu tại Quận 1, TP.HCM: soi da miễn phí, quy trình 5 bước gọn nhẹ. Nhóm chỉ 40 khách, vào danh sách chờ ngay!', ogTitle: 'Da khô mãi không khỏi? Một buổi chiều để hiểu làn da của bạn', ogDescription: 'Bác sĩ da liễu soi da cho từng người, trà thảo mộc ấm và liệu trình phục hồi mẫu. Nhóm nhỏ 40 khách ngày 2/12, vào danh sách chờ để giữ chỗ khi có người huỷ.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/beauty-hero.webp' },
       secs: ['testimonials', 'faq'],
       faq: [['Đã hết chỗ thì tôi làm sao?', 'Bạn đăng ký vào danh sách chờ. Khi có người huỷ, ban tổ chức gọi báo theo thứ tự đăng ký, thường trước buổi 1 đến 2 ngày.'], ['Da nhạy cảm có tham gia được không?', 'Được. Bác sĩ tư vấn riêng cho da nhạy cảm và chỉ làm mẫu trên sản phẩm dịu nhẹ.'], ['Tôi cần chuẩn bị gì?', 'Đến với làn da sạch, không trang điểm đậm để soi da chính xác hơn.']],
       quotes: [['“Lần đầu có người giải thích vì sao da mình bong dù đã dùng rất nhiều kem.”', 'Khánh Linh · khách workshop trước'], ['“Không ai ép mua gì. Trà chiều và quà tặng chu đáo hơn mình nghĩ.”', 'Phương Thảo · khách workshop trước']],
       regs: 54, funnel: 10 },
-    { key: 'wedding', templateId: 'wedding', brand: 'demo_brand_anhduong', date: '2026-12-20T11:00', ebUntil: '', launch: '2026-10-20T08:00', tone: 'formal',
+    { key: 'wedding', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'wedding', brand: 'demo_brand_anhduong', date: '2026-12-20T11:00', ebUntil: '', launch: '2026-10-20T08:00', tone: 'formal',
       name: 'Lễ cưới Minh Anh & Hoàng Nam', location: 'Trung tâm Tiệc cưới Riverside, 286 Nguyễn Văn Cừ, Long Biên, Hà Nội', capacity: 150,
       speakers: [{ name: 'Nguyễn Minh Anh', title: 'Cô dâu' }, { name: 'Trần Hoàng Nam', title: 'Chú rể' }],
       agenda: [['10:30', 'Đón khách, chụp ảnh cùng cô dâu chú rể'], ['11:00', 'Lễ thành hôn'], ['11:45', 'Khai tiệc'], ['13:30', 'Cắt bánh và nâng ly'], ['14:00', 'Ảnh gia đình và lưu bút']],
@@ -201,12 +201,12 @@
         headline: 'Minh Anh & Hoàng Nam cưới rồi, mời bạn đến chung vui',
         description: 'Sau nhiều năm bên nhau, chúng mình quyết định về chung một nhà. Sẽ rất vui nếu hôm đó có bạn ngồi cùng bàn. Bạn báo giúp một tiếng để gia đình sắp chỗ cho chu đáo nhé.',
         benefits: ['Chứng kiến khoảnh khắc hai gia đình chính thức thành một nhà', 'Gặp lại bạn cũ trong bữa trưa ấm cúng, có chỗ ngồi ghi sẵn tên bạn', 'Báo tham dự trong 30 giây, giờ giấc và đường đi nằm sẵn ngay trên thiệp này'] },
-      seo: { title: 'Thiệp mời Minh Anh & Hoàng Nam', description: 'Mời bạn dự lễ cưới của Minh Anh & Hoàng Nam, 11:00 ngày 20/12/2026 tại Long Biên, Hà Nội. Bấm để báo tham dự.' },
+      seo: { title: 'Thiệp mời cưới Minh Anh & Hoàng Nam – 20/12/2026', description: 'Thiệp mời cưới Minh Anh & Hoàng Nam: lễ thành hôn 11:00 ngày 20/12/2026 tại Riverside, Long Biên, Hà Nội. Bấm xác nhận tham dự để gia đình sắp chỗ nhé.', ogTitle: 'Minh Anh & Hoàng Nam cưới rồi, mời bạn đến chung vui', ogDescription: 'Sẽ thật vui nếu hôm đó có bạn ngồi cùng bàn. 11:00, 20/12/2026, Long Biên, Hà Nội. Báo cho chúng mình biết bạn sẽ đến chỉ trong 30 giây.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/wedding-hero.webp' },
       secs: ['map', 'faq'],
       faq: [['Tôi có thể đi cùng người thân không?', 'Rất vui nếu được. Bạn ghi số người đi cùng khi xác nhận để gia đình sắp chỗ.'], ['Có chỗ gửi xe không?', 'Trung tâm có hầm gửi ô tô và bãi xe máy miễn phí cho khách mời.'], ['Dress code thế nào?', 'Không bắt buộc. Gam màu pastel nhẹ sẽ rất hợp với không gian buổi tiệc.']],
       quotes: [],
       regs: 86, funnel: 5 },
-    { key: 'finance', templateId: 'finance', brand: '', date: '2026-10-25T20:00', ebUntil: '2026-10-20T23:59', launch: '2026-09-25T08:00', tone: 'formal',
+    { key: 'finance', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'finance', brand: '', date: '2026-10-25T20:00', ebUntil: '2026-10-20T23:59', launch: '2026-09-25T08:00', tone: 'formal',
       name: 'Webinar Quản lý tài chính cá nhân 2026', location: 'Trực tuyến qua Zoom (gửi link sau khi đăng ký)', capacity: 500,
       speakers: [{ name: 'Đỗ Thanh Tùng', title: 'Chuyên gia hoạch định tài chính cá nhân' }, { name: 'Nguyễn Hải Yến', title: 'Cố vấn đầu tư, 9 năm tại công ty chứng khoán' }],
       agenda: [['20:00', 'Lương về đi đâu: bức tranh tài chính của người đi làm'], ['20:30', 'Chia lương thành các phần và dựng quỹ dự phòng'], ['21:00', 'Bước đầu tư an toàn cho người mới'], ['21:30', 'Hỏi đáp trực tiếp']],
@@ -216,10 +216,42 @@
         headline: 'Lương về là biết rõ từng đồng đi đâu',
         description: 'Webinar 90 phút cho người đi làm muốn hết cảnh cuối tháng hỏi "tiền đi đâu hết". Bạn lập ngân sách, dựng quỹ dự phòng và bắt đầu đầu tư với mức rủi ro vừa phải, trên số liệu thật và bảng tính mẫu dùng được ngay sau buổi.',
         benefits: ['Lập xong bảng ngân sách cá nhân theo quy tắc chia lương dễ nhớ, ngay trong buổi', 'Biết mình cần giữ bao nhiêu tháng chi phí để ngủ ngon khi có biến', 'Nhận bảng tính mẫu và e-book kế hoạch 12 tháng, mở ra là dùng'] },
-      seo: { title: 'Webinar Quản lý tài chính cá nhân 2026', description: 'Webinar trực tuyến về ngân sách, quỹ dự phòng và đầu tư cho người mới bắt đầu. Sự kiện đã diễn ra ngày 25/10/2026.' },
+      seo: { title: 'Webinar Quản lý tài chính cá nhân 2026 – Lập ngân sách', description: 'Webinar quản lý tài chính cá nhân 2026 về ngân sách, quỹ dự phòng và đầu tư an toàn cho người mới. Đã diễn ra 25/10, để lại email nhận bản ghi và e-book.', ogTitle: 'Lương về là biết rõ từng đồng đi đâu', ogDescription: 'Hết cảnh cuối tháng hỏi tiền đi đâu hết: lập ngân sách, dựng quỹ dự phòng và bắt đầu đầu tư an toàn trong 90 phút. Nhận bảng tính mẫu và e-book kế hoạch 12 tháng.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/finance-hero.webp' },
       secs: ['testimonials'],
       faq: [], quotes: [['“Bảng tính mẫu rất dễ dùng, tháng này mình đã tách được quỹ dự phòng.”', 'Hoàng Nhi · người tham dự'], ['“Phần hỏi đáp cuối buổi giải đáp đúng thắc mắc về đầu tư của mình.”', 'Minh Tuấn · người tham dự']],
-      regs: 118, ended: true, funnel: 12 }
+      regs: 118, ended: true, funnel: 12 },
+    { key: 'hackathon', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'hackathon', brand: '', date: '2026-12-12T08:00', ebUntil: '2026-12-01T23:59', launch: '2026-10-20T08:00', tone: 'young',
+      name: 'Hackathon 48 giờ 2026', location: 'Toà nhà Innovation Hub, 8 Phạm Hùng, Nam Từ Liêm, Hà Nội', capacity: 120,
+      speakers: [{ name: 'Vũ Đức Minh', title: 'Kỹ sư trưởng, nền tảng thanh toán số' }, { name: 'Phạm Ngọc Lan', title: 'Product Lead, startup logistics' }, { name: 'Lê Hải Đăng', title: 'Chuyên gia bảo mật và hạ tầng đám mây' }],
+      agenda: [['08:00', 'Check-in, nhận áo đội và chọn bàn làm việc'], ['09:00', 'Khai mạc, công bố đề bài và bộ dữ liệu'], ['10:00', 'Bắt đầu 48 giờ: lập kế hoạch, chia việc, viết dòng code đầu tiên'], ['20:00', 'Mentor đi từng bàn góp ý lần một'], ['Ngày 2 · 14:00', 'Chốt tính năng, đóng băng mã nguồn'], ['Ngày 2 · 15:30', 'Demo 5 phút trước ban giám khảo'], ['Ngày 2 · 17:30', 'Trao giải và chụp ảnh cùng các đội']],
+      earlyBird: 'Tặng áo hoodie và bộ credit đám mây trị giá 2.000.000đ cho 40 đội đăng ký đầu tiên',
+      texts: { 'offer.title': 'Hoodie và credit đám mây cho 40 đội đầu tiên', 'register.title': 'Đăng ký đội của bạn', 'benefits.title': 'Bạn nhận gì sau 48 giờ?' },
+      content: {
+        headline: '48 giờ để biến ý tưởng thành sản phẩm chạy được',
+        description: 'Một đề bài, một đội nhỏ, 48 giờ không nghỉ trưa. Ngày 12–13/12 tại Hà Nội, 120 lập trình viên, nhà thiết kế và người làm sản phẩm cùng dựng một bản demo thật với sự kèm cặp của các mentor đang làm nghề. Đăng ký theo đội hoặc đi một mình, chúng mình ghép đội giúp bạn.',
+        benefits: ['Giải thưởng tổng 100 triệu đồng và cơ hội vào vòng phỏng vấn tại các công ty đồng hành', 'Mentor đi từng bàn góp ý về kiến trúc, sản phẩm và cách trình bày demo', 'Đồ ăn, nước uống, chỗ nghỉ chợp mắt và ổ cắm tại mỗi bàn suốt 48 giờ'] },
+      seo: { title: 'Hackathon 48 giờ 2026 – Cuộc thi lập trình tại Hà Nội', description: 'Hackathon 48 giờ tại Hà Nội ngày 12–13/12/2026: lập trình đội nhóm, mentor kèm sát, giải thưởng 100 triệu đồng. Rủ đội và đăng ký sớm, chỉ nhận 120 người!', ogTitle: '48 giờ để biến ý tưởng thành sản phẩm chạy được', ogDescription: 'Lập đội, ngủ ít, code nhiều và demo trước ban giám khảo thật. Hackathon 12–13/12 tại Hà Nội có mentor kèm sát và giải thưởng 100 triệu đồng. Đăng ký ngay!', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/hackathon-hero.webp' },
+      secs: ['testimonials', 'faq', 'sponsors'],
+      faq: [['Tôi chưa có đội thì sao?', 'Bạn đăng ký cá nhân, ban tổ chức tổ chức buổi ghép đội 30 phút ngay sau khai mạc. Mỗi đội 3 đến 5 người.'], ['Cần biết ngôn ngữ lập trình nào?', 'Không giới hạn. Đội chọn công nghệ quen tay nhất, miễn demo chạy được vào cuối ngày 2.'], ['Người không code có tham gia được không?', 'Được. Đội nào cũng cần người thiết kế, làm sản phẩm hoặc thuyết trình. Bạn ghi rõ vai trò khi đăng ký.'], ['Có chỗ ngủ không?', 'Có khu nghỉ yên tĩnh với đệm hơi và chăn. Bạn nên mang theo đồ vệ sinh cá nhân.']],
+      quotes: [['“Bốn đứa lạ ghép đội, sau 48 giờ có sản phẩm chạy thật. Lời góp ý của mentor đáng giá hơn cả giải thưởng.”', 'Tuấn Kiệt · lập trình viên, thí sinh mùa trước'], ['“Ban tổ chức lo từ bữa khuya đến chỗ ngủ, mình chỉ việc tập trung vào code.”', 'Bảo Ngọc · sinh viên năm cuối, thí sinh mùa trước']],
+      sponsorNames: ['CloudNam (mẫu)', 'Pixel Studio (mẫu)', 'Ngân hàng Số Việt (mẫu)', 'Cộng đồng Dev Hà Nội (mẫu)'],
+      regs: 96, funnel: 9 },
+    { key: 'demoday', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'demo-day-startup', brand: '', date: '2026-12-18T17:30', ebUntil: '2026-12-10T23:59', launch: '2026-10-20T08:00', tone: 'formal',
+      name: 'Demo Day Startup 2026', location: 'Gem Center, 8 Nguyễn Bỉnh Khiêm, Quận 1, TP.HCM', capacity: 180,
+      speakers: [{ name: 'Trần Khải Hoàn', title: 'Quản lý quỹ đầu tư giai đoạn sớm' }, { name: 'Nguyễn Thuỳ Dương', title: 'Nhà sáng lập, chuỗi thương mại điện tử đã gọi vốn Series A' }, { name: 'Đặng Quốc Việt', title: 'Cố vấn chiến lược, 15 năm làm doanh nghiệp công nghệ' }],
+      agenda: [['17:30', 'Đón khách, nhận thẻ tên và thưởng thức đồ uống nhẹ'], ['18:00', 'Khai mạc và giới thiệu 10 đội startup vào chung kết'], ['18:20', 'Vòng pitch: mỗi đội 5 phút và 3 phút hỏi đáp'], ['20:00', 'Nghỉ giải lao, ghé gian trưng bày sản phẩm'], ['20:20', 'Bình chọn khán giả và công bố đội xuất sắc'], ['20:45', 'Networking cùng nhà đầu tư và nhà sáng lập']],
+      earlyBird: 'Bộ hồ sơ giới thiệu 10 startup và vé mời vào buổi networking riêng cho 100 khách đăng ký sớm',
+      texts: { 'offer.title': 'Hồ sơ 10 startup và vé networking riêng', 'register.title': 'Giữ chỗ tham dự miễn phí', 'benefits.title': 'Bạn nhận gì tối 18/12?' },
+      content: {
+        headline: '10 startup, 5 phút pitch, một buổi tối có thể đổi đời',
+        description: 'Tối 18/12, 10 đội startup sau ba tháng ươm tạo bước lên sân khấu trình bày sản phẩm trước nhà đầu tư và khách mời. Bạn xem demo thật, nghe câu hỏi khó từ ban giám khảo và gặp trực tiếp những người đứng sau. Tham dự miễn phí, chỉ cần đăng ký trước.',
+        benefits: ['Xem 10 sản phẩm thật được trình diễn, nghe nhà đầu tư hỏi những câu mà đội nào cũng phải trả lời', 'Nhận bộ hồ sơ tóm tắt từng startup để liên hệ hợp tác hoặc đầu tư sau sự kiện', 'Một giờ networking với nhà sáng lập, nhà đầu tư và cố vấn ngay tại chỗ'] },
+      seo: { title: 'Demo Day Startup 2026 – Gặp nhà đầu tư tại TP.HCM', description: 'Demo Day Startup 2026 tại TP.HCM ngày 18/12: 10 startup pitch trực tiếp trước nhà đầu tư và khách mời, kèm networking. Đăng ký tham dự miễn phí, số chỗ có hạn!', ogTitle: '10 startup, 5 phút pitch, một buổi tối có thể đổi đời', ogDescription: 'Tối 18/12 tại TP.HCM, xem 10 đội startup trình bày trước nhà đầu tư thật và gặp những người đứng sau. Đăng ký tham dự miễn phí để giữ chỗ.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/demoday-hero.webp' },
+      secs: ['testimonials', 'faq', 'sponsors', 'map'],
+      faq: [['Tham dự có mất phí không?', 'Không. Bạn đăng ký trước để ban tổ chức chuẩn bị chỗ ngồi và thẻ tên.'], ['Tôi muốn gặp một startup cụ thể thì sao?', 'Bạn ghi tên đội quan tâm trong form, ban tổ chức sắp xếp buổi gặp ngắn ở phần networking.'], ['Có được quay phim, chụp ảnh không?', 'Bạn được chụp ảnh. Phần demo có thông tin chưa công bố nên vui lòng không quay toàn bộ bài pitch.']],
+      quotes: [['“Mình gặp được hai nhà đầu tư quan tâm đến bài toán logistics ngay trong giờ networking.”', 'Khánh Vy · nhà sáng lập, đội chung kết mùa trước'], ['“Pitch 5 phút nghe áp lực nhưng chính những câu hỏi sau đó giúp đội chỉnh lại mô hình kinh doanh.”', 'Hữu Phước · đồng sáng lập, đội chung kết mùa trước']],
+      sponsorNames: ['Quỹ Khởi Nghiệp Sao Mai (mẫu)', 'Vườn ươm Hạt Giống (mẫu)', 'Ngân hàng Số Việt (mẫu)', 'Hiệp hội Doanh nghiệp Trẻ (mẫu)'],
+      regs: 128, funnel: 10 }
   ];
 
   function leadFor(rng, recency, ended) {
@@ -260,9 +292,13 @@
   }
 
   // Ảnh minh hoạ (tạo bằng Gemini) nằm trong assets/demo; đường dẫn tuyệt đối để dùng được cả trong url() của CSS
-  function demoPics(p) {
-    if (!p) return {};
-    var abs = function (n) { try { return new URL('assets/demo/moc-' + n + '.webp', document.baseURI).href; } catch (e) { return 'assets/demo/moc-' + n + '.webp'; } };
+  // READY_PICS: khoá sự kiện đã có đủ ảnh trong assets/demo (tên <tiền-tố>-<tên>.webp). Thêm khoá vào đây sau khi bỏ ảnh vào thư mục.
+  var READY_PICS = ['coffee'];
+  function picsReady(spec) { return !!spec.pics && READY_PICS.indexOf(spec.key) >= 0; }
+  function demoPics(spec) {
+    if (!picsReady(spec)) return {};
+    var p = spec.pics, prefix = spec.picPrefix || spec.key;
+    var abs = function (n) { var u = 'assets/demo/' + prefix + '-' + n + '.webp'; try { return new URL(u, document.baseURI).href; } catch (e) { return u; } };
     return { hero: abs(p.hero), about: abs(p.about), offer: abs(p.offer), gallery: p.gallery.map(abs) };
   }
 
@@ -291,7 +327,7 @@
       earlyBirdUntil: spec.ebUntil || '',
       sheetUrl: '', templateId: spec.templateId,
       studioName: spec.studioName || '', studioUrl: spec.studioUrl || '',
-      images: demoPics(spec.pics), sections: sections(spec.pics ? spec.secs.concat('gallery') : spec.secs), style: null,
+      images: demoPics(spec), sections: sections(picsReady(spec) ? spec.secs.concat('gallery') : spec.secs), style: null,
       texts: texts, elStyles: null, elStylesBy: null, rich: spec.content.descriptionHtml ? { description: { plain: spec.content.description, html: spec.content.descriptionHtml } } : null,
       blocks: Object.keys(blocks).length ? blocks : null,
       brandId: '', brand: null, seo: spec.seo, published: false, demo: true, demoPublished: true
