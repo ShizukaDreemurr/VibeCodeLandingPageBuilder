@@ -370,6 +370,7 @@
     R(P, 'search').value = tplState.q;
   }
 
+  var TPL_THUMBS_SEEN = {};
   function tplThumb(t) {
     // Ảnh đại diện = ảnh chụp phần đầu trang của mẫu (tools/make-thumbs.cjs); ảnh lỗi thì hiện khối màu
     var thumb = document.createElement('div');
@@ -377,7 +378,9 @@
     thumb.style.background = t.theme.primary;
     var img = document.createElement('img');
     img.src = t.thumb; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
-    img.addEventListener('load', function () { thumb.classList.add('is-loaded'); });
+    // Ảnh đã tải một lần thì hiện ngay (render lại lưới khi đổi tab không được nháy về trống rồi mờ dần vào)
+    if (TPL_THUMBS_SEEN[t.thumb]) { thumb.classList.add('is-loaded'); img.loading = 'eager'; }
+    img.addEventListener('load', function () { TPL_THUMBS_SEEN[t.thumb] = 1; thumb.classList.add('is-loaded'); });
     img.addEventListener('error', function () { img.remove(); thumb.classList.add('is-fallback'); });
     thumb.appendChild(img);
     return thumb;
@@ -2785,6 +2788,9 @@
     tabFades();
   }
   (function () { var nav = $('.tabs'); if (nav) { nav.addEventListener('scroll', tabFades, { passive: true }); root.addEventListener('resize', tabFades); setTimeout(tabFades, 0); } })();
+  // Chiều cao thanh trên (tự xuống dòng ở màn hẹp) để thanh Thiết kế dính ngay bên dưới
+  function syncTopbarH() { var tb = $('.topbar'); if (tb) document.documentElement.style.setProperty('--topbar-h', tb.offsetHeight + 'px'); }
+  root.addEventListener('resize', syncTopbarH); setTimeout(syncTopbarH, 0);
   function switchTab(name) {
     var dir = currentTab && currentTab !== name ? (TAB_ORDER.indexOf(name) > TAB_ORDER.indexOf(currentTab) ? 'forward' : 'back') : null;
     currentTab = name;
