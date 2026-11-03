@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.4.1',
+    version: '2.5.0',
     date: '2026-10-27',
-    notes: 'Trang mẫu Mộc Coffee có ảnh thật: ảnh bìa, giới thiệu, quà tặng và album 5 ảnh (minh hoạ tạo bằng Gemini)',
+    notes: 'Thanh trên và thanh thiết kế luôn cố định; hết chớp trắng khi chuyển tab; chữ lớn và gọn hơn; Brand DNA bố cục mới; tuỳ chỉnh meta chia sẻ cho từng trang',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
