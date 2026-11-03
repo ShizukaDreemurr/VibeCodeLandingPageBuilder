@@ -2661,5 +2661,20 @@
   "season": [
    "year_end"
   ]
+ },
+ "moc-coffee": {
+  "scale": [
+   "medium"
+  ],
+  "format": [
+   "offline"
+  ],
+  "cost": [
+   "free"
+  ],
+  "audience": [
+   "b2c"
+  ],
+  "season": []
  }
 }

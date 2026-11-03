@@ -106,6 +106,26 @@
       }
     },
     {
+      id: 'moc-coffee',
+      art: { motif: 'coffee', variant: 0 },
+      name: 'Khai trương quán cà phê (Mộc)',
+      tags: { industry: ['fnb'], type: ['opening'], goal: ['sales', 'brand'] },
+      theme: { primary: '#5b3a29', accent: '#b45309', surface: '#fff7ed', bg: '#fffaf3', text: '#2d1b12', muted: '#6b4a3a' },
+      labels: { countdown: 'Đếm ngược đến giờ khai trương', speakers: 'Khách mời đặc biệt', agenda: 'Lịch trình khai trương', offer: 'Quà tặng khai trương', submit: 'Đăng ký nhận quà' },
+      // Mẫu đầy đủ ảnh + nội dung: lấy từ trang demo Mộc Coffee (js/demo-data.js), chỉ đổi ngày theo thời điểm hiện tại
+      sample: function () {
+        var d = root.EP && root.EP.demo && root.EP.demo.templateSample && root.EP.demo.templateSample('coffee');
+        if (!d) return { name: 'Khai trương Mộc Coffee Hồ Tây', startAt: future(25, 8), location: '25 Quảng An, Tây Hồ, Hà Nội', capacity: 200, speakers: [], agenda: [], earlyBird: '', earlyBirdUntil: '' };
+        var e = d.event;
+        return {
+          name: e.name, startAt: future(25, 8), location: e.location, capacity: e.capacity,
+          speakers: e.speakers.slice(), agenda: e.agenda.slice(), earlyBird: e.earlyBird, earlyBirdUntil: future(23, 23),
+          images: e.images, texts: e.texts, rich: e.rich, blocks: e.blocks, sections: e.sections, seo: e.seo, style: e.style, brand: e.brand,
+          content: d.content
+        };
+      }
+    },
+    {
       id: 'finance',
       art: { motif: 'chart', variant: 0 },
       name: 'Webinar Tài chính',
