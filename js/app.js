@@ -2794,7 +2794,9 @@
   function switchTab(name) {
     var dir = currentTab && currentTab !== name ? (TAB_ORDER.indexOf(name) > TAB_ORDER.indexOf(currentTab) ? 'forward' : 'back') : null;
     currentTab = name;
+    document.documentElement.classList.toggle('is-editor', name === 'editor');
     doSwitchTab(name);
+    if (name === 'editor') { root.scrollTo(0, 0); syncTopbarH(); }
     // Màn mới trượt vào theo hướng của tab (sang phải: từ phải vào, sang trái: từ trái vào)
     if (dir) EP.motion.replay($('#view-' + name), 'tab-in-' + dir);
   }

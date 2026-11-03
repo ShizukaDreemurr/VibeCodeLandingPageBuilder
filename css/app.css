@@ -1446,3 +1446,20 @@ html.tpv-lock { overflow: hidden; }
 .brand-ai-wrap > summary { cursor: pointer; padding: 14px 20px; font-weight: 700; font-size: 17px; list-style-position: inside; }
 .brand-ai-wrap > .bai { margin: 0; border: 0; border-top: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius); background: var(--surface); }
 }
+
+/* Trình thiết kế (màn rộng): cả app khoá đúng 1 màn hình, trang không cuộn/nảy nên thanh trên và thanh Thiết kế luôn liền nhau */
+@layer app {
+  @media (min-width: 1101px) {
+    html.is-editor, html.is-editor body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+    html.is-editor .app-footer { display: none; }
+    html.is-editor .editor.view:not([hidden]) { height: calc(100dvh - var(--topbar-h, 56px)); margin-top: 0; padding-top: 0; animation: none; transform: none; }
+    html.is-editor .editor-bar { position: static; }
+  }
+}
+/* Màn 1101–1320px: thanh trên đủ chỗ cho mọi tab + 2 nút (nút Tạo trang mới chỉ còn biểu tượng) */
+@layer app {
+  @media (min-width: 761px) and (max-width: 1320px) {
+    #btn-new .lbl { display: none; }
+    #btn-new { padding-inline: 12px; }
+  }
+}
