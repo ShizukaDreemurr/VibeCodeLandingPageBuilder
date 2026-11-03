@@ -59,7 +59,12 @@
   // Giá trị đang dùng = chỉnh tay (ev.seo) nếu có, không thì mặc định
   function resolve(ev, content) {
     var d = defaults(ev, content), s = (ev && ev.seo) || {};
-    return { title: clean(s.title) || d.title, description: clean(s.description) || d.description };
+    var title = clean(s.title) || d.title, description = clean(s.description) || d.description;
+    return {
+      title: title, description: description,
+      ogTitle: clean(s.ogTitle) || title, ogDescription: clean(s.ogDescription) || description,
+      canonical: isHttp(clean(s.canonical)) ? clean(s.canonical) : '', noindex: !!s.noindex
+    };
   }
 
   // Đếm ký tự + mức: ok | warn | bad
@@ -77,6 +82,8 @@
 
   // Ảnh chia sẻ: ảnh bìa dạng link http(s); không có thì ảnh thu nhỏ của mẫu (không bao giờ dùng dataURL)
   function imageFor(ev, tpl, base) {
+    var custom = clean(ev && ev.seo && ev.seo.image);
+    if (isHttp(custom) || /^data:image\//.test(custom)) return custom;
     var hero = ev && ev.images && ev.images.hero;
     if (isHttp(hero)) return hero;
     if (tpl && tpl.hero) return abs(String(tpl.hero).replace(/\.svg$/, '-thumb.jpg'), base);
@@ -167,12 +174,12 @@
       ['name', 'robots', meta.robots || 'index,follow'],
       ['property', 'og:type', 'website'],
       ['property', 'og:site_name', meta.siteName || SITE_NAME],
-      ['property', 'og:title', meta.title],
-      ['property', 'og:description', meta.description],
+      ['property', 'og:title', meta.ogTitle || meta.title],
+      ['property', 'og:description', meta.ogDescription || meta.description],
       ['property', 'og:locale', 'vi_VN'],
       ['name', 'twitter:card', 'summary_large_image'],
-      ['name', 'twitter:title', meta.title],
-      ['name', 'twitter:description', meta.description]
+      ['name', 'twitter:title', meta.ogTitle || meta.title],
+      ['name', 'twitter:description', meta.ogDescription || meta.description]
     ];
     if (meta.url) l.push(['property', 'og:url', meta.url]);
     if (meta.image) { l.push(['property', 'og:image', meta.image]); l.push(['name', 'twitter:image', meta.image]); }

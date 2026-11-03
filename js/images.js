@@ -11,6 +11,7 @@
   // w, h (null = giữ tỉ lệ), quality: chất lượng khởi đầu, max: trần dung lượng, alpha: giữ nền trong suốt
   var SLOTS = {
     hero: { w: 1600, h: null, quality: 0.82, max: 320000 },
+    og: { w: 1200, h: 630, quality: 0.82, max: 200000 },
     avatar: { w: 320, h: 320, quality: 0.85, max: 40000 },
     gallery: { w: 1000, h: null, quality: 0.8, max: 150000 },
     about: { w: 1200, h: 900, quality: 0.82, max: 200000 },

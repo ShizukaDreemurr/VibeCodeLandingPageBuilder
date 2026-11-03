@@ -379,6 +379,25 @@
         <textarea id="seo-desc" rows="3" autocomplete="off" aria-describedby="seo-desc-count"></textarea>
         <p class="seo-count" id="seo-desc-count" aria-live="polite"></p>
       </div>
+      <div class="field">
+        <label for="seo-image">Ảnh chia sẻ (og:image)</label>
+        <input id="seo-image" type="url" inputmode="url" placeholder="https://… (khuyên dùng 1200×630)" autocomplete="off">
+        <div class="seo-row"><button type="button" class="btn btn-ghost btn-small" id="btn-seo-image"><span data-icon="image"></span>Tải ảnh lên</button><span class="seo-count" id="seo-image-note"></span></div>
+      </div>
+      <div class="field">
+        <label for="seo-og-title">Tiêu đề khi chia sẻ (og:title)</label>
+        <input id="seo-og-title" type="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="seo-og-desc">Mô tả khi chia sẻ (og:description)</label>
+        <textarea id="seo-og-desc" rows="2" autocomplete="off"></textarea>
+      </div>
+      <div class="field">
+        <label for="seo-canonical">Canonical URL</label>
+        <input id="seo-canonical" type="url" inputmode="url" placeholder="Để trống = link trang đã xuất bản" autocomplete="off">
+      </div>
+      <label class="seo-check"><input type="checkbox" id="seo-noindex"> Không cho Google lập chỉ mục (noindex)</label>
+      <p class="hint">Bot của Zalo/Facebook không chạy JavaScript nên chỉ đọc đủ thẻ ở file HTML đã tải về (thẻ được viết sẵn trong &lt;head&gt;). Ảnh tải lên chỉ hiển thị chắc chắn khi có link https công khai.</p>
       <button type="button" class="btn btn-ghost btn-small" id="btn-seo-reset">Dùng gợi ý tự động</button>
       <div class="seo-prev" aria-label="Xem trước kết quả Google">
         <p class="seo-prev-label">Trên Google</p>

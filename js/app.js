@@ -3152,7 +3152,8 @@
     var jsonld = [SEO.eventJsonLd(ev, content, { url: url, image: image, count: count })];
     var faq = SEO.faqJsonLd(SEO.faqFromDom(container));
     if (faq) jsonld.push(faq);
-    return { title: r.title, description: r.description, url: url, image: image, robots: 'index,follow', themeColor: tpl.theme.primary, jsonld: jsonld };
+    url = r.canonical || url;
+    return { title: r.title, description: r.description, url: url, image: image, robots: r.noindex ? 'noindex,nofollow' : 'index,follow', ogTitle: r.ogTitle, ogDescription: r.ogDescription, themeColor: tpl.theme.primary, jsonld: jsonld };
   }
   function seoPageUrl() { return isCloudEvent() && root.location.protocol !== 'file:' ? shareUrl(state.event.id) : ''; }
 
@@ -3168,6 +3169,11 @@
     ti.placeholder = d.title; de.placeholder = d.description;
     if (document.activeElement !== ti) ti.value = seo.title || '';
     if (document.activeElement !== de) de.value = seo.description || '';
+    var og = { 'seo-og-title': seo.ogTitle, 'seo-og-desc': seo.ogDescription, 'seo-canonical': seo.canonical, 'seo-image': /^data:/.test(seo.image || '') ? '' : seo.image };
+    Object.keys(og).forEach(function (k) { if (document.activeElement !== $('#' + k)) $('#' + k).value = og[k] || ''; });
+    $('#seo-og-title').placeholder = cur.title; $('#seo-og-desc').placeholder = cur.description;
+    $('#seo-noindex').checked = !!seo.noindex;
+    $('#seo-image-note').textContent = /^data:/.test(seo.image || '') ? 'Đang dùng ảnh đã tải lên.' : '';
     setCount($('#seo-title-count'), cur.title, 'title');
     setCount($('#seo-desc-count'), cur.description, 'desc');
     var url = seoPageUrl() || ((APP_URL || 'https://xclipse.app/') + '?e=…');
@@ -3176,30 +3182,48 @@
     $('#serp-desc').textContent = cur.description;
     var host = ''; try { host = new URL(url).host; } catch (e) { host = 'xclipse'; }
     $('#fb-host').textContent = host;
-    $('#fb-title').textContent = cur.title;
-    $('#fb-desc').textContent = cur.description;
+    $('#fb-title').textContent = cur.ogTitle;
+    $('#fb-desc').textContent = cur.ogDescription;
     var img = EP.seo.imageFor(ev, TPL.get(ev.templateId), root.location.href);
     if ($('#fb-img').getAttribute('src') !== img) $('#fb-img').src = img;
   }
   function onSeoInput() {
     if (!state) return;
-    var t = $('#seo-title').value, de = $('#seo-desc').value;
-    state.event.seo = (t.trim() || de.trim()) ? { title: t.trim(), description: de.trim() } : null;
+    var old = state.event.seo || {};
+    var o = { title: $('#seo-title').value.trim(), description: $('#seo-desc').value.trim(), ogTitle: $('#seo-og-title').value.trim(), ogDescription: $('#seo-og-desc').value.trim(),
+      canonical: $('#seo-canonical').value.trim(), noindex: $('#seo-noindex').checked };
+    var img = $('#seo-image').value.trim();
+    o.image = img || (/^data:/.test(old.image || '') && !seoImgCleared ? old.image : '');
+    state.event.seo = (o.title || o.description || o.ogTitle || o.ogDescription || o.canonical || o.noindex || o.image) ? o : null;
     // Đếm ký tự + xem trước ngay; lưu (có thể hoàn tác) sau khi ngừng gõ
     var cur = EP.seo.resolve(state.event, state.content);
     setCount($('#seo-title-count'), cur.title, 'title');
     setCount($('#seo-desc-count'), cur.description, 'desc');
-    $('#serp-title').textContent = $('#fb-title').textContent = cur.title;
-    $('#serp-desc').textContent = $('#fb-desc').textContent = cur.description;
+    $('#serp-title').textContent = cur.title; $('#serp-desc').textContent = cur.description;
+    $('#fb-title').textContent = cur.ogTitle; $('#fb-desc').textContent = cur.ogDescription;
+    var im = EP.seo.imageFor(state.event, TPL.get(state.event.templateId), root.location.href);
+    if ($('#fb-img').getAttribute('src') !== im) $('#fb-img').src = im;
     clearTimeout(seoTimer);
     seoTimer = setTimeout(persist, 500);
   }
   $('#seo-title').addEventListener('input', onSeoInput);
   $('#seo-desc').addEventListener('input', onSeoInput);
+  var seoImgCleared = false;
+  ['#seo-og-title', '#seo-og-desc', '#seo-canonical'].forEach(function (q) { $(q).addEventListener('input', onSeoInput); });
+  $('#seo-noindex').addEventListener('change', onSeoInput);
+  $('#seo-image').addEventListener('input', function () { seoImgCleared = true; onSeoInput(); });
+  $('#btn-seo-image').addEventListener('click', function () {
+    if (!state) return;
+    EP.images.pick('og').then(function (data) {
+      state.event.seo = Object.assign({}, state.event.seo || {}, { image: data });
+      seoImgCleared = false; $('#seo-image').value = '';
+      persist(); updateSeoUi(); toast('Đã đặt ảnh chia sẻ.');
+    }).catch(function (e) { if (e.message !== 'Chưa chọn ảnh.') toast(e.message); });
+  });
   $('#btn-seo-reset').addEventListener('click', function () {
     if (!state) return;
     clearTimeout(seoTimer);
-    state.event.seo = null;
+    state.event.seo = null; seoImgCleared = false;
     $('#seo-title').value = $('#seo-desc').value = '';
     persist();
   });
