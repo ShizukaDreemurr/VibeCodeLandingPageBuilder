@@ -31,7 +31,15 @@
     if (file.size > MAX_INPUT_BYTES) return new Error('Ảnh quá lớn (tối đa 25MB).');
     return null;
   }
+  // Mở Thư viện ảnh dùng chung (EP.media); không có thì quay về hộp chọn tệp của trình duyệt
   function pickFile() {
+    if (root.EP && root.EP.media) {
+      return root.EP.media.open().then(function (file) {
+        var err = checkFile(file);
+        if (err) throw err;
+        return file;
+      });
+    }
     return new Promise(function (resolve, reject) {
       var input = document.createElement('input');
       input.type = 'file';

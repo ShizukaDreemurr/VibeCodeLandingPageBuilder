@@ -20,7 +20,7 @@ const ok = (name, cond, extra) => { if (!cond) failed++; console.log((cond ? '�
     await p.click(sel);
     const fc = await fcp;
     await fc.setFiles(SP + '/' + file);
-    if (editor) await apply(); else await p.waitForTimeout(600);
+    if (editor) await apply(); else await p.waitForTimeout(1500);
   };
   const shot = async (name, page) => { if (SHOTS) await (page || p).screenshot({ path: SHOTS + '/' + name + '.png', fullPage: false }); };
   const overflow = (pg) => pg.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -90,8 +90,7 @@ const ok = (name, cond, extra) => { if (!cond) failed++; console.log((cond ? '�
   await p.keyboard.press('Enter');
   const fc2 = await fcp;
   ok('Enter on focused tile opens file chooser', !!fc2);
-  await fc2.setFiles(SP + '/photo.jpg'); await p.waitForTimeout(700);
-  ok('5 album images', (await imgs()).gallery.filter(Boolean).length === 5);
+  await fc2.setFiles(SP + "/photo.jpg"); await p.waitForFunction(() => { const id = JSON.parse(localStorage.ep_current_id); return ((JSON.parse(localStorage.ep_events)[id].event.images || {}).gallery || []).filter(Boolean).length >= 5; }, null, { timeout: 8000 }).catch(() => {});  ok('5 album images', (await imgs()).gallery.filter(Boolean).length === 5);
 
   // 6. Bố cục theo số ảnh (trang công khai)
   const pub = async (n) => p.evaluate((n) => {
