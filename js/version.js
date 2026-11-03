@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.6.0',
+    version: '2.6.1',
     date: '2026-10-27',
-    notes: 'Thư viện ảnh kiểu Canva: mọi nút thêm ảnh mở chung một cửa sổ, xem lại ảnh đã tải lên, tìm, đổi tên, xoá, tải thêm',
+    notes: 'Link chia sẻ trang mẫu có trang tĩnh riêng (s/<mã>/) mang sẵn tiêu đề, mô tả, ảnh cho Facebook và Zalo',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };

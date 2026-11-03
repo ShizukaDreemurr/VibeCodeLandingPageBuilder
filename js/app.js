@@ -1876,6 +1876,8 @@
   }
 
   function shareUrl(eventId) {
+    // Trang mẫu có bản chia sẻ tĩnh (s/<mã>/) chứa sẵn meta cho Facebook/Zalo – xem tools/build-share-pages.cjs
+    if (EP.demo && EP.demo.isDemoId(eventId) && EP.demo.publicEvent(eventId) && /^https?:$/.test(root.location.protocol)) return root.location.origin + root.location.pathname.replace(/[^/]*$/, '') + 's/' + encodeURIComponent(eventId) + '/';
     return root.location.origin + root.location.pathname + '?e=' + encodeURIComponent(eventId);
   }
 
