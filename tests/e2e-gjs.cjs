@@ -11,7 +11,7 @@ const SP = process.argv[2] || require('os').tmpdir();
   const log = (k, v, ok) => { if (ok === false) fails++; console.log((ok === false ? '✗ ' : '  ') + k.padEnd(30), v); };
   await ctx.addInitScript(() => { window.ST = () => { const all = JSON.parse(localStorage.getItem('ep_events')); return all[JSON.parse(localStorage.getItem('ep_current_id'))].event; }; });
   p.on('dialog', d => d.accept('https://example.com/lich'));
-  await p.goto('http://localhost:8129/'); await p.click('[data-tab="builder"]'); await p.click('#btn-sample'); await p.click('#btn-generate'); await p.waitForTimeout(1000);
+  await p.goto('http://localhost:8000/'); await p.click('[data-tab="builder"]'); await p.click('#btn-sample'); await p.click('#btn-generate'); await p.waitForTimeout(1000);
 
   // 1. Thư viện khối
   log('block cards', await p.locator('#block-lib .block-card').count(), await p.locator('#block-lib .block-card').count() === 6);

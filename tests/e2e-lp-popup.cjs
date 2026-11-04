@@ -2,7 +2,7 @@
 // Chạy: python3 -m http.server 8000 rồi `node tests/e2e-lp-popup.cjs [url] [thư-mục-ảnh]`
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
 const fs = require('fs');
-const BASE = (process.argv[2] || 'http://localhost:8129/').replace(/index\.html$/, '');
+const BASE = (process.argv[2] || 'http://localhost:8000/').replace(/index\.html$/, '');
 const shots = process.argv[3];
 let failed = 0;
 const ok = (name, cond, extra) => { if (cond) console.log('✓', name); else { failed++; console.log('✗', name, extra === undefined ? '' : JSON.stringify(extra)); } };
