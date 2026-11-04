@@ -582,3 +582,208 @@ html.lp-lb-open { overflow: hidden; }
 html.motion-off .lp-word, html.motion-off .lp-ripple, .st-motion-off .lp-word { animation: none !important; opacity: 1; transform: none; }
 html.motion-off .lp-progress, .st-motion-off .lp-progress, .is-editable .lp-progress { display: none; }
 @media (prefers-reduced-motion: reduce) { .lp-word { animation: none; } .lp-progress, .lp-ripple { display: none; } .lp-quote { transition: none; } .lp-quote:hover { transform: none; } }
+
+/* ======================================================================
+   Nâng cấp trang công khai: cổng thật từ Lucian Lab (MIT, © 2026 Seokwoooo).
+   Màu chỉ lấy từ biến --lp-*; trang luôn sáng; chuyển động transform/opacity (ngoại lệ ghi chú bên dưới).
+   Mọi phần có bản tĩnh khi không có JS / giảm chuyển động / html.motion-off / .st-motion-off.
+   ====================================================================== */
+@property --o { syntax: '<number>'; inherits: false; initial-value: 0; }
+
+/* --- Hero: aurora (#319 aurora-mesh, canvas) + lưới sáng theo con trỏ (#226 grid-beam-hero) --- */
+.lp-hero.has-fx { position: relative; isolation: isolate; overflow: hidden; }
+.lp-fx { position: absolute; pointer-events: none; z-index: -1; max-width: none; }
+.lp-hero > .lp-fx { animation: none; }
+.lp-fx-aurora { left: -8%; top: -8%; width: 116%; height: 116%; opacity: 0.42; mix-blend-mode: screen; }
+.lp-fx-grid, .lp-fx-gridlit { inset: 0; background-size: 44px 44px; background-position: -1px -1px; }
+.lp-fx-grid { background-image: linear-gradient(color-mix(in srgb, #fff 9%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, #fff 9%, transparent) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(75% 85% at 50% 45%, #000, transparent); mask-image: radial-gradient(75% 85% at 50% 45%, #000, transparent); }
+.lp-fx-gridlit { background-image: linear-gradient(color-mix(in srgb, var(--lp-accent) 55%, #fff) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--lp-accent) 55%, #fff) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(150px 150px at var(--mx, -300px) var(--my, -300px), #000, transparent); mask-image: radial-gradient(150px 150px at var(--mx, -300px) var(--my, -300px), #000, transparent); }
+@media (max-width: 700px) { .lp-fx-grid, .lp-fx-gridlit { background-size: 34px 34px; } .lp-fx-gridlit { display: none; } }
+
+/* --- Đếm ngược: đồng hồ lật (#100 flip-clock-timer) --- */
+.lp-cd-box.has-flip { position: relative; background: none; box-shadow: none; padding: 0; min-width: 0; color: var(--lp-muted); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.lp-bg-primary .lp-cd-box.has-flip { background: none; color: rgba(255, 255, 255, 0.85); }
+.lp-cd-box.has-flip .lp-cd-num { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.lp-cd-box.has-flip .lp-cd-label { opacity: 1; font-weight: 600; }
+.lp-flip { --fw: clamp(30px, 7.2cqi, 56px); --fh: calc(var(--fw) * 1.45); --lp-fl-bg: var(--lp-primary); display: flex; gap: 3px; }
+.lp-bg-primary .lp-flip { --lp-fl-bg: color-mix(in srgb, var(--lp-primary) 78%, #fff); }
+.lp-fl { position: relative; width: var(--fw); height: var(--fh); border-radius: calc(var(--fw) * 0.2); font-size: calc(var(--fw) * 1.02); font-weight: 800; letter-spacing: -0.03em; line-height: var(--fh); text-align: center; color: #fff; font-variant-numeric: tabular-nums; box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.5); }
+.lp-fl > span { position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: var(--lp-fl-bg); }
+.lp-fl > span b { position: absolute; left: 0; right: 0; height: var(--fh); font: inherit; }
+.lp-fl-t, .lp-fl-ft { top: 0; border-radius: calc(var(--fw) * 0.2) calc(var(--fw) * 0.2) 0 0; transform-origin: 50% 100%; background: linear-gradient(color-mix(in srgb, var(--lp-fl-bg) 86%, #fff), var(--lp-fl-bg)) !important; }
+.lp-fl-b, .lp-fl-fb { bottom: 0; border-radius: 0 0 calc(var(--fw) * 0.2) calc(var(--fw) * 0.2); transform-origin: 50% 0; }
+.lp-fl-b b, .lp-fl-fb b { top: calc(var(--fh) / -2); }
+.lp-fl-t b, .lp-fl-ft b { top: 0; }
+.lp-fl-ft { z-index: 2; transform: perspective(320px) rotateX(-90deg); }
+.lp-fl-fb { z-index: 2; transform: perspective(320px) rotateX(90deg); }
+.lp-fl::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; z-index: 3; height: 2px; margin-top: -1px; background: rgba(0, 0, 0, 0.45); }
+@container (max-width: 560px) { .lp-cd-box.has-flip { flex: 0 0 auto; max-width: none; } .lp-countdown:has(.has-flip) { gap: 10px; } }
+
+/* --- Lợi ích: bento (#214 bento-features) + viền phát sáng theo con trỏ (#228 glow-border-cards) --- */
+.landing .lp-benefits li, .landing .lp-speaker, .landing .lp-quote { --o: 0; transition: --o 0.3s ease; }
+.landing .lp-benefits li {
+  border: 1px solid transparent;
+  background:
+    radial-gradient(260px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 11%), transparent), transparent 60%) padding-box,
+    linear-gradient(var(--lp-bg), var(--lp-bg)) padding-box,
+    radial-gradient(180px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 90%), transparent), transparent 70%) border-box,
+    linear-gradient(color-mix(in srgb, var(--lp-text) 12%, transparent), color-mix(in srgb, var(--lp-text) 12%, transparent)) border-box;
+}
+.landing .lp-bg-primary .lp-benefits li { background: color-mix(in srgb, currentColor 8%, transparent); border-color: color-mix(in srgb, currentColor 18%, transparent); }
+@container (min-width: 720px) {
+  .lp-benefits { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .lp-benefits:has(> li:nth-child(3)) { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: dense; }
+  .lp-benefits:has(> li:nth-child(3)) > li:nth-child(1) { grid-column: span 2; }
+  .lp-benefits:has(> li:nth-child(3)) > li:nth-child(2) { grid-row: span 2; }
+  .lp-benefits:has(> li:nth-child(3):last-child) > li:nth-child(3) { grid-column: span 2; }
+  .lp-benefits li { padding: 64px 20px 22px; min-height: 150px; }
+  .lp-benefits li::before { left: 20px; top: 20px; width: 34px; height: 34px; }
+  .lp-benefits li::after { content: counter(lpb, decimal-leading-zero); position: absolute; right: 18px; top: 16px; font-weight: 800; font-size: 1.6em; line-height: 1; opacity: 0.14; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .st-bullet-none .lp-benefits li { padding-top: 22px; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .landing .lp-benefits li { transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.3s, --o 0.3s ease; }
+  .landing .lp-benefits li:hover { transform: translateY(-3px); box-shadow: 0 14px 26px -16px var(--lp-accent); }
+}
+
+/* --- Diễn giả: thẻ có viền phát sáng, ảnh có vòng (#228) --- */
+@container (min-width: 561px) {
+  .landing .lp-speakers { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+  .landing .lp-speaker { padding: 26px 16px 22px; border: 1px solid transparent; border-radius: var(--lp-radius);
+    background:
+      radial-gradient(260px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 10%), transparent), transparent 60%) padding-box,
+      linear-gradient(var(--lp-bg), var(--lp-bg)) padding-box,
+      radial-gradient(180px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 90%), transparent), transparent 70%) border-box,
+      linear-gradient(color-mix(in srgb, var(--lp-text) 12%, transparent), color-mix(in srgb, var(--lp-text) 12%, transparent)) border-box; }
+  .landing .lp-bg-primary .lp-speaker { background: color-mix(in srgb, currentColor 8%, transparent); border-color: color-mix(in srgb, currentColor 18%, transparent); }
+  .landing .lp-speaker .lp-avatar { width: 88px; height: 88px; font-size: 32px; margin-bottom: 6px; box-shadow: 0 0 0 3px var(--lp-bg), 0 0 0 5px color-mix(in srgb, var(--lp-accent) 70%, transparent); }
+  .landing .lp-speaker strong { font-size: 1.05em; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .landing .lp-speaker { transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.3s, --o 0.3s ease; }
+  .landing .lp-speaker:hover { transform: translateY(-4px); box-shadow: 0 16px 30px -18px var(--lp-accent); }
+}
+
+/* --- Chương trình: lộ trình vẽ theo cuộn (#318 scroll-draw-route). Bản tĩnh: đường kẻ + chấm bằng CSS --- */
+.lp-agenda { position: relative; padding-left: 44px; gap: 6px; }
+.lp-agenda li { position: relative; padding: 10px 0; align-items: center; }
+.lp-agenda:not(.has-route)::before { content: ''; position: absolute; left: 19px; top: 18px; bottom: 18px; width: 2px; background: color-mix(in srgb, var(--lp-text) 16%, transparent); border-radius: 2px; }
+.lp-agenda:not(.has-route) li::before { content: ''; position: absolute; left: -30px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--lp-accent); box-shadow: 0 0 0 4px var(--lp-bg); }
+.lp-route { position: absolute; left: 0; top: 0; width: 40px; overflow: visible; pointer-events: none; }
+.lp-route-guide { fill: none; stroke: color-mix(in srgb, var(--lp-text) 22%, transparent); stroke-width: 2.5; stroke-dasharray: 2 7; stroke-linecap: round; }
+.lp-route-line { fill: none; stroke: var(--lp-accent); stroke-width: 3.5; stroke-linecap: round; }
+.lp-route-dot { fill: var(--lp-bg); stroke: color-mix(in srgb, var(--lp-text) 28%, transparent); stroke-width: 2.5; transition: stroke 0.3s; }
+.lp-route-dot.on { stroke: var(--lp-accent); }
+.lp-route-dotc { fill: var(--lp-accent); transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); transition: transform 0.45s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.lp-route-dotc.on { transform: scale(1); }
+.lp-route-pl { fill: var(--lp-primary); }
+.lp-agenda.has-route .lp-agenda-time { transition: color 0.3s; color: var(--lp-muted); }
+.lp-agenda.has-route li.is-on .lp-agenda-time { color: var(--lp-primary); }
+.lp-bg-primary .lp-agenda:not(.has-route)::before { background: rgba(255, 255, 255, 0.3); }
+.lp-bg-primary .lp-agenda:not(.has-route) li::before { box-shadow: none; background: #fff; }
+.lp-bg-primary .lp-route-line, .lp-bg-primary .lp-route-pl { stroke: #fff; }
+.lp-bg-primary .lp-route-pl, .lp-bg-primary .lp-route-dotc { fill: #fff; }
+.lp-bg-primary .lp-route-dot { fill: var(--lp-primary); stroke: rgba(255, 255, 255, 0.5); }
+.lp-bg-primary .lp-route-dot.on { stroke: #fff; }
+.lp-bg-primary .lp-agenda.has-route .lp-agenda-time, .lp-bg-primary .lp-agenda.has-route li.is-on .lp-agenda-time { color: #fff; }
+
+/* --- Nhận xét: thẻ + bức tường cuộn dọc (#207 testimonial-columns) --- */
+.landing .lp-quote { margin: 0; padding: 20px; border: 1px solid transparent; border-radius: var(--lp-radius);
+  background:
+    radial-gradient(260px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 10%), transparent), transparent 60%) padding-box,
+    linear-gradient(var(--lp-bg), var(--lp-bg)) padding-box,
+    radial-gradient(180px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 90%), transparent), transparent 70%) border-box,
+    linear-gradient(color-mix(in srgb, var(--lp-text) 12%, transparent), color-mix(in srgb, var(--lp-text) 12%, transparent)) border-box; }
+.lp-quote::before { content: '★★★★★'; display: block; margin-bottom: 8px; color: var(--lp-accent); font-size: 0.9em; letter-spacing: 2px; } /* taste-skill-ignore */
+.lp-quote blockquote { font-size: 1.05em; }
+.lp-quotes { gap: 16px; }
+.lp-quotes.is-wall { grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 14px; height: min(440px, 72vh); overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); }
+.lp-wall-col { overflow: hidden; min-width: 0; }
+.lp-wall-tr { display: flex; flex-direction: column; gap: 14px; animation: lpWall var(--t, 30s) linear infinite; animation-direction: var(--dir, normal); }
+.lp-wall-col:hover .lp-wall-tr, .lp-wall-col:focus-within .lp-wall-tr, .lp-quotes.is-off .lp-wall-tr { animation-play-state: paused; }
+@keyframes lpWall { to { transform: translate3d(0, calc(-50% - 7px), 0); } }
+.landing .lp-bg-primary .lp-quote { background: color-mix(in srgb, currentColor 8%, transparent); border-color: color-mix(in srgb, currentColor 18%, transparent); }
+.lp-bg-primary .lp-quote figcaption { color: rgba(255, 255, 255, 0.8); }
+
+/* --- Ưu đãi: vé có khía, xé cuống (#298 coupon-tear) --- */
+.lp-offer-card { display: flex; align-items: stretch; gap: 0; padding: 0; max-width: 760px; overflow: visible; background: none; box-shadow: none; border-radius: 0; color: var(--lp-accent-contrast);
+  filter: drop-shadow(0 16px 22px color-mix(in srgb, var(--lp-accent) 30%, transparent)); }
+.lp-offer-main { position: relative; flex: 1 1 auto; min-width: 0; display: flex; align-items: flex-start; gap: 16px; padding: 24px 26px 24px 22px; border-radius: 18px 0 0 18px;
+  background: linear-gradient(135deg, var(--lp-accent), color-mix(in srgb, var(--lp-accent) 60%, var(--lp-primary)));
+  -webkit-mask: radial-gradient(circle 10px at 100% 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
+  mask: radial-gradient(circle 10px at 100% 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) bottom / 100% 51% no-repeat; }
+.lp-offer-stub { position: relative; flex: none; width: 176px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 18px 16px;
+  border-left: 2px dashed color-mix(in srgb, var(--lp-accent-contrast) 65%, transparent); border-radius: 0 18px 18px 0; transform-origin: 0 100%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--lp-accent) 78%, var(--lp-primary)), color-mix(in srgb, var(--lp-accent) 40%, var(--lp-primary)));
+  -webkit-mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at 0 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
+  mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at 0 100%, transparent 98%, #000) bottom / 100% 51% no-repeat; }
+.lp-offer-ico { background: color-mix(in srgb, var(--lp-accent-contrast) 20%, transparent); color: var(--lp-accent-contrast); margin-left: 0; }
+.lp-offer-photo { box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-accent-contrast) 70%, transparent); }
+.landing .lp-offer-card .lp-offer-text { color: inherit; }
+.landing .lp-offer-card .lp-offer-until { color: inherit; opacity: 0.85; }
+.lp-offer-stub .lp-offer-left { align-self: center; background: var(--lp-accent-contrast); color: var(--lp-accent); }
+.lp-offer-stub .lp-cta.lp-offer-claim { width: 100%; box-sizing: border-box; text-align: center; padding: 11px 12px; background: var(--lp-accent-contrast); color: var(--lp-accent); box-shadow: none; }
+.lp-offer-card .lp-offer-stub { transition: transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1), opacity 0.4s; }
+.lp-offer-card.is-torn .lp-offer-stub { transform: translate(18px, 120px) rotate(28deg); opacity: 0; pointer-events: none; transition: transform 0.6s cubic-bezier(0.5, 0, 0.6, 1), opacity 0.4s 0.3s; }
+@container (max-width: 560px) {
+  .lp-offer-card { flex-direction: column; }
+  .lp-offer-main { padding: 20px 18px 24px; border-radius: 18px 18px 0 0;
+    -webkit-mask: radial-gradient(circle 10px at 0 100%, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) right / 51% 100% no-repeat;
+    mask: radial-gradient(circle 10px at 0 100%, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) right / 51% 100% no-repeat; }
+  .lp-offer-body { flex-basis: auto; }
+  .lp-offer-stub { width: auto; flex-direction: row; justify-content: space-between; border-left: 0; border-top: 2px dashed color-mix(in srgb, var(--lp-accent-contrast) 65%, transparent); border-radius: 0 0 18px 18px; transform-origin: 0 0; padding: 18px 16px 16px;
+    -webkit-mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at 100% 0, transparent 98%, #000) right / 51% 100% no-repeat;
+    mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at 100% 0, transparent 98%, #000) right / 51% 100% no-repeat; }
+  .lp-offer-stub .lp-cta.lp-offer-claim { width: auto; flex: 1 1 auto; max-width: 190px; }
+  .lp-offer-card.is-torn .lp-offer-stub { transform: translate(-14px, 100px) rotate(-16deg); }
+}
+
+/* --- Album: ngăn ảnh mở rộng (#389 accordion-image-panels). Chỉ khi khung rộng và có từ 3 ảnh; bố cục lưới là bản dự phòng --- */
+.lp-gallery.is-acc { display: flex; gap: 8px; height: clamp(300px, 34cqi, 440px); max-width: none; margin-inline: 0; }
+.lp-gallery.is-acc .lp-gallery-item { flex: 1 1 0; min-width: 0; grid-column: auto; grid-row: auto; aspect-ratio: auto; min-height: 0; transform: none; box-shadow: none; transition: flex-grow 0.6s cubic-bezier(0.3, 1, 0.3, 1); }
+.lp-gallery.is-acc .lp-gallery-item.on { flex-grow: 5; }
+.lp-gallery.is-acc .lp-gallery-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 55%, rgba(0, 0, 0, 0.5)); pointer-events: none; }
+.lp-acc-n { position: absolute; left: 14px; bottom: 12px; z-index: 1; color: #fff; font-size: 14px; font-weight: 800; letter-spacing: 0.08em; pointer-events: none; font-variant-numeric: tabular-nums; }
+.lp-gallery:not(.is-acc) .lp-acc-n { display: none; }
+
+/* --- Form: nhãn nổi (#25 floating-label-field). Chỉ ở trang xem; khi soạn giữ nhãn phía trên để sửa chữ --- */
+@supports selector(:has(a)) {
+  .landing:not(.is-editable) .lp-register:not(.lp-bg-primary) .lp-form { --lp-in-h: 52px; }
+  .landing:not(.is-editable) .lp-reg-card .lp-form { --lp-in-h: 48px; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field { position: relative; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field input { height: var(--lp-in-h, 52px); box-sizing: border-box; padding: 0 14px; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field label { position: absolute; z-index: 1; left: 10px; top: 0; height: var(--lp-in-h, 52px); display: flex; align-items: center; padding: 0 4px; margin: 0; font-size: 16px; font-weight: 500; color: var(--lp-muted); transform-origin: 0 50%; pointer-events: none; white-space: nowrap; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field input::placeholder { opacity: 0; transition: opacity 0.2s; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field input:focus::placeholder { opacity: 1; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field:is(:focus-within, :has(input:not(:placeholder-shown))) label { transform: translate(0, calc(var(--lp-in-h, 52px) / -2)) scale(0.82); background: linear-gradient(transparent 50%, #fff 50%); color: var(--lp-primary); font-weight: 700; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field:focus-within label { color: var(--lp-accent); }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field:has(input[aria-invalid="true"]) label { color: #c0262d; }
+}
+
+/* --- Pháo giấy khi đăng ký thành công (#320 scratch-card: confetti bắn theo góc, thêm rơi xuống) --- */
+.lp-pop-card { overflow-x: hidden; }
+.lp-pop-burst i { width: 9px; height: 14px; border-radius: 2px; animation: lp-confetti 1.7s cubic-bezier(0.2, 0.7, 0.3, 1) var(--dl, 0ms) both; }
+.lp-pop-burst i:nth-child(3n) { width: 8px; height: 8px; border-radius: 50%; }
+.lp-pop-burst i:nth-child(5n) { background: var(--lp-accent); }
+.lp-pop-burst i:nth-child(5n+1) { background: var(--lp-primary); }
+.lp-pop-burst i:nth-child(5n+2) { background: color-mix(in srgb, var(--lp-accent) 55%, #fff); }
+.lp-pop-burst i:nth-child(5n+3) { background: color-mix(in srgb, var(--lp-primary) 60%, #fff); }
+.lp-pop-burst i:nth-child(5n+4) { background: color-mix(in srgb, var(--lp-accent) 50%, var(--lp-primary)); }
+@keyframes lp-confetti {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg) scale(0.6); }
+  35% { opacity: 1; transform: translate3d(var(--dx), var(--dy), 0) rotate(calc(var(--r) * 0.5)) scale(1); }
+  100% { opacity: 0; transform: translate3d(calc(var(--dx) * 1.15), calc(var(--dy) + 200px), 0) rotate(var(--r)) scale(0.9); }
+}
+
+/* --- Giảm chuyển động / tắt hiệu ứng --- */
+@media (prefers-reduced-motion: reduce) {
+  .lp-wall-tr { animation: none; }
+  .lp-gallery.is-acc .lp-gallery-item, .lp-offer-card .lp-offer-stub, .lp-route-dotc { transition: none; }
+  .lp-pop-burst i { animation: none; }
+}
+html.motion-off .lp-wall-tr, .st-motion-off .lp-wall-tr { animation: none; }
+
+.lp-gallery.lp-acc-init .lp-gallery-item { transition: none !important; }
