@@ -75,7 +75,7 @@ const ok = (c, m) => { if (!c) { failed++; console.log('✗ ' + m); } else conso
   ok(await p.isVisible('.tpl-pv .tpv-use'), 'có nút Dùng mẫu này trong xem trước');
   await shot('preview-1400');
   await p.keyboard.press('Escape'); await settle();
-  ok(await p.isHidden('.tpl-pv'), 'Esc đóng xem trước');
+  await p.waitForSelector('.tpl-pv', { state: 'hidden', timeout: 3000 }).catch(() => {}); ok(await p.isHidden('.tpl-pv'), 'Esc đóng xem trước');
   await p.click('.tpl-pcard >> nth=1 >> button:has-text("Xem trước")'); await settle();
   await p.click('.tpl-pv .pv-close'); await settle();
   ok(await p.isHidden('.tpl-pv') && await p.locator('.tpl-pv .landing *').count() === 0, 'nút Đóng đóng xem trước');

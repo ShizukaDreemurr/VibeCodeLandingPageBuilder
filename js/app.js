@@ -714,8 +714,8 @@
     if (back && back.isConnected && instant !== true) back.focus();
   }
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && tplPreviewOpen()) { e.preventDefault(); closeTplPreview(); }
-  });
+    if (e.key === 'Escape' && tplPreviewOpen()) { e.preventDefault(); e.stopPropagation(); closeTplPreview(); }
+  }, true);
 
   // Đổi mẫu: giữ nguyên nội dung, chỉ đổi giao diện; form trống thì điền dữ liệu mẫu của mẫu đó
   function applyTemplate(id) {

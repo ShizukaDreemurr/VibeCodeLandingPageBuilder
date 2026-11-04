@@ -15,9 +15,13 @@
     var de = document.documentElement;
     if (reduced() || !document.startViewTransition) { update(); return; }
     if (kind) de.setAttribute('data-vt', kind);
-    var t = document.startViewTransition(update);
-    t.finished.then(function () { de.removeAttribute('data-vt'); }, function () { de.removeAttribute('data-vt'); });
+    var t;
+    try { t = document.startViewTransition(update); } catch (e) { de.removeAttribute('data-vt'); update(); return; }
+    var clean = function () { if (activeVT === t) activeVT = null; if (de.getAttribute('data-vt') === kind || !kind) de.removeAttribute('data-vt'); };
+    activeVT = t;
+    t.finished.then(clean, clean);
   }
+  var activeVT = null;
 
   // FLIP: ghi vị trí các phần tử, đổi bố cục, rồi trượt từ chỗ cũ sang chỗ mới
   function flipRecord(nodes) {
@@ -128,7 +132,10 @@
     if (mode !== 'light' && mode !== 'dark') mode = 'system';
     try { if (mode === 'system') localStorage.removeItem('ep_theme'); else localStorage.setItem('ep_theme', mode); } catch (e) { /* bỏ qua */ }
     var de = document.documentElement;
-    if (!document.startViewTransition || reduced() || de.hasAttribute('data-vt')) { themeApply(mode); return; }
+    if (!document.startViewTransition || reduced()) { themeApply(mode); return; }
+    // Chỉ bỏ qua hiệu ứng khi đang có chuyển cảnh thật sự chạy; data-vt còn sót thì dọn
+    if (activeVT) { try { activeVT.skipTransition(); } catch (e) { /* bỏ qua */ } activeVT = null; }
+    de.removeAttribute('data-vt');
     var w = root.innerWidth, h = root.innerHeight, r = origin && origin.getBoundingClientRect ? origin.getBoundingClientRect() : null;
     var hasR = r && (r.width || r.height);
     var x = hasR ? r.left + r.width / 2 : w / 2, y = hasR ? r.top + r.height / 2 : 0;
