@@ -839,7 +839,10 @@
   // Lưu trạng thái, vẽ lại trang, và cập nhật bản công khai nếu đã xuất bản
   function persist() {
     recordHistory();
-    if (!saveState()) toast('Trình duyệt không lưu được dữ liệu (có thể do ảnh quá lớn).');
+    if (EP.ux) EP.ux.saving();
+    var savedOk = saveState();
+    if (EP.ux) EP.ux.saved(savedOk);
+    if (!savedOk) toast('Trình duyệt không lưu được dữ liệu (có thể do ảnh quá lớn).');
     renderLanding();
     if (isCloudEvent() && C.currentUser()) {
       C.publishEvent(state.event, state.content, false).catch(function (e) { toast('Chưa cập nhật được trang công khai: ' + e.message); });
@@ -864,6 +867,7 @@
   }
 
   function toast(text) {
+    if (EP.ux && EP.ux.toast) { EP.ux.toast(text); return; } // toast xếp chồng (ux-lucian.js)
     var t = $('#toast');
     t.textContent = text;
     t.hidden = false;
@@ -1755,7 +1759,8 @@
   function saveView() { S.write('ws_view', { device: device, zoom: zoom }); }
   function setDevice(d) {
     if (d === device) return;
-    EP.motion.transition(function () { device = d; saveView(); applyDevice(); }, 'device');
+    var run = function () { device = d; saveView(); applyDevice(); };
+    if (EP.ux && EP.ux.device) EP.ux.device(landingEl, run); else EP.motion.transition(run, 'device');
     if (EP.inspector) setTimeout(EP.inspector.refresh, 360);
   }
   function setZoom(z) {
@@ -1923,7 +1928,7 @@
     EP.popup.open({
       tone: 'celebrate', icon: '🚀', title: 'Đã xuất bản!', body: wrap,
       actions: [
-        { label: 'Sao chép link', onClick: function (btn) { copyText(url).then(function () { btn.textContent = 'Đã sao chép ✓'; }, function () { inp.select(); btn.textContent = 'Nhấn Ctrl+C để chép'; }); return false; } },
+        { label: 'Sao chép link', onClick: function (btn) { copyText(url).then(function () { EP.motion.morph(btn, 'Đã sao chép', 2200); }, function () { inp.select(); btn.textContent = 'Nhấn Ctrl+C để chép'; }); return false; } },
         { label: 'Mở trang', primary: true, onClick: function () { root.open(url, '_blank', 'noopener'); } }
       ]
     });
@@ -2532,6 +2537,7 @@
       if (!user) return adminMessage('Trang đã xuất bản: đăng nhập Google (tài khoản đã xuất bản trang) để xem danh sách đăng ký.');
       if (user.uid !== ev.ownerUid) return adminMessage('Tài khoản này không phải chủ sự kiện nên không xem được danh sách.');
       adminMessage('Đang tải danh sách…');
+      if (EP.ux) EP.ux.skeletonRows($('#admin-rows'), 4);
       var load = function () {
         return C.listRegistrations(ev.id).then(function (regs) {
           if (token !== adminToken) return;
@@ -2685,10 +2691,10 @@
     toast('Đã nhân bản. Sửa ngày giờ rồi bấm "Tạo landing page" để cập nhật.');
   }
 
-  function deleteEvent(saved, card) {
+  function deleteEvent(saved, card, skipConfirm) {
     var msg = '"' + saved.event.name + '" sẽ bị xoá khỏi trình duyệt này? Danh sách đăng ký lưu trên máy cũng bị xoá.';
     if (saved.event.published) msg += ' Trang đã xuất bản vẫn hoạt động; đăng nhập trên thiết bị khác vẫn mở lại được.';
-    EP.popup.confirm({ tone: 'warn', title: 'Xoá sự kiện này?', body: msg, confirmLabel: 'Xoá sự kiện' }).then(function (ok) {
+    (skipConfirm ? Promise.resolve(true) : EP.popup.confirm({ tone: 'warn', title: 'Xoá sự kiện này?', body: msg, confirmLabel: 'Xoá sự kiện' })).then(function (ok) {
       if (!ok) return;
       var all = S.read('events', {});
       delete all[saved.event.id];
@@ -2721,6 +2727,7 @@
       btn.type = 'button'; btn.className = 'btn btn-small ' + (a.cls || 'btn-ghost'); btn.textContent = a.text;
       btn.addEventListener('click', a.fn);
       act.appendChild(btn);
+      if (a.hold && EP.ux) EP.ux.holdDelete(btn, function () { a.hold(btn); });
     });
     card.appendChild(bar); card.appendChild(body); card.appendChild(act);
     return card;
@@ -2744,7 +2751,7 @@
         { text: 'Mở / sửa', cls: 'btn-primary', fn: function () { openEvent(all[ev.id]); } },
         live && !ev.published ? { text: 'Mở link chia sẻ', fn: function () { root.open(shareUrl(ev.id), '_blank', 'noopener'); } } : null,
         { text: 'Nhân bản', fn: function () { duplicateEvent(all[ev.id]); } },
-        { text: 'Xoá', cls: 'btn-danger', fn: function (e) { deleteEvent(all[ev.id], e.target.closest('.event-card')); } }
+        { text: 'Xoá', cls: 'btn-danger', fn: function (e) { deleteEvent(all[ev.id], e.target.closest('.event-card')); }, hold: function (btn) { deleteEvent(all[ev.id], btn.closest('.event-card'), true); } }
       ]));
     });
     EP.motion.stagger(grid.children);
@@ -2756,7 +2763,9 @@
     }
     // Trang đã xuất bản từ thiết bị khác (cần đăng nhập)
     if (C.available && C.currentUser()) {
+      var skel = EP.ux ? EP.ux.skeleton(grid, 2, 'card') : null;
       C.listMyEvents().then(function (remote) {
+        if (skel) skel.remove();
         remote.filter(function (r) { return !localIds[r.id]; }).forEach(function (r) {
           grid.appendChild(eventCard({ name: r.name, startAt: r.startAt, templateId: r.templateId, badges: [{ text: 'Trên đám mây', cls: 'is-live' }] }, [
             { text: 'Mở trên máy này', cls: 'btn-primary', fn: function () {
@@ -2766,7 +2775,7 @@
             } }
           ]));
         });
-      }).catch(function () { /* mất mạng: chỉ hiện sự kiện trên máy */ });
+      }).catch(function () { if (skel) skel.remove(); /* mất mạng: chỉ hiện sự kiện trên máy */ });
     }
   }
 
@@ -3421,7 +3430,8 @@
   $('#btn-clear-regs').addEventListener('click', function () {
     var ev = adminSel;
     if (!ev) return;
-    EP.popup.confirm({ tone: 'warn', title: 'Xoá toàn bộ đăng ký?', body: 'Danh sách đăng ký của "' + ev.name + '" sẽ bị xoá. Không thể hoàn tác.', confirmLabel: 'Xoá đăng ký' }).then(function (ok) {
+    var clrBtn = $('#btn-clear-regs'), skipAsk = clrBtn._uxSkip; clrBtn._uxSkip = false;
+    (skipAsk ? Promise.resolve(true) : EP.popup.confirm({ tone: 'warn', title: 'Xoá toàn bộ đăng ký?', body: 'Danh sách đăng ký của "' + ev.name + '" sẽ bị xoá. Không thể hoàn tác.', confirmLabel: 'Xoá đăng ký' })).then(function (ok) {
     if (!ok) return;
     if (isCloudEv(ev)) {
       C.clearRegistrations(ev.id).then(function () { renderAdmin(); }, function (e) { toast('Không xoá được: ' + e.message); });
@@ -3432,6 +3442,7 @@
     if (renderer && state && state.event.id === ev.id) renderer.update();
     });
   });
+  if (EP.ux) EP.ux.holdDelete($('#btn-clear-regs'), function () { var b = $('#btn-clear-regs'); b._uxSkip = true; b._uxPass = true; b.click(); b._uxPass = false; });
   $('#btn-admin-back').addEventListener('click', function () { selectAdminEvent(null); });
   $('#admin-search').addEventListener('input', function (e) { pickerQuery = e.target.value; renderPicker(true); });
   document.querySelectorAll('.tab').forEach(function (t) {
@@ -3858,6 +3869,7 @@
     try { if (u) localStorage.setItem('ep_signed_in', '1'); else localStorage.removeItem('ep_signed_in'); } catch (e) {}
     startTab(!!u); bootUserNav = true; // chỉ quyết định một lần
   });
+  if (EP.ux) EP.ux.hooks = { useTemplate: useTemplate, switchTab: switchTab };
   root.addEventListener('resize', function () { EP.motion.indicator($('.tabs')); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { EP.motion.indicator($('.tabs')); });
   C.onAuth(function () { if (!$('#view-events').hidden) renderEvents(); });

@@ -1506,3 +1506,100 @@ html.tpv-lock { overflow: hidden; }
     .ml-upload { flex: 1 1 100%; }
   }
 }
+
+/* ===== Lucian Lab UI (MIT, © 2026 Seokwoooo) — chuyển thể, xem js/ux-lucian.js ===== */
+@layer app {
+  /* 039 tab viên thuốc trượt: viên mềm nằm sau chữ, gạch chân giữ nguyên */
+  .tabs { isolation: isolate; }
+  .tab { position: relative; z-index: 1; }
+  .tab-indicator { z-index: 0; background: var(--accent); transform-origin: 50% 100%; border-radius: 2px; transition: transform 460ms cubic-bezier(.34, 1.4, .5, 1), width 460ms cubic-bezier(.34, 1.4, .5, 1), opacity var(--dur-1) ease; }
+  .tab-indicator::before { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 28px; border-radius: 999px; background: var(--accent-soft); z-index: -1; opacity: .9; }
+  .device-toggle.has-pill { position: relative; isolation: isolate; }
+  .device-toggle.has-pill > button { position: relative; z-index: 1; }
+  .device-toggle.has-pill > button.is-active { background: transparent; }
+  .ux-pill { position: absolute; left: 0; top: 0; z-index: 0; border-radius: var(--radius-small); background: var(--active); pointer-events: none; transition: transform 380ms cubic-bezier(.34, 1.3, .5, 1), width 380ms cubic-bezier(.34, 1.3, .5, 1), height 200ms ease, opacity 120ms; }
+
+  /* 070 toast xếp chồng: #toast là toast trước; các toast cũ lùi sau */
+  .toast { touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab; transform: translateX(calc(-50% + var(--dx, 0px))); }
+  .toast.is-drag { cursor: grabbing; transition: none; }
+  .toast.ux-toast-in { animation: uxToastIn 480ms cubic-bezier(.34, 1.3, .5, 1) both; }
+  @keyframes uxToastIn { from { opacity: 0; transform: translateX(-50%) translateY(24px) scale(.92); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
+  .ux-toast-stack { position: fixed; left: 50%; bottom: 24px; width: 0; height: 0; z-index: 1099; pointer-events: none; --sgn: -1; }
+  .ux-toast-old { position: absolute; left: 0; bottom: 0; transform: translateX(-50%) translateY(calc(var(--sgn) * var(--k, 1) * 12px)) scale(calc(1 - var(--k, 1) * .06)); transform-origin: 50% 100%; background: var(--text); color: var(--surface); opacity: calc(.7 - var(--k, 1) * .15); padding: 10px 16px; border-radius: 8px; font-size: 14px; max-width: calc(100vw - 32px); width: max-content; box-shadow: var(--shadow-float); transition: transform 420ms cubic-bezier(.34, 1.2, .5, 1), opacity 260ms; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ux-toast-old.is-open { opacity: 1; transform: translateX(-50%) translateY(calc(var(--sgn) * var(--oy, 0px))) scale(1); }
+  .ux-toast-old.is-leaving { opacity: 0; }
+  @media (max-width: 720px) {
+    .ux-toast-stack { bottom: auto; top: calc(env(safe-area-inset-top, 0px) + 8px); --sgn: 1; }
+    .ux-toast-old { top: 0; bottom: auto; transform-origin: 50% 0; font-size: 13px; padding: 8px 12px; }
+    .toast { pointer-events: auto; }
+  }
+
+  /* 008 copy → tick */
+  .ux-check { display: inline-flex; width: 14px; height: 14px; margin-right: 6px; vertical-align: -2px; color: var(--success); }
+  .ux-check svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .ux-check path { stroke-dasharray: 18; stroke-dashoffset: 18; animation: uxDraw 360ms cubic-bezier(.65, 0, .35, 1) 40ms forwards; }
+  @keyframes uxDraw { to { stroke-dashoffset: 0; } }
+  .btn.ux-copied { color: var(--success); border-color: var(--success); }
+
+  /* 003 giữ để xoá */
+  .btn.ux-hold { position: relative; overflow: hidden; touch-action: manipulation; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+  .ux-hold-fill { position: absolute; inset: 0; background: var(--danger); opacity: .22; transform-origin: 0 50%; transform: scaleX(var(--hold, 0)); pointer-events: none; }
+  .btn.ux-hold.is-holding { animation: uxShake 120ms linear infinite; }
+  .btn.ux-hold.is-done .ux-hold-fill { opacity: .5; transform: scaleX(1); }
+  @keyframes uxShake { 0%, 100% { translate: 0 0; } 25% { translate: -1px 0; } 75% { translate: 1px 0; } }
+
+  /* 355 chỉ báo tự lưu */
+  .ux-save { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); white-space: nowrap; margin-right: 4px; }
+  .ux-save-ic { position: relative; width: 16px; height: 16px; display: inline-grid; place-items: center; }
+  .ux-save-ic i { position: absolute; inset: 1px; border-radius: 50%; border: 2px solid var(--accent); border-right-color: transparent; opacity: 0; }
+  .ux-save-ic svg { position: absolute; inset: 0; width: 16px; height: 16px; fill: none; stroke: var(--success); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  .ux-save-ic path { stroke-dasharray: 18; stroke-dashoffset: 18; }
+  .ux-save[data-state="idle"] .ux-save-ic i { opacity: .35; border-color: var(--control); border-right-color: transparent; }
+  .ux-save[data-state="saving"] .ux-save-ic i { opacity: 1; animation: xcSpin 700ms linear infinite; }
+  .ux-save[data-state="saved"] .ux-save-ic svg { opacity: 1; }
+  .ux-save[data-state="saved"] .ux-save-ic path { animation: uxDraw 360ms cubic-bezier(.65, 0, .35, 1) forwards; }
+  .ux-save[data-state="error"] { color: var(--danger); }
+  .ux-save[data-state="error"] .ux-save-ic i { opacity: 1; border-color: var(--danger); }
+  @media (max-width: 720px) { .ux-save-tx { display: none; } .ux-save { margin-right: 0; } }
+
+  /* 257 khung xem trước đổi thiết bị */
+  .landing.ux-resizing { overflow: hidden; will-change: width, zoom; }
+
+  /* 079 khung xương khi tải */
+  .ux-skel { display: block; background: linear-gradient(100deg, var(--raised) 30%, var(--active) 50%, var(--raised) 70%) 0 0 / 200% 100%; border-radius: var(--radius-small); animation: uxShimmer 1.3s linear infinite; }
+  @keyframes uxShimmer { to { background-position: -200% 0; } }
+  .ux-skel-wrap.ux-skel-card { display: contents; }
+  .ux-skel-card .ux-skel-row { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; display: grid; gap: 10px; background: var(--surface); }
+  .ux-skel-img { aspect-ratio: 16 / 9; }
+  .ux-skel-l1 { height: 14px; width: 70%; }
+  .ux-skel-l2 { height: 12px; width: 45%; }
+  .ux-skel-list .ux-skel-row { display: grid; grid-template-columns: 32px 1fr; gap: 6px 12px; padding: 10px 0; align-items: center; }
+  .ux-skel-dot { width: 32px; height: 32px; grid-row: span 2; border-radius: 50%; }
+  .ux-skel-tr td { padding: 12px 10px; }
+  .ux-skel-tr .ux-skel-l1 { width: 100%; height: 16px; }
+  .tpl-thumb:not(.is-loaded):not(.is-fallback)::before { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, var(--raised) 30%, var(--active) 50%, var(--raised) 70%) 0 0 / 200% 100%; animation: uxShimmer 1.3s linear infinite; z-index: 1; }
+
+  /* 046 bảng lệnh */
+  .ux-pal-back { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: flex-start; justify-content: center; padding: 12vh 16px 16px; background: rgba(19, 20, 22, .38); }
+  .ux-pal { width: min(560px, 100%); max-height: 70vh; display: flex; flex-direction: column; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-float); overflow: hidden; }
+  .ux-pal-back.is-in .ux-pal { animation: uxPalIn 320ms cubic-bezier(.34, 1.3, .5, 1) both; }
+  @keyframes uxPalIn { from { opacity: 0; transform: translateY(-10px) scale(.96); } to { opacity: 1; transform: none; } }
+  .ux-pal-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  .ux-pal-input { flex: 1; min-width: 0; border: 0; background: none; font: inherit; font-size: 16px; color: var(--text); outline: none; }
+  .ux-pal-list { list-style: none; margin: 0; padding: 6px; overflow: auto; flex: 1; }
+  .ux-pal-group { padding: 8px 10px 4px; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); }
+  .ux-pal-item { padding: 9px 10px; border-radius: var(--radius-small); cursor: pointer; font-size: 14px; }
+  .ux-pal-item[aria-selected="true"] { background: var(--accent-soft); color: var(--accent-ink); }
+  .ux-pal-empty { padding: 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+  .ux-pal-foot { display: flex; gap: 14px; padding: 8px 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+  .ux-pal kbd { font: 11px var(--font-mono); padding: 1px 5px; border: 1px solid var(--control); border-radius: 4px; background: var(--raised); color: var(--text-muted); margin-right: 3px; }
+  @media (max-width: 720px) { .ux-pal-foot { display: none; } .ux-pal-back { padding-top: 8vh; } }
+
+  /* tôn trọng giảm chuyển động */
+  @media (prefers-reduced-motion: reduce) {
+    .toast.ux-toast-in, .ux-pal-back.is-in .ux-pal, .btn.ux-hold.is-holding, .ux-skel, .tpl-thumb:not(.is-loaded)::before { animation: none; }
+    .ux-toast-old, .ux-pill, .tab-indicator { transition: none; }
+  }
+  html.motion-off .ux-skel, html.motion-off .tpl-thumb::before { animation: none !important; }
+  html.motion-off .ux-toast-old, html.motion-off .ux-pill { transition: none !important; }
+}
