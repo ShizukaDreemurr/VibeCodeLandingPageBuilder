@@ -105,7 +105,7 @@ const ok = (name, cond, extra) => { if (!cond) failed++; console.log((cond ? '�
   const g1 = await pub(1), g3 = await pub(3);
   ok('1 image: full-width item', g1.has && g1.count === '1' && g1.wide > g1.total * 0.9, g1.wide + '/' + g1.total);
   ok('3 images: big first item', g3.count === '3' && g3.wide > g3.total * 0.55, g3.wide + '/' + g3.total);
-  ok('lazy-loaded + alt "Hình ảnh sự kiện N"', g3.lazy && g3.alts === 'Hình ảnh sự kiện 1|Hình ảnh sự kiện 2|Hình ảnh sự kiện 3', g3.alts);
+  ok('lazy-loaded + alt "Hình ảnh <tên sự kiện> – ảnh N"', g3.lazy && g3.alts.split('|').length === 3 && g3.alts.split('|').every((a, i) => a.startsWith('Hình ảnh ') && a.endsWith(' – ảnh ' + (i + 1))), g3.alts);
 
   // 7. Trang công khai: ô trống không hiện gì
   const empty = await p.evaluate(() => {

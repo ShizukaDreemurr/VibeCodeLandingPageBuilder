@@ -200,8 +200,8 @@ function check(name, ok, extra) { if (!ok) failed++; console.log((ok ? '✓ ' : 
     box.remove(); return { imgs, ext };
   }, PNG);
   check('landing: mọi <img> có alt + width/height (' + lpImgs.imgs.length + ' ảnh)', lpImgs.imgs.length >= 4 && lpImgs.imgs.every(i => i.alt && i.w && i.h), JSON.stringify(lpImgs.imgs));
-  check('landing: alt ảnh diễn giả = tên, ảnh album "Ảnh sự kiện N", logo = tên thương hiệu', lpImgs.imgs.some(i => i.alt === 'An') && lpImgs.imgs.some(i => i.alt === 'Ảnh sự kiện 1') && lpImgs.imgs.some(i => i.alt === 'ABC'));
-  check('landing: ảnh ngoài hero lazy (avatar, album)', lpImgs.imgs.filter(i => /lp-avatar/.test(i.cls) || /^Ảnh sự kiện/.test(i.alt)).every(i => i.lazy === 'lazy'));
+  check('landing: alt ảnh diễn giả = "Diễn giả + tên – chức danh", ảnh album "Hình ảnh <tên sự kiện> – ảnh N", logo = tên thương hiệu', lpImgs.imgs.some(i => i.alt === 'Diễn giả An – Cô dâu') && lpImgs.imgs.some(i => i.alt === 'Hình ảnh Thiệp cưới An & Bình – ảnh 1') && lpImgs.imgs.some(i => i.alt === 'ABC'));
+  check('landing: ảnh ngoài hero lazy (avatar, album)', lpImgs.imgs.filter(i => /lp-avatar/.test(i.cls) || /^Hình ảnh /.test(i.alt)).every(i => i.lazy === 'lazy'));
   check('landing: link người dùng nhập có rel noopener nofollow', lpImgs.ext.filter(r => /nofollow/.test(r)).length >= 3, lpImgs.ext.join(','));
   const exLinks = await p.evaluate(() => [...document.querySelectorAll('#landing a[target="_blank"]')].filter(a => !/noopener/.test(a.rel)).length);
   check('landing (trình soạn): link ngoài đều rel=noopener', exLinks === 0);
