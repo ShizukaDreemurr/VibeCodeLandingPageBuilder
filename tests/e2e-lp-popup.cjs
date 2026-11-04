@@ -2,7 +2,7 @@
 // Chạy: python3 -m http.server 8000 rồi `node tests/e2e-lp-popup.cjs [url] [thư-mục-ảnh]`
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
 const fs = require('fs');
-const BASE = (process.argv[2] || 'http://localhost:8000/').replace(/index\.html$/, '');
+const BASE = (process.argv[2] || 'http://localhost:8129/').replace(/index\.html$/, '');
 const shots = process.argv[3];
 let failed = 0;
 const ok = (name, cond, extra) => { if (cond) console.log('✓', name); else { failed++; console.log('✗', name, extra === undefined ? '' : JSON.stringify(extra)); } };
@@ -117,7 +117,7 @@ const SUCCESS = 'dialog.lp-pop[open]';
 
   // 9. Chip + thẻ ưu đãi + thẻ lợi ích
   await mount({});
-  ok('hero có chip "N người đã đăng ký"', /10\s+người đã đăng ký/.test(await p.locator('#lp-test .lp-hero .lp-chip').innerText()));
+  await p.waitForTimeout(1100); ok('hero có chip "N người đã đăng ký"', /10\s+người đã đăng ký/.test(await p.locator('#lp-test .lp-hero .lp-chip').innerText()));
   ok('thẻ ưu đãi có biểu tượng quà + "Còn X ngày"', (await p.locator('#lp-test .lp-offer-card .lp-offer-ico svg').count()) === 1 && /Còn \d+ ngày|Hết hạn/.test(await p.locator('#lp-test .lp-offer-left').innerText()));
   ok('lợi ích dạng thẻ có nền riêng', await p.evaluate(() => { const li = document.querySelector('#lp-test .lp-benefits li'); return parseFloat(getComputedStyle(li).borderTopWidth) >= 1; }));
 

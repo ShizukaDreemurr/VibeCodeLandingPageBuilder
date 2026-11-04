@@ -3286,7 +3286,7 @@
         'var boxes=document.querySelectorAll(".lp-cd-num");function pad(n){return String(n).padStart(2,"0")}' +
         'function tick(){var ms=Math.max(0,start-new Date()),s=Math.floor(ms/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];' +
         'boxes.forEach(function(b,i){b.textContent=pad(v[i])});document.querySelectorAll(\'.lp-var[data-var="dem_nguoc"]\').forEach(function(x){x.textContent=Math.ceil(ms/86400000)})}' +
-        'tick();setInterval(tick,1000);(' + EP.landingRenderer.lightboxInit.toString().replace(/<\/script/gi, '<\\/script') + ')(document.querySelector(".landing"));document.querySelectorAll(".lp-form").forEach(function(f){f.addEventListener("submit",function(e){e.preventDefault();' +
+        'tick();setInterval(tick,1000);(' + EP.landingRenderer.lightboxInit.toString().replace(/<\/script/gi, '<\\/script') + ')(document.querySelector(".landing"));(' + EP.landingRenderer.motionInit.toString().replace(/<\/script/gi, '<\\/script') + ')(document.querySelector(".landing"));document.querySelectorAll(".lp-form").forEach(function(f){f.addEventListener("submit",function(e){e.preventDefault();' +
         'if(S.url){location.href=S.url;return}var m=f.querySelector(".lp-form-msg");if(m){m.textContent="Đây là bản trang tĩnh. Vui lòng liên hệ ban tổ chức để đăng ký.";m.className="lp-form-msg is-error"}})});' +
         // Popup đăng ký: mọi nút CTA mở popup; Esc / nút đóng / bấm nền để đóng; trả tiêu điểm
         'var D=document.querySelector("dialog.lp-reg");if(D&&D.showModal){var P=null;function cl(){D.close();if(P&&P.focus)P.focus()}' +

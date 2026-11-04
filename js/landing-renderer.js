@@ -118,6 +118,63 @@
     ]);
   }
 
+  // Chuyển động bổ sung cho trang xem (không chạy khi soạn). Hàm TỰ CHỨA: file HTML xuất nhúng nguyên văn hàm này.
+  // Cảm hứng: Lucian Lab (MIT, © 2026 Seokwoooo) - Text Motion (tách từ), Scroll Motion (thanh tiến độ), count-up, ripple. Màu lấy từ biến --lp-*.
+  function motionInit(root) {
+    if (!root || root.__mo) return;
+    var de = document.documentElement;
+    var calm = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || de.classList.contains('motion-off') || root.classList.contains('st-motion-off');
+    if (calm) return;
+    root.__mo = 1;
+    function mk(tag, cls) { var e = document.createElement(tag); e.className = cls; return e; }
+    var hl = root.querySelector('.lp-headline');
+    if (hl && hl.childNodes.length === 1 && hl.firstChild.nodeType === 3 && hl.textContent.trim()) {
+      var words = hl.textContent.trim().split(/\s+/);
+      hl.setAttribute('aria-label', words.join(' '));
+      hl.textContent = '';
+      words.forEach(function (w, i) {
+        var s = mk('span', 'lp-word'); s.setAttribute('aria-hidden', 'true'); s.textContent = w; s.style.animationDelay = (0.12 + Math.min(i, 14) * 0.045) + 's';
+        hl.appendChild(s); if (i < words.length - 1) hl.appendChild(document.createTextNode(' '));
+      });
+    }
+    var bar = mk('div', 'lp-progress'); bar.setAttribute('aria-hidden', 'true');
+    root.appendChild(bar);
+    var tick = 0;
+    function prog() {
+      tick = 0;
+      var max = de.scrollHeight - innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, Math.max(0, (window.pageYOffset || de.scrollTop) / max)) : 0) + ')';
+    }
+    addEventListener('scroll', function () { if (!tick) tick = requestAnimationFrame(prog); }, { passive: true });
+    prog();
+    var chip = root.querySelector('.lp-chip-text');
+    if (chip && 'IntersectionObserver' in window) {
+      var cio = new IntersectionObserver(function (es) {
+        if (!es[0].isIntersecting) return;
+        cio.disconnect();
+        var m = chip.textContent.match(/^([\d.,]+)(.*)$/);
+        if (!m) return;
+        var to = parseInt(m[1].replace(/[^\d]/g, ''), 10), rest = m[2], t0 = performance.now();
+        if (!(to > 1)) return;
+        chip.__cu = 1;
+        (function step(t) {
+          var k = Math.min(1, Math.max(0, (t - t0) / 900)), v = Math.round(to * (1 - Math.pow(1 - k, 3)));
+          chip.textContent = v.toLocaleString('vi-VN') + rest;
+          if (k < 1) requestAnimationFrame(step); else chip.__cu = 0;
+        })(t0);
+      }, { threshold: 0.4 });
+      cio.observe(chip);
+    }
+    root.addEventListener('pointerdown', function (e) {
+      var b = e.target.closest && e.target.closest('.lp-cta, .lp-submit, .lp-sticky-btn');
+      if (!b || b.disabled) return;
+      var r = b.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2, s = mk('span', 'lp-ripple');
+      s.setAttribute('aria-hidden', 'true');
+      s.style.cssText = 'width:' + d + 'px;height:' + d + 'px;left:' + (e.clientX - r.left - d / 2) + 'px;top:' + (e.clientY - r.top - d / 2) + 'px';
+      b.appendChild(s); setTimeout(function () { s.remove(); }, 650);
+    });
+  }
+
   // Xem ảnh toàn màn hình (album). Hàm TỰ CHỨA, không dùng biến ngoài: file HTML xuất nhúng nguyên văn hàm này.
   function lightboxInit(root) {
     if (!root || root.__lb) return;
@@ -775,6 +832,7 @@
     });
     container.appendChild(footer);
     if (!editable) lightboxInit(container);
+    if (!editable && st.motion !== 'off') motionInit(container);
     if (!editable) container.appendChild(stickyWrap);
 
     // Trang xem: mọi nút CTA mở popup đăng ký (href #lp-register chỉ còn là phương án dự phòng khi không có JS)
@@ -828,7 +886,7 @@
       var seats = !cap || status.code === 'ended' ? '' : (left > 0 ? 'Còn ' + left.toLocaleString('vi-VN') + ' chỗ' : 'Đã hết chỗ');
       regSeats.textContent = seats; regSeats.hidden = !seats;
       regSeats.className = 'lp-reg-seats' + (left != null && left <= Math.ceil(cap * 0.1) ? ' is-hot' : '');
-      chipText.textContent = count.toLocaleString('vi-VN') + ' ' + String(L.countSuffix || ' người đã đăng ký').trim();
+      if (!chipText.__cu) chipText.textContent = count.toLocaleString('vi-VN') + ' ' + String(L.countSuffix || ' người đã đăng ký').trim();
       proofChip.hidden = !(count > 0) || status.code === 'ended';
       if (ev.earlyBirdUntil && offerOn) {
         var dl = Math.ceil((new Date(ev.earlyBirdUntil) - now) / 86400000);
@@ -886,5 +944,5 @@
   }
 
   root.EP = root.EP || {};
-  root.EP.landingRenderer = { render: render, h: h, SECTIONS: SECTIONS, normalizeSections: normalizeSections, BLOCK_ITEMS: BLOCK_ITEMS, MAX_ITEMS: MAX_ITEMS, blockCount: blockCount, videoEmbed: videoEmbed, lightboxInit: lightboxInit };
+  root.EP.landingRenderer = { render: render, h: h, SECTIONS: SECTIONS, normalizeSections: normalizeSections, BLOCK_ITEMS: BLOCK_ITEMS, MAX_ITEMS: MAX_ITEMS, blockCount: blockCount, videoEmbed: videoEmbed, lightboxInit: lightboxInit, motionInit: motionInit };
 })(typeof window !== 'undefined' ? window : globalThis);
