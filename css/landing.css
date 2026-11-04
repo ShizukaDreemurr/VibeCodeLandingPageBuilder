@@ -51,7 +51,9 @@
 .lp-form { display: grid; gap: 4px; max-width: 480px; }
 .lp-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
 .lp-field label { font-weight: 600; font-size: 14px; }
-.lp-field input { font: inherit; padding: 10px 12px; border: 1px solid #d6d9e6; border-radius: var(--radius-small); }
+.lp-field input { font: inherit; padding: 10px 12px; border: 1px solid #d6d9e6; border-radius: var(--radius-small); background: #fff; color: #16193a; color-scheme: light; }
+.landing, dialog.lp-reg, dialog.lp-pop { color-scheme: light; }
+.lp-field input::placeholder { color: #8a8fa8; opacity: 1; }
 .lp-consent { font-size: 14px; display: flex; gap: 8px; align-items: flex-start; }
 .lp-error { margin: 0; color: #c0262d; font-size: 13px; }
 .lp-form-msg { margin: 8px 0 0; font-weight: 600; }
