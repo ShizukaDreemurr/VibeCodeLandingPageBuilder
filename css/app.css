@@ -2397,11 +2397,17 @@ html.tpv-lock { overflow: hidden; }
     .lt-rail { right: 24px; bottom: 36px; gap: 14px; }
     .lt-rb i { width: 54px; height: 54px; }
   }
-  @media (min-width: 1100px) {
-    .lt-slide-meta { left: max(48px, calc(50% - 650px)); bottom: 56px; width: min(380px, 30vw); }
-    .lt-slide-t { font-size: clamp(30px, 2.8vw, 42px); }
-    .lt-slide-stage { left: calc(max(48px, calc(50% - 650px)) + min(380px, 30vw) + 32px); right: 120px; top: 84px; bottom: 48px; }
-    .lt-rail { right: max(24px, calc(50% - 650px)); bottom: 56px; }
+  @media (min-width: 900px) {
+    /* Lưới 3 cột căn giữa: thông tin | khung trình duyệt | thanh nút; cao vừa vùng dưới HUD */
+    .lt-slide { display: grid; grid-template-columns: minmax(280px, 36fr) minmax(0, 64fr) 84px; column-gap: clamp(20px, 3vw, 44px); align-items: stretch;
+      width: 100%; max-width: 1280px; margin-inline: auto; box-sizing: border-box; padding: 76px clamp(20px, 3vw, 32px) 28px; }
+    .lt-slide-bg { left: calc(50% - 50vw); right: auto; width: 100vw; }
+    .lt-slide-stage { position: relative; inset: auto; grid-column: 2; grid-row: 1; min-width: 0; min-height: 0; place-items: center; }
+    .lt-slide-meta { position: relative; inset: auto; grid-column: 1; grid-row: 1; width: auto; align-self: center; min-width: 0; }
+    .lt-rail { position: relative; inset: auto; grid-column: 3; grid-row: 1; align-self: center; justify-self: end; }
+    .lt-slide-t { font-size: clamp(28px, 2.8vw, 42px); }
+    .lt-slide-s { -webkit-line-clamp: 4; }
+    .lt-live::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; pointer-events: none; background: linear-gradient(to bottom, transparent, var(--surface)); }
   }
   @media (max-width: 760px) {
     .lt-slide-s { -webkit-line-clamp: 2; font-size: 14px; }

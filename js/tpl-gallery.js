@@ -200,6 +200,7 @@
     var st = $('.lt-slide-stage', s), dev = $('.lt-device', s), live = $('.lt-live', s), lp = $('.lt-lp', s);
     var sw = st.clientWidth, sh = st.clientHeight; if (!sw || !sh) return;
     var narrow = mobileQ.matches, boxW = narrow ? 390 : 1280, ratio = narrow ? 390 / 600 : 16 / 10, chrome = 30;
+    if (!narrow) ratio = Math.max(1.2, Math.min(16 / 10, sw / Math.max(1, sh - chrome))); // khung cao hơn khi vùng chứa cao: hiện nhiều trang hơn
     var fw = Math.min(sw, (sh - chrome) * ratio); fw = Math.max(160, fw);
     var fh = fw / ratio, k = fw / boxW;
     dev.style.width = fw + 'px';
