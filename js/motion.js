@@ -135,17 +135,19 @@
     if (!document.startViewTransition || reduced()) { themeApply(mode); return; }
     // Chuyển cảnh thật sự đang chạy (tab/thiết bị/giao diện) thì bỏ qua nó; mỗi chuyển cảnh có "thẻ" riêng để dọn đúng phần của mình
     if (activeVT) { try { activeVT.skipTransition(); } catch (e) { /* bỏ qua */ } activeVT = null; }
-    var w = root.innerWidth, h = root.innerHeight, r = origin && origin.getBoundingClientRect ? origin.getBoundingClientRect() : null;
+    // Toạ độ tâm nút theo viewport bố cục (cùng hệ với ảnh chụp chuyển cảnh); bán kính lấy kích thước lớn nhất có thể (thanh địa chỉ Android co/giãn, zoom)
+    var vv = root.visualViewport, r = origin && origin.getBoundingClientRect ? origin.getBoundingClientRect() : null;
+    var w = Math.max(root.innerWidth || 0, de.clientWidth || 0, vv ? vv.width + vv.offsetLeft : 0);
+    var h = Math.max(root.innerHeight || 0, de.clientHeight || 0, vv ? vv.height + vv.offsetTop : 0);
     var hasR = r && (r.width || r.height);
     var x = hasR ? r.left + r.width / 2 : w / 2, y = hasR ? r.top + r.height / 2 : 0;
-    var rad = Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y)));
-    de.style.setProperty('--vt-x', x + 'px'); de.style.setProperty('--vt-y', y + 'px'); de.style.setProperty('--vt-r', rad + 'px');
+    var rad = Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y))) + 2;
     de.setAttribute('data-vt', 'theme');
     var t;
     var done = function () {
       if (activeVT !== t && activeVT) return; // đã có chuyển cảnh mới hơn: để nó tự dọn
       if (activeVT === t) activeVT = null;
-      de.removeAttribute('data-vt'); de.style.removeProperty('--vt-x'); de.style.removeProperty('--vt-y'); de.style.removeProperty('--vt-r');
+      de.removeAttribute('data-vt');
     };
     try { t = document.startViewTransition(function () { themeApply(mode); }); } catch (e) { activeVT = null; done(); themeApply(mode); return; }
     activeVT = t;
@@ -153,8 +155,8 @@
     t.ready.then(function () {
       try {
         de.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + rad + 'px at ' + x + 'px ' + y + 'px)'] },
-          { duration: 650, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both', pseudoElement: '::view-transition-new(root)' });
-      } catch (e) { /* CSS vtThemeReveal vẫn chạy */ }
+          { duration: 550, easing: 'ease-in-out', fill: 'both', pseudoElement: '::view-transition-new(root)' });
+      } catch (e) { /* bỏ qua */ }
     }, function () { /* bị bỏ qua */ });
     t.finished.then(done, done);
   }
