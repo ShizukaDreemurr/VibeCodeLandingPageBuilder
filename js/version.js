@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.9.3',
+    version: '2.9.4',
     date: '2026-10-27',
-    notes: 'Câu cảnh báo AI mô phỏng đúng thể lệ, README và hồ sơ nộp bài cập nhật',
+    notes: 'Reels trên máy tính: bố cục 3 cột cân đối, khung trang lớn theo màn hình, nền liền mạch',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
