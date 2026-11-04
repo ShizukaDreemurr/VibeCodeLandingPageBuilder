@@ -119,14 +119,71 @@
   }
 
   // Chuyển động bổ sung cho trang xem (không chạy khi soạn). Hàm TỰ CHỨA: file HTML xuất nhúng nguyên văn hàm này.
-  // Cảm hứng: Lucian Lab (MIT, © 2026 Seokwoooo) - Text Motion (tách từ), Scroll Motion (thanh tiến độ), count-up, ripple. Màu lấy từ biến --lp-*.
+  // Cổng từ Lucian Lab (MIT, © 2026 Seokwoooo): #319 aurora, #226 lưới sáng, #100 đồng hồ lật, #214 + #228 thẻ bento phát sáng viền,
+  // #318 đường vẽ theo cuộn, #207 bức tường nhận xét, #298 vé xé, #389 album dạng ngăn; cùng Text Motion, thanh tiến độ, count-up, ripple.
+  // Màu luôn lấy từ biến --lp-*; chuyển động chỉ transform/opacity (ngoại lệ: nét SVG của #318, flex của #389, canvas của #319).
   function motionInit(root) {
     if (!root || root.__mo) return;
     var de = document.documentElement;
     var calm = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || de.classList.contains('motion-off') || root.classList.contains('st-motion-off');
-    if (calm) return;
     root.__mo = 1;
     function mk(tag, cls) { var e = document.createElement(tag); e.className = cls; return e; }
+    function q1(s, r) { return (r || root).querySelector(s); }
+    function qa(s, r) { return [].slice.call((r || root).querySelectorAll(s)); }
+    var rafs = {};
+    function later(key, fn) { if (!rafs[key]) rafs[key] = requestAnimationFrame(function () { rafs[key] = 0; fn(); }); }
+
+    // ---- Hero: aurora (#319) + lưới sáng theo con trỏ (#226) ----
+    var hero = q1('.lp-hero');
+    if (hero && !q1('.lp-fx-aurora', hero)) {
+      var cv = mk('canvas', 'lp-fx lp-fx-aurora'); cv.width = 72; cv.height = 72; cv.setAttribute('aria-hidden', 'true');
+      var grid = mk('div', 'lp-fx lp-fx-grid'); grid.setAttribute('aria-hidden', 'true');
+      var glow = mk('div', 'lp-fx lp-fx-gridlit'); glow.setAttribute('aria-hidden', 'true');
+      hero.appendChild(cv); hero.appendChild(grid); hero.appendChild(glow); hero.classList.add('has-fx');
+      var cx = cv.getContext && cv.getContext('2d');
+      if (cx) {
+        var cs = getComputedStyle(root);
+        var norm = function (c, fb) { var t = document.createElement('canvas').getContext('2d'); t.fillStyle = '#000'; t.fillStyle = (c || '').trim() || fb; var v = t.fillStyle; if (v.charAt(0) !== '#') { var m = v.match(/[\d.]+/g) || [0, 0, 0]; return [+m[0], +m[1], +m[2]]; } var n = parseInt(v.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+        var mixc = function (a, b, k) { return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k]; };
+        var acc = norm(cs.getPropertyValue('--lp-accent'), '#d6336c'), pri = norm(cs.getPropertyValue('--lp-primary'), '#222'), wht = [255, 255, 255];
+        // Năm vầng sáng lấy từ màu chính / nhấn của trang (không dùng màu cố định)
+        var col = [acc, mixc(pri, wht, 0.45), mixc(acc, wht, 0.5), mixc(pri, acc, 0.5), mixc(acc, pri, 0.35)];
+        var B = [0, 1, 2, 3, 4].map(function (i) { return { bx: 0.2 + (i * 0.37) % 0.7, by: 0.25 + (i * 0.53) % 0.6, r: 0.38 + (i % 3) * 0.08, ph: i * 1.7, sp: 0.18 + i * 0.03 }; });
+        var ptr = null, follow = { x: 0.5, y: 0.5 }, S = 72;
+        var draw = function (t) {
+          cx.clearRect(0, 0, S, S); cx.globalCompositeOperation = 'lighter';
+          B.forEach(function (b, i) {
+            var x = b.bx + Math.sin(t * b.sp + b.ph) * 0.18, y = b.by + Math.cos(t * b.sp * 0.8 + b.ph * 1.3) * 0.16;
+            if (ptr) { x += (ptr.x - x) * 0.18; y += (ptr.y - y) * 0.18; }
+            if (i === 0) { x = follow.x; y = follow.y; }
+            var c = col[i].map(Math.round).join(','), g = cx.createRadialGradient(x * S, y * S, 0, x * S, y * S, b.r * S);
+            g.addColorStop(0, 'rgba(' + c + ',.85)'); g.addColorStop(1, 'rgba(' + c + ',0)');
+            cx.fillStyle = g; cx.fillRect(0, 0, S, S);
+          });
+        };
+        draw(2); // một khung tĩnh cho người tắt chuyển động
+        if (!calm) {
+          var vis = true, raf = 0, last = 0, t = 2;
+          var frame = function (now) {
+            raf = 0; if (!hero.isConnected || !vis) return;
+            var dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; t += dt;
+            var aim = ptr || { x: 0.3 + Math.sin(t * 0.21) * 0.15, y: 0.35 + Math.cos(t * 0.17) * 0.12 };
+            follow.x += (aim.x - follow.x) * (1 - Math.pow(0.15, dt)); follow.y += (aim.y - follow.y) * (1 - Math.pow(0.15, dt));
+            draw(t); raf = requestAnimationFrame(frame);
+          };
+          var go = function () { if (!raf && vis) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+          if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; go(); }).observe(hero); else go();
+          hero.addEventListener('pointermove', function (e) {
+            var r = hero.getBoundingClientRect(); ptr = { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height };
+            if (e.pointerType !== 'touch') { hero.style.setProperty('--mx', (e.clientX - r.left).toFixed(0) + 'px'); hero.style.setProperty('--my', (e.clientY - r.top).toFixed(0) + 'px'); }
+          }, { passive: true });
+          hero.addEventListener('pointerleave', function () { ptr = null; hero.style.setProperty('--mx', '-300px'); hero.style.setProperty('--my', '-300px'); });
+        }
+      }
+    }
+    if (calm) return;
+
+    // ---- Tiêu đề tách từ, thanh tiến độ cuộn, count-up, ripple ----
     var hl = root.querySelector('.lp-headline');
     if (hl && hl.childNodes.length === 1 && hl.firstChild.nodeType === 3 && hl.textContent.trim()) {
       var words = hl.textContent.trim().split(/\s+/);
@@ -137,8 +194,8 @@
         hl.appendChild(s); if (i < words.length - 1) hl.appendChild(document.createTextNode(' '));
       });
     }
-    var bar = mk('div', 'lp-progress'); bar.setAttribute('aria-hidden', 'true');
-    root.appendChild(bar);
+    var bar = q1('.lp-progress') || mk('div', 'lp-progress'); bar.setAttribute('aria-hidden', 'true');
+    if (!bar.parentNode) root.appendChild(bar);
     var tick = 0;
     function prog() {
       tick = 0;
@@ -173,6 +230,159 @@
       s.style.cssText = 'width:' + d + 'px;height:' + d + 'px;left:' + (e.clientX - r.left - d / 2) + 'px;top:' + (e.clientY - r.top - d / 2) + 'px';
       b.appendChild(s); setTimeout(function () { s.remove(); }, 650);
     });
+
+    // ---- Đếm ngược: đồng hồ lật (#100 flip-clock-timer). Ô .lp-cd-num gốc vẫn giữ chữ (đọc được, file xuất vẫn cập nhật) ----
+    if (!root.classList.contains('st-countdown-minimal') && Element.prototype.animate) {
+      qa('.lp-cd-box').forEach(function (box) {
+        var num = q1('.lp-cd-num', box);
+        if (!num || q1('.lp-flip', box)) return;
+        var wrap = mk('span', 'lp-flip'); wrap.setAttribute('aria-hidden', 'true');
+        var cards = [];
+        var build = function (str) {
+          wrap.textContent = ''; cards = [];
+          str.split('').forEach(function (ch) {
+            var f = mk('span', 'lp-fl'); f.innerHTML = '<span class="lp-fl-t"><b></b></span><span class="lp-fl-b"><b></b></span><span class="lp-fl-ft"><b></b></span><span class="lp-fl-fb"><b></b></span>';
+            wrap.appendChild(f);
+            var c = { v: ch, t: f.children[0].firstChild, b: f.children[1].firstChild, ft: f.children[2], fb: f.children[3] };
+            c.t.textContent = c.b.textContent = c.ft.firstChild.textContent = c.fb.firstChild.textContent = ch;
+            cards.push(c);
+          });
+        };
+        // Nửa trên mang số cũ gập xuống bản lề, rồi nửa dưới mang số mới bật ra
+        var flip = function (c, v) {
+          if (c.v === v) return;
+          var old = c.v; c.v = v;
+          c.t.textContent = v; c.ft.firstChild.textContent = old; c.fb.firstChild.textContent = v; c.b.textContent = old;
+          c.ft.getAnimations().forEach(function (a) { a.cancel(); }); c.fb.getAnimations().forEach(function (a) { a.cancel(); });
+          c.ft.animate([{ transform: 'perspective(320px) rotateX(0deg)', filter: 'brightness(1)' }, { transform: 'perspective(320px) rotateX(-90deg)', filter: 'brightness(.6)' }], { duration: 240, easing: 'cubic-bezier(.55,0,.9,.6)' });
+          var a = c.fb.animate([{ transform: 'perspective(320px) rotateX(90deg)', filter: 'brightness(1.5)' }, { transform: 'perspective(320px) rotateX(0deg)', filter: 'brightness(1)' }], { duration: 300, delay: 240, easing: 'cubic-bezier(.2,.9,.3,1.25)', fill: 'forwards' });
+          a.onfinish = function () { c.b.textContent = c.v; a.cancel(); };
+        };
+        var sync = function () {
+          var s = num.textContent.trim(); if (!s) return;
+          if (s.length !== cards.length) build(s); else s.split('').forEach(function (ch, i) { flip(cards[i], ch); });
+        };
+        build(num.textContent.trim() || '00');
+        box.insertBefore(wrap, num.nextSibling); box.classList.add('has-flip');
+        new MutationObserver(sync).observe(num, { childList: true, characterData: true, subtree: true });
+      });
+    }
+
+    // ---- Thẻ bento / diễn giả: viền phát sáng theo con trỏ (#228 glow-border-cards, #214 bento-features) ----
+    var lit = qa('.lp-benefits li, .lp-speaker, .lp-quote');
+    if (lit.length && window.matchMedia && matchMedia('(hover: hover)').matches) {
+      var gp = null;
+      var gl = function () {
+        lit.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          el.style.setProperty('--cx', (gp ? gp.x - r.left : -400).toFixed(0) + 'px'); el.style.setProperty('--cy', (gp ? gp.y - r.top : -400).toFixed(0) + 'px');
+          el.style.setProperty('--o', gp && Math.abs(gp.x - (r.left + r.width / 2)) < r.width / 2 + 260 && Math.abs(gp.y - (r.top + r.height / 2)) < r.height / 2 + 260 ? '1' : '0');
+        });
+      };
+      root.addEventListener('pointermove', function (e) { if (e.pointerType === 'touch') return; gp = { x: e.clientX, y: e.clientY }; later('gl', gl); }, { passive: true });
+      root.addEventListener('pointerleave', function () { gp = null; later('gl', gl); });
+    }
+
+    // ---- Chương trình: đường vẽ theo cuộn (#318 scroll-draw-route) ----
+    var ag = q1('.lp-agenda');
+    if (ag && ag.children.length && !q1('.lp-route', ag)) {
+      var NS = 'http://www.w3.org/2000/svg', lis = [].slice.call(ag.children);
+      var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'lp-route'); svg.setAttribute('aria-hidden', 'true');
+      var guide = document.createElementNS(NS, 'path'), route = document.createElementNS(NS, 'path'), pl = document.createElementNS(NS, 'path'), dg = document.createElementNS(NS, 'g');
+      guide.setAttribute('class', 'lp-route-guide'); route.setAttribute('class', 'lp-route-line'); pl.setAttribute('class', 'lp-route-pl'); pl.setAttribute('d', 'M7 0L-5 -5L-2 0L-5 5z');
+      svg.appendChild(guide); svg.appendChild(route); svg.appendChild(dg); svg.appendChild(pl);
+      ag.insertBefore(svg, ag.firstChild); ag.classList.add('has-route');
+      var L = 0, table = [], stops = [], PX = [13, 25];
+      var layout = function () {
+        var H = ag.offsetHeight; if (!H) return;
+        svg.setAttribute('viewBox', '0 0 40 ' + H); svg.setAttribute('height', H);
+        dg.textContent = '';
+        var pts = lis.map(function (li, i) { var f = q1('.lp-agenda-time', li) || li; return [PX[i % 2], li.offsetTop + Math.round(f.offsetHeight / 2)]; });
+        var d = 'M' + pts[0][0] + ' ' + pts[0][1];
+        for (var i = 1; i < pts.length; i++) { var a = pts[i - 1], b = pts[i], my = (a[1] + b[1]) / 2; d += ' C' + a[0] + ' ' + my + ' ' + b[0] + ' ' + my + ' ' + b[0] + ' ' + b[1]; }
+        if (pts.length === 1) d += ' l0 0.1';
+        guide.setAttribute('d', d); route.setAttribute('d', d);
+        L = route.getTotalLength(); route.style.strokeDasharray = L + ' ' + L;
+        table = []; for (var s = 0; s <= 240; s++) { var p = route.getPointAtLength(L * s / 240); table.push([p.y, L * s / 240]); }
+        stops = pts.map(function (pt, i) {
+          var c = document.createElementNS(NS, 'circle'), cc = document.createElementNS(NS, 'circle');
+          c.setAttribute('class', 'lp-route-dot'); c.setAttribute('cx', pt[0]); c.setAttribute('cy', pt[1]); c.setAttribute('r', 8);
+          cc.setAttribute('class', 'lp-route-dotc'); cc.setAttribute('cx', pt[0]); cc.setAttribute('cy', pt[1]); cc.setAttribute('r', 4);
+          dg.appendChild(c); dg.appendChild(cc);
+          return { c: c, cc: cc, li: lis[i], y: pt[1] };
+        });
+        paint();
+      };
+      var lenAt = function (y) {
+        if (!table.length || y <= table[0][0]) return 0;
+        for (var i = 1; i < table.length; i++) if (table[i][0] >= y) return table[i - 1][1] + (table[i][1] - table[i - 1][1]) * (y - table[i - 1][0]) / Math.max(0.01, table[i][0] - table[i - 1][0]);
+        return L;
+      };
+      var paint = function () {
+        if (!L) return;
+        var y = innerHeight * 0.62 - ag.getBoundingClientRect().top, len = Math.max(0, Math.min(L, lenAt(y)));
+        route.style.strokeDashoffset = (L - len).toFixed(1);
+        var p = route.getPointAtLength(len), q = route.getPointAtLength(Math.min(L, len + 2));
+        pl.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ') rotate(' + (Math.atan2(q.y - p.y, q.x - p.x) * 180 / Math.PI).toFixed(1) + ')');
+        stops.forEach(function (s) { var on = y >= s.y - 2; s.c.classList.toggle('on', on); s.cc.classList.toggle('on', on); s.li.classList.toggle('is-on', on); });
+      };
+      layout();
+      addEventListener('scroll', function () { later('rt', paint); }, { passive: true });
+      if ('ResizeObserver' in window) new ResizeObserver(function () { later('rl', layout); }).observe(ag); else addEventListener('resize', layout);
+    }
+
+    // ---- Nhận xét: bức tường cuộn dọc (#207 testimonial-columns) ----
+    var wall = q1('.lp-quotes');
+    if (wall && wall.children.length >= 3 && !wall.__wall) {
+      wall.__wall = 1;
+      var figs = [].slice.call(wall.children), nCols = 0;
+      var cloneFig = function (f) { var c = f.cloneNode(true); c.setAttribute('aria-hidden', 'true'); [c].concat(qa('[data-el]', c)).forEach(function (n) { n.removeAttribute('data-el'); }); return c; };
+      var buildWall = function () {
+        var w = wall.clientWidth || root.clientWidth, n = w >= 860 ? 3 : (w >= 560 ? 2 : 1);
+        if (n === nCols) return; nCols = n;
+        wall.textContent = ''; wall.classList.add('is-wall'); wall.style.setProperty('--n', n);
+        var H = 420, cols = [];
+        for (var c = 0; c < n; c++) {
+          var co = mk('div', 'lp-wall-col'), tr = mk('div', 'lp-wall-tr'); co.appendChild(tr); wall.appendChild(co);
+          cols.push({ co: co, tr: tr, items: figs.filter(function (_, i) { return i % n === c; }) });
+        }
+        cols.forEach(function (c, ci) {
+          c.items.forEach(function (f) { c.tr.appendChild(f); });
+          var base = [].slice.call(c.tr.children), guard = 0;
+          while (c.tr.offsetHeight < H && guard++ < 6) base.forEach(function (f) { c.tr.appendChild(cloneFig(f)); });
+          [].slice.call(c.tr.children).forEach(function (f) { c.tr.appendChild(cloneFig(f)); });
+          c.tr.style.setProperty('--t', Math.max(18, Math.round(c.tr.offsetHeight / 2 / 18)) + (ci % 2 ? 6 : 0) + 's'); c.tr.style.setProperty('--dir', ci % 2 ? 'reverse' : 'normal');
+        });
+      };
+      buildWall();
+      if ('ResizeObserver' in window) new ResizeObserver(function () { later('wl', buildWall); }).observe(root);
+      if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { wall.classList.toggle('is-off', !es[0].isIntersecting); }).observe(wall);
+    }
+
+    // ---- Ưu đãi: vé xé cuống (#298 coupon-tear) ----
+    var ocard = q1('.lp-offer-card'), claim = q1('.lp-offer-claim');
+    if (ocard && claim) claim.addEventListener('click', function () {
+      ocard.classList.add('is-torn');
+      setTimeout(function () { ocard.classList.remove('is-torn'); }, 2200);
+    });
+
+    // ---- Album: ngăn ảnh mở rộng khi rê chuột (#389 accordion-image-panels), chỉ khi khung rộng và có từ 3 ảnh ----
+    var gal = q1('.lp-gallery');
+    if (gal) {
+      var gits = qa('.lp-gallery-item:not(.is-empty)', gal);
+      if (gits.length >= 3) {
+        gits.forEach(function (it, i) {
+          if (!q1('.lp-acc-n', it)) { var nn = mk('span', 'lp-acc-n'); nn.setAttribute('aria-hidden', 'true'); nn.textContent = (i < 9 ? '0' : '') + (i + 1); it.appendChild(nn); }
+          var on = function () { gits.forEach(function (x) { x.classList.toggle('on', x === it); }); };
+          it.addEventListener('pointerenter', function (e) { if (e.pointerType !== 'touch') on(); });
+          it.addEventListener('focusin', on);
+        });
+        gits[0].classList.add('on');
+        var accFit = function () { var want = root.clientWidth >= 760; if (want === gal.classList.contains('is-acc')) return; gal.classList.add('lp-acc-init'); gal.classList.toggle('is-acc', want); void gal.offsetWidth; requestAnimationFrame(function () { requestAnimationFrame(function () { gal.classList.remove('lp-acc-init'); }); }); };
+        accFit();
+        if ('ResizeObserver' in window) new ResizeObserver(function () { later('af', accFit); }).observe(root);
+      }
+    }
   }
 
   // Xem ảnh toàn màn hình (album). Hàm TỰ CHỨA, không dùng biến ngoài: file HTML xuất nhúng nguyên văn hàm này.
@@ -519,21 +729,25 @@
     ]) : null;
 
     var offerLeft = h('p', { class: 'lp-offer-left', hidden: true });
+    // Vé ưu đãi: phần chính + cuống vé (xé khi bấm). Cảm hứng Lucian #298 (coupon-tear). Cuống là nút .lp-cta nên mở popup đăng ký ở cả bản xem lẫn file xuất.
+    var offerClaim = mark(h('a', { class: 'lp-cta lp-offer-claim', href: '#lp-register', text: txt('offer.claim', 'Nhận ưu đãi') }), 'offer.claim', 'Nút nhận ưu đãi', 'button', { def: 'Nhận ưu đãi' });
     var offer = ev.earlyBird ? h('section', { class: 'lp-section lp-offer' }, [
       TX('h2', {}, 'offer.title', 'Tiêu đề ưu đãi', L.offer),
       h('div', { class: 'lp-offer-card' }, [
-        images.offer
-          ? h('figure', { class: 'lp-offer-photo' }, [
-            (function (im) { if (editable) im.setAttribute('data-el-image', 'offer'); return im; })(mark(h('img', { src: images.offer, alt: 'Ảnh quà tặng / ưu đãi', width: 96, height: 96, loading: 'lazy', decoding: 'async' }), 'offer.img', 'Ảnh quà tặng / ưu đãi', 'box')),
-            imageButton('offer', 'Đổi'), editButton('offer')
+        h('div', { class: 'lp-offer-main' }, [
+          images.offer
+            ? h('figure', { class: 'lp-offer-photo' }, [
+              (function (im) { if (editable) im.setAttribute('data-el-image', 'offer'); return im; })(mark(h('img', { src: images.offer, alt: 'Ảnh quà tặng / ưu đãi', width: 96, height: 96, loading: 'lazy', decoding: 'async' }), 'offer.img', 'Ảnh quà tặng / ưu đãi', 'box')),
+              imageButton('offer', 'Đổi'), editButton('offer')
+            ])
+            : h('span', { class: 'lp-offer-ico', 'aria-hidden': 'true' }, [giftIcon()]),
+          h('div', { class: 'lp-offer-body' }, [
+            TX('p', { class: 'lp-offer-text' }, 'offer.text', 'Nội dung ưu đãi', ev.earlyBird, { multiline: true }),
+            ev.earlyBirdUntil ? TX('p', { class: 'lp-offer-until' }, 'offer.until', 'Hạn ưu đãi', 'Áp dụng đến ' + fmtDate(ev.earlyBirdUntil)) : null,
+            !images.offer && editable ? h('p', { class: 'lp-slot-add' }, [imageButton('offer', '+ Thêm ảnh quà tặng')]) : null
           ])
-          : h('span', { class: 'lp-offer-ico', 'aria-hidden': 'true' }, [giftIcon()]),
-        h('div', { class: 'lp-offer-body' }, [
-          TX('p', { class: 'lp-offer-text' }, 'offer.text', 'Nội dung ưu đãi', ev.earlyBird, { multiline: true }),
-          ev.earlyBirdUntil ? TX('p', { class: 'lp-offer-until' }, 'offer.until', 'Hạn ưu đãi', 'Áp dụng đến ' + fmtDate(ev.earlyBirdUntil)) : null,
-          !images.offer && editable ? h('p', { class: 'lp-slot-add' }, [imageButton('offer', '+ Thêm ảnh quà tặng')]) : null
         ]),
-        offerLeft
+        h('div', { class: 'lp-offer-stub' }, [offerLeft, offerClaim])
       ])
     ]) : null;
 
@@ -631,8 +845,12 @@
         h('div', { class: 'lp-pop-actions' }, [calBtn, shareBtn, closeBtn])
       ]);
       if (!calm && !waitlist) {
+        // Pháo giấy: 44 mảnh bắn lên rồi rơi (transform/opacity). Cảm hứng Lucian #320 (scratch-card: confetti bắn theo góc ngẫu nhiên, MIT © 2026 Seokwoooo); màu theo --lp-*
         var dots = [];
-        for (var i = 0; i < 18; i++) dots.push(h('i', { style: '--a:' + Math.round((i / 18) * 360) + 'deg;--d:' + (60 + (i * 37) % 70) + 'px;--c:' + (i % 3) }));
+        for (var i = 0; i < 44; i++) {
+          var ang = (i / 44) * 6.2832 + ((i * 7) % 5) * 0.09, dist = 70 + (i * 53) % 120;
+          dots.push(h('i', { style: '--dx:' + Math.round(Math.cos(ang) * dist) + 'px;--dy:' + Math.round(Math.sin(ang) * dist - 70) + 'px;--r:' + (((i * 97) % 14) * 60 - 360) + 'deg;--c:' + (i % 5) + ';--dl:' + (i % 6) * 18 + 'ms' }));
+        }
         card.appendChild(h('div', { class: 'lp-pop-burst', 'aria-hidden': 'true' }, dots));
       }
       dlg.appendChild(card);
@@ -832,7 +1050,7 @@
     });
     container.appendChild(footer);
     if (!editable) lightboxInit(container);
-    if (!editable && st.motion !== 'off') motionInit(container);
+    if (!editable && st.motion !== 'off' && !opts.keepPopup) motionInit(container);
     if (!editable) container.appendChild(stickyWrap);
 
     // Trang xem: mọi nút CTA mở popup đăng ký (href #lp-register chỉ còn là phương án dự phòng khi không có JS)
