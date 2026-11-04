@@ -433,24 +433,42 @@
     return card;
   }
 
-  // Thẻ lớn của trang Thư viện mẫu: ảnh đầu trang, tên, nhãn, bảng màu, nút "Dùng mẫu này" + "Xem trước"
+  // Thẻ của trang Thư viện mẫu, bố cục "tile" của Lucian gallery: nền phát sáng pastel theo màu mẫu (--h/--h2),
+  // khung trình duyệt thu nhỏ, số thứ tự + NEW + tên ở chân thẻ, nút mở rộng và hai nút Dùng mẫu / Xem trước.
+  var NEW_COUNT = 6; // số mẫu thêm gần nhất được gắn nhãn NEW
+  function tplNum(t) { var n = TPL.list.indexOf(t) + 1; return (n < 100 ? (n < 10 ? '00' : '0') : '') + n; }
+  function tplIsNew(t) { return TPL.list.indexOf(t) >= TPL.list.length - NEW_COUNT; }
+  function tplMock(t) {
+    var mock = document.createElement('div');
+    mock.className = 'lt-mock'; mock.setAttribute('aria-hidden', 'true');
+    mock.innerHTML = '<div class="lt-chrome"><i></i><i></i><i></i><span></span></div>';
+    mock.firstChild.lastChild.textContent = 'xclipse.vn/' + t.id;
+    mock.appendChild(tplThumb(t));
+    var sk = document.createElement('div');
+    sk.className = 'lt-sk'; sk.innerHTML = '<b></b><i></i><i></i><u></u>';
+    sk.firstChild.style.background = t.theme.accent;
+    sk.lastChild.style.background = t.theme.accent;
+    mock.appendChild(sk);
+    return mock;
+  }
   function tplPageCard(t, badge, kind) {
     var card = document.createElement('article');
-    card.className = 'tpl-pcard';
+    card.className = 'tpl-pcard lt-tile';
     card.setAttribute('data-id', t.id);
+    card.style.setProperty('--h', t.theme.accent);
+    card.style.setProperty('--h2', t.theme.primary);
     var shot = document.createElement('button');
-    shot.type = 'button'; shot.className = 'tpl-pshot';
+    shot.type = 'button'; shot.className = 'tpl-pshot lt-open';
     shot.setAttribute('aria-label', 'Xem trước mẫu ' + t.name);
-    var thumb = tplThumb(t);
-    var peek = document.createElement('span');
-    peek.className = 'tpl-peek'; peek.setAttribute('aria-hidden', 'true'); peek.textContent = 'Xem trước';
-    thumb.appendChild(peek);
-    shot.appendChild(thumb);
+    shot.appendChild(tplMock(t));
     shot.addEventListener('click', function () { openTplPreview(t.id, shot); });
     var body = document.createElement('div');
     body.className = 'tpl-pbody';
     var top = document.createElement('div');
-    top.className = 'tpl-card-top';
+    top.className = 'tpl-card-top lt-cap';
+    var num = document.createElement('b'); num.className = 'lt-num'; num.textContent = tplNum(t);
+    top.appendChild(num);
+    if (tplIsNew(t)) { var nw = document.createElement('em'); nw.className = 'lt-new'; nw.textContent = 'NEW'; top.appendChild(nw); }
     var nm = document.createElement('h3');
     nm.className = 'tpl-card-name'; nm.textContent = t.name;
     top.appendChild(nm); top.appendChild(tplDots(t));
@@ -463,21 +481,25 @@
     });
     if (badge) { var sc = document.createElement('span'); sc.className = 'tpl-score' + (kind === 'near' ? ' is-near' : ''); sc.textContent = badge; tags.appendChild(sc); }
     var acts = document.createElement('div');
-    acts.className = 'tpl-pactions';
+    acts.className = 'tpl-pactions lt-acts';
     var use = document.createElement('button');
     use.type = 'button'; use.className = 'btn btn-small tpl-use-cta'; use.innerHTML = EP.icon('wand', 15) + '<span>Dùng mẫu này</span>';
     use.setAttribute('aria-label', 'Dùng mẫu ' + t.name);
     use.addEventListener('click', function () { useTemplate(t.id); });
     var pvb = document.createElement('button');
-    pvb.type = 'button'; pvb.className = 'btn btn-ghost btn-small'; pvb.textContent = 'Xem trước';
+    pvb.type = 'button'; pvb.className = 'btn btn-ghost btn-small lt-pv'; pvb.textContent = 'Xem trước';
     pvb.setAttribute('aria-label', 'Xem trước mẫu ' + t.name);
     pvb.addEventListener('click', function () { openTplPreview(t.id, pvb); });
     acts.appendChild(use); acts.appendChild(pvb);
-    body.appendChild(top); body.appendChild(tags); body.appendChild(acts);
-    card.appendChild(shot); card.appendChild(body);
+    var exp = document.createElement('span');
+    exp.className = 'lt-exp'; exp.setAttribute('aria-hidden', 'true');
+    exp.innerHTML = '<svg viewBox="0 0 24 24"><path d="M14 5h5v5M10 19H5v-5M19 5l-6 6M5 19l6-6"/></svg>';
+    body.appendChild(top); body.appendChild(tags);
+    card.appendChild(shot); card.appendChild(acts); card.appendChild(body); card.appendChild(exp);
     return card;
   }
 
+  var tplVisible = []; // thứ tự mẫu đang hiện ở trang (khớp đủ, rồi gần đúng): Reels lướt theo danh sách này
   function renderTemplateGrid(P, animate) {
     var keys = FKEYS.filter(function (k) { return tplState[k]; });
     var advOn = FKEYS.filter(function (k) { return TPL.FILTERS[k].advanced && tplState[k]; }).length;
@@ -513,7 +535,7 @@
     R(P, 'clear').hidden = !tplActive();
     R(P, 'count').textContent = empty ? 'Không có mẫu nào khớp.' :
       (exact.length + ' mẫu khớp' + (near.length ? ' · ' + near.length + ' gần đúng' : ''));
-    if (P.page) syncChips();
+    if (P.page) { tplVisible = exact.concat(near).map(function (r) { return r.t; }); syncChips(); }
     tplSave();
     if (animate !== false) {
       EP.motion.stagger(grid.children);
@@ -535,54 +557,86 @@
   }
 
   // ---------- Trang Thư viện mẫu (tab đầu tiên) ----------
-  var CHIP_MAX = 8;
+  // Bố cục chuyển thể từ Lucian UX/UI Prompt gallery (MIT © 2026 Seokwoooo): viên thuốc phân đoạn (mục đích) + hàng chip ngành có số đếm.
+  var SET_MAX = 3;
+  function tplCountBy(key) {
+    var o = TPL.FILTERS[key].options;
+    return Object.keys(o).map(function (k) {
+      return { k: k, n: TPL.list.filter(function (t) { return tplHas(t, key, k); }).length };
+    }).filter(function (c) { return c.n; }).sort(function (a, b) { return b.n - a.n; });
+  }
   function buildTemplatePage() {
     var n = TPL.list.length;
-    $('#tpl-page-title').textContent = n + ' mẫu landing page sự kiện';
-    // Chip chọn nhanh: các ngành có nhiều mẫu nhất
-    var ind = TPL.FILTERS.industry.options;
-    var counts = Object.keys(ind).map(function (k) {
-      return { k: k, n: TPL.list.filter(function (t) { return tplHas(t, 'industry', k); }).length };
-    }).filter(function (c) { return c.n; }).sort(function (a, b) { return b.n - a.n; }).slice(0, CHIP_MAX);
-    var box = R(PICK.page, 'chips');
-    function chip(key, label, num) {
+    var ind = TPL.FILTERS.industry.options, gl = TPL.FILTERS.goal.options;
+    var indCounts = tplCountBy('industry');
+    R(PICK.page, 'total').textContent = n;
+    R(PICK.page, 'meta-ind').textContent = indCounts.length + ' ngành';
+    function pillBtn(box, cls, attr, key, label, tag, onClick) {
       var b = document.createElement('button');
-      b.type = 'button'; b.className = 'tpl-chip'; b.setAttribute('data-chip', key);
-      b.innerHTML = '<span></span><b></b>';
-      b.firstChild.textContent = label; b.lastChild.textContent = num;
-      b.addEventListener('click', function () {
+      b.type = 'button'; b.className = cls; b.setAttribute(attr, key);
+      b.innerHTML = '<span></span><' + tag + '></' + tag + '>';
+      b.firstChild.textContent = label;
+      b.addEventListener('click', onClick);
+      box.appendChild(b);
+    }
+    var sets = R(PICK.page, 'sets');
+    pillBtn(sets, 'lt-set', 'data-goal', '', 'Mọi mục đích', 'i', function () { tplState.goal = ''; renderTemplateGrid(PICK.page, true); });
+    tplCountBy('goal').slice(0, SET_MAX).forEach(function (c) {
+      pillBtn(sets, 'lt-set', 'data-goal', c.k, gl[c.k], 'i', function () {
+        tplState.goal = tplState.goal === c.k ? '' : c.k; renderTemplateGrid(PICK.page, true);
+      });
+    });
+    var box = R(PICK.page, 'chips');
+    function chip(key, label) {
+      pillBtn(box, 'tpl-chip lt-cat', 'data-chip', key, label, 'b', function () {
         tplState.industry = key && tplState.industry !== key ? key : '';
         renderTemplateGrid(PICK.page, true);
       });
-      box.appendChild(b);
     }
-    chip('', 'Tất cả', n);
-    counts.forEach(function (c) { chip(c.k, ind[c.k], c.n); });
-    // Ba ảnh chụp mẫu xếp chồng làm hình trang trí ở đầu trang
-    var art = $('#tpl-hero-art');
-    TPL.list.filter(function (t) { return t.thumb; }).slice(0, 3).forEach(function (t, i) {
-      var im = document.createElement('img');
-      im.src = t.thumb; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.style.setProperty('--k', i);
-      art.appendChild(im);
-    });
+    chip('', 'Tất cả');
+    indCounts.forEach(function (c) { chip(c.k, ind[c.k]); });
     buildTemplateFilters(PICK.page);
+    if (EP.tplGallery) EP.tplGallery.init({
+      root: $('#view-templates'),
+      list: function () { return tplVisible; },
+      use: useTemplate,
+      preview: openTplPreview,
+      render: tplRenderLanding,
+      num: tplNum, isNew: tplIsNew, desc: tplDesc,
+      goals: function (t) { return (t.tags.goal || []).map(function (g) { return TPL.FILTERS.goal.options[g]; }).filter(Boolean); },
+      filtersOn: function () { return FKEYS.some(function (k) { return k !== 'industry' && k !== 'goal' && tplState[k]; }); },
+      query: function () { return tplState.q; },
+      previewOpen: function () { return tplPreviewOpen(); }
+    });
   }
   function syncChips() {
     R(PICK.page, 'chips').querySelectorAll('.tpl-chip').forEach(function (b) {
-      var on = (b.getAttribute('data-chip') || '') === tplState.industry;
+      var key = b.getAttribute('data-chip') || '';
+      var on = key === tplState.industry;
       b.classList.toggle('is-active', on);
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.lastChild.textContent = tplCount('industry', key);
     });
+    R(PICK.page, 'sets').querySelectorAll('.lt-set').forEach(function (b) {
+      var key = b.getAttribute('data-goal') || '';
+      var on = key === tplState.goal;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.lastChild.textContent = tplCount('goal', key);
+    });
+    if (EP.tplGallery) EP.tplGallery.sync();
   }
   function showTemplatePage() { renderTemplateGrid(PICK.page, true); }
   function leaveTemplatePage() {
     closeTplPreview(true);
+    if (EP.tplGallery) EP.tplGallery.close(true);
     ['grid', 'grid-near'].forEach(function (r) { R(PICK.page, r).innerHTML = ''; });
   }
 
   // "Dùng mẫu này": bắt đầu landing page mới bằng mẫu, điền dữ liệu mẫu vào form, sang tab Thông tin
   function useTemplate(id) {
     closeTplPreview(true);
+    if (EP.tplGallery) EP.tplGallery.close(true);
     clearEditor(); // sự kiện đang mở vẫn được giữ trong "Sự kiện của tôi"
     setTemplate(id);
     fillSample();
@@ -596,22 +650,30 @@
   }
 
   // Xem trước toàn trang của mẫu với dữ liệu mẫu và nội dung mô phỏng (không gửi đăng ký thật)
-  var tpv = null;
-  function openTplPreview(id, opener) {
-    var t = TPL.get(id);
+  // Vẽ trang landing của mẫu với dữ liệu mẫu vào container (dùng cho xem trước và Reels); trả về {update}
+  function tplRenderLanding(container, t) {
     var ev = t.sample();
     ev.id = 'tpl-preview-' + t.id; ev.templateId = t.id; ev.sheetUrl = '';
     ev.images = ev.images || {};
     var seats = ev.capacity ? Math.floor(Number(ev.capacity) * 0.42) : 36;
+    var content = EP.contentGenerator.generate(ev, form.elements.tone.value, 0);
+    return EP.landingRenderer.render(container, {
+      event: ev, content: content, now: function () { return new Date(); }, getCount: function () { return seats; }, editable: false, appUrl: APP_URL,
+      onRegister: function () { return { ok: false, errors: { form: 'Đây là bản xem trước – chọn "Dùng mẫu này" để tạo trang của bạn.' } }; }
+    });
+  }
+  var tpv = null;
+  function openTplPreview(id, opener) {
+    var t = TPL.get(id);
     if (!tpv) {
       tpv = { root: document.createElement('div') };
       tpv.root.className = 'pv-overlay tpl-pv';
       tpv.root.setAttribute('role', 'dialog');
       tpv.root.setAttribute('aria-modal', 'true');
       tpv.root.hidden = true;
-      tpv.root.innerHTML = '<div class="pv-bar"><strong class="pv-title"></strong><span class="pv-note">Dữ liệu mẫu · form không gửi đăng ký thật</span>' +
+      tpv.root.innerHTML = '<div class="pv-bar"><div class="pv-head"><p class="tpv-kick"></p><strong class="pv-title"></strong></div><span class="pv-note">Dữ liệu mẫu · form không gửi đăng ký thật</span>' +
         '<button type="button" class="btn btn-primary btn-small tpv-use">Dùng mẫu này</button>' +
-        '<button type="button" class="btn btn-ghost btn-small pv-close">' + EP.icon('x', 14) + 'Đóng (Esc)</button></div>' +
+        '<button type="button" class="btn btn-ghost btn-small pv-close" aria-label="Đóng xem trước (Esc)">' + EP.icon('x', 14) + '<span>Đóng (Esc)</span></button></div>' +
         '<div class="pv-stage"><div class="pv-frame is-desktop"><div class="landing"></div></div></div>';
       document.body.appendChild(tpv.root);
       tpv.landing = tpv.root.querySelector('.landing');
@@ -622,12 +684,10 @@
     tpv.opener = opener || null;
     tpv.root.setAttribute('aria-label', 'Xem trước mẫu ' + t.name);
     tpv.root.querySelector('.pv-title').textContent = t.name;
+    tpv.root.style.setProperty('--h', t.theme.accent); tpv.root.style.setProperty('--h2', t.theme.primary);
+    tpv.root.querySelector('.tpv-kick').textContent = tplNum(t) + ' · ' + (tplDesc(t) || 'Mẫu landing page') + (tplIsNew(t) ? ' · NEW' : '');
     tpv.root.querySelector('.tpv-use').setAttribute('aria-label', 'Dùng mẫu ' + t.name);
-    var content = EP.contentGenerator.generate(ev, form.elements.tone.value, 0);
-    var r = EP.landingRenderer.render(tpv.landing, {
-      event: ev, content: content, now: function () { return new Date(); }, getCount: function () { return seats; }, editable: false, appUrl: APP_URL,
-      onRegister: function () { return { ok: false, errors: { form: 'Đây là bản xem trước – chọn "Dùng mẫu này" để tạo trang của bạn.' } }; }
-    });
+    var r = tplRenderLanding(tpv.landing, t);
     clearInterval(tpv.timer);
     tpv.timer = setInterval(r.update, 1000);
     tpv.root.hidden = false;
