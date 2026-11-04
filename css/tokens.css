@@ -7,48 +7,52 @@
   --font: 'IBM Plex Sans', 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-  /* Nền & bề mặt */
-  --ground: #f7f8f9;     /* khung (thanh trên + nền quanh tấm) */
-  --surface: #ffffff;    /* tấm làm việc */
-  --raised: #f2f4f5;     /* giếng / khối lõm một bậc */
-  --active: #e9ebed;     /* trạng thái đang chọn trung tính */
-  --border: #e6e8ea;     /* viền tấm & thẻ */
-  --rule: #eff0f2;       /* kẻ dòng bảng */
-  --control: #cdced1;    /* viền ô nhập & nút phụ */
-
-  /* Chữ (mọi bậc ≥ 4.5:1 trên trắng) */
-  --text: #131416;
-  --text-muted: #5d5f63;
-
-  /* Hành động & thương hiệu */
-  --primary: #131416;            /* nút chính gần đen */
-  --primary-hover: #2a2c30;
-  --primary-contrast: #ffffff;
-  --accent: #d6336c;             /* hồng thương hiệu: dữ liệu, gạch chân tab, trạng thái chọn */
-  --accent-ink: #b8235a;         /* hồng dùng làm chữ (5.6:1 trên trắng) */
-  --accent-soft: #fdeef3;
-  --accent-contrast: #ffffff;
-
-  /* Trạng thái */
-  --success: #1e7b4f;
-  --warn: #92400e;
-  --danger: #c4242a;
-  --pill-positive-bg: #dcfae5; --pill-positive-ink: #04250e;
-  --pill-negative-bg: #ffedea; --pill-negative-ink: #831c1e;
-  --pill-warning-bg: #fffbeb; --pill-warning-ink: #92400e;
-  --pill-neutral-bg: #ebedee; --pill-neutral-ink: #353736;
+  /* Lucian Lab design tokens (MIT, (c) 2026 Seokwoooo) mapped onto app tokens */
+  color-scheme: light;
+  --ux-ease: cubic-bezier(.2, .8, .2, 1);
+  --ux-spring: cubic-bezier(.34, 1.45, .64, 1);
+  --ux-grad: linear-gradient(120deg, #7B61FF, #3D8BFF 55%, #1FB89A);
+  --ground: #F4F2EE;
+  --surface: #FFFFFF;
+  --raised: #F5F3EF;
+  --active: #EAE7E1;
+  --border: rgba(22, 21, 27, .09);
+  --rule: rgba(22, 21, 27, .06);
+  --control: rgba(22, 21, 27, .26);   /* viền ô nhập, >=3:1 */
+  --text: #16151B;
+  --text-muted: #57535F;
+  --primary: #16151B;
+  --primary-hover: #34323d;
+  --primary-contrast: #FFFFFF;
+  --accent: #6A57F2;
+  --accent-ink: #5442DC;              /* chữ accent, 5.6:1 trên trắng */
+  --accent-soft: rgba(106, 87, 242, .12);
+  --accent-contrast: #FFFFFF;
+  --success: #0C7A58;
+  --warn: #A3560F;
+  --danger: #C42E49;
+  --danger-line: rgba(196, 46, 73, .4);
+  --disabled-bg: #8E8A97;
+  --disabled-ink: #6f6b78;
+  --overlay: rgba(22, 21, 27, .55);
+  --glass: rgba(255, 255, 255, .58);
+  --glass-line: rgba(255, 255, 255, .85);
+  --pill-positive-bg: #DDF5EC; --pill-positive-ink: #07503a;
+  --pill-negative-bg: #FCE6EA; --pill-negative-ink: #8a1f33;
+  --pill-warning-bg: #FDEEDC; --pill-warning-ink: #7d410a;
+  --pill-neutral-bg: #EAE7E1; --pill-neutral-ink: #3b3944;
 
   /* Hình khối */
-  --radius-sheet: 16px;
-  --radius: 10px;
-  --radius-small: 6px;
+  --radius-sheet: 22px;
+  --radius: 14px;
+  --radius-small: 10px;
   --control-h: 32px;
   --field-h: 38px;
   --gap: 24px;
   --pad: 24px;
 
   /* Bóng chỉ cho thứ đang nổi (menu, hộp thoại, thanh công cụ, toast) */
-  --shadow-float: 0 12px 32px rgba(19, 20, 22, 0.16), 0 2px 6px rgba(19, 20, 22, 0.08);
+  --shadow-float: 0 12px 32px rgba(40, 30, 80, .14), 0 2px 6px rgba(40, 30, 80, .08);
 
   /* Chuyển động: một bộ duy nhất, ease-out dạng hàm mũ */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -69,6 +73,45 @@
   /* Tên cũ, giữ để không vỡ chỗ đang dùng */
   --bg: var(--ground);
   --shadow: var(--shadow-float);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --ux-grad: linear-gradient(120deg, #B7A4FF, #7DB4FF 55%, #A5F2D3);
+  --ground: #07080D; --surface: #13141C; --raised: #1A1B25; --active: #252632;
+  --border: rgba(255, 255, 255, .08); --rule: rgba(255, 255, 255, .06); --control: rgba(255, 255, 255, .34);
+  --text: #F4F0E8; --text-muted: rgba(244, 240, 232, .68);
+  --primary: #F4F0E8; --primary-hover: #FFFFFF; --primary-contrast: #0B0C12;
+  --accent: #B7A4FF; --accent-ink: #C9BBFF; --accent-soft: rgba(183, 164, 255, .15); --accent-contrast: #0B0C12;
+  --success: #7EE8C0; --warn: #FFB26B; --danger: #FF7D8C; --danger-line: rgba(255, 125, 140, .45);
+  --disabled-bg: #3a3b47; --disabled-ink: rgba(244, 240, 232, .45);
+  --overlay: rgba(0, 0, 0, .65);
+  --glass: rgba(255, 255, 255, .07); --glass-line: rgba(255, 255, 255, .18);
+  --pill-positive-bg: rgba(126, 232, 192, .16); --pill-positive-ink: #9CF0D0;
+  --pill-negative-bg: rgba(255, 125, 140, .16); --pill-negative-ink: #FFA3AE;
+  --pill-warning-bg: rgba(255, 178, 107, .16); --pill-warning-ink: #FFC48D;
+  --pill-neutral-bg: #252632; --pill-neutral-ink: #D8D4CC;
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .4);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ux-grad: linear-gradient(120deg, #B7A4FF, #7DB4FF 55%, #A5F2D3);
+  --ground: #07080D; --surface: #13141C; --raised: #1A1B25; --active: #252632;
+  --border: rgba(255, 255, 255, .08); --rule: rgba(255, 255, 255, .06); --control: rgba(255, 255, 255, .34);
+  --text: #F4F0E8; --text-muted: rgba(244, 240, 232, .68);
+  --primary: #F4F0E8; --primary-hover: #FFFFFF; --primary-contrast: #0B0C12;
+  --accent: #B7A4FF; --accent-ink: #C9BBFF; --accent-soft: rgba(183, 164, 255, .15); --accent-contrast: #0B0C12;
+  --success: #7EE8C0; --warn: #FFB26B; --danger: #FF7D8C; --danger-line: rgba(255, 125, 140, .45);
+  --disabled-bg: #3a3b47; --disabled-ink: rgba(244, 240, 232, .45);
+  --overlay: rgba(0, 0, 0, .65);
+  --glass: rgba(255, 255, 255, .07); --glass-line: rgba(255, 255, 255, .18);
+  --pill-positive-bg: rgba(126, 232, 192, .16); --pill-positive-ink: #9CF0D0;
+  --pill-negative-bg: rgba(255, 125, 140, .16); --pill-negative-ink: #FFA3AE;
+  --pill-warning-bg: rgba(255, 178, 107, .16); --pill-warning-ink: #FFC48D;
+  --pill-neutral-bg: #252632; --pill-neutral-ink: #D8D4CC;
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .4);
 }
 
 }
