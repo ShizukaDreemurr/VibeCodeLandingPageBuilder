@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.9.1',
+    version: '2.9.2',
     date: '2026-10-27',
-    notes: 'Reels lướt mượt và nổi bật hơn, hiệu ứng sáng/tối mọi trang, khách mở Thiết kế trang thấy ngay trang Mộc, sửa nút trên điện thoại và thanh bước',
+    notes: 'Hiệu ứng sáng/tối mượt một nhịp, xem trước mẫu có đủ hiệu ứng cuộn, thanh xem trước gọn trên điện thoại',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
