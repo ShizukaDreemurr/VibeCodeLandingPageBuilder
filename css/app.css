@@ -1609,3 +1609,9 @@ html.tpv-lock { overflow: hidden; }
   html.motion-off .ux-skel, html.motion-off .tpl-thumb::before { animation: none !important; }
   html.motion-off .ux-toast-old, html.motion-off .ux-pill { transition: none !important; }
 }
+
+/* QA: builder+editor */
+@layer app {
+  .ml-dialog, dialog.ie-dialog { border: 1px solid var(--border); }
+  .ml-dialog:focus-visible, dialog.ie-dialog:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+}
