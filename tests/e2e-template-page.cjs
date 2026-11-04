@@ -26,7 +26,9 @@ const ok = (c, m) => { if (!c) { failed++; console.log('✗ ' + m); } else conso
   ok(await p.isVisible('#view-templates') && await p.isHidden('#view-builder'), 'khách mới vào thẳng Thư viện mẫu');
   ok((await p.getAttribute('.tab[data-tab="templates"]', 'aria-selected')) === 'true', 'tab Thư viện mẫu đang chọn');
   const h1 = (await p.textContent('#view-templates h1')).trim();
-  ok(h1 === total + ' mẫu landing page sự kiện', 'h1 hiện số mẫu thật: "' + h1 + '"');
+  ok(h1 === 'Thư viện mẫu', 'h1 "Thư viện mẫu" (chữ "mẫu" tô gradient): "' + h1 + '"');
+  ok((await p.textContent('#view-templates [data-r="total"]')).trim() === String(total), 'dòng meta hiện số mẫu thật: ' + total);
+  ok(await p.locator('.lt-title b').count() === 1 && await p.locator('.lt-bar [data-r="sets"] .lt-set').count() >= 2 && await p.locator('.lt-bar [data-r="reel-btn"]').count() === 1, 'có tiêu đề gradient, viên phân đoạn mục đích, nút Reels');
   ok((await p.$$eval('h1', h => h.filter(x => x.getClientRects().length).length)) === 1, 'đúng một h1 hiện');
   await settle();
   ok((await p.locator('.tpl-pcard').count()) === total, `${total} thẻ mẫu`);
@@ -44,6 +46,7 @@ const ok = (c, m) => { if (!c) { failed++; console.log('✗ ' + m); } else conso
   ok(ids.length === exp.length && ids.every(i => exp.includes(i)), `chip "${chipKey}": ${exp.length} thẻ khớp đủ`);
   ok((await p.inputValue('#view-templates select[data-filter="industry"]')) === chipKey, 'chip đồng bộ với ô lọc Ngành nghề');
   ok((await p.getAttribute('.tpl-chip >> nth=1', 'aria-pressed')) === 'true', 'chip đang chọn có aria-pressed');
+  await p.click('#view-templates [data-r="filter-btn"]'); await settle();
   await p.selectOption('#view-templates select[data-filter="type"]', 'workshop'); await settle();
   const both = info.filter(t => t.tags.industry.includes(chipKey) && t.tags.type.includes('workshop')).map(t => t.id);
   const ex2 = await p.$$eval('#view-templates [data-r="grid"] .tpl-pcard', c => c.map(x => x.dataset.id));
@@ -54,6 +57,7 @@ const ok = (c, m) => { if (!c) { failed++; console.log('✗ ' + m); } else conso
   ok(/mẫu khớp/.test(await p.textContent('#view-templates [data-r="count"]')), 'dòng đếm kết quả');
   await p.click('#view-templates [data-r="clear"]'); await settle();
   ok((await p.locator('.tpl-pcard').count()) === total, 'Xoá bộ lọc trả lại đủ ' + total + ' mẫu');
+  await p.click('#view-templates [data-r="search-btn"]'); await settle();
   await p.fill('#view-templates [data-r="search"]', 'cuoi'); await settle();
   const wed = info.filter(t => /cưới/i.test(t.name) || t.tags.type.includes('wedding')).length;
   ok((await p.locator('#view-templates [data-r="grid"] .tpl-pcard').count()) >= wed && wed > 0, 'tìm "cuoi" (không dấu) thấy mẫu cưới');

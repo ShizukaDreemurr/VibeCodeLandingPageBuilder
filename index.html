@@ -44,8 +44,8 @@
   <a class="skip-link" href="#view-builder" id="skip-link">Bỏ qua, tới nội dung chính</a>
   <header class="topbar">
     <a class="brand" href="./" aria-label="Xclipse – trang chủ">
-      <svg class="brand-mark" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15.5" cy="10" r="7" fill="var(--accent)"/></svg>
-      <span>Xclipse</span>
+      <span class="brand-mark brand-orb" aria-hidden="true"></span>
+      <span class="brand-name">Xclipse</span><span class="brand-sub">Landing Builder</span>
     </a>
     <nav class="tabs" role="tablist">
       <button type="button" class="tab is-active" data-tab="templates" role="tab" aria-selected="true">Thư viện mẫu</button>
@@ -65,24 +65,39 @@
     <button type="button" class="btn btn-primary" id="btn-new" aria-label="Tạo trang mới"><span data-icon="plus"></span><span class="lbl">Tạo trang mới</span></button>
   </header>
 
-  <main id="view-templates" class="view tpl-page">
-    <section class="tpl-hero" aria-labelledby="tpl-page-title">
-      <div class="tpl-hero-text">
-        <p class="tpl-eyebrow">Thư viện mẫu Xclipse</p>
-        <h1 id="tpl-page-title">Mẫu landing page sự kiện</h1>
-        <p class="tpl-hero-sub" id="tpl-page-sub">Chọn một mẫu, bấm “Dùng mẫu này” và có ngay trang đăng ký có đếm ngược, mã QR, danh sách khách. Lọc theo ngành, loại sự kiện, mục đích.</p>
-        <div class="tpl-chips" data-r="chips" role="group" aria-label="Chọn nhanh theo ngành"></div>
+  <main id="view-templates" class="view tpl-page lt-page">
+    <!-- Bố cục chuyển thể từ Lucian UX/UI Prompt gallery (MIT © 2026 Seokwoooo) -->
+    <header class="lt-head" aria-labelledby="tpl-page-title">
+      <h1 class="lt-title" id="tpl-page-title"><span class="lt-w">Thư viện</span> <b class="lt-w">mẫu</b></h1>
+      <div class="lt-intro">
+        <p class="lt-sub" id="tpl-page-sub">Chọn một mẫu, bấm “Dùng mẫu này” và có ngay trang đăng ký có đếm ngược, mã QR, danh sách khách. Lọc theo ngành, loại sự kiện, mục đích, hoặc lướt từng mẫu toàn màn hình ở chế độ Reels.</p>
+        <p class="lt-meta"><span><b data-r="total">0</b> mẫu</span><i class="lt-dot" aria-hidden="true"></i><span data-r="meta-ind">0 ngành</span><i class="lt-dot" aria-hidden="true"></i><span>Xem trước đầy đủ</span></p>
       </div>
-      <div class="tpl-hero-art" id="tpl-hero-art" aria-hidden="true"></div>
-    </section>
-    <div class="tpl-search">
-      <span class="tpl-search-icon" data-icon="zoom-in" aria-hidden="true"></span>
-      <input type="search" data-r="search" placeholder="Tìm mẫu: tiệc cưới, marathon, khai trương…" aria-label="Tìm mẫu" autocomplete="off">
+    </header>
+    <div class="lt-bar" data-r="bar">
+      <div class="lt-bar-in">
+        <div class="lt-sets" data-r="sets" role="group" aria-label="Mục đích"><span class="lt-sets-pill" aria-hidden="true"></span></div>
+        <div class="lt-cats-wrap">
+          <nav class="lt-cats tpl-chips" data-r="chips" role="group" aria-label="Chọn nhanh theo ngành"><span class="lt-cats-pill" aria-hidden="true"></span></nav>
+        </div>
+        <div class="lt-tools">
+          <div class="lt-search tpl-search" data-r="searchbox">
+            <button class="lt-tool lt-search-btn" type="button" data-r="search-btn" aria-label="Mở ô tìm mẫu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.2 4.2"/></svg></button>
+            <input type="search" data-r="search" placeholder="Tiệc cưới, marathon, khai trương…" aria-label="Tìm mẫu" autocomplete="off">
+          </div>
+          <button class="lt-tool" type="button" data-r="filter-btn" aria-label="Bộ lọc" aria-expanded="false" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span class="lt-dotmark" aria-hidden="true"></span></button>
+          <button class="lt-tool lt-motion" type="button" data-r="motion-btn" aria-pressed="true" aria-label="Tạm dừng chuyển động"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="lt-m-play" d="M8.5 6.2v11.6l9.2-5.8z"/><path class="lt-m-pause" d="M8.5 6.5v11M15.5 6.5v11"/></svg></button>
+          <button class="lt-tool lt-tool--label" type="button" data-r="reel-btn" aria-label="Lướt từng mẫu toàn màn hình (Reels)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="3"/><path d="M10.5 9.6v4.8l4-2.4z" fill="currentColor" stroke="none"/></svg><span>Reels</span></button>
+          <button class="lt-tool lt-theme" type="button" data-r="theme-btn" aria-label="Đổi giao diện"><svg viewBox="0 0 24 24" aria-hidden="true"><mask id="lt-moon-mask"><rect width="24" height="24" fill="#fff"/><circle class="lt-moon-cut" cx="24" cy="4" r="7" fill="#000"/></mask><circle class="lt-sun-core" cx="12" cy="12" r="5" mask="url(#lt-moon-mask)" fill="currentColor" stroke="none"/><g class="lt-sun-rays"><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g></svg></button>
+        </div>
+      </div>
     </div>
-    <div class="tpl-filters" data-r="filters"></div>
-    <div class="tpl-status">
+    <div class="lt-panel" data-r="panel" hidden>
+      <div class="tpl-filters" data-r="filters"></div>
+    </div>
+    <div class="tpl-status lt-status">
       <p class="tpl-count" data-r="count" role="status" aria-live="polite"></p>
-      <button type="button" class="btn btn-ghost btn-small" data-r="clear" hidden>Xoá bộ lọc</button>
+      <button type="button" class="lt-pillbtn" data-r="clear" hidden>Xoá bộ lọc</button>
     </div>
     <div class="tpl-results">
       <h2 class="sr-only">Danh sách mẫu</h2>
@@ -94,7 +109,7 @@
       <div class="tpl-empty" data-r="empty" hidden>
         <strong>Chưa có mẫu nào khớp</strong>
         <p class="hint">Thử bỏ bớt một bộ lọc hoặc đổi từ khoá tìm kiếm.</p>
-        <button type="button" class="btn btn-ghost btn-small" data-r="empty-clear">Xoá bộ lọc</button>
+        <button type="button" class="lt-pillbtn" data-r="empty-clear">Xoá bộ lọc</button>
       </div>
     </div>
   </main>
@@ -640,6 +655,7 @@
   <script defer src="js/popup.js?v=2.8.1"></script>
   <script defer src="js/ux-lucian.js?v=2.8.1"></script>
   <script defer src="js/ux-lucian-editor.js?v=2.8.1"></script>
+  <script defer src="js/tpl-gallery.js?v=2.8.1"></script>
   <script defer src="js/ux-lucian-dash.js?v=2.8.1"></script>
   <script defer src="js/app.js?v=2.8.1"></script>
   <script defer src="js/ux-lucian-form.js?v=2.8.1"></script>
