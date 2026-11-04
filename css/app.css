@@ -1649,3 +1649,194 @@ html.tpv-lock { overflow: hidden; }
   .ml-dialog, dialog.ie-dialog { border: 1px solid var(--border); }
   .ml-dialog:focus-visible, dialog.ie-dialog:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 }
+
+/* Lucian: builder+brand */
+@layer app {
+  /* Token cầu nối: --ux-* của Lucian -> token của app (sáng/tối tự đổi theo tokens.css) */
+
+  /* ===== Thanh bước (Lucian 042 wizard stepper) ===== */
+  .lf-steps { margin: 4px 0 28px; width: min(760px, 100%); }
+  .lf-steps-list { position: relative; display: flex; justify-content: space-between; margin: 0; padding: 0 4px; list-style: none; }
+  .lf-steps-line { position: absolute; left: 21px; right: 21px; top: 16px; height: 3px; border-radius: 2px; background: var(--active); }
+  .lf-steps-line i { position: absolute; inset: 0; border-radius: inherit; background: var(--ux-grad); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); transition: transform .6s var(--ux-ease); }
+  .lf-st { position: relative; display: flex; flex-direction: column; align-items: center; gap: 7px; min-width: 34px; flex: 0 0 auto; }
+  .lf-dot { position: relative; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 2px var(--control); font: inherit; font-size: 13.5px; font-weight: 700; color: var(--text-muted); display: grid; place-items: center; cursor: pointer; transition: box-shadow .35s, background-color .35s, color .35s, transform .45s var(--ux-spring); }
+  .lf-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .lf-ck { position: absolute; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  .lf-ck path { stroke-dasharray: 16; stroke-dashoffset: 16; transition: stroke-dashoffset .35s var(--ux-ease) .1s; }
+  .lf-st.cur .lf-dot { box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 5px var(--accent-soft); color: var(--accent-ink); transform: scale(1.08); }
+  .lf-st.done .lf-dot { background: var(--accent); box-shadow: none; color: var(--accent-contrast); transform: none; }
+  .lf-st.done .lf-dot span { opacity: 0; }
+  .lf-st.done .lf-ck { opacity: 1; }
+  .lf-st.done .lf-ck path { stroke-dashoffset: 0; }
+  .lf-st small { font-size: 12px; font-weight: 600; color: var(--text-muted); white-space: nowrap; transition: color .3s; }
+  .lf-st.cur small, .lf-st.done small { color: var(--text); }
+  @media (max-width: 560px) { .lf-st small { font-size: 11px; white-space: normal; text-align: center; max-width: 90px; } .lf-steps-list { padding: 0; } .lf-steps-line { left: 17px; right: 17px; } }
+
+  /* ===== Ô nhập nhãn nổi trên viền (Lucian 025) ===== */
+  .lf-box { position: relative; height: 56px; isolation: isolate; }
+  .view .field .lf-box > input:not([type="checkbox"]):not([type="radio"]) {
+    position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; padding: 18px 16px 0 16px !important; border: 0 !important; outline: 0; border-radius: 14px;
+    background: var(--surface) !important; box-shadow: none !important; font-size: 16px; font-weight: 500; color: var(--text);
+  }
+  .view .field .lf-box > input:not([type="checkbox"]):not([type="radio"]):focus { box-shadow: none !important; }
+  .lf-f.is-up .lf-box > input { padding-top: 0 !important; }
+  .lf-f.is-ok .lf-box > input:not([type="datetime-local"]) { padding-right: 44px !important; }
+  .lf-f:not(.is-up) input::placeholder { opacity: 0; }
+  .lf-line { position: absolute; inset: 0; display: flex; pointer-events: none; border-radius: 14px; }
+  .lf-line i { display: block; border: 1.5px solid var(--control); transition: border-color .3s var(--ux-ease); }
+  .lf-line .l { width: 14px; border-right: 0; border-radius: 14px 0 0 14px; }
+  .lf-line .g { width: 0; border-left: 0; border-right: 0; transition: width .35s var(--ux-ease), border-color .3s var(--ux-ease); }
+  .lf-line .r { flex: 1; border-left: 0; border-radius: 0 14px 14px 0; }
+  .lf-f.is-up .lf-line .g { border-top-color: transparent; }
+  .lf-f:hover .lf-line i { border-color: var(--text-muted); }
+  .lf-f.is-focus .lf-line i { border-color: var(--accent); border-width: 2px; }
+  .lf-f.is-bad .lf-line i { border-color: var(--danger); }
+  .lf-f.is-ok .lf-line i { border-color: var(--success); }
+  .field.lf-f .lf-box > label, .view .field.lf-f .lf-box > label { position: absolute; left: 18px; top: 17px; margin: 0 0 0 -4px; padding: 0 4px; font-size: 16px; line-height: 22px; font-weight: 500; color: var(--text-muted); transform-origin: 0 0; pointer-events: none; white-space: nowrap; transition: transform .35s var(--ux-ease), color .3s var(--ux-ease); max-width: calc(100% - 40px); overflow: hidden; text-overflow: ellipsis; }
+  .lf-f.is-up .lf-box > label { transform: translate(0, -28px) scale(.8) !important; color: var(--text); font-weight: 600; overflow: visible; max-width: none; background: transparent; }
+  .lf-f.is-focus .lf-box > label { color: var(--accent-ink); }
+  .lf-f.is-bad .lf-box > label { color: var(--danger); }
+  .lf-ok { position: absolute; right: 14px; top: 50%; width: 26px; height: 26px; margin-top: -13px; border-radius: 50%; display: grid; place-items: center; background: var(--success); color: var(--surface); transform: scale(0); transition: transform .45s var(--ux-spring); pointer-events: none; }
+  .lf-ok svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .lf-ok path { stroke-dasharray: 16; stroke-dashoffset: 16; transition: stroke-dashoffset .35s var(--ux-ease) .15s; }
+  .lf-f.is-ok .lf-ok { transform: none; }
+  .lf-f.is-ok .lf-ok path { stroke-dashoffset: 0; }
+  .lf-f.is-shake .lf-box { animation: lf-shake .42s var(--ux-ease); }
+  @keyframes lf-shake { 20% { transform: translateX(-7px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(2px); } }
+  .lf-f > .error:not(:empty) { display: flex; align-items: center; gap: 6px; padding-left: 4px; font-size: 13px; font-weight: 600; animation: xcIn var(--dur-2) var(--ease-out) both; }
+  .lf-f > .error:not(:empty)::before { content: "!"; display: grid; place-items: center; width: 16px; height: 16px; flex: none; border-radius: 50%; background: var(--danger); color: var(--surface); font-size: 11px; font-weight: 800; }
+  .lf-f.is-bad .lf-box::after { content: ""; position: absolute; inset: 0; border-radius: 14px; background: var(--pill-negative-bg); opacity: .5; z-index: -1; }
+  .lf-f.is-date .lf-box > input { padding-right: 14px !important; }
+  .form-main .field.lf-f { margin-bottom: 18px; }
+
+  /* ===== Bảng diễn giả / chương trình có tay nắm kéo (Lucian 255) ===== */
+  .pair-table.lf-pairs { border-radius: 14px; border-color: var(--control); }
+  .lf-pairs .pair-row { grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1.3fr) 36px; }
+  #f-agenda + .pair-table.lf-pairs .pair-row { grid-template-columns: 34px 96px minmax(0, 1fr) 36px; }
+  .lf-gh { padding: 0 !important; border: 0 !important; }
+  .lf-pairs { counter-reset: lfr; }
+  .lf-pairs .pair-row:not(.pair-head) { counter-increment: lfr; background: var(--surface); }
+  .lf-grip { position: relative; border: 0; background: none; color: var(--text-muted); cursor: grab; display: grid; place-items: center; padding: 0; touch-action: none; border-right: 1px solid var(--rule); }
+  .lf-grip svg { grid-area: 1 / 1; width: 10px; height: 14px; fill: currentColor; opacity: 0; transition: opacity var(--dur-1) ease; }
+  .lf-n { grid-area: 1 / 1; font-weight: 700; font-size: 12px; font-variant-numeric: tabular-nums; transition: opacity var(--dur-1) ease; }
+  .lf-n::before { content: counter(lfr); }
+  .lf-grip:hover svg, .lf-grip:focus-visible svg, .is-drag .lf-grip svg { opacity: 1; }
+  .lf-grip:hover .lf-n, .lf-grip:focus-visible .lf-n, .is-drag .lf-n { opacity: 0; }
+  .lf-grip:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; color: var(--text); }
+  .lf-pairs .pair-row.is-drag { background: var(--accent-soft); box-shadow: 0 8px 22px -10px rgba(22, 21, 27, .35); position: relative; z-index: 2; }
+  .is-drag .lf-grip { cursor: grabbing; color: var(--accent-ink); }
+  .field .lf-pairs .pair-row input:focus, .field .lf-pairs .pair-row input:hover:focus { box-shadow: inset 0 0 0 2px var(--accent); background: var(--accent-soft); }
+  .lf-pairs .pair-add { border-radius: 10px; border-style: dashed; }
+  @media (max-width: 560px) {
+    .lf-pairs .pair-row { grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1.2fr) 34px; }
+    #f-agenda + .pair-table.lf-pairs .pair-row { grid-template-columns: 30px 76px minmax(0, 1fr) 34px; }
+  }
+
+  /* ===== Viên trượt chọn (Lucian 047 segmented control) ===== */
+  .segmented.has-knob, .chips.has-knob { position: relative; }
+  .segmented.has-knob { padding: 4px; border-radius: 16px; background: var(--raised); gap: 0; }
+  .segmented.has-knob label { height: 38px; border-radius: 12px; font-weight: 650; position: relative; z-index: 1; transition: color .3s, transform .3s var(--ux-spring); }
+  .segmented.has-knob label:has(input:checked) { background: none; box-shadow: none; color: var(--text); font-weight: 650; }
+  .segmented.has-knob label:active { transform: scale(.95); }
+  .lf-knob { position: absolute; left: 0; top: 0; z-index: 0; border-radius: 12px; background: var(--surface); box-shadow: 0 4px 12px -6px rgba(22, 21, 27, .35), 0 0 0 1px var(--border); pointer-events: none; transition: transform .5s var(--ux-spring), width .4s var(--ux-ease), height .4s var(--ux-ease); }
+  .chips.has-knob { padding: 4px; border-radius: 16px; background: var(--raised); gap: 2px; display: inline-flex; max-width: 100%; }
+  .chips.has-knob .chip { position: relative; z-index: 1; height: 34px; padding: 0 14px; border: 0; background: none; border-radius: 12px; font-weight: 650; color: var(--text-muted); }
+  .chips.has-knob .chip:hover { background: none; color: var(--text); }
+  .chips.has-knob .chip.is-active { background: none; color: var(--text); }
+  .chips.has-knob .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* ===== Nút tạo nội dung AI (Lucian 280 + 086) ===== */
+  #btn-generate { position: relative; overflow: hidden; isolation: isolate; }
+  #btn-generate::after { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--ux-grad); opacity: 0; transition: opacity var(--dur-2) ease; }
+  #btn-generate:not(:disabled):hover::after, #btn-generate:focus-visible::after { opacity: .9; }
+  #btn-generate:not(:disabled):hover, #btn-generate:focus-visible { color: var(--accent-contrast); }
+  #btn-generate.is-loading::after { opacity: 1; background: linear-gradient(110deg, #7B61FF 20%, #3D8BFF 40%, #A5F2D3 50%, #3D8BFF 60%, #7B61FF 80%) 0 0 / 220% 100%; animation: lf-sheen 1.4s linear infinite; }
+  #btn-generate.is-loading { color: #fff; }
+  @keyframes lf-sheen { to { background-position: -220% 0; } }
+  .lf-spark::before { content: ""; position: absolute; inset: -40%; z-index: 1; pointer-events: none; background: radial-gradient(circle, rgba(255,255,255,.9) 0 2px, transparent 3px) 20% 30% / 28px 28px, radial-gradient(circle, rgba(255,255,255,.7) 0 1.5px, transparent 2.5px) 70% 60% / 22px 22px; animation: lf-spark 1s var(--ease-out) both; }
+  @keyframes lf-spark { from { transform: scale(.4) rotate(0); opacity: 1; } to { transform: scale(1.3) rotate(40deg); opacity: 0; } }
+  .is-ai-busy #ai-msg::after { content: ""; display: inline-block; width: 30px; height: 6px; margin-left: 8px; vertical-align: middle; background: radial-gradient(circle, var(--accent) 0 3px, transparent 3.5px) 0 50% / 10px 6px repeat-x; animation: lf-dots 1s steps(1) infinite; }
+  @keyframes lf-dots { 0% { clip-path: inset(0 100% 0 0); } 33% { clip-path: inset(0 66% 0 0); } 66% { clip-path: inset(0 33% 0 0); } 100% { clip-path: inset(0); } }
+
+  /* ===== Khung ảnh: vùng thả (Lucian 032) ===== */
+  .form-side .img-card { position: relative; border: 0; border-radius: 16px; padding: 18px 16px 16px; background: var(--surface); transition: background-color .3s var(--ux-ease), transform .5s var(--ux-spring); }
+  .lf-dash { position: absolute; inset: 0; pointer-events: none; }
+  .lf-dash svg { position: absolute; left: 1px; top: 1px; width: calc(100% - 2px); height: calc(100% - 2px); overflow: visible; }
+  .lf-dash rect { fill: none; stroke: var(--control); stroke-width: 2; stroke-dasharray: 8 7; transition: stroke .3s var(--ux-ease); }
+  .img-card:hover .lf-dash rect, .img-card.is-over .lf-dash rect, .img-card:focus-within .lf-dash rect { stroke: var(--accent); }
+  .img-card.is-over { transform: scale(1.015); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+  .img-card.is-over .lf-dash rect { animation: lf-march .9s linear infinite; }
+  @keyframes lf-march { to { stroke-dashoffset: -30; } }
+  .form-side .img-card-title { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+  .lf-orb { width: 34px; height: 34px; flex: none; border-radius: 11px; display: grid; place-items: center; color: #fff; background: linear-gradient(140deg, #5B8CFF, #8B6CFF); box-shadow: 0 10px 18px -10px rgba(91, 108, 255, .8); transition: transform .5s var(--ux-spring); }
+  .lf-orb svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .img-card:hover .lf-orb { transform: translateY(-2px); }
+  .img-card.is-over .lf-orb { transform: translateY(-4px) scale(1.1) rotate(-6deg); }
+  .lf-count { margin-left: auto; font-style: normal; font-size: 12px; font-weight: 700; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+  /* ===== Brand DNA: bảng màu gợi ý (Lucian 266) ===== */
+  .lf-pal { position: relative; margin: 4px 0 16px; padding: 10px; border-radius: 20px; background: var(--raised); }
+  .lf-pal-strip { display: flex; height: 112px; border-radius: 14px; overflow: hidden; }
+  .lf-pal-cl { position: relative; flex: 1; background: var(--c); color: var(--t); transition: background .55s ease, color .4s, flex .3s cubic-bezier(.3, 1.3, .5, 1); }
+  .lf-pal-cl:hover, .lf-pal-cl:focus-within { flex: 1.3; }
+  .lf-pal-cp { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 1px; padding: 0 0 8px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+  .lf-pal-cp small { font-size: 10.5px; font-weight: 700; opacity: .85; }
+  .lf-pal-cp code { background: none; padding: 0; border: 0; color: inherit; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .02em; }
+  .lf-pal-cp:focus-visible, .lf-pal-lk:focus-visible { outline: 2px solid var(--t); outline-offset: -4px; }
+  .lf-pal-lk { position: absolute; top: 8px; left: 50%; width: 26px; height: 26px; margin-left: -13px; border: 0; padding: 0; border-radius: 50%; background: color-mix(in srgb, var(--t) 16%, transparent); color: var(--t); display: grid; place-items: center; cursor: pointer; opacity: .6; transition: opacity .2s, transform .3s cubic-bezier(.3, 1.7, .5, 1); }
+  .lf-pal-lk[aria-pressed="true"] { opacity: 1; transform: scale(1.1); }
+  .lf-pal-lk svg { width: 12px; height: 12px; }
+  .lf-pal-cl:hover .lf-pal-lk, .lf-pal-cl:focus-within .lf-pal-lk { opacity: 1; }
+  .lf-pal-tb { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .lf-pal-sh, .lf-pal-use { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border: 0; border-radius: 11px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .lf-pal-sh { background: var(--text); color: var(--surface); }
+  .lf-pal-use { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--control); }
+  .lf-pal-use:hover { box-shadow: inset 0 0 0 1.5px var(--accent); color: var(--accent-ink); }
+  .lf-pal-sh svg { width: 13px; height: 13px; transition: transform .5s cubic-bezier(.3, 1.3, .5, 1); }
+  .lf-pal-sh.is-spin svg { transform: rotate(360deg); }
+  .lf-pal-sh:focus-visible, .lf-pal-use:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .lf-pal-tb kbd { margin-left: auto; padding: 2px 6px; border-radius: 5px; box-shadow: inset 0 0 0 1px var(--border), 0 1px 0 var(--border); font: inherit; font-size: 10px; font-weight: 700; color: var(--text-muted); }
+  .lf-pal-tt { position: absolute; left: 50%; top: 50px; padding: 6px 11px; border-radius: 10px; background: var(--text); color: var(--surface); font-size: 12px; font-weight: 700; white-space: nowrap; transform: translate(-50%, 8px); opacity: 0; pointer-events: none; transition: opacity .2s, transform .3s cubic-bezier(.3, 1.5, .5, 1); }
+  .lf-pal-tt.is-on { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-width: 560px) { .lf-pal-tb kbd { display: none; } .lf-pal-cp code { font-size: 9px; } }
+
+  /* ô màu: ô chọn to dạng viên */
+  #view-brand .color-line input[type="color"] { width: 44px; height: 44px; padding: 0; border: 0; border-radius: 14px; background: none; cursor: pointer; box-shadow: 0 0 0 1px var(--border); }
+  #view-brand .color-line input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+  #view-brand .color-line input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 14px; }
+  #view-brand .color-line input[type="color"]::-moz-color-swatch { border: 0; border-radius: 14px; }
+
+  /* ===== Brand DNA: thẻ từ khoá (Lucian 029) ===== */
+  .lf-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; --c: var(--success); }
+  .lf-tags[hidden] { display: none; }
+  .lf-tags.is-avoid { --c: var(--danger); }
+  .lf-tag { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 5px 0 11px; border-radius: 10px; background: color-mix(in srgb, var(--c) 14%, transparent); color: color-mix(in srgb, var(--c) 78%, var(--text)); font-size: 13px; font-weight: 650; animation: lf-pop .45s var(--ux-spring); }
+  @keyframes lf-pop { from { transform: scale(.4); opacity: 0; } }
+  .lf-tag-x { width: 22px; height: 22px; border: 0; padding: 0; border-radius: 7px; background: none; color: inherit; display: grid; place-items: center; opacity: .7; cursor: pointer; }
+  .lf-tag-x:hover { opacity: 1; background: color-mix(in srgb, currentColor 15%, transparent); }
+  .lf-tag-x:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+  .lf-tag-x svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+  /* ===== Brand DNA: danh sách, mục đánh số, thẻ xem trước phát sáng (Lucian 042 + 050 + 228) ===== */
+  #brand-editor { counter-reset: lfs; }
+  #brand-editor .brand-sec { counter-increment: lfs; border-radius: 20px; }
+  #brand-editor .brand-sec > .panel-title { display: flex; align-items: center; gap: 10px; }
+  #brand-editor .brand-sec > .panel-title::before { content: counter(lfs); width: 28px; height: 28px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700; color: var(--accent-ink); background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); }
+  .brand-item { border-radius: 14px; transition: background-color var(--dur-1) ease, box-shadow var(--dur-2) ease, transform .4s var(--ux-spring); }
+  .brand-item.is-active { background: var(--surface); box-shadow: 0 0 0 2px var(--accent), 0 0 0 6px var(--accent-soft); }
+  .brand-sw { border-radius: 11px; width: 36px; height: 36px; }
+  .bp-card { position: relative; border-radius: 20px; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .45s var(--ux-ease), box-shadow .4s var(--ux-ease); box-shadow: 0 24px 60px -28px color-mix(in srgb, var(--bp-accent) 75%, transparent), 0 0 0 1px color-mix(in srgb, var(--bp-accent) 25%, var(--border)); will-change: transform; }
+  .bp-card::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; opacity: 0; transition: opacity .3s; background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, .28), transparent 70%); mix-blend-mode: soft-light; }
+  .bp-card.is-lit { box-shadow: 0 30px 70px -26px color-mix(in srgb, var(--bp-accent) 90%, transparent), 0 0 0 1px color-mix(in srgb, var(--bp-accent) 45%, var(--border)); }
+  .bp-card.is-lit::after { opacity: 1; }
+  .bp-btn { box-shadow: 0 8px 18px -8px var(--bp-accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lf-steps-line i, .lf-dot, .lf-ok, .lf-knob, .lf-pal-cl, .bp-card, .lf-tag, .lf-f .lf-box, .lf-box > label { transition: none !important; animation: none !important; }
+    .bp-card { transform: none; }
+    #btn-generate.is-loading::after, .lf-spark::before, .img-card.is-over .lf-dash rect, .is-ai-busy #ai-msg::after { animation: none; }
+  }
+  html.motion-off .lf-steps-line i, html.motion-off .lf-dot, html.motion-off .lf-knob, html.motion-off .lf-box > label, html.motion-off .bp-card, html.motion-off .lf-tag { transition: none !important; animation: none !important; }
+  html.motion-off .bp-card { transform: none; }
+}
