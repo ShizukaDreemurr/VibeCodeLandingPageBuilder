@@ -460,6 +460,8 @@
       </div>
       <button type="button" class="btn btn-ghost" id="btn-new-2"><span data-icon="plus"></span>Tạo sự kiện mới</button>
     </div>
+    <div class="xl-dash" id="events-dash" hidden></div>
+    <div class="xl-chips xl-fbar" id="events-filter" role="group" aria-label="Lọc sự kiện" hidden></div>
     <div class="event-grid" id="event-grid"></div>
   </main>
 
@@ -493,6 +495,7 @@
           <p class="subline">Chọn landing page để xem số liệu và danh sách đăng ký riêng của trang đó.</p>
         </div>
       </div>
+      <div class="xl-dash" id="admin-dash" hidden></div>
       <div class="admin-search" id="admin-search-wrap" hidden>
         <input type="search" id="admin-search" placeholder="Tìm landing page theo tên hoặc địa điểm" aria-label="Tìm landing page">
       </div>
@@ -510,6 +513,7 @@
           <button type="button" class="btn btn-danger" id="btn-clear-regs"><span data-icon="trash"></span>Xoá toàn bộ</button>
         </div>
       </div>
+      <div class="xl-dash" id="admin-hero"></div>
       <div class="metric-grid" id="metric-grid"></div>
       <div class="seg" id="admin-seg" role="group" aria-label="Chế độ xem">
         <button type="button" class="seg-btn is-active" data-admin-view="summary" aria-pressed="true">Tóm tắt</button>
@@ -635,6 +639,7 @@
   <script defer src="js/demo-data.js?v=2.8.1"></script>
   <script defer src="js/popup.js?v=2.8.1"></script>
   <script defer src="js/ux-lucian.js?v=2.8.1"></script>
+  <script defer src="js/ux-lucian-dash.js?v=2.8.1"></script>
   <script defer src="js/app.js?v=2.8.1"></script>
 <script>/* nút giao diện: Theo hệ thống -> Sáng -> Tối */
 (function(){var b=document.getElementById('btn-theme'),r=document.documentElement,L={system:'Theo hệ thống',light:'Sáng',dark:'Tối'},N={system:'light',light:'dark',dark:'system'};
