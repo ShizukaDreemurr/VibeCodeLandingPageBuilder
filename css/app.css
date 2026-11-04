@@ -1616,3 +1616,31 @@ html.tpv-lock { overflow: hidden; }
   .ch-bar.is-peak, .ch-hbar { fill: var(--accent); }
   .ch-sw { box-shadow: inset 0 0 0 1px var(--border); }
 }
+/* QA: templates+events */
+@layer app {
+  /* Hero full-bleed: đường kẻ và nền chạy hết tấm, nội dung vẫn thẳng hàng với lưới */
+  .tpl-page .tpl-hero {
+    max-width: none;
+    --tpl-pad: clamp(16px, 2.5vw, 40px);
+    margin-left: calc(-1 * var(--tpl-pad)); margin-right: calc(-1 * var(--tpl-pad));
+    padding-left: calc(var(--tpl-pad) + max(0px, (100% - 1280px) / 2));
+    padding-right: calc(var(--tpl-pad) + max(0px, (100% - 1280px) / 2));
+  }
+  /* CTA "Dùng mẫu này": chữ đủ tương phản trên gradient ở cả hai theme */
+  .tpl-use-cta { background-image: linear-gradient(120deg, #5B43E6, #2F6FE0 60%, #0E7C69); text-shadow: none; }
+  :root[data-theme="dark"] .tpl-use-cta { background-image: var(--ux-grad); color: var(--accent-contrast); }
+  :root[data-theme="dark"] .tpl-use-cta:hover, :root[data-theme="dark"] .tpl-use-cta:focus-visible { color: var(--accent-contrast); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .tpl-use-cta { background-image: var(--ux-grad); color: var(--accent-contrast); }
+    :root:not([data-theme="light"]) .tpl-use-cta:hover, :root:not([data-theme="light"]) .tpl-use-cta:focus-visible { color: var(--accent-contrast); }
+  }
+  .tpl-use-cta:focus-visible, .tpl-chip:focus-visible, .tpl-pshot:focus-visible, .event-card .btn:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
+  .tpl-chip { border-color: var(--control); }
+  .tpl-pcard, .event-card { border-color: color-mix(in srgb, var(--text) 14%, transparent); }
+  .tpl-thumb { background: var(--raised); }
+  .tpl-badge { background: var(--pill-neutral-bg); color: var(--pill-neutral-ink); }
+  .tpl-badge.is-current { background: var(--text); color: var(--surface); }
+  .tpl-score { background: var(--pill-positive-bg); color: var(--pill-positive-ink); }
+  .tpl-score.is-near { background: var(--pill-neutral-bg); color: var(--pill-neutral-ink); }
+  .tpl-search input[type="search"]::placeholder { color: var(--text-muted); opacity: 1; }
+}
