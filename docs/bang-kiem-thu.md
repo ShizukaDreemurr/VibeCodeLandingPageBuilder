@@ -2,9 +2,19 @@
 
 Kết quả thực tế lấy từ các lần chạy kiểm thử tự động bằng trình duyệt thật (Playwright/Chromium) ngày 26–27/10/2026; ca có ghi "thiết bị thật" do nhóm thử trên GitHub Pages + điện thoại. Mã script tương ứng nằm trong `tests/`.
 
+## Ca bắt buộc theo Bảng B (tối thiểu 3)
+
+| Yêu cầu | Ca đáp ứng | Mô tả ngắn |
+|---|---|---|
+| Ca bình thường | **TC01**, TC04 | Tạo trang bằng dữ liệu mẫu; đăng ký hợp lệ |
+| Ca nhập thiếu / sai | **TC02**, TC03 | Bỏ trống tên sự kiện; SĐT và email sai định dạng |
+| Ca biên | **TC05**, TC07, TC08 | Đăng ký trùng SĐT; sự kiện đã diễn ra; đủ chỗ → danh sách chờ |
+
+Lưu ý: dòng cảnh báo mô phỏng AI trong giao diện hiện là "Dữ liệu AI mô phỏng". Quy định yêu cầu đúng câu "Bản demo vòng loại - Dữ liệu mô phỏng AI" (xem README, mục 1 và checklist nộp bài).
+
 | Mã ca | Loại ca | Dữ liệu và bước thử | Kỳ vọng | Kết quả thực tế | Đạt/Chưa đạt |
 |---|---|---|---|---|---|
-| TC01 | Bình thường | Bấm "Điền dữ liệu mẫu" → "✨ Tạo landing page" (AI mô phỏng) | Trang hiện đủ hero, đếm ngược, giới thiệu, 3 lợi ích, diễn giả, agenda, ưu đãi, form; có dòng "Bản demo vòng loại – Dữ liệu mô phỏng AI" | Đúng như kỳ vọng; 3 lợi ích, 5 mục agenda | Đạt |
+| TC01 | Bình thường | Bấm "Điền dữ liệu mẫu" → "✨ Tạo landing page" (AI mô phỏng) | Trang hiện đủ hero, đếm ngược, giới thiệu, 3 lợi ích, diễn giả, agenda, ưu đãi, form; có dòng cảnh báo mô phỏng AI | Trang đủ các phần; 3 lợi ích, 5 mục agenda. Dòng cảnh báo hiện "Dữ liệu AI mô phỏng", chưa khớp câu "Bản demo vòng loại - Dữ liệu mô phỏng AI" | Đạt (còn 1 việc sửa cảnh báo) |
 | TC02 | Nhập thiếu | Để trống tên sự kiện, bấm "Tạo landing page" | Báo "Vui lòng nhập tên sự kiện." dưới ô, không tạo trang | Hiện đúng thông báo, ô viền đỏ | Đạt |
 | TC03 | Nhập sai | Form đăng ký: SĐT "12345", email "abc" | Báo lỗi SĐT và email ngay dưới từng ô, không lưu | "Số điện thoại không hợp lệ (ví dụ: 0912345678 hoặc +84912345678)." và "Email không đúng định dạng…" | Đạt |
 | TC04 | Bình thường | Đăng ký với SĐT "+84 912 345 678", email hợp lệ, tick đồng ý | Đăng ký thành công, SĐT lưu dạng 0912345678, số đăng ký +1 | "Đăng ký thành công!", số đếm = 1 | Đạt |

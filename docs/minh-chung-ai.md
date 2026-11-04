@@ -1,6 +1,6 @@
 # Minh chứng dùng AI để xây dựng và cải thiện sản phẩm — Xclipse
 
-> Bản nháp để nhóm hoàn thiện (tối đa 1 trang + 5 ảnh). Mỗi vòng: mục tiêu → yêu cầu cho AI → vấn đề phát hiện khi thử → yêu cầu sửa → kết quả kiểm tra lại. Nhóm thay `[Ảnh x]` bằng ảnh chụp hội thoại/màn hình tương ứng.
+> Tối đa 1 trang, 5 ảnh chọn lọc. Mỗi vòng: mục tiêu → yêu cầu cho AI → vấn đề phát hiện khi thử → yêu cầu sửa → kết quả kiểm tra lại. Thay `[Ảnh x]` bằng ảnh chụp hội thoại hoặc màn hình tương ứng (tổng 5 ảnh).
 
 **Công cụ AI đã dùng**: Claude (lập kế hoạch, viết mã, kiểm thử), Gemini Deep Research (nghiên cứu thị trường, bảng màu), Gemini (tạo ảnh mockup giao diện), AI agent trên trình duyệt (thiết lập Firebase, GitHub Pages).
 
