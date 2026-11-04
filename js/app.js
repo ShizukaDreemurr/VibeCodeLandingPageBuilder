@@ -1732,10 +1732,13 @@
   }
 
   // Thiết bị xem trước (bề rộng thật của trang) và mức thu phóng; 'fit' = tự vừa khung
-  var DEVICE_W = { desktop: 1280, tablet: 768, mobile: 390 };
+  var DEVICE_W = { desktop: 1280, tablet: 768, mobile: 390, custom: 1024 };
   var ZOOMS = [0.25, 0.4, 0.5, 0.6, 0.75, 0.9, 1, 1.2, 1.5];
   var view = S.read('ws_view', {});
+  if (view.customW >= 320 && view.customW <= 1440) DEVICE_W.custom = Math.round(view.customW);
   var device = DEVICE_W[view.device] ? view.device : 'desktop';
+  // 'custom' = kéo thanh độ rộng (Lucian 257); phần tử lưu theo nhóm gần nhất
+  function deviceClass() { return device !== 'custom' ? device : DEVICE_W.custom <= 480 ? 'mobile' : DEVICE_W.custom <= 900 ? 'tablet' : 'desktop'; }
   var zoom = view.zoom === 'fit' || ZOOMS.indexOf(view.zoom) >= 0 ? view.zoom : 'fit';
   function currentZoom() {
     if (zoom !== 'fit') return zoom;
@@ -1744,7 +1747,8 @@
     return avail > 0 ? Math.min(1, avail / DEVICE_W[device]) : 1;
   }
   function applyDevice() {
-    ['desktop', 'tablet', 'mobile'].forEach(function (d) { landingEl.classList.toggle('device-' + d, d === device); });
+    ['desktop', 'tablet', 'mobile'].forEach(function (d) { landingEl.classList.toggle('device-' + d, d === deviceClass()); });
+    landingEl.classList.toggle('device-custom', device === 'custom');
     landingEl.style.width = DEVICE_W[device] + 'px';
     var z = currentZoom();
     landingEl.style.zoom = z;
@@ -1756,7 +1760,15 @@
     }
     document.querySelectorAll('.device-toggle [data-device]').forEach(function (x) { x.classList.toggle('is-active', x.getAttribute('data-device') === device); });
   }
-  function saveView() { S.write('ws_view', { device: device, zoom: zoom }); }
+  function saveView() { S.write('ws_view', { device: device, zoom: zoom, customW: DEVICE_W.custom }); }
+  function setCustomWidth(w, commit) {
+    w = Math.max(320, Math.min(1440, Math.round(w)));
+    if (device === 'custom' && DEVICE_W.custom === w) return;
+    DEVICE_W.custom = w; device = 'custom';
+    if (commit !== false) saveView();
+    applyDevice();
+    if (EP.inspector) EP.inspector.refresh();
+  }
   function setDevice(d) {
     if (d === device) return;
     var run = function () { device = d; saveView(); applyDevice(); };
@@ -2869,7 +2881,7 @@
     fontCombo: fontCombo,
     stepper: stepper,
     weightSelect: weightSelect,
-    getDevice: function () { return device; },
+    getDevice: function () { return deviceClass(); },
     getCount: simCount,
     getBlockApi: function () { return blockApi; },
     onSelect: markLayerSelection,
@@ -3329,6 +3341,38 @@
       toast('Đã tải file ' + link.download + ' (' + kb(blob.size) + ').');
     }).catch(function () { toast('Không đọc được kiểu trang để xuất. Thử tải lại trang rồi xuất lại.'); });
   }
+  // Cầu nối cho js/ux-lucian-editor.js (giao diện trình thiết kế)
+  EP.editorApi = {
+    hasState: function () { return !!state; },
+    getState: function () { return state; },
+    getStyle: function () { return getStyle(); },
+    patchStyle: function (patch) { if (!state) return; state.event.style = Object.assign({}, state.event.style || {}, patch); persist(); },
+    getDevice: function () { return device; },
+    getWidth: function () { return DEVICE_W[device]; },
+    setDevice: setDevice,
+    setWidth: setCustomWidth,
+    deviceWidths: function () { return { desktop: DEVICE_W.desktop, tablet: DEVICE_W.tablet, mobile: DEVICE_W.mobile }; },
+    undo: undo, redo: redo,
+    canUndo: function () { return !!undoStack.length; }, canRedo: function () { return !!redoStack.length; },
+    stepZoom: stepZoom, setZoom: setZoom,
+    sections: function () { return state ? currentSections().map(function (x) { var d = EP.landingRenderer.SECTIONS.filter(function (y) { return y.key === x.key; })[0] || {}; return { key: x.key, visible: x.visible, label: d.label || x.key, locked: !!d.locked, block: !!d.block }; }) : []; },
+    toggleBlock: toggleBlock,
+    moveSection: function (key, dir) {
+      if (!state) return;
+      var list = currentSections(), i = list.map(function (x) { return x.key; }).indexOf(key), j = i + dir;
+      while (j >= 0 && j < list.length && !landingEl.querySelector('[data-section="' + list[j].key + '"]')) j += dir;
+      if (i < 0 || j < 0 || j >= list.length) { toast(dir < 0 ? 'Phần này đã ở trên cùng.' : 'Phần này đã ở dưới cùng.'); return; }
+      moveSection(i, j);
+    },
+    hideSection: function (key) {
+      if (!state) return;
+      if (EP.landingRenderer.SECTIONS.some(function (x) { return x.key === key && x.locked; })) { toast('Phần này bắt buộc, không ẩn được.'); return; }
+      if (blockApi.isBlock(key)) { blockHide(key); return; }
+      var l = currentSections(); l.forEach(function (x) { if (x.key === key) x.visible = false; });
+      state.event.sections = l; persist(); toast('Đã ẩn phần này. Bật lại ở danh sách Bố cục.');
+    },
+    openPreview: openPreview, publish: function () { var b = $('#btn-publish'); if (b && !b.disabled && !b.hidden) b.click(); else toast('Chưa thể xuất bản lúc này.'); }
+  };
   EP.exportHtml = function () { return Promise.all([fetch('css/landing.css').then(function (r) { return r.text(); }), heroSvgText()]).then(function (r) { return buildExportHtml(r[0], r[1]); }); };
   // File xuất chạy độc lập: nhúng ảnh nền vẽ sẵn của mẫu thẳng vào file (không phụ thuộc thư mục assets)
   function heroSvgText() {

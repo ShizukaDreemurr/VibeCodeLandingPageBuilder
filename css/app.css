@@ -1649,3 +1649,447 @@ html.tpv-lock { overflow: hidden; }
   .ml-dialog, dialog.ie-dialog { border: 1px solid var(--border); }
   .ml-dialog:focus-visible, dialog.ie-dialog:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 }
+
+/* Lucian: editor — trình thiết kế "Thiết kế trang" chuyển thể từ lucianLabs UI 100 (MIT © 2026 Seokwoooo).
+   Phần tử: 257 responsive preview, 046 command palette, 038 context menu, 040 vertical rail, 297 block page builder,
+   266 palette generator, 303 font pairing, 249 SEO preview, 287 page speed audit. JS: js/ux-lucian-editor.js */
+@layer app {
+  /* ---------- Token Lucian (--ux-*) ánh xạ vào token của app ---------- */
+  #view-editor, .edl-pal, .edl-ctx, .edl-tag, .edl-pop {
+    --ux-ink: var(--text); --ux-ink-2: color-mix(in srgb, var(--text) 80%, var(--surface)); --ux-ink-3: var(--text-muted);
+    --ux-surface: var(--surface); --ux-surface-2: var(--raised); --ux-surface-3: var(--active); --ux-page: var(--ground);
+    --ux-line: var(--border); --ux-line-2: color-mix(in srgb, var(--text) 16%, transparent);
+    --ux-accent: var(--accent); --ux-accent-soft: var(--accent-soft); --ux-danger: var(--danger); --ux-mint: var(--success);
+    --ux-shadow-strong: rgba(24, 20, 56, .34);
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #view-editor, :root:not([data-theme="light"]) .edl-pal, :root:not([data-theme="light"]) .edl-ctx, :root:not([data-theme="light"]) .edl-tag { --ux-shadow-strong: rgba(0, 0, 0, .7); } }
+  :root[data-theme="dark"] #view-editor, :root[data-theme="dark"] .edl-pal, :root[data-theme="dark"] .edl-ctx, :root[data-theme="dark"] .edl-tag { --ux-shadow-strong: rgba(0, 0, 0, .7); }
+
+  /* ---------- Nền: ánh sáng loang của gallery.css (.g-head::before) ---------- */
+  #view-editor.editor.view { position: relative; isolation: isolate; }
+  #view-editor.editor.view::before {
+    content: ""; position: absolute; left: -8px; right: -8px; top: -56px; height: 380px; z-index: -1; pointer-events: none; filter: blur(12px);
+    background:
+      radial-gradient(34% 46% at 18% 30%, color-mix(in oklab, #7B61FF 20%, transparent), transparent 72%),
+      radial-gradient(30% 40% at 62% 20%, color-mix(in oklab, #3D8BFF 16%, transparent), transparent 72%),
+      radial-gradient(26% 36% at 94% 40%, color-mix(in oklab, #22C3A6 13%, transparent), transparent 72%);
+  }
+
+  /* ---------- Thanh công cụ: tấm bo tròn, nhóm nút dạng "viên" ---------- */
+  #view-editor .editor-bar { background: var(--surface); border-radius: 22px; padding: 6px 12px 6px 8px; min-height: 56px; gap: 8px 10px;
+    box-shadow: 0 0 0 1px var(--ux-line), 0 28px 50px -38px var(--ux-shadow-strong); }
+  #view-editor .editor-bar h2 { font-size: 15px; font-weight: 780; letter-spacing: -.02em; }
+  #view-editor #btn-back-info { width: 38px; height: 38px; border-radius: 13px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  #view-editor #btn-back-info:hover { background: var(--active); }
+  #view-editor .editor-bar-right > * + * { border-left: 0; padding-left: 0; }
+  #view-editor .editor-bar-right { gap: 8px; }
+  #view-editor .editor-bar-right > .btn { margin-left: 0; padding: 0 14px; }
+  #view-editor .history-btns, #view-editor .zoom-ctl { padding: 3px; border-radius: 13px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); gap: 1px; }
+  #view-editor .history-btns button { width: 32px; height: 30px; border-radius: 10px; }
+  #view-editor .history-btns button:not(:disabled):hover { background: var(--surface); box-shadow: 0 0 0 1px var(--ux-line); }
+  #view-editor .zoom-ctl button { height: 30px; width: 28px; border-radius: 10px; }
+  #view-editor .zoom-ctl button:hover { background: var(--surface); box-shadow: 0 0 0 1px var(--ux-line); }
+  #view-editor .zoom-ctl select { height: 30px; border-radius: 10px; font-weight: 700; font-size: 12.5px; padding: 0 2px; }
+  #view-editor .zoom-ctl select:hover { background: var(--surface); }
+  /* 257: nhóm thiết bị — nút đang chọn là mực đậm, có độ rộng px bên cạnh */
+  #view-editor .device-toggle { padding: 3px; border-radius: 13px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--ux-line-2); gap: 2px; }
+  #view-editor .device-toggle .ux-pill { display: none; }
+  #view-editor .device-toggle button { width: 38px; height: 30px; border-radius: 10px; color: var(--ux-ink-3); transition: background var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), transform var(--dur-1); }
+  #view-editor .device-toggle button:hover { background: var(--raised); color: var(--text); }
+  #view-editor .device-toggle button.is-active, #view-editor .device-toggle.has-pill > button.is-active { background: var(--text); color: var(--surface); }
+  #view-editor .device-toggle button:active { transform: scale(.94); }
+  .edl-px { display: inline-flex; align-items: center; height: 30px; padding: 0 10px; border-radius: 10px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); font: 800 11px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--text); min-width: 58px; justify-content: center; }
+  #view-editor #btn-preview { width: 38px; height: 38px; border-radius: 13px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  #view-editor #btn-publish { height: 38px; border-radius: 13px; font-weight: 800; gap: 8px; box-shadow: 0 10px 22px -12px var(--ux-shadow-strong); }
+  #view-editor .editor-bar .pill { height: 24px; font-weight: 750; }
+
+  /* 046 (dạng thu gọn): ô tìm lệnh trên thanh công cụ */
+  .edl-palpill { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 8px 0 12px; border: 0; border-radius: 999px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); color: var(--ux-ink-3); font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; transition: background var(--dur-2), box-shadow var(--dur-2); }
+  .edl-palpill:hover { background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--ux-line-2); color: var(--text); }
+  .edl-palpill.is-hidden { visibility: hidden; }
+  .edl-palpill svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .edl-kbd { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 7px; background: var(--raised); box-shadow: inset 0 -1px 0 var(--ux-line-2); font: 700 11px/1 var(--font); color: var(--ux-ink-3); white-space: nowrap; }
+  .edl-palpill .edl-kbd { background: var(--surface); }
+  @media (max-width: 1500px) { .edl-pp-t { display: none; } .edl-palpill { padding: 0 8px 0 11px; } }
+
+  /* ---------- Menu thanh trên (038: hộp bo 16, hiện ra từ gốc, hàng 38px) ---------- */
+  #view-editor .mb-btn { height: 34px; border-radius: 11px; font-weight: 650; padding: 0 11px; }
+  #view-editor .mb-btn:hover, #view-editor .mb-btn[aria-expanded="true"] { background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  #view-editor .mb-menu { top: calc(100% + 8px); padding: 6px; border: 0; border-radius: 18px; min-width: 272px; background: var(--surface); box-shadow: 0 0 0 1px var(--ux-line-2), 0 24px 48px -20px var(--ux-shadow-strong); transform-origin: top left; }
+  #view-editor .mb-menu:not([hidden]) { animation: edlPop .4s var(--ux-spring) both; }
+  @keyframes edlPop { from { opacity: 0; transform: scale(.88); } to { opacity: 1; transform: none; } }
+  #view-editor .mb-item { height: 38px; border-radius: 11px; font-weight: 620; gap: 10px; }
+  #view-editor .mb-item:hover:not(:disabled), #view-editor .mb-item:focus-visible { background: var(--raised); }
+  #view-editor .mb-kbd { font-weight: 600; }
+  #view-editor .mb-heading { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding-left: 12px; }
+  #view-editor .mb-sep { margin: 5px 8px; background: var(--ux-line); }
+
+  /* ---------- Khung panel (gallery: tấm 24px, viền 1px, bóng sâu) ---------- */
+  #view-editor .ws-group { border: 0; border-radius: 24px; background: var(--surface); box-shadow: 0 0 0 1px var(--ux-line), 0 30px 60px -44px var(--ux-shadow-strong); }
+  #view-editor .ws-ghead { height: 50px; padding: 0 8px 0 8px; border-bottom: 0; gap: 6px; }
+  #view-editor .ws-tabs { gap: 3px; align-items: center; padding: 3px 0; }
+  #view-editor .ws-tab { height: 34px; padding: 0 12px; border-radius: 12px; font-weight: 650; font-size: 13px; transition: background var(--dur-2) var(--ease-out), color var(--dur-2); }
+  #view-editor .ws-tab:hover { background: var(--raised); }
+  #view-editor .ws-tab.is-active { background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); font-weight: 800; }
+  #view-editor .ws-tab.is-active::after { left: 50%; right: auto; width: 16px; margin-left: -8px; bottom: 3px; height: 3px; background: var(--ux-grad); }
+  #view-editor .ws-act { width: 30px; height: 30px; border-radius: 10px; }
+  #view-editor .ws-gbody { border-top: 1px solid var(--rule); }
+  #view-editor .ws-panel .panel-title { margin: 6px 0 -4px; font-size: 11px; line-height: 16px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; color: var(--ux-ink-3); }
+  #view-editor .ws-panel .hint { font-size: 12px; line-height: 17px; }
+  #view-editor .ws-splitter::after { background: transparent; }
+  #view-editor .ws-splitter:hover::after, #view-editor .ws-splitter.is-active::after, #view-editor .ws-splitter:focus-visible::after { background: var(--ux-grad); width: 3px; left: 2.5px; }
+  #view-editor .preview-wrap { border: 0; border-radius: 24px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line), inset 0 24px 60px -48px var(--ux-shadow-strong); }
+  #view-editor .editor .landing, #view-editor .landing { border-radius: 14px; box-shadow: 0 0 0 1px var(--ux-line), 0 30px 60px -40px var(--ux-shadow-strong); }
+  #view-editor .tpl-bar { border: 0; border-radius: 18px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  #view-editor .tpl-swatch { border-radius: 10px; width: 32px; height: 32px; box-shadow: 0 0 0 1px var(--ux-line); }
+  #view-editor .tpl-bar .btn { border-radius: 10px; }
+  #view-editor .ws-panel .btn-ghost { border-radius: 12px; }
+  #view-editor .mode-switch { background: var(--raised); padding: 3px; border-radius: 15px; box-shadow: inset 0 0 0 1px var(--ux-line); gap: 3px; }
+  #view-editor .mode-btn { border: 0; border-radius: 12px; background: transparent; font-weight: 750; padding: 9px 12px; }
+  #view-editor .mode-btn:hover { background: var(--surface); }
+  #view-editor .mode-btn.is-active { background: var(--surface); box-shadow: 0 0 0 1.5px var(--text), 0 8px 18px -12px var(--ux-shadow-strong); }
+  #view-editor .st-group { border: 0; border-radius: 18px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  #view-editor .st-group > summary { font-weight: 800; }
+  #view-editor .st-label { font-weight: 750; }
+  #view-editor .chip { border: 0; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); font-weight: 650; transition: background var(--dur-2), box-shadow var(--dur-2), transform var(--dur-1); }
+  #view-editor .chip:hover { background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--ux-line-2); }
+  #view-editor .chip.is-active { background: var(--text); box-shadow: none; color: var(--primary-contrast); }
+  #view-editor .palettes { gap: 8px; }
+  #view-editor .palette { border-radius: 12px; aspect-ratio: 1.5; box-shadow: inset 0 0 0 1px var(--ux-line), 0 8px 14px -10px var(--ux-shadow-strong); transition: transform var(--dur-2) var(--ux-spring), outline-offset var(--dur-2); }
+  #view-editor .palette:hover { transform: translateY(-2px); }
+  #view-editor .palette.is-active { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #view-editor .section-title, #view-editor #style-panel > h3 { letter-spacing: .02em; }
+
+  /* ---------- 297: hàng bố cục = khung xương có nhãn, nút lên/xuống hiện khi rê ---------- */
+  .edl-stat { display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 800; color: var(--ux-ink-3); }
+  .edl-stat b { margin-right: auto; color: var(--ux-ink); font-weight: 850; font-size: 12px; }
+  .edl-sv { display: inline-flex; align-items: center; gap: 5px; }
+  .edl-sv::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ux-mint); }
+  .edl-sv.is-blink { animation: edlBlink .6s ease; }
+  @keyframes edlBlink { 40% { opacity: .2; } }
+  #view-editor .section-list { gap: 6px; }
+  #view-editor .section-item { position: relative; border: 0; border-radius: 13px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); padding: 6px 6px 6px 4px; min-height: 48px; transition: box-shadow var(--dur-2), background var(--dur-2); }
+  #view-editor .section-item:hover, #view-editor .section-item:focus-within { background: var(--raised); box-shadow: inset 0 0 0 1.5px var(--accent); }
+  #view-editor .section-item .grip { opacity: .55; }
+  #view-editor .section-item .name { font-weight: 650; font-size: 13.5px; }
+  #view-editor .section-item.is-hidden { opacity: .62; }
+  #view-editor .section-item.is-moved { background: var(--accent-soft); }
+  #view-editor .section-item .edl-mini { position: relative; flex: none; width: 46px; height: 24px; border-radius: 6px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--ux-line); overflow: hidden; }
+  #view-editor .section-item .edl-mini i { position: absolute; display: block; border-radius: 2px; background: var(--ux-surface-3); }
+  #view-editor .section-item > button:not(.gear) { width: 24px; height: 24px; border-radius: 8px; background: var(--surface); box-shadow: 0 0 0 1px var(--ux-line); opacity: 0; transition: opacity var(--dur-2), background var(--dur-1); }
+  #view-editor .section-item:hover > button:not(.gear), #view-editor .section-item:focus-within > button:not(.gear) { opacity: 1; }
+  @media (hover: none) { #view-editor .section-item > button:not(.gear) { opacity: 1; } }
+  #view-editor .section-item > button:disabled { opacity: 0 !important; pointer-events: none; }
+  #view-editor .section-item > button svg { width: 12px; height: 12px; }
+  #view-editor .section-item input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
+  /* 297: thư viện khối = ô chọn dọc */
+  #view-editor .block-lib { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  #view-editor .block-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 9px 6px 8px; border: 0; border-radius: 15px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); color: var(--ux-ink-2); text-align: center; transition: transform var(--dur-1), background var(--dur-2), box-shadow var(--dur-2), color var(--dur-2); }
+  #view-editor .block-card:hover { background: var(--accent-soft); color: var(--accent-ink); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent); }
+  #view-editor .block-card:active { transform: scale(.95); }
+  #view-editor .block-card.is-on { background: var(--accent-soft); color: var(--accent-ink); box-shadow: inset 0 0 0 1.5px var(--accent); }
+  #view-editor .block-thumb { width: 100%; height: 36px; border-radius: 8px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  #view-editor .block-text { align-items: center; }
+  #view-editor .block-text strong { font-size: 12px; font-weight: 800; line-height: 15px; color: inherit; }
+  #view-editor .block-text small { display: none; }
+  #view-editor .block-state { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; }
+  #view-editor .block-state svg { width: 11px; height: 11px; }
+
+  /* ---------- 040: rail tối bên trái, mở rộng thành tên panel ---------- */
+  .edl-rail-slot { flex: none; position: relative; width: 58px; margin-right: 6px; z-index: 30; }
+  .edl-rail { --rw: 58px; position: absolute; left: 0; top: 0; bottom: 0; width: var(--rw); padding: 10px 11px; border-radius: 24px; background: var(--primary); color: var(--primary-contrast); overflow: hidden; box-shadow: 0 30px 60px -36px var(--ux-shadow-strong); transition: width .6s var(--ux-spring), box-shadow .4s; }
+  .edl-rail.is-wide { --rw: 196px; box-shadow: 0 0 0 1px var(--ux-line-2), 0 30px 60px -20px var(--ux-shadow-strong); }
+  .edl-rail-top { display: flex; align-items: center; gap: 10px; height: 38px; margin-bottom: 12px; }
+  .edl-rail-logo { width: 34px; height: 34px; flex: none; border-radius: 12px; background: var(--ux-grad); }
+  .edl-rail-name { font-size: 15px; font-weight: 800; letter-spacing: -.03em; white-space: nowrap; opacity: 0; transition: opacity .25s; }
+  .edl-rail.is-wide .edl-rail-name { opacity: 1; transition: opacity .3s .15s; }
+  .edl-rail-tog { position: absolute; right: 0; top: 10px; width: 24px; height: 34px; border: 0; padding: 0; border-radius: 10px 0 0 10px; background: color-mix(in srgb, var(--primary-contrast) 16%, transparent); color: inherit; display: grid; place-items: center; opacity: 0; transition: opacity .2s; cursor: pointer; }
+  .edl-rail:hover .edl-rail-tog, .edl-rail-tog:focus-visible, .edl-rail.is-wide .edl-rail-tog { opacity: 1; }
+  @media (hover: none) { .edl-rail-tog { opacity: 1; } }
+  .edl-rail-tog:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .edl-rail-tog svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .5s var(--ux-spring); }
+  .edl-rail.is-wide .edl-rail-tog svg { transform: rotate(180deg); }
+  .edl-rail-nav { position: relative; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .edl-rail-hl { position: absolute; left: 0; right: 0; top: 0; height: 46px; border-radius: 15px; background: color-mix(in srgb, var(--primary-contrast) 17%, transparent); transform: translateY(var(--y, 0)); transition: transform .5s var(--ux-spring), opacity .2s; pointer-events: none; }
+  .edl-rail-hl::before { content: ""; position: absolute; left: -11px; top: 12px; bottom: 12px; width: 4px; border-radius: 0 4px 4px 0; background: var(--ux-grad); }
+  .edl-rail-it { position: relative; display: flex; align-items: center; gap: 14px; width: 100%; height: 46px; padding: 0 0 0 8px; border: 0; border-radius: 15px; background: none; color: inherit; opacity: .62; text-align: left; font: inherit; cursor: pointer; transition: opacity .25s; }
+  .edl-rail-it:hover, .edl-rail-it[aria-current="true"] { opacity: 1; }
+  .edl-rail-it.is-off:not(:hover) { opacity: .4; }
+  .edl-rail-it:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .edl-rail-it svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .edl-rail-it span { font-size: 14px; font-weight: 650; white-space: nowrap; opacity: 0; transform: translateX(-8px); transition: opacity .2s, transform .35s var(--ux-ease); }
+  .edl-rail.is-wide .edl-rail-it span { opacity: 1; transform: none; transition: opacity .3s var(--ux-ease), transform .5s var(--ux-spring); transition-delay: calc(.12s + var(--i) * 35ms); }
+  .edl-rail-bd { position: absolute; left: 30px; top: 5px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px; background: #FF5A6E; color: #fff; font-size: 10.5px; font-weight: 800; display: grid; place-items: center; font-style: normal; box-shadow: 0 0 0 2.5px var(--primary); }
+  .edl-rail-bd[hidden] { display: none; }
+  .edl-rail-me { position: absolute; left: 10px; right: 10px; bottom: 10px; display: flex; align-items: center; gap: 10px; height: 50px; padding: 0 0 0 7px; border: 0; border-radius: 16px; background: color-mix(in srgb, var(--primary-contrast) 9%, transparent); color: inherit; text-align: left; font: inherit; cursor: pointer; overflow: hidden; }
+  .edl-rail-me i { position: relative; width: 32px; height: 32px; flex: none; border-radius: 11px; overflow: hidden; background: var(--sw1, var(--raised)); }
+  .edl-rail-me i::after { content: ""; position: absolute; inset: 0 0 0 50%; background: var(--sw2, transparent); }
+  .edl-rail-me span { font-size: 12.5px; font-weight: 650; white-space: nowrap; opacity: 0; transition: opacity .25s; line-height: 1.25; }
+  .edl-rail-me small { display: block; font-size: 11px; opacity: .65; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+  .edl-rail.is-wide .edl-rail-me span { opacity: 1; transition-delay: .25s; }
+  .edl-rail-me:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  @media (max-width: 1100px) { .edl-rail-slot { display: none; } }
+  @media (min-width: 1101px) and (max-width: 1280px) { .edl-rail-slot { width: 50px; margin-right: 4px; } .edl-rail { --rw: 50px; padding: 10px 7px; } .edl-rail.is-wide { --rw: 196px; } .edl-rail-logo { margin-left: 2px; } .edl-rail-it { padding-left: 8px; } .edl-rail-hl::before { left: -7px; } .edl-rail-bd { left: 26px; } }
+
+  /* khoá một màn hình: ws chiếm phần còn lại sau thanh công cụ (thanh cao hơn nên không dùng calc cố định) */
+  @media (min-width: 1101px) {
+    html.is-editor #view-editor .ws { height: auto; flex: 1 1 0; min-height: 0; }
+    html.is-editor #view-editor .editor-bar { flex-wrap: nowrap; }
+    html.is-editor #view-editor .editor-bar h2 { min-width: 0; flex: 0 1 auto; }
+  }
+
+  /* ---------- 257: thước breakpoint + tay kéo độ rộng, dính trên giếng xem trước ---------- */
+  .edl-ruler { position: sticky; top: 0; z-index: 20; margin: -16px -16px 16px; padding: 10px 22px 10px; background: color-mix(in srgb, var(--raised) 86%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--ux-line); }
+  .edl-r-ticks { position: relative; height: 16px; margin: 0; }
+  .edl-r-ticks i { position: absolute; top: 0; height: 16px; border-left: 1.5px solid var(--ux-ink-3); font-style: normal; font-size: 8.5px; font-weight: 800; color: var(--ux-ink-3); padding-left: 3px; line-height: 10px; text-transform: uppercase; transition: color .2s, border-color .2s; }
+  .edl-r-ticks i.edl-r-edge { left: 0; border-left-color: transparent; font-family: var(--font-mono); text-transform: none; padding-left: 0; }
+  .edl-r-ticks i.edl-r-edge-r { left: auto; right: 0; }
+  .edl-r-ticks i.is-flash { animation: edlFlash .7s ease; }
+  @keyframes edlFlash { 30% { color: var(--accent); border-color: var(--accent); transform: scaleY(1.3); } }
+  .edl-r-track { position: relative; height: 24px; margin: 2px 0 0; }
+  .edl-r-track::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 4px; border-radius: 2px; background: var(--active); }
+  .edl-r-fill { position: absolute; left: 0; top: 10px; height: 4px; border-radius: 2px; background: var(--ux-grad); transition: width .5s cubic-bezier(.3, 1.1, .4, 1); }
+  .edl-ruler.is-drag .edl-r-fill, .edl-ruler.is-drag .edl-r-hd { transition: none; }
+  .edl-r-hd { position: absolute; top: 0; width: 14px; height: 24px; margin-left: -7px; border-radius: 7px; background: var(--surface); box-shadow: 0 0 0 1px var(--ux-line-2), 0 2px 6px -2px var(--ux-shadow-strong); cursor: ew-resize; touch-action: none; display: grid; place-items: center; transition: left .5s cubic-bezier(.3, 1.1, .4, 1); }
+  .edl-r-hd::before { content: ""; width: 4px; height: 10px; border-left: 1.5px solid var(--ux-ink-3); border-right: 1.5px solid var(--ux-ink-3); }
+  .edl-r-hd:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (max-width: 760px) { .edl-ruler { display: none; } }
+
+  /* ---------- 046: bảng lệnh ---------- */
+  .edl-pal { position: fixed; z-index: 1300; filter: drop-shadow(0 28px 26px color-mix(in srgb, var(--ux-shadow-strong) 70%, transparent)); }
+  .edl-pal-in { position: absolute; inset: 0; display: flex; flex-direction: column; border-radius: 22px; background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--ux-line-2); clip-path: inset(0 0 0 0 round 22px); transition: clip-path .6s var(--ux-ease); }
+  .edl-pal.is-closed .edl-pal-in { clip-path: inset(0 0 calc(100% - var(--fh, 38px)) 0 round 999px); transition: clip-path .5s var(--ux-ease); }
+  .edl-pal-field { position: relative; display: flex; align-items: center; gap: 10px; height: 52px; flex: none; padding: 0 14px 0 16px; border-bottom: 1px solid var(--ux-line); cursor: text; }
+  .edl-pal.is-closed .edl-pal-field { border-color: transparent; height: var(--fh, 38px); padding: 0 8px 0 12px; }
+  .edl-pal-field svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--ux-ink-3); stroke-width: 2; stroke-linecap: round; }
+  .edl-pal-q { flex: 1; min-width: 0; height: 100%; border: 0; padding: 0; background: none; font: inherit; font-size: 15px; font-weight: 560; color: var(--text); outline: none; }
+  .edl-pal-q::placeholder { color: var(--ux-ink-3); }
+  .edl-pal-field:has(.edl-pal-q:focus-visible) { box-shadow: inset 0 -2px 0 var(--accent); }
+  .edl-pal-body { position: relative; flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; overscroll-behavior: contain; padding: 6px 8px; transition: opacity .3s; }
+  .edl-pal-body::-webkit-scrollbar { display: none; }
+  .edl-pal.is-closed .edl-pal-body, .edl-pal.is-closed .edl-pal-foot { opacity: 0; }
+  .edl-pal-hl { position: absolute; left: 8px; right: 8px; top: 0; height: 44px; border-radius: 13px; background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); transform: translateY(var(--y, 0)); transition: transform .4s var(--ux-spring), opacity .2s; pointer-events: none; }
+  .edl-pal-list { position: relative; margin: 0; padding: 0; list-style: none; }
+  .edl-pal-g { padding: 10px 10px 6px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ux-ink-3); }
+  .edl-pal-op { display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 10px; border-radius: 13px; font-size: 14px; font-weight: 620; color: var(--ux-ink-2); cursor: pointer; animation: edlIn .45s var(--ux-spring) backwards; animation-delay: calc(var(--i) * 24ms); }
+  .edl-pal-op[aria-selected="true"] { color: var(--text); }
+  .edl-pal-op mark { background: none; color: var(--accent-ink); font-weight: 800; }
+  .edl-pal-ic { width: 28px; height: 28px; flex: none; border-radius: 9px; display: grid; place-items: center; background: var(--raised); color: var(--ux-ink-2); }
+  .edl-pal-ic svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .edl-pal-op[aria-selected="true"] .edl-pal-ic { background: var(--accent); color: var(--accent-contrast); }
+  .edl-pal-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edl-pal-op .edl-kbd { margin-left: auto; }
+  .edl-pal-empty { padding: 40px 0; text-align: center; font-size: 14px; color: var(--ux-ink-3); }
+  .edl-pal-empty b { display: block; margin-bottom: 4px; font-size: 15px; color: var(--text); }
+  @keyframes edlIn { from { opacity: 0; transform: translateY(8px); } }
+  .edl-pal-foot { display: flex; align-items: center; gap: 14px; height: 42px; flex: none; padding: 0 16px; border-top: 1px solid var(--ux-line); font-size: 12px; font-weight: 600; color: var(--ux-ink-3); transition: opacity .3s; }
+  .edl-pal-foot .edl-kbd { height: 20px; padding: 0 5px; margin-right: 4px; }
+  .edl-pal-done { margin-left: auto; color: var(--ux-mint); font-weight: 700; opacity: 0; transform: translateY(4px); transition: opacity .3s, transform .4s var(--ux-spring); max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edl-pal-done.show { opacity: 1; transform: none; }
+
+  /* ---------- 038: menu chuột phải trên trang ---------- */
+  .edl-ctx { position: fixed; z-index: 1250; width: 232px; padding: 6px; border-radius: 18px; background: var(--surface); color: var(--text); box-shadow: 0 0 0 1px var(--ux-line-2), 0 24px 48px -20px var(--ux-shadow-strong); overflow: hidden; height: var(--mh, auto); opacity: 0; transform: scale(.85); visibility: hidden; user-select: none; -webkit-user-select: none;
+    transition: opacity .15s var(--ux-ease), transform .35s var(--ux-spring), height .4s var(--ux-spring), visibility 0s .35s; }
+  .edl-ctx.is-open { opacity: 1; transform: none; visibility: visible; transition: opacity .15s var(--ux-ease), transform .4s var(--ux-spring), height .4s var(--ux-spring); }
+  .edl-track { display: flex; width: 440px; transition: transform .45s var(--ux-spring); }
+  .edl-ctx.is-sub .edl-track { transform: translateX(-220px); }
+  .edl-p { width: 220px; flex: none; margin: 0; padding: 0; list-style: none; transition: opacity .3s; }
+  .edl-ctx.is-sub .edl-p:first-child, .edl-ctx:not(.is-sub) .edl-p + .edl-p { opacity: 0; }
+  .edl-ctx-h { padding: 6px 10px 4px; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ux-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .edl-mi { display: flex; align-items: center; gap: 10px; width: 100%; height: 38px; padding: 0 10px; border: 0; border-radius: 11px; background: none; color: var(--text); font: inherit; font-size: 13.5px; font-weight: 620; text-align: left; cursor: pointer; }
+  .edl-mi:hover:not(:disabled), .edl-mi:focus-visible, .edl-mi[aria-expanded="true"] { background: var(--raised); outline: none; }
+  .edl-mi:disabled { color: var(--disabled-ink); cursor: default; }
+  .edl-mi svg { width: 17px; height: 17px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; color: var(--ux-ink-2); }
+  .edl-mi span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edl-mi kbd { margin-left: auto; font: 600 11.5px var(--font); color: var(--ux-ink-3); }
+  .edl-mi .edl-ar { margin-left: auto; width: 14px; height: 14px; }
+  .edl-mi.danger, .edl-mi.danger svg { color: var(--danger); }
+  .edl-back { color: var(--ux-ink-2); font-weight: 750; }
+  .edl-sep { height: 1px; margin: 5px 8px; background: var(--ux-line); list-style: none; }
+
+  /* ---------- 297: thẻ nhãn ghim trên viền phần tử + viền chọn/rê trên trang ---------- */
+  .landing.is-editable .lp-hovered:not(.lp-selected) { outline: 1.5px solid color-mix(in srgb, var(--accent) 50%, transparent); outline-offset: 3px; border-radius: 4px; }
+  .landing.is-editable .lp-selected { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .edl-tag { position: fixed; z-index: 940; padding: 2px 7px 3px; border-radius: 0 0 7px 7px; font: 850 10px/1.3 var(--font); letter-spacing: .01em; white-space: nowrap; pointer-events: none; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+  .edl-tag[hidden] { display: none; }
+  .edl-tag.is-sel { background: var(--accent); color: var(--accent-contrast); z-index: 941; }
+  .edl-tag.is-hov { background: var(--text); color: var(--surface); opacity: .88; }
+
+  /* ---------- Thanh chỉnh phần tử nổi (inspector) theo kiểu menu 038 ---------- */
+  .inspector { border: 0; border-radius: 18px; background: var(--surface); box-shadow: 0 0 0 1px var(--ux-line-2, var(--border)), 0 24px 48px -20px rgba(24, 20, 56, .38); padding: 8px; }
+  .inspector.is-entering { animation: edlPop .4s var(--ux-spring) both; transform-origin: 20% 100%; }
+  .ins-crumbs { border-bottom: 1px solid var(--border); }
+  .ins-crumb { border-radius: 8px; font-weight: 700; }
+  .ins-name { font-weight: 800; letter-spacing: -.01em; }
+  .ins-btn { border: 0; border-radius: 10px; height: 32px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--border); font-weight: 750; transition: background var(--dur-1), transform var(--dur-1); }
+  .ins-btn:hover { background: var(--active); }
+  .ins-btn:active { transform: scale(.94); }
+  .ins-btn.is-active { background: var(--text); color: var(--primary-contrast); box-shadow: none; }
+  .ins-num, .ins-text, .ins-select { border-radius: 10px; border-color: var(--border); background: var(--raised); height: 32px; }
+  .ins-swatch { box-shadow: inset 0 0 0 1px var(--border), 0 4px 8px -4px rgba(24, 20, 56, .3); }
+  .ins-swatch.is-active { outline-color: var(--accent); }
+  .ins-sep { background: var(--border); }
+
+  /* ---------- 266: bảng màu trộn ---------- */
+  .edl-pg { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 8px; border-radius: 20px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  .edl-pg-cs { display: flex; height: 104px; border-radius: 14px; overflow: hidden; }
+  .edl-pg-cl { position: relative; flex: 1; background: var(--c); color: var(--t); transition: background .55s ease, color .4s, flex .3s cubic-bezier(.3, 1.3, .5, 1); }
+  .edl-pg-cl:hover { flex: 1.3; }
+  .edl-pg-cp { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 0 9px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+  .edl-pg-cp:focus-visible, .edl-pg-lk:focus-visible { outline: 2px solid var(--t); outline-offset: -4px; }
+  .edl-pg-cl code { font: 800 9.5px var(--font-mono); letter-spacing: .02em; }
+  .edl-pg-lk { position: absolute; top: 8px; left: 50%; width: 24px; height: 24px; margin-left: -12px; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--t) 16%, transparent); color: var(--t); display: grid; place-items: center; cursor: pointer; opacity: .55; transition: opacity .2s, transform .3s cubic-bezier(.3, 1.7, .5, 1); }
+  .edl-pg-lk[aria-pressed="true"] { opacity: 1; transform: scale(1.1); }
+  .edl-pg-lk svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .edl-pg-cl:hover .edl-pg-lk { opacity: 1; }
+  .edl-pg-tb { display: flex; align-items: center; gap: 10px; }
+  .edl-pg-sh { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 11px; background: var(--text); color: var(--surface); font: inherit; font-size: 12px; font-weight: 850; cursor: pointer; flex: none; }
+  .edl-pg-sh svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .5s cubic-bezier(.3, 1.3, .5, 1); }
+  .edl-pg-sh.is-spin svg { transform: rotate(360deg); }
+  .edl-pg-sh:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .edl-pg-note { font-size: 11px; line-height: 14px; font-weight: 700; color: var(--ux-ink-3); }
+  .edl-pg-pv { display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 10px; border-radius: 14px; background: var(--p0); transition: background .55s; }
+  .edl-pg-pv div { flex: 1; min-width: 0; }
+  .edl-pg-pv small { display: block; font-size: 9px; font-weight: 850; color: var(--p2); transition: color .55s; }
+  .edl-pg-pv b { display: block; margin-top: 2px; font-size: 12.5px; font-weight: 900; color: var(--p4); transition: color .55s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .edl-pg-pv span { padding: 7px 11px; border-radius: 10px; background: var(--p3); color: var(--p0); font-size: 10.5px; font-weight: 850; white-space: nowrap; transition: background .55s, color .55s; }
+  .edl-pg-pv i { flex: none; width: 34px; height: 34px; border-radius: 11px; background: linear-gradient(135deg, var(--p1), var(--p2)); transition: background .55s; }
+  .edl-pg-tt { position: absolute; left: 50%; top: 82px; padding: 6px 11px; border-radius: 10px; background: var(--text); color: var(--surface); font-size: 10.5px; font-weight: 800; white-space: nowrap; transform: translate(-50%, 8px); opacity: 0; pointer-events: none; transition: opacity .2s, transform .3s cubic-bezier(.3, 1.5, .5, 1); }
+  .edl-pg-tt.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ---------- 303: cặp font + tỉ lệ cỡ chữ ---------- */
+  .edl-fp { --hf: system-ui, sans-serif; --hw: 800; --bf: system-ui, sans-serif; --r: 1.25; display: flex; flex-direction: column; gap: 8px; padding: 8px; border-radius: 20px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  .edl-fp-ps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .edl-fp-pr { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 52px; padding: 0 2px; border: 0; border-radius: 12px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--ux-line); color: var(--ux-ink-2); font: inherit; font-size: 10px; font-weight: 800; cursor: pointer; transition: box-shadow .2s, background .2s, transform var(--dur-1); }
+  .edl-fp-pr b { font-size: 18px; line-height: 1.1; color: var(--text); }
+  .edl-fp-pr:hover { box-shadow: inset 0 0 0 1.5px var(--ux-line-2); }
+  .edl-fp-pr:active { transform: scale(.95); }
+  .edl-fp-pr[aria-checked="true"] { box-shadow: inset 0 0 0 2px var(--text); }
+  .edl-fp-sr { display: flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 800; color: var(--ux-ink-3); }
+  .edl-fp-sr > span { margin-right: auto; }
+  .edl-fp-sc { height: 26px; padding: 0 8px; border: 0; border-radius: 8px; background: none; color: var(--ux-ink-3); font: 800 10.5px var(--font-mono); cursor: pointer; }
+  .edl-fp-sc:hover { background: var(--surface); }
+  .edl-fp-sc[aria-checked="true"] { background: var(--text); color: var(--surface); }
+  .edl-fp-pv { display: flex; gap: 10px; padding: 12px; border-radius: 15px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--ux-line); overflow: hidden; min-height: 96px; }
+  .edl-fp-tx { flex: 1; min-width: 0; transition: filter .2s, opacity .2s; }
+  .edl-fp-tx.is-sw { filter: blur(4px); opacity: .3; }
+  .edl-fp-tx h3 { margin: 0; font-family: var(--hf); font-weight: var(--hw); font-size: calc(11.5px * var(--r) * var(--r) * var(--r)); line-height: 1.15; letter-spacing: -.02em; color: var(--text); transition: font-size .45s cubic-bezier(.3, 1.1, .4, 1); overflow-wrap: anywhere; }
+  .edl-fp-tx p { margin: 6px 0 0; font-family: var(--bf); font-size: 11.5px; line-height: 1.5; font-weight: 500; color: var(--ux-ink-2); }
+  .edl-fp-rl { flex: none; width: 46px; display: flex; flex-direction: column; gap: 6px; padding-left: 8px; border-left: 1px dashed var(--ux-line-2); font: 800 9px var(--font-mono); color: var(--ux-ink-3); }
+  .edl-fp-rl span { display: flex; align-items: center; gap: 4px; }
+  .edl-fp-rl i { display: block; height: 3px; border-radius: 2px; background: var(--accent); transition: width .45s cubic-bezier(.3, 1.1, .4, 1); }
+  .edl-fp-rl em { font-style: normal; }
+  .edl-fp-ft { display: flex; align-items: center; gap: 8px; }
+  .edl-fp-ft code { flex: 1; min-width: 0; padding: 8px 9px; border-radius: 10px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--ux-line); font: 500 9.5px var(--font-mono); color: var(--ux-ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .edl-fp-cp { flex: none; height: 32px; padding: 0 11px; border: 0; border-radius: 10px; background: var(--text); color: var(--surface); font: inherit; font-size: 11px; font-weight: 850; cursor: pointer; transition: background .3s; }
+  .edl-fp-cp.is-ok { background: var(--success); color: var(--surface); }
+  .edl-fp button:focus-visible, .edl-pg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- 249: xem trước SEO ---------- */
+  #side-publish .field label { display: flex; justify-content: space-between; align-items: baseline; }
+  .edl-len { font: 800 10.5px var(--font-mono); color: var(--ux-ink-3); font-variant-numeric: tabular-nums; }
+  .edl-len.is-over { color: var(--danger); }
+  .edl-br { height: 3px; margin-top: -2px; border-radius: 2px; background: var(--active); overflow: hidden; }
+  .edl-br i { display: block; height: 100%; border-radius: 2px; background: var(--ux-mint); transition: width .2s, background .2s; }
+  .edl-br i.is-mid { background: var(--warn); }
+  .edl-br i.is-over { background: var(--danger); }
+  #side-publish .seo-prev { gap: 8px; padding: 8px; border-radius: 20px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  #side-publish .seo-prev-label { display: none; }
+  .edl-tl { display: flex; gap: 4px; }
+  .edl-tb { height: 28px; padding: 0 10px; border: 0; border-radius: 9px; background: none; color: var(--ux-ink-3); font: inherit; font-size: 11.5px; font-weight: 850; cursor: pointer; }
+  .edl-tb:hover { background: var(--surface); }
+  .edl-tb[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  #side-publish .serp { padding: 12px 14px; border: 0; border-radius: 16px; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08); }
+  #side-publish .fbcard { display: none; flex-direction: row; border: 0; border-radius: 16px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--ux-line); min-height: 86px; }
+  #side-publish .fbcard img { flex: none; width: 104px; height: auto; aspect-ratio: auto; align-self: stretch; }
+  #side-publish .fbcard-body { flex: 1; min-width: 0; padding: 10px 12px; }
+  #side-publish .fbcard-host { font-size: 9.5px; font-weight: 800; color: var(--ux-ink-3); }
+  #side-publish .fbcard-title { font-size: 12px; line-height: 16px; font-weight: 850; color: var(--text); white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  #side-publish .fbcard-desc { font-size: 10.5px; line-height: 14px; font-weight: 600; color: var(--ux-ink-3); }
+  #side-publish .seo-prev.is-og .serp { display: none; }
+  #side-publish .seo-prev.is-og .fbcard { display: flex; animation: edlIn .4s var(--ux-spring) both; }
+  #side-publish .seo-prev:not(.is-og) .serp { animation: edlIn .4s var(--ux-spring) both; }
+
+  /* ---------- 287: kiểm tra trang ---------- */
+  .edl-au { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 20px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  .edl-au-sc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; text-align: center; min-height: 76px; }
+  .edl-au-rg { position: relative; width: 50px; height: 50px; margin: 0 auto; }
+  .edl-au-rg svg { width: 50px; height: 50px; transform: rotate(-90deg); }
+  .edl-au-rg circle { fill: none; stroke-width: 5; }
+  .edl-au-rg .t { stroke: var(--active); }
+  .edl-au-rg .f { stroke: var(--c); stroke-linecap: round; stroke-dasharray: 144.5; stroke-dashoffset: 144.5; transition: stroke .3s; }
+  .edl-au-rg b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 900; color: var(--c); font-variant-numeric: tabular-nums; }
+  .edl-au-rg::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: color-mix(in srgb, var(--c) 10%, transparent); }
+  .edl-au-c small { display: block; margin-top: 5px; font-size: 10px; font-weight: 800; color: var(--ux-ink-2); white-space: nowrap; }
+  .edl-au-fs { padding: 8px; border-radius: 14px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--ux-line); }
+  .edl-au-fr { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; height: 44px; }
+  .edl-au-fm { position: relative; border-radius: 6px; background: var(--raised); box-shadow: 0 0 0 1px var(--ux-line); overflow: hidden; opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .35s cubic-bezier(.3, 1.5, .5, 1); }
+  .edl-au-fm.is-on { opacity: 1; transform: none; }
+  .edl-au-fm i { position: absolute; left: 4px; right: 4px; border-radius: 2px; background: var(--active); }
+  .edl-au-fm span { position: absolute; inset: 0; font-size: 0; }
+  .edl-au-mt { display: flex; flex-direction: column; }
+  .edl-au-m { display: grid; grid-template-columns: 104px 1fr 62px; align-items: center; gap: 8px; height: 26px; font-size: 11px; font-weight: 750; color: var(--ux-ink-2); }
+  .edl-au-m b { text-align: right; font-weight: 900; color: var(--c); font-variant-numeric: tabular-nums; }
+  .edl-au-br { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(90deg, color-mix(in srgb, var(--success) 25%, transparent) 0 40%, color-mix(in srgb, var(--warn) 25%, transparent) 40% 70%, color-mix(in srgb, var(--danger) 25%, transparent) 70%); }
+  .edl-au-br i { position: absolute; top: -3px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 2px var(--surface); left: 0; transition: left .8s cubic-bezier(.3, 1.2, .5, 1); }
+  .edl-au-go { height: 38px; border: 0; border-radius: 12px; background: var(--text); color: var(--surface); font: inherit; font-size: 12.5px; font-weight: 850; cursor: pointer; transition: opacity .2s; }
+  .edl-au-go:disabled { opacity: .5; cursor: default; }
+  .edl-au-go:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- Màn hẹp + chuyển động ---------- */
+  @media (max-width: 1100px) {
+    #view-editor .editor-bar { border-radius: 20px; padding: 8px 10px; }
+    #view-editor .device-toggle button { width: 40px; height: 34px; }
+    .edl-px { display: none; }
+    .edl-palpill { height: 40px; width: 40px; padding: 0; justify-content: center; }
+    .edl-palpill .edl-kbd, .edl-pp-t { display: none; }
+    #view-editor .ws-group { border-radius: 20px; }
+    #view-editor .preview-wrap { border-radius: 20px; }
+  }
+  @media (max-width: 760px) {
+    #view-editor .block-card { padding-top: 12px; }
+    .edl-ctx { max-width: calc(100vw - 16px); }
+    .edl-au-m { grid-template-columns: 92px 1fr 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edl-pal-in, .edl-ctx, .edl-track, .edl-rail, .edl-rail-hl, .edl-r-fill, .edl-r-hd, .edl-pg-cl, .edl-fp-tx h3, .edl-fp-rl i, .edl-au-fm, .edl-au-br i, .edl-pal-hl, .edl-pg-tt { transition: none !important; }
+    .edl-pal-op, #view-editor .mb-menu:not([hidden]), .inspector.is-entering, .edl-sv.is-blink, .edl-r-ticks i.is-flash { animation: none !important; }
+  }
+  html.motion-off .edl-pal-in, html.motion-off .edl-ctx, html.motion-off .edl-track, html.motion-off .edl-rail, html.motion-off .edl-rail-hl, html.motion-off .edl-r-fill, html.motion-off .edl-r-hd, html.motion-off .edl-pg-cl, html.motion-off .edl-au-fm, html.motion-off .edl-au-br i, html.motion-off .edl-pal-hl { transition: none !important; }
+  html.motion-off .edl-pal-op, html.motion-off #view-editor .mb-menu:not([hidden]), html.motion-off .inspector.is-entering { animation: none !important; }
+}
+/* Lucian: editor — chỉnh bổ sung sau kiểm tra hình */
+@layer app {
+  #view-editor .mb-btn { white-space: nowrap; }
+  #view-editor .menubar { flex: none; margin-right: 4px; }
+  #view-editor .ws-tab { padding: 0 9px; font-size: 12.5px; }
+  #view-editor .ws-tabs { gap: 2px; }
+  .edl-pg-cl code, .edl-fp-ft code { background: none; padding: 0; border-radius: 0; }
+  .edl-fp-ft code { background: var(--surface); padding: 8px 9px; border-radius: 10px; }
+  #view-editor .section-item .edl-mini { width: 40px; }
+  #view-editor .section-item .name { font-size: 13px; line-height: 17px; }
+}
+/* Lucian: editor — các luật SEO/chia sẻ gốc nằm ngoài @layer nên cần !important để thắng */
+@layer app {
+  #side-publish .serp { border: 0 !important; border-radius: 16px !important; }
+  #side-publish .fbcard { border: 0 !important; border-radius: 16px !important; background: var(--surface) !important; }
+  #side-publish .fbcard img { width: 104px !important; height: auto !important; aspect-ratio: auto !important; }
+  #side-publish .fbcard-host { font-size: 9.5px !important; line-height: 14px !important; font-weight: 800 !important; color: var(--ux-ink-3) !important; }
+  #side-publish .fbcard-title { font-size: 12px !important; line-height: 16px !important; font-weight: 850 !important; color: var(--text) !important; white-space: normal !important; display: -webkit-box !important; }
+  #side-publish .fbcard-desc { font-size: 10.5px !important; line-height: 14px !important; font-weight: 600 !important; color: var(--ux-ink-3) !important; }
+  #side-publish .fbcard-body { padding: 10px 12px !important; }
+  #view-editor .ws-tab { padding: 0 8px; }
+}
+/* Lucian: editor — chỉnh nhỏ 2 */
+@layer app {
+  .edl-rail.is-wide .edl-rail-bd { left: auto; right: 14px; top: 14px; box-shadow: none; }
+  #side-publish .seo-count.is-ok { display: none; }
+}
+/* Lucian: editor — bỏ blur của lớp ánh sáng (blur làm tràn cuộn ngang trên điện thoại) */
+@layer app {
+  #view-editor.editor.view::before { filter: none; clip-path: inset(0); }
+}
+/* Lucian: editor — lớp ánh sáng không vượt mép trang */
+@layer app {
+  #view-editor.editor.view::before { left: 0; right: 0; }
+}
