@@ -98,32 +98,8 @@
       b.setAttribute('aria-label', dark ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối');
     });
   }
-  // Đổi sáng/tối: vòng tròn loang ra từ nút vừa bấm (View Transitions), rồi đồng bộ nút giao diện của thanh trên
-  function toggleTheme(from) {
-    var next = isDark() ? 'light' : 'dark';
-    function apply() {
-      de.setAttribute('data-theme', next);
-      try { localStorage.setItem('ep_theme', next); } catch (e) { /* bỏ qua */ }
-      var tb = $('#btn-theme');
-      if (tb) {
-        tb.dataset.mode = next;
-        var t = 'Giao diện: ' + (next === 'dark' ? 'Tối' : 'Sáng');
-        tb.title = t; tb.setAttribute('aria-label', t + '. Bấm để đổi');
-      }
-      syncThemeBtns();
-    }
-    if (!doc.startViewTransition || reduced()) { apply(); return; }
-    var r = from ? from.getBoundingClientRect() : { left: root.innerWidth / 2, top: 0, width: 0, height: 0 };
-    var x = r.left + r.width / 2, y = r.top + r.height / 2;
-    var end = Math.hypot(Math.max(x, root.innerWidth - x), Math.max(y, root.innerHeight - y));
-    de.setAttribute('data-vt', 'theme');
-    var tr = doc.startViewTransition(apply);
-    tr.ready.then(function () {
-      de.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + end + 'px at ' + x + 'px ' + y + 'px)'] },
-        { duration: 650, easing: 'cubic-bezier(.2,.8,.2,1)', pseudoElement: '::view-transition-new(root)' });
-    }).catch(function () { /* giao diện đã đổi dù bỏ qua hiệu ứng */ });
-    tr.finished.then(function () { de.removeAttribute('data-vt'); }, function () { de.removeAttribute('data-vt'); });
-  }
+  // Đổi sáng/tối: dùng chung EP.theme (vòng tròn loang từ nút bấm); các nút đồng bộ qua MutationObserver
+  function toggleTheme(from) { EP.theme.toggle(from); }
 
   /* ---------- Thanh trên: hiện đường kẻ khi cuộn ---------- */
   function stuckUi() {

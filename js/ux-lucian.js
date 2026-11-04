@@ -235,6 +235,7 @@
       var b = $('#btn-publish'); if (b && !b.hidden && !b.disabled) b.click(); else ux.toast('Chưa thể xuất bản: hãy tạo landing page ở tab Thiết kế trang trước.'); } });
     cmds.push({ g: 'Hành động', t: 'Xem trước toàn màn hình', k: 'preview xem truoc', run: function () { click('#btn-preview'); } });
     cmds.push({ g: 'Hành động', t: 'Xuất danh sách đăng ký (CSV)', k: 'csv dang ky export', run: function () { click('#btn-export'); } });
+    cmds.push({ g: 'Hành động', t: 'Đổi giao diện sáng / tối', k: 'theme giao dien sang toi dark light mode', run: function () { if (EP.theme) EP.theme.cycle($('#btn-theme')); } });
     ((EP.templates && EP.templates.list) || []).forEach(function (t) {
       cmds.push({ g: 'Dùng mẫu', t: 'Dùng mẫu: ' + t.name, k: 'mau template dung ' + (t.id || ''), run: function () {
         if (ux.hooks && ux.hooks.useTemplate) ux.hooks.useTemplate(t.id); else click('.tpl-card[data-id="' + t.id + '"]'); } });

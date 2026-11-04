@@ -659,12 +659,9 @@
   <script defer src="js/ux-lucian-dash.js?v=2.9.0"></script>
   <script defer src="js/app.js?v=2.9.0"></script>
   <script defer src="js/ux-lucian-form.js?v=2.9.0"></script>
-<script>/* nút giao diện: Theo hệ thống -> Sáng -> Tối */
-(function(){var b=document.getElementById('btn-theme'),r=document.documentElement,L={system:'Theo hệ thống',light:'Sáng',dark:'Tối'},N={system:'light',light:'dark',dark:'system'};
-function get(){try{var t=localStorage.getItem('ep_theme');return t==='light'||t==='dark'?t:'system'}catch(e){return 'system'}}
-function apply(m){if(m==='system')r.removeAttribute('data-theme');else r.setAttribute('data-theme',m);b.dataset.mode=m;var t='Giao diện: '+L[m];b.title=t;b.setAttribute('aria-label',t+'. Bấm để đổi');}
-b.addEventListener('click',function(){var m=N[get()];try{if(m==='system')localStorage.removeItem('ep_theme');else localStorage.setItem('ep_theme',m)}catch(e){}apply(m);});
-apply(get());
-/* theo hệ thống: CSS tự đổi theo prefers-color-scheme, không cần JS khi hệ thống đổi */})();</script>
+<script>/* nút giao diện: Theo hệ thống -> Sáng -> Tối (logic + hiệu ứng ở EP.theme, js/motion.js) */
+(function(){var b=document.getElementById('btn-theme');
+b.addEventListener('click',function(){EP.theme.cycle(b);});
+document.addEventListener("DOMContentLoaded",function(){EP.theme.apply(EP.theme.get());});})();</script>
 </body>
 </html>
