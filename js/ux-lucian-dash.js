@@ -74,7 +74,7 @@
     });
     var btns = items.map(function (it, i) {
       var b = h('button', 'xl-it'); b.type = 'button'; b.style.setProperty('--c', it.color);
-      b.innerHTML = '<small><i aria-hidden="true"></i><span></span></small><b></b><em></em>';
+      b.innerHTML = '<small><i aria-hidden="true"></i><span></span></small><b></b><em></em><span class="xl-it-x"></span>';
       b.addEventListener('pointerenter', function () { hi(i); });
       b.addEventListener('focus', function () { hi(i); });
       b.addEventListener('pointerleave', function () { if (doc.activeElement !== b) hi(-1); });
@@ -107,7 +107,8 @@
         btns[i].querySelector('span').textContent = it.label;
         btns[i].querySelector('b').innerHTML = esc(it.text);
         btns[i].querySelector('em').textContent = it.sub || '';
-        btns[i].setAttribute('aria-label', it.label + ': ' + it.text + (it.sub ? ', ' + it.sub : ''));
+        btns[i].querySelector('.xl-it-x').textContent = it.sub2 || '';
+        btns[i].setAttribute('aria-label', it.label + ': ' + it.text + (it.sub ? ', ' + it.sub : '') + (it.sub2 ? ', ' + it.sub2 : ''));
       });
       cancel();
       cancel = tween(instant ? 1 : 1100, function (t) {
@@ -139,9 +140,11 @@
       it.fracs.forEach(function (f, k) {
         var rad = [13, 9, 5][k], C = 2 * Math.PI * rad;
         s.appendChild(sv('circle', { 'class': 't', cx: 15, cy: 15, r: rad }));
-        s.appendChild(sv('circle', { 'class': 'v', cx: 15, cy: 15, r: rad, 'stroke-dasharray': (Math.min(1, f) * C).toFixed(2) + ' ' + C.toFixed(2) }));
+        // Cung tối thiểu 8% để các sự kiện ít chỗ vẫn thấy được vòng đã đầy (% hiển thị ngay dưới)
+        var arc = f > 0 ? Math.max(0.08, Math.min(1, f)) : 0;
+        s.appendChild(sv('circle', { 'class': 'v', cx: 15, cy: 15, r: rad, 'stroke-dasharray': (arc * C).toFixed(2) + ' ' + C.toFixed(2) }));
       });
-      b.appendChild(s); b.appendChild(h('span', null, esc(it.label)));
+      b.appendChild(s); b.appendChild(h('span', 'xl-d-l', esc(it.label))); if (it.pct) b.appendChild(h('em', 'xl-d-p', esc(it.pct)));
       b.addEventListener('click', function () { onPick(i); });
       host.appendChild(b);
       return b;
@@ -167,21 +170,28 @@
     gd.appendChild(sv('stop', { offset: 0, 'stop-opacity': 0.28 })); gd.appendChild(sv('stop', { offset: 1, 'stop-opacity': 0 }));
     defs.appendChild(gd); svg.appendChild(defs);
     var ar = sv('path', { 'class': 'xl-ar', fill: 'url(#' + uid + ')' }), ln = sv('path', { 'class': 'xl-ln' });
+    // Đoạn cuối (ngày hôm nay còn dở dang) vẽ nét đứt, nhạt hơn để không trông như một cú sụt giảm
+    var ln2 = sv('path', { 'class': 'xl-ln xl-ln-part' });
     var cur = sv('line', { 'class': 'xl-cur', y1: 0, y2: H }), hd = h('span', 'xl-hd');
-    svg.appendChild(ar); svg.appendChild(ln); svg.appendChild(cur);
+    svg.appendChild(ar); svg.appendChild(ln); svg.appendChild(ln2); svg.appendChild(cur);
     host.appendChild(svg); host.appendChild(hd);
     var tag = h('span', 'xl-sp-tag'); tag.hidden = true; host.appendChild(tag);
-    var vals = [], ys = [], cancel = function () {}, STEP = 0;
+    var vals = [], ys = [], cancel = function () {}, STEP = 0, part = false;
     function Y(v, mx) { return 10 + (1 - (mx ? v / mx : 0)) * (H - 22); }
     function paint() {
       var n = ys.length; if (!n) return;
       STEP = n > 1 ? (W - 10) / (n - 1) : 0;
-      var p = ys.map(function (y, i) { return (i ? 'L' : 'M') + (i * STEP).toFixed(1) + ' ' + y.toFixed(1); }).join('');
-      ln.setAttribute('d', p); ar.setAttribute('d', p + 'L' + ((n - 1) * STEP).toFixed(1) + ' ' + (H + 4) + 'L0 ' + (H + 4) + 'Z');
+      var seg = function (i) { return (i ? 'L' : 'M') + (i * STEP).toFixed(1) + ' ' + ys[i].toFixed(1); };
+      var p = ys.map(function (y, i) { return seg(i); }).join('');
+      var solid = part && n > 1 ? ys.slice(0, n - 1).map(function (y, i) { return seg(i); }).join('') : p;
+      var dash = part && n > 1 ? 'M' + ((n - 2) * STEP).toFixed(1) + ' ' + ys[n - 2].toFixed(1) + 'L' + ((n - 1) * STEP).toFixed(1) + ' ' + ys[n - 1].toFixed(1) : '';
+      ln.setAttribute('d', solid); ln2.setAttribute('d', dash);
+      ar.setAttribute('d', p + 'L' + ((n - 1) * STEP).toFixed(1) + ' ' + (H + 4) + 'L0 ' + (H + 4) + 'Z');
       hd.style.left = (((n - 1) * STEP) / W * 100).toFixed(2) + '%'; hd.style.top = (ys[n - 1] / H * 100).toFixed(2) + '%';
     }
-    function set(values, animate) {
+    function set(values, animate, partial) {
       vals = values.slice();
+      part = !!partial;
       var mx = Math.max.apply(null, vals.concat([1]));
       var to = vals.map(function (v) { return Y(v, mx); });
       var from = ys.length === to.length ? ys.slice() : to.map(function () { return H - 6; });
@@ -258,7 +268,10 @@
           '<div class="xl-rh"><b class="xl-rt"></b><span class="xl-rs2"></span></div><div class="xl-rw"></div>' +
           '<div class="xl-mih"></div><div class="xl-mw"></div><p class="xl-sum"></p>' +
         '</section>';
-      host._sp = spark(host.querySelector('.xl-spw'), { tip: function (i, v, n) { return fmt(v) + ' · ' + (host._cur && host._cur.tipLabel ? host._cur.tipLabel(i, n) : ''); } });
+      host._sp = spark(host.querySelector('.xl-spw'), { tip: function (i, v, n) {
+        var cur = host._cur || {};
+        return fmt(v) + ' · ' + (cur.tipLabel ? cur.tipLabel(i, n) : '') + (cur.partial && i === n - 1 ? ' (hôm nay, chưa hết ngày)' : '');
+      } });
       host._k = 0;
     }
     host.classList.toggle('is-live', !!cfg.live);
@@ -275,7 +288,7 @@
       bd.classList.toggle('dn', d.v < 0); bd.classList.toggle('flat', d.v === 0);
       bd.querySelector('b').textContent = d.text;
       host.querySelector('.xl-dt').textContent = m.deltaNote || '';
-      host._sp.set(m.series, anim);
+      host._sp.set(m.series, anim, m.partial);
       Array.prototype.forEach.call(tabs.children, function (b, i) { b.setAttribute('aria-pressed', String(i === k)); });
     }
     tabs.innerHTML = '';

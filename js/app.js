@@ -2780,7 +2780,8 @@
     });
     function metric(key, name, pred) {
       var ser = D.daily(regs, 14, pred), total = regs.filter(pred).length, d = D.delta(ser);
-      return { key: key, name: name, total: total, series: ser, delta: { v: d.v, text: d.text }, deltaNote: d.note,
+      // partial: ngày cuối (hôm nay) chưa hết nên vẽ nét đứt ở đoạn cuối
+      return { key: key, name: name, total: total, series: ser, partial: true, delta: { v: d.v, text: d.text }, deltaNote: d.note,
         tipLabel: function (i, n) { var dd = new Date(); dd.setHours(0, 0, 0, 0); dd.setDate(dd.getDate() - (n - 1 - i)); return ('0' + dd.getDate()).slice(-2) + '/' + ('0' + (dd.getMonth() + 1)).slice(-2); } };
     }
     var n = events.length;
@@ -2792,7 +2793,7 @@
       ringsNote: n + ' trang',
       rings: [
         { label: 'Đã xuất bản', color: 'var(--xl-c1)', value: live, goal: n, text: live + '/' + n, sub: 'trang đang chạy' },
-        { label: 'Sắp diễn ra', color: 'var(--xl-c2)', value: upcoming, goal: n, text: upcoming + '/' + n, sub: week ? week + ' trong 7 ngày tới' : 'chưa có trong 7 ngày tới' },
+        { label: 'Sắp diễn ra', color: 'var(--xl-c2)', value: upcoming, goal: n, text: upcoming + '/' + n, sub: 'sự kiện chưa diễn ra', sub2: 'Trong 7 ngày tới: ' + week },
         { label: 'Chỗ đã giữ', color: 'var(--xl-c3)', value: seats, goal: cap, text: cap ? seats + '/' + cap : '—', sub: cap ? Math.round(seats / cap * 100) + '% sức chứa' : 'chưa đặt số chỗ' }
       ],
       minis: [], summary: 'Sự kiện bắt đầu trong 7 ngày tới: <b>' + week + '</b>'
@@ -2932,7 +2933,7 @@
       cfg.miniTitle = 'Độ đầy chỗ từng sự kiện';
       cfg.minis = up.map(function (i) {
         var cp = Number(i.ev.capacity) || 0, c = i.ev.published ? 0 : EP.registrations.confirmedCount(i.ev.id), d = new Date(i.ev.startAt);
-        return { label: ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2), fracs: [cp ? c / cp : 0], aria: i.ev.name + ': ' + (cp ? c + '/' + cp + ' chỗ' : c + ' đăng ký') };
+        return { label: ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2), pct: cp ? Math.round(c / cp * 100) + '%' : '—', fracs: [cp ? c / cp : 0], aria: i.ev.name + ': ' + (cp ? c + '/' + cp + ' chỗ (' + Math.round(c / cp * 100) + '%)' : c + ' đăng ký') };
       });
       cfg.onMini = function (k) {
         var card = grid.querySelector('.event-card[data-event-id="' + up[k].ev.id + '"]');
