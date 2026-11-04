@@ -637,6 +637,7 @@
   function useTemplate(id) {
     closeTplPreview(true);
     if (EP.tplGallery) EP.tplGallery.close(true);
+    chosenThisSession = true;
     clearEditor(); // sự kiện đang mở vẫn được giữ trong "Sự kiện của tôi"
     setTemplate(id);
     fillSample();
@@ -2231,6 +2232,7 @@
     var prevBrand = state && state.event.id === ev.id ? state.event.brandId : null;
     if (!ev.brandId) { ev.brand = null; }
     else if (ev.brandId !== prevBrand && B.get(ev.brandId)) B.applyTo(ev, B.get(ev.brandId));
+    chosenThisSession = true;
     state = { event: ev, content: content, tone: tone };
     recordHistory();
     if (!saveState()) setMsg('Không lưu được dữ liệu vào trình duyệt.', 'error');
@@ -2752,6 +2754,7 @@
       EP.popup.confirm({ tone: 'info', title: 'Tạo trang mới cho sự kiện khác?', body: 'Trang hiện tại vẫn được lưu trong "Sự kiện của tôi".', confirmLabel: 'Tạo trang mới' }).then(function (ok) { if (ok) resetAll(true); });
       return;
     }
+    chosenThisSession = true;
     clearEditor();
     switchTab('builder');
     form.elements.name.focus();
@@ -2797,6 +2800,7 @@
   }
 
   function openEvent(saved) {
+    chosenThisSession = true;
     clearEditor();
     state = saved;
     resetHistory();
@@ -3083,7 +3087,27 @@
   // Chiều cao thanh trên (tự xuống dòng ở màn hẹp) để thanh Thiết kế dính ngay bên dưới
   function syncTopbarH() { var tb = $('.topbar'); if (tb) document.documentElement.style.setProperty('--topbar-h', tb.offsetHeight + 'px'); }
   root.addEventListener('resize', syncTopbarH); setTimeout(syncTopbarH, 0);
+  // Khách chưa chọn/tạo trang nào trong phiên này: Thiết kế trang / Thông tin & nội dung mở sẵn trang mẫu Mộc Coffee
+  var chosenThisSession = false;
+  function guestDemoPage() {
+    if (chosenThisSession || publicEventId || !EP.demo || !EP.demo.ensure) return;
+    try { if (C.currentUser() || localStorage.getItem('ep_signed_in')) return; } catch (e) {}
+    var id = 'demo_evt_coffee';
+    if (state && state.event.id === id) { chosenThisSession = true; return; }
+    var saved = EP.demo.ensure('coffee');
+    if (!saved) return;
+    chosenThisSession = true;
+    clearEditor();
+    state = saved;
+    resetHistory();
+    saveState();
+    fillForm(state.event);
+    if (state.tone) form.elements.tone.value = state.tone;
+    renderLanding();
+    syncAll();
+  }
   function switchTab(name) {
+    if (name === 'editor' || name === 'builder') guestDemoPage();
     var dir = currentTab && currentTab !== name ? (TAB_ORDER.indexOf(name) > TAB_ORDER.indexOf(currentTab) ? 'forward' : 'back') : null;
     currentTab = name;
     document.documentElement.classList.toggle('is-editor', name === 'editor');

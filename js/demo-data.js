@@ -382,6 +382,29 @@
     S.write(VERSION_KEY, VERSION);
   }
 
+  // Đảm bảo có đúng một trang mẫu (và thương hiệu của nó) mà không đụng tới dữ liệu khác; trả về state hoặc null
+  function ensure(key) {
+    var id = PREFIX + 'evt_' + key;
+    var events = S.read('events', {});
+    if (events[id]) return events[id];
+    for (var i = 0; i < SPECS.length; i++) {
+      if (SPECS[i].key !== key) continue;
+      var now = new Date();
+      var spec = SPECS[i];
+      var brands = S.read('brands', {});
+      BRANDS.forEach(function (b) { if (b.id === spec.brand && !brands[b.id]) brands[b.id] = Object.assign({ logo: '' }, b, { updatedAt: now.toISOString(), demo: true }); });
+      S.write('brands', brands);
+      var st = buildEvent(spec, i, now);
+      var regs = buildRegs(spec, i, now, new Date(st.event.startAt).getTime(), st.event.id);
+      events[id] = st;
+      S.write('regs_' + id, regs);
+      S.write('metrics_' + id, buildMetrics(spec, regs, i));
+      S.write('events', events);
+      return st;
+    }
+    return null;
+  }
+
   function removeDemo() {
     var events = S.read('events', {});
     Object.keys(events).forEach(function (id) {
@@ -500,5 +523,5 @@
     return null;
   }
 
-  EP.demo = { templateSample: templateSample, publicEvent: publicEvent, VERSION: VERSION, upgrade: upgradeIfStale, seed: seed, remove: removeDemo, restore: function () { removeDemo(); seed(); }, hasDemo: hasDemo, isDemoId: isDemoId, brands: BRANDS };
+  EP.demo = { templateSample: templateSample, publicEvent: publicEvent, VERSION: VERSION, upgrade: upgradeIfStale, seed: seed, ensure: ensure, remove: removeDemo, restore: function () { removeDemo(); seed(); }, hasDemo: hasDemo, isDemoId: isDemoId, brands: BRANDS };
 })(window);
