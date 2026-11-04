@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.9.0',
+    version: '2.9.1',
     date: '2026-10-27',
-    notes: 'Giao diện Lucian đầy đủ: Thư viện mẫu kiểu gallery + Reels, bảng điều khiển sự kiện/đăng ký, form và Brand DNA mới, trình thiết kế mới, landing page nhiều hiệu ứng',
+    notes: 'Reels lướt mượt và nổi bật hơn, hiệu ứng sáng/tối mọi trang, khách mở Thiết kế trang thấy ngay trang Mộc, sửa nút trên điện thoại và thanh bước',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
