@@ -2990,3 +2990,28 @@ body[data-lt-view="reel"] .lt-reel-fab { opacity: 0; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .lt-reel-cta.is-pulse, .lt-reel-fab.is-pulse, .lt-swipe i { animation: none; } .lt-coach, .lt-swipe { transition-duration: .001ms; } }
 html.motion-off .lt-reel-cta.is-pulse, html.motion-off .lt-reel-fab.is-pulse, html.motion-off .lt-swipe i { animation: none; }
 body:has(#view-templates[hidden]) .lt-reel-fab, body:has(#view-templates[hidden]) .lt-coach, body:has(.pv-overlay:not([hidden])) .lt-reel-fab { display: none !important; }
+
+/* fix: preview bar mobile */
+@layer app {
+  /* Desktop: giữ kiểu viên thuốc, nhưng bán kính 28px (= nửa chiều cao thanh 56px) và không xuống dòng, nên không cắt nội dung. */
+  .tpl-pv .pv-bar { border-radius: 28px; flex-wrap: nowrap; min-width: 0; }
+  .tpl-pv .pv-head { flex: 1 1 auto; }
+  .tpl-pv .pv-bar .btn { flex: none; white-space: nowrap; }
+
+  @media (max-width: 760px) {
+    .tpl-pv .pv-bar {
+      position: sticky; top: 0; z-index: 2; flex: none;
+      margin: calc(env(safe-area-inset-top, 0px) + 8px) 16px 0;
+      padding: 8px;
+      gap: 8px;
+      border-radius: 24px;
+    }
+    .tpl-pv .pv-head { flex: 1 1 0; }
+    .tpl-pv .tpv-kick { font-size: 10px; line-height: 13px; letter-spacing: .08em; }
+    .tpl-pv .pv-title { font-size: 15px; line-height: 20px; }
+    .tpl-pv .pv-bar .btn-primary { height: 40px; padding: 0 14px; }
+    .tpl-pv .pv-close { flex: none; width: 40px; padding: 0; justify-content: center; }
+    .tpl-pv .pv-close span { display: none; }
+    .tpl-pv .pv-stage { padding-top: 8px; }
+  }
+}

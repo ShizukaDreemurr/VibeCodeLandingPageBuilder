@@ -675,7 +675,7 @@
       tpv.root.hidden = true;
       tpv.root.innerHTML = '<div class="pv-bar"><div class="pv-head"><p class="tpv-kick"></p><strong class="pv-title"></strong></div><span class="pv-note">Dữ liệu mẫu · form không gửi đăng ký thật</span>' +
         '<button type="button" class="btn btn-primary btn-small tpv-use">Dùng mẫu này</button>' +
-        '<button type="button" class="btn btn-ghost btn-small pv-close" aria-label="Đóng xem trước (Esc)">' + EP.icon('x', 14) + '<span>Đóng (Esc)</span></button></div>' +
+        '<button type="button" class="btn btn-ghost btn-small pv-close" aria-label="Đóng" title="Đóng (Esc)">' + EP.icon('x', 14) + '<span>Đóng (Esc)</span></button></div>' +
         '<div class="pv-stage"><div class="pv-frame is-desktop"><div class="landing"></div></div></div>';
       document.body.appendChild(tpv.root);
       tpv.landing = tpv.root.querySelector('.landing');
