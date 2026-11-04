@@ -2924,3 +2924,31 @@ html.motion-off .xl-od-col, html.motion-off .ch-ring, html.motion-off .xl-live {
 .xl-kpi { display: flex; flex-direction: column; }
 .xl-kpi .xl-sp { flex: 1 1 auto; min-height: 112px; height: auto; }
 }
+/* fix: mobile tiles + stepper */
+@layer app {
+  /* 1. Thư viện mẫu: cảm ứng (hover: none) hoặc ≤760px -> nút "Dùng mẫu này" / "Xem trước" nằm thành hàng ở chân thẻ, không đè lên ảnh xem trước */
+  @media (hover: none), (max-width: 760px) {
+    #view-templates .tpl-pcard.lt-tile { display: flex; flex-direction: column; aspect-ratio: auto; height: auto; }
+    #view-templates .lt-open { position: relative; inset: auto; order: 0; width: 100%; padding: 20px 16px 6px; }
+    #view-templates .tpl-pbody { position: relative; left: auto; right: auto; bottom: auto; order: 1; height: auto; padding: 0 16px 12px; justify-content: flex-start; }
+    #view-templates .lt-cap { padding-right: 0; }
+    #view-templates .lt-acts { position: relative; left: auto; right: auto; bottom: auto; order: 2; margin: 0; padding: 0 16px 16px; opacity: 1; transform: none; }
+    #view-templates .lt-acts .btn { flex: 1 1 0; min-width: 0; height: 34px; padding: 0 10px; font-size: 12.5px; }
+    #view-templates .lt-exp { display: none; }
+  }
+
+  /* 2. Thanh bước "Thông tin & nội dung": đường nối chạy đúng từ tâm chấm đầu tới tâm chấm cuối ở mọi độ rộng */
+  .lf-steps-list { padding: 0; }
+  .lf-steps-line { left: 17px; right: 17px; top: 15.5px; }
+  .lf-st { width: 34px; min-width: 34px; align-items: center; }
+  .lf-st.lf-st-first { align-items: flex-start; }
+  .lf-st.lf-st-last { align-items: flex-end; }
+  .lf-st small { white-space: nowrap; }
+  .lf-st.lf-st-first small { text-align: left; }
+  .lf-st.lf-st-last small { text-align: right; }
+  @media (max-width: 560px) {
+    .lf-st small { width: 104px; max-width: none; font-size: 11px; line-height: 14px; white-space: normal; text-align: center; }
+    .lf-st.lf-st-first small { text-align: left; }
+    .lf-st.lf-st-last small { text-align: right; }
+  }
+}

@@ -24,6 +24,8 @@
   var lineLi = el('li', 'lf-steps-line', '<i></i>'); lineLi.setAttribute('aria-hidden', 'true'); ol.appendChild(lineLi);
   var stEls = STEPS.map(function (s, i) {
     var li = el('li', 'lf-st');
+    if (i === 0) li.classList.add('lf-st-first');
+    if (i === STEPS.length - 1) li.classList.add('lf-st-last');
     var b = el('button', 'lf-dot', '<span>' + (i + 1) + '</span>' + CHECK.replace('<svg ', '<svg class="lf-ck" '));
     b.type = 'button';
     b.addEventListener('click', function () {
