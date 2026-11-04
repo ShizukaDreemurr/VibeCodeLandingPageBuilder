@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.8.1',
+    version: '2.9.0',
     date: '2026-10-27',
-    notes: 'Rà soát chế độ sáng/tối: nút Dùng mẫu này rõ chữ, biểu đồ theo giao diện, ô nhập landing không bị tối, viền hộp thoại',
+    notes: 'Giao diện Lucian đầy đủ: Thư viện mẫu kiểu gallery + Reels, bảng điều khiển sự kiện/đăng ký, form và Brand DNA mới, trình thiết kế mới, landing page nhiều hiệu ứng',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
