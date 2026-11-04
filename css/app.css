@@ -1644,3 +1644,8 @@ html.tpv-lock { overflow: hidden; }
   .tpl-score.is-near { background: var(--pill-neutral-bg); color: var(--pill-neutral-ink); }
   .tpl-search input[type="search"]::placeholder { color: var(--text-muted); opacity: 1; }
 }
+/* QA: builder+editor */
+@layer app {
+  .ml-dialog, dialog.ie-dialog { border: 1px solid var(--border); }
+  .ml-dialog:focus-visible, dialog.ie-dialog:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+}

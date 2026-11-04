@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.8.0',
+    version: '2.8.1',
     date: '2026-10-27',
-    notes: 'Giao diện Lucian Lab: màu mới, chế độ tối (theo hệ thống hoặc tự chọn), tab trượt, thông báo xếp chồng, giữ để xoá, tự lưu, Ctrl+K; hiệu ứng mới cho landing page',
+    notes: 'Rà soát chế độ sáng/tối: nút Dùng mẫu này rõ chữ, biểu đồ theo giao diện, ô nhập landing không bị tối, viền hộp thoại',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
