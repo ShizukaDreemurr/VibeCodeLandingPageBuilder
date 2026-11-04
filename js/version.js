@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.7.0',
+    version: '2.8.0',
     date: '2026-10-27',
-    notes: 'Mẫu mới: Khai trương quán cà phê (Mộc) – có sẵn ảnh thật, nội dung, FAQ và meta chia sẻ',
+    notes: 'Giao diện Lucian Lab: màu mới, chế độ tối (theo hệ thống hoặc tự chọn), tab trượt, thông báo xếp chồng, giữ để xoá, tự lưu, Ctrl+K; hiệu ứng mới cho landing page',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
