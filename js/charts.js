@@ -6,6 +6,7 @@
  */
 (function (root) {
   var NS = 'http://www.w3.org/2000/svg';
+  var doc = root.document;
   var PALETTE = ['var(--accent)', 'var(--text)', 'color-mix(in srgb, var(--text) 50%, var(--surface))', 'color-mix(in srgb, var(--accent) 50%, var(--surface))', 'color-mix(in srgb, var(--text) 28%, var(--surface))', 'color-mix(in srgb, var(--accent) 25%, var(--surface))'];
 
   // Đầu số di động Việt Nam → nhà mạng (3 chữ số đầu, tính cả số 0)
@@ -96,39 +97,111 @@
     }
   }
 
-  // ---------- Đường / vùng ----------
-  // o: { points:[{label,value}], ariaLabel, unit, empty }
+  // Tooltip gắn vào một phần tử (dùng cho phím mũi tên / chạm), cùng kiểu với tooltip khi rê chuột
+  function tipFor(host, node) {
+    var tip = host.querySelector('.ch-tip'); if (!tip || !node) return;
+    tip.textContent = node.getAttribute('data-tip') || ''; tip.hidden = false;
+    var hr = host.getBoundingClientRect(), r = node.getBoundingClientRect();
+    tip.style.left = Math.max(4, Math.min(r.left - hr.left + r.width / 2 - tip.offsetWidth / 2, hr.width - tip.offsetWidth - 4)) + 'px';
+    tip.style.top = Math.max(0, r.top - hr.top - tip.offsetHeight - 8) + 'px';
+  }
+  function head(host, big, sub, delta) {
+    var old = host.querySelector('.ch-lh'); if (old) old.remove();
+    var d = h('div', 'ch-lh');
+    d.appendChild(h('b', 'ch-lh-v', big));
+    d.appendChild(h('span', 'ch-lh-s', sub));
+    var dl = h('em', 'ch-lh-d' + (delta && delta.v < 0 ? ' dn' : '')); dl.textContent = delta ? delta.text : ''; d.appendChild(dl);
+    host.insertBefore(d, host.firstChild);
+    return d;
+  }
+  function deltaOf(cur, prev) {
+    if (prev == null) return null;
+    var diff = cur - prev;
+    return { v: diff, text: (diff > 0 ? '+' : diff < 0 ? '−' : '±') + fmt(Math.abs(diff)) + ' so với kỳ trước' };
+  }
+  function escH(t) { return String(t).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  function tweenFn() { return root.EP && root.EP.dash ? root.EP.dash.tween : function (d, f) { f(1); return function () {}; }; }
+
+  // ---------- Đường / vùng: rê hoặc chạm để dò từng ngày, phím mũi tên, chọn khoảng ngày ----------
+  // Chuyển thể từ Lucian 096 (line-chart scrub, MIT © 2026 Seokwoooo). o: { points:[{label,value}], ariaLabel, unit, empty }
   function lineChart(host, o) {
-    var pts = o.points || [];
-    if (!pts.length || !pts.some(function (p) { return p.value > 0; })) return emptyState(host, o.empty);
-    var W = host.clientWidth > 640 ? 1000 : 520, H = host.clientWidth > 640 ? 250 : 230, L = 38, R = 14, T = 14, B = 28;
-    var svg = frame(host, o, W, H);
-    var max = niceMax(Math.max.apply(null, pts.map(function (p) { return p.value; })));
-    var iw = W - L - R, ih = H - T - B;
-    function X(i) { return L + (pts.length === 1 ? iw / 2 : iw * i / (pts.length - 1)); }
-    function Y(v) { return T + ih - ih * v / max; }
-    axisY(svg, max, W, L, R, T, ih);
-    var step = Math.max(1, Math.ceil(pts.length / 6));
-    pts.forEach(function (p, i) {
-      if (i % step === 0) svg.appendChild(el('text', { x: X(i), y: H - 8, 'text-anchor': 'middle', 'class': 'ch-axis' }, p.label));
-    });
-    var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(p.value).toFixed(1); }).join(' ');
-    if (pts.length > 1) {
-      svg.appendChild(el('path', { d: d + ' L' + X(pts.length - 1).toFixed(1) + ' ' + (T + ih) + ' L' + X(0).toFixed(1) + ' ' + (T + ih) + ' Z', 'class': 'ch-area' }));
-      svg.appendChild(el('path', { d: d, 'class': 'ch-line', pathLength: 1, fill: 'none' }));
+    var all = o.points || [];
+    if (!all.length || !all.some(function (p) { return p.value > 0; })) return emptyState(host, o.empty);
+    var range = 0; // 0 = tất cả
+    function render() {
+      var pts = range ? all.slice(-range) : all;
+      var W = host.clientWidth > 640 ? 1000 : 520, H = host.clientWidth > 640 ? 250 : 230, L = 38, R = 14, T = 14, B = 28;
+      var svg = frame(host, o, W, H);
+      var max = niceMax(Math.max.apply(null, pts.map(function (p) { return p.value; })));
+      var iw = W - L - R, ih = H - T - B;
+      function X(i) { return L + (pts.length === 1 ? iw / 2 : iw * i / (pts.length - 1)); }
+      function Y(v) { return T + ih - ih * v / max; }
+      var gid = 'chg' + Math.random().toString(36).slice(2, 7);
+      var defs = el('defs'), lg = el('linearGradient', { id: gid, x1: 0, y1: 0, x2: 0, y2: 1 });
+      lg.appendChild(el('stop', { offset: 0, 'stop-color': 'var(--accent)', 'stop-opacity': 0.3 })); lg.appendChild(el('stop', { offset: 1, 'stop-color': 'var(--accent)', 'stop-opacity': 0 }));
+      defs.appendChild(lg); svg.appendChild(defs);
+      axisY(svg, max, W, L, R, T, ih);
+      var step = Math.max(1, Math.ceil(pts.length / 6));
+      pts.forEach(function (p, i) {
+        if (i % step === 0) svg.appendChild(el('text', { x: X(i), y: H - 8, 'text-anchor': 'middle', 'class': 'ch-axis' }, p.label));
+      });
+      var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(p.value).toFixed(1); }).join(' ');
+      if (pts.length > 1) {
+        svg.appendChild(el('path', { d: d + ' L' + X(pts.length - 1).toFixed(1) + ' ' + (T + ih) + ' L' + X(0).toFixed(1) + ' ' + (T + ih) + ' Z', 'class': 'ch-area', style: 'fill:url(#' + gid + ')' }));
+        svg.appendChild(el('path', { d: d, 'class': 'ch-line', pathLength: 1, fill: 'none' }));
+      }
+      var cur = el('line', { 'class': 'ch-cur', y1: T, y2: T + ih }); svg.appendChild(cur);
+      var last = pts.length - 1;
+      svg.appendChild(el('circle', { cx: X(last), cy: Y(pts[last].value), r: 5, 'class': 'ch-ring' }));
+      var wcol = pts.length > 1 ? iw / (pts.length - 1) : iw, groups = [];
+      pts.forEach(function (p, i) {
+        var gp = el('g', { 'class': 'ch-pt', 'data-tip': p.label + ': ' + fmt(p.value) + ' ' + (o.unit || 'người'), 'data-v': p.value });
+        gp.appendChild(el('rect', { x: X(i) - wcol / 2, y: T, width: wcol, height: ih, 'class': 'ch-hit' }));
+        gp.appendChild(el('circle', { cx: X(i), cy: Y(p.value), r: pts.length === 1 ? 5 : 4.5, 'class': 'ch-dot' }));
+        svg.appendChild(gp); groups.push(gp);
+      });
+      // Đầu biểu đồ: số của ngày đang dò (mặc định: ngày mới nhất)
+      var curI = last;
+      function setAt(i, on) {
+        curI = i;
+        var p = pts[i];
+        head(host, fmt(p.value) + ' ' + (o.unit || 'người'), (on ? p.label : 'Mới nhất · ' + p.label), deltaOf(p.value, i ? pts[i - 1].value : null));
+        host.classList.toggle('is-scrub', on);
+        groups.forEach(function (g, k) { g.classList.toggle('is-on', on && k === i); });
+        if (on) { cur.setAttribute('x1', X(i)); cur.setAttribute('x2', X(i)); }
+      }
+      svg.setAttribute('tabindex', '0');
+      svg.addEventListener('pointermove', function (e) {
+        var r = svg.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W;
+        var i = pts.length === 1 ? 0 : Math.round((x - L) / iw * (pts.length - 1));
+        setAt(Math.max(0, Math.min(pts.length - 1, i)), true);
+      });
+      svg.addEventListener('pointerleave', function () { if (doc.activeElement !== svg) setAt(last, false); });
+      svg.addEventListener('keydown', function (e) {
+        var s = { ArrowLeft: -1, ArrowRight: 1, Home: -999, End: 999 }[e.key];
+        if (e.key === 'Escape') { setAt(last, false); svg.blur(); return; }
+        if (s === undefined) return;
+        e.preventDefault(); setAt(Math.max(0, Math.min(pts.length - 1, curI + s)), true); tipFor(host, groups[curI]);
+      });
+      svg.addEventListener('blur', function () { setAt(last, false); host.querySelector('.ch-tip').hidden = true; });
+      setAt(last, false);
+      if (all.length > 14) {
+        var chips = h('div', 'ch-range'); chips.setAttribute('role', 'group'); chips.setAttribute('aria-label', 'Khoảng ngày');
+        [[14, '14 ngày'], [30, '30 ngày'], [0, 'Tất cả']].forEach(function (r) {
+          if (r[0] && r[0] >= all.length) return;
+          var b = h('button', 'ch-range-b', r[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(range === r[0]));
+          b.addEventListener('click', function () { range = r[0]; render(); });
+          chips.appendChild(b);
+        });
+        host.insertBefore(chips, host.firstChild.nextSibling);
+      }
+      dataTable(host, pts.map(function (p) { return [p.label, p.value]; }), [o.labelHead || 'Ngày', o.valueHead || 'Số người']);
     }
-    var wcol = pts.length > 1 ? iw / (pts.length - 1) : iw;
-    pts.forEach(function (p, i) {
-      var gp = el('g', { 'class': 'ch-pt', 'data-tip': p.label + ': ' + fmt(p.value) + ' ' + (o.unit || 'người'), 'data-v': p.value });
-      gp.appendChild(el('rect', { x: X(i) - wcol / 2, y: T, width: wcol, height: ih, 'class': 'ch-hit' }));
-      gp.appendChild(el('circle', { cx: X(i), cy: Y(p.value), r: pts.length === 1 ? 5 : 4, 'class': 'ch-dot' }));
-      svg.appendChild(gp);
-    });
-    dataTable(host, pts.map(function (p) { return [p.label, p.value]; }), [o.labelHead || 'Ngày', o.valueHead || 'Số người']);
+    render();
   }
 
-  // ---------- Cột đứng ----------
-  // o: { items:[{label,tick,value}], tickEvery }
+  // ---------- Cột đứng: rê để làm nổi cột, đường trung bình, ghim bằng bấm, phím mũi tên ----------
+  // Chuyển thể từ Lucian 095 (bar chart hover, MIT © 2026 Seokwoooo). o: { items:[{label,tick,value}], tickEvery }
   function barChart(host, o) {
     var items = o.items || [];
     if (!items.length || !items.some(function (p) { return p.value > 0; })) return emptyState(host, o.empty);
@@ -138,55 +211,188 @@
     var max = niceMax(peak);
     var iw = W - L - R, ih = H - T - B, slot = iw / items.length, bw = slot * 0.68;
     axisY(svg, max, W, L, R, T, ih);
+    var mean = items.reduce(function (s, p) { return s + p.value; }, 0) / items.length;
+    var ay = T + ih - ih * mean / max;
+    svg.appendChild(el('line', { x1: L, x2: W - R, y1: ay, y2: ay, 'class': 'ch-avg' }));
+    svg.appendChild(el('text', { x: W - R, y: ay - 4, 'text-anchor': 'end', 'class': 'ch-avg-t' }, 'TB ' + (Math.round(mean * 10) / 10).toString().replace('.', ',')));
+    var groups = [], pin = -1, peakI = -1;
     items.forEach(function (p, i) {
       var x = L + slot * i + (slot - bw) / 2, bh = ih * p.value / max;
       var gp = el('g', { 'data-tip': p.label + ': ' + fmt(p.value) + ' ' + (o.unit || 'người'), 'data-v': p.value, 'class': 'ch-bargrp' });
       gp.appendChild(el('rect', { x: L + slot * i, y: T, width: slot, height: ih, 'class': 'ch-hit' }));
       if (p.value > 0) {
-        var r = el('rect', { x: x, y: T + ih - bh, width: bw, height: bh, rx: 2, 'class': 'ch-bar' + (p.value === peak ? ' is-peak' : '') });
+        if (p.value === peak && peakI < 0) peakI = i;
+        var r = el('rect', { x: x, y: T + ih - bh, width: bw, height: bh, rx: 3, 'class': 'ch-bar' + (p.value === peak ? ' is-peak' : '') });
         r.style.animationDelay = (i * 18) + 'ms';
         gp.appendChild(r);
       }
-      svg.appendChild(gp);
+      gp.setAttribute('tabindex', '-1'); gp.setAttribute('role', 'img'); gp.setAttribute('aria-label', p.label + ': ' + fmt(p.value) + ' ' + (o.unit || 'người'));
+      svg.appendChild(gp); groups.push(gp);
       if (i % (o.tickEvery || 1) === 0) svg.appendChild(el('text', { x: x + bw / 2, y: H - 8, 'text-anchor': 'middle', 'class': 'ch-axis' }, p.tick || p.label));
+    });
+    groups[Math.max(0, peakI)].setAttribute('tabindex', '0');
+    function hl(i) {
+      var idx = i >= 0 ? i : pin;
+      host.classList.toggle('has-on', idx >= 0);
+      groups.forEach(function (g, k) { g.classList.toggle('on', k === idx); g.classList.toggle('pin', k === pin); });
+      if (idx >= 0) head(host, fmt(items[idx].value) + ' ' + (o.unit || 'người'), items[idx].label, idx ? deltaOf(items[idx].value, items[idx - 1].value) : null);
+      else head(host, fmt(items[peakI].value) + ' ' + (o.unit || 'người'), 'Cao nhất · ' + items[peakI].label, null);
+    }
+    hl(-1);
+    groups.forEach(function (g, i) {
+      g.addEventListener('pointerenter', function () { hl(i); });
+      g.addEventListener('focus', function () { hl(i); tipFor(host, g.querySelector('.ch-bar') || g); });
+      g.addEventListener('click', function () { pin = pin === i ? -1 : i; hl(i); });
+    });
+    svg.addEventListener('pointerleave', function () { hl(-1); });
+    svg.addEventListener('focusout', function (e) { if (!svg.contains(e.relatedTarget)) { hl(-1); host.querySelector('.ch-tip').hidden = true; } });
+    svg.addEventListener('keydown', function (e) {
+      var j = groups.indexOf(doc.activeElement); if (j < 0) return;
+      var to = e.key === 'ArrowRight' ? j + 1 : e.key === 'ArrowLeft' ? j - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? groups.length - 1 : null;
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pin = pin === j ? -1 : j; hl(j); return; }
+      if (to === null) return;
+      e.preventDefault(); to = Math.max(0, Math.min(groups.length - 1, to));
+      groups.forEach(function (g, k) { g.setAttribute('tabindex', k === to ? '0' : '-1'); }); groups[to].focus();
     });
     dataTable(host, items.map(function (p) { return [p.label, p.value]; }), [o.labelHead || 'Nhóm', o.valueHead || 'Số người']);
   }
 
-  // ---------- Bánh vòng ----------
-  // o: { items:[{label,value}], centerLabel }
+  // ---------- Bánh vòng: rê thì mảnh nở ra và tâm đổi số; bấm mục chú giải để bỏ/thêm, các mảnh còn lại chia lại vòng ----------
+  // Chuyển thể từ Lucian 097 (donut hover expand, MIT © 2026 Seokwoooo). o: { items:[{label,value}], centerLabel }
   function donutChart(host, o) {
     var items = (o.items || []).filter(function (p) { return p.value > 0; });
-    var total = items.reduce(function (s, p) { return s + p.value; }, 0);
-    if (!total) return emptyState(host, o.empty);
+    var total0 = items.reduce(function (s, p) { return s + p.value; }, 0);
+    if (!total0) return emptyState(host, o.empty);
     host.innerHTML = '';
     var wrap = h('div', 'ch-donut-wrap'); host.appendChild(wrap);
     var box = h('div', 'ch-donut-box'); wrap.appendChild(box);
     var svg = frame(box, o, 160, 160);
     svg.classList.add('ch-donut');
-    var C = 80, r = 56, acc = 0;
+    var C = 80, r = 56;
+    var on = items.map(function () { return true; }), act = -1, lis = [];
     svg.appendChild(el('circle', { cx: C, cy: C, r: r, fill: 'none', 'class': 'ch-donut-track', 'stroke-width': 24 }));
-    items.forEach(function (p, i) {
-      var share = p.value / total * 100;
-      var seg = el('circle', { cx: C, cy: C, r: r, fill: 'none', 'stroke-width': 24, pathLength: 100,
-        'stroke-dasharray': share.toFixed(3) + ' ' + (100 - share).toFixed(3), 'stroke-dashoffset': (-acc).toFixed(3),
-        transform: 'rotate(-90 ' + C + ' ' + C + ')', 'class': 'ch-seg', 'data-v': p.value,
-        'data-tip': p.label + ': ' + fmt(p.value) + ' (' + pct(p.value, total) + ')' });
+    var fr = items.map(function (p) { return p.value / total0; });
+    var segs = items.map(function (p, i) {
+      var seg = el('circle', { cx: C, cy: C, r: r, fill: 'none', 'stroke-width': 24, pathLength: 100, transform: 'rotate(-90 ' + C + ' ' + C + ')', 'class': 'ch-seg', 'data-v': p.value, tabindex: 0,
+        'data-tip': p.label + ': ' + fmt(p.value) + ' (' + pct(p.value, total0) + ')' });
+      seg.setAttribute('role', 'img'); seg.setAttribute('aria-label', p.label + ': ' + fmt(p.value) + ' (' + pct(p.value, total0) + ')');
       seg.style.stroke = PALETTE[i % PALETTE.length];
       seg.style.animationDelay = (i * 140) + 'ms';
+      var share = fr[i] * 100;
+      seg.setAttribute('stroke-dasharray', share.toFixed(3) + ' ' + (100 - share).toFixed(3));
       svg.appendChild(seg);
-      acc += share;
+      return seg;
     });
-    svg.appendChild(el('text', { x: C, y: C + 4, 'text-anchor': 'middle', 'class': 'ch-donut-num' }, fmt(total)));
-    svg.appendChild(el('text', { x: C, y: C + 22, 'text-anchor': 'middle', 'class': 'ch-axis' }, o.centerLabel || 'tổng'));
+    var accs = []; (function () { var a = 0; fr.forEach(function (f) { accs.push(a); a += f * 100; }); })();
+    segs.forEach(function (sg, i) { sg.setAttribute('stroke-dashoffset', (-accs[i]).toFixed(3)); });
+    var tL = el('text', { x: C, y: C - 14, 'text-anchor': 'middle', 'class': 'ch-axis ch-d-l' });
+    var tN = el('text', { x: C, y: C + 6, 'text-anchor': 'middle', 'class': 'ch-donut-num' });
+    var tS = el('text', { x: C, y: C + 22, 'text-anchor': 'middle', 'class': 'ch-axis ch-d-s' });
+    svg.appendChild(tL); svg.appendChild(tN); svg.appendChild(tS);
+    function tot() { return items.reduce(function (s, p, i) { return s + (on[i] ? p.value : 0); }, 0); }
+    function trunc(s, n) { return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+    function paint() {
+      var acc = 0;
+      segs.forEach(function (sg, i) {
+        var share = fr[i] * 100;
+        sg.setAttribute('stroke-dasharray', share.toFixed(3) + ' ' + (100 - share).toFixed(3));
+        sg.setAttribute('stroke-dashoffset', (-acc).toFixed(3));
+        var mid = (acc + share / 2) / 100 * Math.PI * 2;
+        sg.style.setProperty('--tx', (Math.cos(mid) * 3.2).toFixed(2) + 'px'); sg.style.setProperty('--ty', (Math.sin(mid) * 3.2).toFixed(2) + 'px');
+        acc += share;
+      });
+    }
+    function label() {
+      var T = tot();
+      if (act >= 0 && on[act]) { tL.textContent = trunc(items[act].label, 14); tN.textContent = fmt(items[act].value); tS.textContent = pct(items[act].value, T) + ' tổng'; }
+      else { tL.textContent = ''; tN.textContent = fmt(T); tS.textContent = on.every(Boolean) ? (o.centerLabel || 'tổng') : 'đang chọn'; }
+    }
+    var cancelM = function () {};
+    function morph() {
+      cancelM();
+      var T = tot(), to = items.map(function (p, i) { return on[i] ? p.value / T : 0; }), from = fr.slice();
+      cancelM = tweenFn()(560, function (t) {
+        var e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        fr = from.map(function (v, i) { return v + (to[i] - v) * e; }); paint();
+      });
+    }
+    function focus(i) {
+      if (i === act) return;
+      act = i;
+      box.classList.toggle('has', i >= 0 && on[i]);
+      segs.forEach(function (sg, k) { sg.classList.toggle('on', k === i && on[k]); });
+      lis.forEach(function (li, k) { li.classList.toggle('on', k === i); });
+      label();
+    }
     var ul = h('ul', 'ch-legend'); wrap.appendChild(ul);
-    items.forEach(function (p, i) {
-      var li = h('li'); var sw = h('i', 'ch-sw'); sw.style.background = PALETTE[i % PALETTE.length];
-      li.appendChild(sw); li.appendChild(h('span', 'ch-lg-name', p.label));
-      li.appendChild(h('b', null, fmt(p.value))); li.appendChild(h('em', null, pct(p.value, total)));
-      ul.appendChild(li);
+    lis = items.map(function (p, i) {
+      var li = h('li'); var b = h('button', 'ch-lg-btn'); b.type = 'button'; b.setAttribute('aria-pressed', 'true');
+      var sw = h('i', 'ch-sw'); sw.style.background = PALETTE[i % PALETTE.length];
+      b.appendChild(sw); b.appendChild(h('span', 'ch-lg-name', p.label));
+      b.appendChild(h('b', null, fmt(p.value))); b.appendChild(h('em', null, pct(p.value, total0)));
+      b.addEventListener('pointerenter', function () { focus(i); });
+      b.addEventListener('focus', function () { focus(i); });
+      b.addEventListener('click', function () {
+        if (on[i] && on.filter(Boolean).length === 1) return;
+        on[i] = !on[i]; li.classList.toggle('off', !on[i]); b.setAttribute('aria-pressed', String(on[i]));
+        b.title = on[i] ? 'Bấm để bỏ khỏi biểu đồ' : 'Bấm để thêm lại';
+        var T = tot();
+        items.forEach(function (q, k) { lis[k].querySelector('em').textContent = on[k] ? pct(q.value, T) : '—'; });
+        morph(); act = -2; focus(on[i] ? i : -1);
+      });
+      b.title = 'Bấm để bỏ khỏi biểu đồ';
+      li.appendChild(b); ul.appendChild(li);
+      return li;
     });
-    dataTable(host, items.map(function (p) { return [p.label, p.value, pct(p.value, total)]; }), ['Trạng thái', 'Số người', 'Tỉ lệ']);
+    segs.forEach(function (sg, i) { sg.addEventListener('pointerenter', function () { focus(i); }); sg.addEventListener('focus', function () { focus(i); }); sg.addEventListener('blur', function () { focus(-1); }); });
+    svg.addEventListener('pointerleave', function () { focus(-1); });
+    ul.addEventListener('pointerleave', function () { if (!ul.contains(doc.activeElement)) focus(-1); });
+    ul.addEventListener('focusout', function (e) { if (!ul.contains(e.relatedTarget)) focus(-1); });
+    paint(); label();
+    dataTable(host, items.map(function (p) { return [p.label, p.value, pct(p.value, total0)]; }), ['Trạng thái', 'Số người', 'Tỉ lệ']);
+  }
+
+  // ---------- Phễu: bậc hình thang, bấm một bậc để xem tỉ lệ rơi rụng ----------
+  // Chuyển thể từ Lucian 160 (funnel conversion, MIT © 2026 Seokwoooo). o: { items:[{label,value}] }
+  function funnelChart(host, o) {
+    var items = o.items || [];
+    if (!items.length || !items.some(function (p) { return p.value > 0; })) return emptyState(host, o.empty);
+    var W = 520, RH = 50, GAP = 6, H = items.length * (RH + GAP) - GAP + 2, top = items[0].value || 1;
+    var svg = frame(host, o, W, H);
+    svg.classList.add('ch-funnel');
+    function wOf(i) { return (0.56 + 0.44 * Math.min(1, (items[i].value || 0) / top)) * W; }
+    var rows = [], sel = -1;
+    var stat = h('p', 'ch-fstat'); stat.setAttribute('aria-live', 'polite');
+    items.forEach(function (p, i) {
+      var w0 = wOf(i), w1 = i < items.length - 1 ? wOf(i + 1) : w0 * 0.94, y = i * (RH + GAP), cx = W / 2;
+      var gp = el('g', { 'class': 'ch-hrow ch-frow ch-f' + Math.min(i, 3), 'data-v': p.value, 'data-tip': p.label + ': ' + fmt(p.value) + (i ? ' (' + pct(p.value, items[i - 1].value) + ' bước trước)' : ''), tabindex: 0, role: 'button', 'aria-pressed': 'false' });
+      gp.setAttribute('aria-label', p.label + ': ' + fmt(p.value));
+      gp.appendChild(el('path', { 'class': 'ch-fbar', d: 'M' + (cx - w0 / 2) + ' ' + y + 'L' + (cx + w0 / 2) + ' ' + y + 'L' + (cx + w1 / 2) + ' ' + (y + RH) + 'L' + (cx - w1 / 2) + ' ' + (y + RH) + 'Z' }));
+      gp.appendChild(el('text', { x: cx - w1 / 2 + 16, y: y + RH / 2 + 4.5, 'class': 'ch-ft' }, p.label));
+      gp.appendChild(el('text', { x: cx + w1 / 2 - 16, y: y + RH / 2 + 4.5, 'text-anchor': 'end', 'class': 'ch-ft ch-fv' }, fmt(p.value)));
+      gp.style.animationDelay = (i * 90) + 'ms';
+      svg.appendChild(gp); rows.push(gp);
+    });
+    host.appendChild(stat);
+    function say() {
+      if (sel < 0) {
+        var last = items[items.length - 1];
+        stat.innerHTML = items.length > 1 ? 'Tỉ lệ chuyển đổi cuối: <b>' + pct(last.value, items[0].value) + '</b>' : 'Bấm một bậc để xem chi tiết.';
+        return;
+      }
+      var p = items[sel];
+      stat.innerHTML = sel === 0 ? '<b>' + escH(p.label) + '</b>: ' + fmt(p.value) + ' (bước đầu của phễu).' : '<b>' + escH(p.label) + '</b>: ' + pct(p.value, items[sel - 1].value) + ' đi tiếp từ "' + escH(items[sel - 1].label) + '", rơi ' + pct(Math.max(0, items[sel - 1].value - p.value), items[sel - 1].value) + ' (' + fmt(Math.max(0, items[sel - 1].value - p.value)) + ' người).';
+    }
+    rows.forEach(function (g, i) {
+      function toggle() { sel = sel === i ? -1 : i; rows.forEach(function (x, k) { x.setAttribute('aria-pressed', String(k === sel)); x.classList.toggle('on', k === sel); }); host.classList.toggle('has-on', sel >= 0); say(); }
+      g.addEventListener('click', toggle);
+      g.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+        else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); var n = rows[i + (e.key === 'ArrowDown' ? 1 : -1)]; if (n) n.focus(); }
+      });
+    });
+    say();
+    dataTable(host, items.map(function (p, i) { return [p.label, p.value, i ? pct(p.value, items[i - 1].value) : '—']; }), [o.labelHead || 'Bước', 'Số người', 'Tỉ lệ so với bước trước']);
   }
 
   // ---------- Thanh ngang ----------
@@ -316,7 +522,7 @@
     else if (!f[0].value) fi = 'Chưa có lượt xem nào được ghi nhận.';
     else fi = 'Tỉ lệ chuyển đổi từ lượt xem: ' + pct(ok, f[0].value) + (f[1].value ? '; ' + pct(ok, f[1].value) + ' lượt bấm nút đã đăng ký xong.' : '.');
     var c5 = card(grid, 'funnel', 'Phễu chuyển đổi', fi);
-    horizontalBars(c5.body, { items: f, keepZero: true, scaleMax: Math.max(1, f[0].value), total: Math.max(1, f[0].value), ariaLabel: 'Phễu chuyển đổi: ' + f.map(function (p) { return p.label + ' ' + p.value; }).join(', '), labelHead: 'Bước', empty: 'Chưa có dữ liệu phễu.' });
+    funnelChart(c5.body, { items: f, ariaLabel: 'Phễu chuyển đổi: ' + f.map(function (p) { return p.label + ' ' + p.value; }).join(', '), labelHead: 'Bước', empty: 'Chưa có dữ liệu phễu.' });
 
     var c6 = card(grid, 'reach', 'Nhà mạng và tên miền email', none ? nodata : 'Nhà mạng nhiều nhất: ' + a.carriers[0].label + ' (' + fmt(a.carriers[0].value) + '); tên miền email phổ biến nhất: ' + a.domains[0].label + ' (' + fmt(a.domains[0].value) + ').');
     c6.card.classList.add('ch-wide');
@@ -332,6 +538,6 @@
   function reset() { lastKey = null; }
 
   root.EP = root.EP || {};
-  root.EP.charts = { lineChart: lineChart, barChart: barChart, donutChart: donutChart, horizontalBars: horizontalBars,
+  root.EP.charts = { lineChart: lineChart, barChart: barChart, donutChart: donutChart, horizontalBars: horizontalBars, funnelChart: funnelChart,
     analyze: analyze, carrierOf: carrierOf, renderSummary: renderSummary, reset: reset, CARRIER_PREFIX: CARRIER_PREFIX };
 })(window);

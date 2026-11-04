@@ -2384,12 +2384,19 @@
     });
     body.appendChild(h); body.appendChild(meta); body.appendChild(badges);
     var side = document.createElement('span'); side.className = 'pick-side';
+    // Lucian 099 (activity rings, MIT © 2026 Seokwoooo): vòng độ đầy chỗ quanh số đăng ký
+    var cap = Number(ev.capacity) || 0;
+    var ringW = document.createElement('span'); ringW.className = 'pick-ring';
+    var ring = EP.dash ? EP.dash.ringSvg(cap && count ? count / cap : 0, 64) : null;
+    if (ring) ringW.appendChild(ring);
+    ringW.classList.toggle('no-cap', !cap);
     var num = document.createElement('strong'); num.className = 'pick-count'; num.setAttribute('data-role', 'count');
     num.textContent = count == null ? '—' : String(count);
+    ringW.appendChild(num);
     var lbl = document.createElement('span'); lbl.className = 'pick-count-label';
     lbl.textContent = count == null ? 'Đang tải…' : 'đăng ký';
     var open = document.createElement('span'); open.className = 'pick-open'; open.innerHTML = 'Mở ' + EP.icon('arrow-right');
-    side.appendChild(num); side.appendChild(lbl); side.appendChild(open);
+    side.appendChild(ringW); side.appendChild(lbl); side.appendChild(open);
     btn.appendChild(sw); btn.appendChild(body); btn.appendChild(side);
     btn.addEventListener('click', function () { selectAdminEvent(ev.id); });
     if (cloud) {
@@ -2397,6 +2404,7 @@
       adminStops.push(C.watchStats(ev.id, function (s) {
         var c = Number(s.count) || 0;
         num.textContent = String(c); lbl.textContent = 'đăng ký';
+        if (ring) ring._set(cap ? c / cap : 0);
         var i2 = PICK_STATUS[EP.eventStatus.getStatus(ev, c, new Date()).code] || PICK_STATUS.open;
         var sb = badges.querySelector('[data-role="status"]');
         sb.textContent = i2.text; sb.className = 'badge ' + i2.cls;
@@ -2430,6 +2438,7 @@
     $('#admin-search-wrap').hidden = evs.length <= 6;
     if (evs.length <= 6) pickerQuery = '';
     if (!evs.length) {
+      if ($('#admin-dash')) $('#admin-dash').hidden = true;
       var empty = document.createElement('div');
       empty.className = 'empty-state admin-empty';
       empty.innerHTML = '<p class="empty-title">Chưa có landing page nào</p><p>Tạo landing page đầu tiên, số liệu đăng ký của từng trang sẽ hiện ở đây.</p>';
@@ -2440,6 +2449,14 @@
       listEl.appendChild(empty);
       if (!quiet) EP.motion.replay(empty, 'mo-pop');
       return;
+    }
+    var dashEl = $('#admin-dash');
+    if (EP.dash) {
+      dashEl.hidden = false;
+      var ocfg = buildOverview(evs);
+      ocfg.title = 'Đăng ký tất cả trang (trên máy này)';
+      EP.dash.overview(dashEl, ocfg);
+      EP.dash.glow(listEl, '.admin-pick');
     }
     var q = V.clean(pickerQuery).toLowerCase();
     if (q) evs = evs.filter(function (ev) { return (ev.name + ' ' + (ev.location || '')).toLowerCase().indexOf(q) >= 0; });
@@ -2494,7 +2511,43 @@
       if (c[0] === 'Đã đăng ký' && c[1] > 0) st.classList.add('is-data'); // chỉ tô màu khi có dữ liệu thật
     });
     EP.motion.stagger(grid.children);
+    drawHero(ev, regs, m, confirmed, waitlist, won);
     if (EP.charts) EP.charts.renderSummary($('#admin-summary'), regs, m, { leadText: LEAD_TEXT, statusText: STATUS_TEXT });
+  }
+
+  // Khối KPI + vòng ở đầu trang chi tiết (Lucian 098 + 099), số thật từ danh sách đăng ký
+  function drawHero(ev, regs, m, confirmed, waitlist, won) {
+    var host = $('#admin-hero');
+    if (!host || !EP.dash) return;
+    var D = EP.dash, last = new Date(), cap = Number(ev.capacity) || 0;
+    last.setHours(0, 0, 0, 0);
+    var newest = 0; regs.forEach(function (r) { var t = new Date(r.createdAt).getTime(); if (t > newest) newest = t; });
+    if (newest && newest < last.getTime()) { last = new Date(newest); last.setHours(0, 0, 0, 0); }
+    function label(i, n) { var d = new Date(last); d.setDate(d.getDate() - (n - 1 - i)); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); }
+    function metric(key, name, pred, total) {
+      var ser = D.daily(regs, 14, pred, last), d = D.delta(ser);
+      return { key: key, name: name, total: total, series: ser, delta: { v: d.v, text: d.text }, deltaNote: d.note, tipLabel: label };
+    }
+    var week = D.daily(regs, 7, function (r) { return r.status === 'new'; }, last), wmax = Math.max.apply(null, week.concat([1]));
+    var WD = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+    var cfg = {
+      title: 'Đăng ký – ' + ev.name, live: isCloudEv(ev),
+      metrics: [metric('reg', 'Đã đăng ký', function (r) { return r.status === 'new'; }, confirmed), metric('wait', 'Danh sách chờ', function (r) { return r.status === 'waitlist'; }, waitlist), metric('won', 'Đã chốt', function (r) { return r.leadStatus === 'won'; }, won)],
+      ringsTitle: 'Chỗ và chuyển đổi', ringsNote: cap ? cap + ' chỗ' : 'chưa đặt số chỗ',
+      rings: [
+        { label: 'Chỗ đã giữ', color: 'var(--xl-c1)', value: confirmed, goal: cap, text: cap ? confirmed + '/' + cap : String(confirmed), sub: cap ? Math.round(confirmed / cap * 100) + '% sức chứa' : 'chưa đặt số chỗ' },
+        { label: 'Chuyển đổi', color: 'var(--xl-c2)', value: confirmed, goal: m && m.views ? m.views : 0, text: m && m.views ? (confirmed / m.views * 100).toFixed(1).replace('.', ',') + '%' : '—', sub: m && m.views ? 'trên ' + m.views.toLocaleString('vi-VN') + ' lượt xem' : 'chưa có lượt xem' },
+        { label: 'Đã chốt', color: 'var(--xl-c3)', value: won, goal: confirmed, text: won + '/' + confirmed, sub: confirmed ? Math.round(won / confirmed * 100) + '% người đăng ký' : 'chưa có ai' }
+      ],
+      miniTitle: '7 ngày gần nhất',
+      minis: week.map(function (c, i) {
+        var d = new Date(last); d.setDate(d.getDate() - (6 - i));
+        return { label: WD[d.getDay()], fracs: [c / wmax], aria: label(i + 7, 14) + ': ' + c + ' đăng ký' };
+      }),
+      summary: 'Tổng cộng <b>' + confirmed + '</b> người đã đăng ký' + (waitlist ? ', <b>' + waitlist + '</b> trong danh sách chờ' : '') + '.'
+    };
+    cfg.onMini = function (i) { var sum = host.querySelector('.xl-sum'); if (sum) sum.innerHTML = 'Ngày <b>' + label(i + 7, 14) + '</b>: ' + week[i] + ' đăng ký.'; };
+    D.overview(host, cfg);
   }
 
   function setAdminView(v) {
@@ -2578,9 +2631,11 @@
     $('#admin-title').textContent = 'Danh sách đăng ký – ' + ev.name + ' (' + confirmed + ' người)';
     drawMetrics(ev, regs, lastMetrics);
     tbody.innerHTML = '';
-    if (!regs.length) return adminMessage('Chưa có ai đăng ký.');
+    if (!regs.length) { adminMessage('Chưa có ai đăng ký.'); if (EP.dash) EP.dash.table($('#admin-table'), ev.id); return; }
     regs.forEach(function (r, i) {
       var tr = document.createElement('tr');
+      tr.dataset.rid = r.id || ('i' + i); tr.dataset.i = i; tr.dataset.name = r.name || ''; tr.dataset.phone = r.phone || ''; tr.dataset.email = r.email || '';
+      tr.dataset.ts = new Date(r.createdAt).getTime() || 0; tr.dataset.status = r.status || 'new';
       function cell(v) { var td = document.createElement('td'); if (v instanceof Node) td.appendChild(v); else td.textContent = v; tr.appendChild(td); }
       cell(i + 1); cell(r.name); cell(r.phone); cell(r.email);
       cell(new Date(r.createdAt).toLocaleString('vi-VN')); cell(STATUS_TEXT[r.status] || r.status);
@@ -2603,6 +2658,7 @@
       cell(syncText(ev, r));
       tbody.appendChild(tr);
     });
+    if (EP.dash) EP.dash.table($('#admin-table'), ev.id);
     EP.motion.stagger(tbody.children, 20);
   }
 
@@ -2718,14 +2774,64 @@
     });
   }
 
+  // Tổng quan dạng KPI + vòng cho "Sự kiện của tôi" và màn chọn trang (Lucian 098 + 099)
+  function buildOverview(events) {
+    var D = EP.dash, now = new Date();
+    var regs = [], live = 0, upcoming = 0, seats = 0, cap = 0, week = 0;
+    events.forEach(function (ev) {
+      var isLive = ev.published || (ev.demo && ev.demoPublished);
+      var upc = new Date(ev.startAt) > now;
+      if (isLive) live++;
+      if (upc) upcoming++;
+      if (upc && new Date(ev.startAt) - now < 7 * 86400000) week++;
+      if (!ev.published) {
+        var rs = EP.registrations.list(ev.id);
+        regs = regs.concat(rs);
+        if (Number(ev.capacity) > 0) { cap += Number(ev.capacity); seats += rs.filter(function (r) { return r.status === 'new'; }).length; }
+      }
+    });
+    function metric(key, name, pred) {
+      var ser = D.daily(regs, 14, pred), total = regs.filter(pred).length, d = D.delta(ser);
+      return { key: key, name: name, total: total, series: ser, delta: { v: d.v, text: d.text }, deltaNote: d.note,
+        tipLabel: function (i, n) { var dd = new Date(); dd.setHours(0, 0, 0, 0); dd.setDate(dd.getDate() - (n - 1 - i)); return ('0' + dd.getDate()).slice(-2) + '/' + ('0' + (dd.getMonth() + 1)).slice(-2); } };
+    }
+    var n = events.length;
+    return {
+      title: 'Đăng ký trên máy này',
+      live: false,
+      metrics: [metric('reg', 'Đã đăng ký', function (r) { return r.status === 'new'; }), metric('wait', 'Danh sách chờ', function (r) { return r.status === 'waitlist'; }), metric('won', 'Đã chốt', function (r) { return r.leadStatus === 'won'; })],
+      ringsTitle: 'Sự kiện',
+      ringsNote: n + ' trang',
+      rings: [
+        { label: 'Đã xuất bản', color: 'var(--xl-c1)', value: live, goal: n, text: live + '/' + n, sub: 'trang đang chạy' },
+        { label: 'Sắp diễn ra', color: 'var(--xl-c2)', value: upcoming, goal: n, text: upcoming + '/' + n, sub: week ? week + ' trong 7 ngày tới' : 'chưa có trong 7 ngày tới' },
+        { label: 'Chỗ đã giữ', color: 'var(--xl-c3)', value: seats, goal: cap, text: cap ? seats + '/' + cap : '—', sub: cap ? Math.round(seats / cap * 100) + '% sức chứa' : 'chưa đặt số chỗ' }
+      ],
+      minis: [], summary: 'Sự kiện bắt đầu trong 7 ngày tới: <b>' + week + '</b>'
+    };
+  }
+
+  var eventStops = [];
+  var eventFilter = 'all';
+  function stopEventWatchers() { eventStops.forEach(function (f) { try { f(); } catch (e) { /* bỏ qua */ } }); eventStops = []; }
+  var STATE_TEXT = { live: 'Đang chạy', draft: 'Bản nháp', ended: 'Đã diễn ra' };
+
   function eventCard(item, actions) {
     var t = TPL.get(item.templateId);
     var card = document.createElement('div');
     card.className = 'event-card';
-    var bar = document.createElement('div');
-    bar.className = 'bar';
-    bar.style.setProperty('--sw1', t.theme.primary);
-    bar.style.setProperty('--sw2', t.theme.accent);
+    card.setAttribute('data-state', item.state || 'live');
+    if (item.id) card.setAttribute('data-event-id', item.id);
+    // Lucian 059 (event RSVP card, MIT © 2026 Seokwoooo): dải màu theo mẫu có ô ngày, nhãn trạng thái, vòng và số đăng ký cuộn chữ số
+    var top = document.createElement('div');
+    top.className = 'xl-top';
+    top.style.setProperty('--sw1', t.theme.primary);
+    top.style.setProperty('--sw2', t.theme.accent);
+    var d = new Date(item.startAt);
+    var date = document.createElement('div'); date.className = 'xl-date'; date.setAttribute('aria-hidden', 'true');
+    date.innerHTML = '<small>THG ' + (isNaN(d) ? '—' : d.getMonth() + 1) + '</small><b>' + (isNaN(d) ? '—' : d.getDate()) + '</b>';
+    var tag = document.createElement('span'); tag.className = 'xl-tag'; tag.textContent = STATE_TEXT[item.state] || STATE_TEXT.live;
+    top.appendChild(date); top.appendChild(tag);
     var body = document.createElement('div');
     body.className = 'body';
     var h3 = document.createElement('h3'); h3.textContent = item.name;
@@ -2733,6 +2839,27 @@
     var badges = document.createElement('div'); badges.className = 'badges';
     item.badges.forEach(function (b) { var s = document.createElement('span'); s.className = 'badge ' + (b.cls || ''); s.textContent = b.text; badges.appendChild(s); });
     body.appendChild(h3); body.appendChild(meta); body.appendChild(badges);
+    var cap = null;
+    if (item.count != null || item.watch) {
+      cap = document.createElement('div'); cap.className = 'xl-cap';
+      var ring = EP.dash.ringSvg(0, 46);
+      var num = document.createElement('span'); num.className = 'xl-capn';
+      var txt = document.createElement('span'); txt.className = 'xl-capt';
+      cap.appendChild(ring); cap.appendChild(txt); txt.appendChild(num);
+      var tail = document.createElement('span'); tail.className = 'xl-capl'; txt.appendChild(tail);
+      var setCount = function (c) {
+        var cp = Number(item.cap) || 0;
+        EP.dash.odometer(num, c);
+        tail.textContent = cp ? ' / ' + cp + ' chỗ' : ' đăng ký';
+        ring._set(cp ? c / cp : 0);
+        cap.classList.toggle('no-cap', !cp);
+        cap.setAttribute('aria-label', c + (cp ? ' trên ' + cp + ' chỗ' : ' đăng ký'));
+      };
+      cap.setAttribute('role', 'img');
+      if (item.count != null) setCount(item.count);
+      else { num.textContent = '—'; }
+      if (item.watch) eventStops.push(item.watch(setCount));
+    }
     var act = document.createElement('div'); act.className = 'actions';
     actions.filter(Boolean).forEach(function (a) {
       var btn = document.createElement('button');
@@ -2741,25 +2868,63 @@
       act.appendChild(btn);
       if (a.hold && EP.ux) EP.ux.holdDelete(btn, function () { a.hold(btn); });
     });
-    card.appendChild(bar); card.appendChild(body); card.appendChild(act);
+    card.appendChild(top); card.appendChild(body); if (cap) card.appendChild(cap); card.appendChild(act);
     return card;
+  }
+
+  function applyEventFilter() {
+    var grid = $('#event-grid'), any = false;
+    Array.prototype.forEach.call(grid.querySelectorAll('.event-card'), function (c) {
+      var show = eventFilter === 'all' || c.getAttribute('data-state') === eventFilter;
+      c.hidden = !show; if (show) any = true;
+    });
+    var note = grid.querySelector('.xl-fnone');
+    if (!any && grid.querySelector('.event-card')) { if (!note) { note = document.createElement('p'); note.className = 'hint xl-fnone'; note.textContent = 'Không có sự kiện nào ở nhóm này.'; grid.appendChild(note); } }
+    else if (note) note.remove();
+  }
+
+  function renderEventFilters(items) {
+    var box = $('#events-filter');
+    var cnt = { all: items.length, live: 0, draft: 0, ended: 0 };
+    items.forEach(function (i) { cnt[i.state]++; });
+    box.innerHTML = '';
+    box.hidden = items.length < 2;
+    [['all', 'Tất cả'], ['live', 'Đang chạy'], ['draft', 'Bản nháp'], ['ended', 'Đã diễn ra']].forEach(function (c) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'xl-chip'; b.setAttribute('data-v', c[0]);
+      b.setAttribute('aria-pressed', String(eventFilter === c[0]));
+      b.innerHTML = '<span></span><em></em>'; b.querySelector('span').textContent = c[1]; b.querySelector('em').textContent = cnt[c[0]];
+      b.addEventListener('click', function () {
+        eventFilter = c[0];
+        Array.prototype.forEach.call(box.children, function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        applyEventFilter();
+      });
+      box.appendChild(b);
+    });
   }
 
   function renderEvents() {
     var grid = $('#event-grid');
+    stopEventWatchers();
     grid.innerHTML = '';
     var all = S.read('events', {});
     var list = Object.keys(all).map(function (k) { return all[k]; })
       .sort(function (a, b) { return String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')); });
     var localIds = {};
+    var items = [];
+    var now = new Date();
     list.forEach(function (saved) {
       var ev = saved.event;
       localIds[ev.id] = true;
       var live = ev.published || (ev.demo && ev.demoPublished);
+      var ended = new Date(ev.startAt) <= now;
+      var state = ended ? 'ended' : live ? 'live' : 'draft';
+      items.push({ ev: ev, state: state });
       var badges = [{ text: live ? 'Đã xuất bản' : 'Bản nháp', cls: live ? 'is-live' : '' }];
-      if (new Date(ev.startAt) <= new Date()) badges.push({ text: 'Đã diễn ra', cls: 'is-ended' });
-      if (!ev.published) badges.push({ text: EP.registrations.confirmedCount(ev.id) + ' đăng ký' + (live ? '' : ' (trên máy)') });
-      grid.appendChild(eventCard({ name: ev.name, startAt: ev.startAt, templateId: ev.templateId, badges: badges }, [
+      if (ended) badges.push({ text: 'Đã diễn ra', cls: 'is-ended' });
+      var count = ev.published ? null : EP.registrations.confirmedCount(ev.id);
+      if (!ev.published) badges.push({ text: count + ' đăng ký' + (live ? '' : ' (trên máy)') });
+      var watch = ev.published && C.available ? function (cb) { return C.watchStats(ev.id, function (s) { cb(Number(s.count) || 0); }); } : null;
+      grid.appendChild(eventCard({ id: ev.id, name: ev.name, startAt: ev.startAt, templateId: ev.templateId, badges: badges, state: state, count: count, cap: ev.capacity, watch: watch }, [
         { text: 'Mở / sửa', cls: 'btn-primary', fn: function () { openEvent(all[ev.id]); } },
         live && !ev.published ? { text: 'Mở link chia sẻ', fn: function () { root.open(shareUrl(ev.id), '_blank', 'noopener'); } } : null,
         { text: 'Nhân bản', fn: function () { duplicateEvent(all[ev.id]); } },
@@ -2767,6 +2932,33 @@
       ]));
     });
     EP.motion.stagger(grid.children);
+    // Tổng quan + dải vòng nhỏ: mỗi sự kiện một vòng (độ đầy chỗ), bấm để nhảy tới thẻ
+    var dashEl = $('#events-dash');
+    dashEl.hidden = !list.length;
+    if (list.length && EP.dash) {
+      var cfg = buildOverview(items.map(function (i) { return i.ev; }));
+      var up = items.slice().sort(function (a, b) {
+        var ua = new Date(a.ev.startAt) > now ? 0 : 1, ub = new Date(b.ev.startAt) > now ? 0 : 1;
+        return ua - ub || (ua ? new Date(b.ev.startAt) - new Date(a.ev.startAt) : new Date(a.ev.startAt) - new Date(b.ev.startAt));
+      }).slice(0, 7);
+      cfg.miniTitle = 'Độ đầy chỗ từng sự kiện';
+      cfg.minis = up.map(function (i) {
+        var cp = Number(i.ev.capacity) || 0, c = i.ev.published ? 0 : EP.registrations.confirmedCount(i.ev.id), d = new Date(i.ev.startAt);
+        return { label: ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2), fracs: [cp ? c / cp : 0], aria: i.ev.name + ': ' + (cp ? c + '/' + cp + ' chỗ' : c + ' đăng ký') };
+      });
+      cfg.onMini = function (k) {
+        var card = grid.querySelector('.event-card[data-event-id="' + up[k].ev.id + '"]');
+        if (!card) return;
+        eventFilter = 'all'; renderEventFilters(items); applyEventFilter();
+        card.scrollIntoView({ block: 'center', behavior: EP.motion.reduce() ? 'auto' : 'smooth' });
+        EP.motion.replay(card, 'mo-flash');
+        var b = card.querySelector('.btn-primary'); if (b) b.focus({ preventScroll: true });
+      };
+      EP.dash.overview(dashEl, cfg);
+    }
+    renderEventFilters(items);
+    applyEventFilter();
+    if (EP.dash) EP.dash.glow(grid, '.event-card');
     if (!list.length) {
       var empty = document.createElement('p');
       empty.className = 'hint';
@@ -2779,14 +2971,16 @@
       C.listMyEvents().then(function (remote) {
         if (skel) skel.remove();
         remote.filter(function (r) { return !localIds[r.id]; }).forEach(function (r) {
-          grid.appendChild(eventCard({ name: r.name, startAt: r.startAt, templateId: r.templateId, badges: [{ text: 'Trên đám mây', cls: 'is-live' }] }, [
+          var rc = eventCard({ id: r.id, name: r.name, startAt: r.startAt, templateId: r.templateId, badges: [{ text: 'Trên đám mây', cls: 'is-live' }], state: new Date(r.startAt) <= now ? 'ended' : 'live' }, [
             { text: 'Mở trên máy này', cls: 'btn-primary', fn: function () {
               C.loadEvent(r.id).then(function (data) {
                 openEvent({ event: data.event, content: data.content, tone: 'formal' });
               }, function (e) { toast(e.message); });
             } }
-          ]));
+          ]);
+          grid.appendChild(rc);
         });
+        applyEventFilter();
       }).catch(function () { if (skel) skel.remove(); /* mất mạng: chỉ hiện sự kiện trên máy */ });
     }
   }
