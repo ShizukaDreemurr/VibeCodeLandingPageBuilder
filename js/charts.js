@@ -6,7 +6,7 @@
  */
 (function (root) {
   var NS = 'http://www.w3.org/2000/svg';
-  var PALETTE = ['var(--accent)', 'var(--text)', '#8a8d93', '#e58aae', '#b9bbc0', '#f3c4d5']; // dẫn xuất từ tokens.css
+  var PALETTE = ['var(--accent)', 'var(--text)', 'color-mix(in srgb, var(--text) 50%, var(--surface))', 'color-mix(in srgb, var(--accent) 50%, var(--surface))', 'color-mix(in srgb, var(--text) 28%, var(--surface))', 'color-mix(in srgb, var(--accent) 25%, var(--surface))'];
 
   // Đầu số di động Việt Nam → nhà mạng (3 chữ số đầu, tính cả số 0)
   var CARRIER_PREFIX = {

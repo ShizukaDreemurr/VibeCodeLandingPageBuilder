@@ -1609,3 +1609,10 @@ html.tpv-lock { overflow: hidden; }
   html.motion-off .ux-skel, html.motion-off .tpl-thumb::before { animation: none !important; }
   html.motion-off .ux-toast-old, html.motion-off .ux-pill { transition: none !important; }
 }
+
+/* QA: admin+brand */
+@layer app {
+  .ch-bar { fill: color-mix(in srgb, var(--accent) 45%, var(--surface)); }
+  .ch-bar.is-peak, .ch-hbar { fill: var(--accent); }
+  .ch-sw { box-shadow: inset 0 0 0 1px var(--border); }
+}
