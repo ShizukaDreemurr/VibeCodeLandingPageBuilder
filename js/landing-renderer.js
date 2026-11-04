@@ -680,7 +680,7 @@
       h('div', { class: 'lp-speakers' }, ev.speakers.map(function (s, i) {
         var photo = speakerPhotos[i];
         var avatar = photo
-          ? h('img', { class: 'lp-avatar', src: photo, alt: s.name, width: 64, height: 64, loading: 'lazy', decoding: 'async' })
+          ? h('img', { class: 'lp-avatar', src: photo, alt: 'Diễn giả ' + s.name + (s.title ? ' – ' + s.title : ''), width: 64, height: 64, loading: 'lazy', decoding: 'async' })
           : h('div', { class: 'lp-avatar', 'aria-hidden': 'true', text: s.name.trim().split(/\s+/).pop().charAt(0).toUpperCase() });
         mark(avatar, 'speaker.avatar.' + i, 'Ảnh diễn giả', 'box');
         if (editable && photo) avatar.setAttribute('data-el-image', 'speaker:' + i);
@@ -703,7 +703,8 @@
       var shown = editable ? Math.min(GALLERY_SLOTS, Math.max(tpl.wedding ? 4 : 2, lastFilled + 2)) : GALLERY_SLOTS;
       for (var g = 0; g < shown; g++) {
         if (pics[g]) {
-          var gimg = h('img', { src: pics[g], alt: 'Hình ảnh sự kiện ' + (cells.length + 1), width: 400, height: 300, loading: 'lazy', decoding: 'async' });
+          var gAlt = (ev.name ? 'Hình ảnh ' + ev.name : 'Hình ảnh sự kiện') + ' – ảnh ' + (cells.length + 1);
+          var gimg = h('img', { src: pics[g], alt: gAlt, width: 400, height: 300, loading: 'lazy', decoding: 'async' });
           if (editable) { gimg.setAttribute('data-el-image', 'gallery:' + g); gimg.setAttribute('data-el', 'gallery.img.' + g); gimg.setAttribute('data-el-label', 'Ảnh album ' + (g + 1)); gimg.setAttribute('data-el-kind', 'box'); }
           cells.push(h('div', { class: 'lp-gallery-item' }, [
             editable ? gimg : h('button', { type: 'button', class: 'lp-gallery-open', 'aria-label': 'Phóng to hình ảnh sự kiện ' + (cells.length + 1) }, [gimg]),
