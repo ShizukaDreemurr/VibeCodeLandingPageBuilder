@@ -689,6 +689,7 @@
     tpv.root.style.setProperty('--h', t.theme.accent); tpv.root.style.setProperty('--h2', t.theme.primary);
     tpv.root.querySelector('.tpv-kick').textContent = tplNum(t) + ' · ' + (tplDesc(t) || 'Mẫu landing page') + (tplIsNew(t) ? ' · NEW' : '');
     tpv.root.querySelector('.tpv-use').setAttribute('aria-label', 'Dùng mẫu ' + t.name);
+    if (tpv.landing.__moStop) tpv.landing.__moStop();
     var r = tplRenderLanding(tpv.landing, t);
     clearInterval(tpv.timer);
     tpv.timer = setInterval(r.update, 1000);
@@ -703,6 +704,7 @@
   function closeTplPreview(instant) {
     if (!tpv || tpv.root.hidden) return;
     clearInterval(tpv.timer);
+    if (tpv.landing.__moStop) tpv.landing.__moStop(); // gỡ các trình nghe cuộn / observer của hoạt ảnh
     document.documentElement.classList.remove('tpv-lock');
     var back = tpv.opener;
     function done() { tpv.root.hidden = true; tpv.root.classList.remove('is-leaving'); tpv.landing.innerHTML = ''; }

@@ -127,6 +127,17 @@
     var de = document.documentElement;
     var calm = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || de.classList.contains('motion-off') || root.classList.contains('st-motion-off');
     root.__mo = 1;
+    // Gốc cuộn: tổ tiên cuộn được gần nhất (hộp xem trước trong hộp thoại); trang công khai/HTML xuất ra dùng window
+    var sc = null;
+    for (var an = root.parentElement; an && an !== document.body && an !== de; an = an.parentElement) { var ov = getComputedStyle(an).overflowY; if (ov === 'auto' || ov === 'scroll') { sc = an; break; } }
+    var stops_ = [];
+    root.__moStop = function () { stops_.forEach(function (f) { try { f(); } catch (e) {} }); stops_ = []; root.__mo = 0; };
+    function onScroll(fn) { var t = sc || window; t.addEventListener('scroll', fn, { passive: true }); stops_.push(function () { t.removeEventListener('scroll', fn); }); }
+    function onResize(fn) { window.addEventListener('resize', fn); stops_.push(function () { window.removeEventListener('resize', fn); }); }
+    function vh() { return sc ? sc.clientHeight : innerHeight; }
+    function vtop() { return sc ? sc.getBoundingClientRect().top : 0; }
+    function IO(cb, o) { o = o || {}; if (sc) o.root = sc; var io = new IntersectionObserver(cb, o); stops_.push(function () { io.disconnect(); }); return io; }
+    function RO(cb) { var ro = new ResizeObserver(cb); stops_.push(function () { ro.disconnect(); }); return ro; }
     function mk(tag, cls) { var e = document.createElement(tag); e.className = cls; return e; }
     function q1(s, r) { return (r || root).querySelector(s); }
     function qa(s, r) { return [].slice.call((r || root).querySelectorAll(s)); }
@@ -172,7 +183,7 @@
             draw(t); raf = requestAnimationFrame(frame);
           };
           var go = function () { if (!raf && vis) { last = performance.now(); raf = requestAnimationFrame(frame); } };
-          if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; go(); }).observe(hero); else go();
+          if ('IntersectionObserver' in window) IO(function (es) { vis = es[0].isIntersecting; go(); }).observe(hero); else go();
           hero.addEventListener('pointermove', function (e) {
             var r = hero.getBoundingClientRect(); ptr = { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height };
             if (e.pointerType !== 'touch') { hero.style.setProperty('--mx', (e.clientX - r.left).toFixed(0) + 'px'); hero.style.setProperty('--my', (e.clientY - r.top).toFixed(0) + 'px'); }
@@ -199,14 +210,14 @@
     var tick = 0;
     function prog() {
       tick = 0;
-      var max = de.scrollHeight - innerHeight;
-      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, Math.max(0, (window.pageYOffset || de.scrollTop) / max)) : 0) + ')';
+      var max = sc ? sc.scrollHeight - sc.clientHeight : de.scrollHeight - innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, Math.max(0, (sc ? sc.scrollTop : (window.pageYOffset || de.scrollTop)) / max)) : 0) + ')';
     }
-    addEventListener('scroll', function () { if (!tick) tick = requestAnimationFrame(prog); }, { passive: true });
+    onScroll(function () { if (!tick) tick = requestAnimationFrame(prog); });
     prog();
     var chip = root.querySelector('.lp-chip-text');
     if (chip && 'IntersectionObserver' in window) {
-      var cio = new IntersectionObserver(function (es) {
+      var cio = IO(function (es) {
         if (!es[0].isIntersecting) return;
         cio.disconnect();
         var m = chip.textContent.match(/^([\d.,]+)(.*)$/);
@@ -320,15 +331,15 @@
       };
       var paint = function () {
         if (!L) return;
-        var y = innerHeight * 0.62 - ag.getBoundingClientRect().top, len = Math.max(0, Math.min(L, lenAt(y)));
+        var y = vh() * 0.62 - (ag.getBoundingClientRect().top - vtop()), len = Math.max(0, Math.min(L, lenAt(y)));
         route.style.strokeDashoffset = (L - len).toFixed(1);
         var p = route.getPointAtLength(len), q = route.getPointAtLength(Math.min(L, len + 2));
         pl.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ') rotate(' + (Math.atan2(q.y - p.y, q.x - p.x) * 180 / Math.PI).toFixed(1) + ')');
         stops.forEach(function (s) { var on = y >= s.y - 2; s.c.classList.toggle('on', on); s.cc.classList.toggle('on', on); s.li.classList.toggle('is-on', on); });
       };
       layout();
-      addEventListener('scroll', function () { later('rt', paint); }, { passive: true });
-      if ('ResizeObserver' in window) new ResizeObserver(function () { later('rl', layout); }).observe(ag); else addEventListener('resize', layout);
+      onScroll(function () { later('rt', paint); });
+      if ('ResizeObserver' in window) RO(function () { later('rl', layout); }).observe(ag); else onResize(layout);
     }
 
     // ---- Nhận xét: bức tường cuộn dọc (#207 testimonial-columns) ----
@@ -355,8 +366,8 @@
         });
       };
       buildWall();
-      if ('ResizeObserver' in window) new ResizeObserver(function () { later('wl', buildWall); }).observe(root);
-      if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { wall.classList.toggle('is-off', !es[0].isIntersecting); }).observe(wall);
+      if ('ResizeObserver' in window) RO(function () { later('wl', buildWall); }).observe(root);
+      if ('IntersectionObserver' in window) IO(function (es) { wall.classList.toggle('is-off', !es[0].isIntersecting); }).observe(wall);
     }
 
     // ---- Ưu đãi: vé xé cuống (#298 coupon-tear) ----
@@ -380,7 +391,7 @@
         gits[0].classList.add('on');
         var accFit = function () { var want = root.clientWidth >= 760; if (want === gal.classList.contains('is-acc')) return; gal.classList.add('lp-acc-init'); gal.classList.toggle('is-acc', want); void gal.offsetWidth; requestAnimationFrame(function () { requestAnimationFrame(function () { gal.classList.remove('lp-acc-init'); }); }); };
         accFit();
-        if ('ResizeObserver' in window) new ResizeObserver(function () { later('af', accFit); }).observe(root);
+        if ('ResizeObserver' in window) RO(function () { later('af', accFit); }).observe(root);
       }
     }
   }
@@ -1120,6 +1131,10 @@
       if (regInst) { /* popup đang mở: form/closed đã cập nhật ở trên */ }
     }
 
+    function scrollRoot() {
+      for (var an = container.parentElement; an && an !== document.body && an !== document.documentElement; an = an.parentElement) { var ov = getComputedStyle(an).overflowY; if (ov === 'auto' || ov === 'scroll') return an; }
+      return null;
+    }
     // Thanh dính: IntersectionObserver (không lắng nghe scroll)
     if (!editable && typeof IntersectionObserver === 'function') {
       var vis = { hero: true, reg: false, foot: false };
@@ -1132,7 +1147,7 @@
       var sio = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) { vis[en.target === hero ? 'hero' : en.target === footer ? 'foot' : 'reg'] = en.isIntersecting; });
         applySticky();
-      }, { threshold: 0 });
+      }, { threshold: 0, root: scrollRoot() });
       sio.observe(hero); sio.observe(footer);
       if (register.isConnected) sio.observe(register);
       applySticky();
@@ -1151,7 +1166,7 @@
       if (typeof IntersectionObserver === 'function') {
         var io = new IntersectionObserver(function (entries) {
           entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } });
-        }, { threshold: 0, rootMargin: '0px 0px 25% 0px' }); // hiện trước khi phần đó vào màn hình: vuốt nhanh không thấy khoảng trắng
+        }, { root: scrollRoot(), threshold: 0, rootMargin: '0px 0px 25% 0px' }); // hiện trước khi phần đó vào màn hình: vuốt nhanh không thấy khoảng trắng
         revealEls.forEach(function (el) { io.observe(el); });
       } else {
         revealEls.forEach(function (el) { el.classList.add('is-in'); });
