@@ -17,7 +17,7 @@
     if (kind) de.setAttribute('data-vt', kind);
     var t;
     try { t = document.startViewTransition(update); } catch (e) { de.removeAttribute('data-vt'); update(); return; }
-    var clean = function () { if (activeVT === t) activeVT = null; if (de.getAttribute('data-vt') === kind || !kind) de.removeAttribute('data-vt'); };
+    var clean = function () { if (activeVT !== t) return; activeVT = null; de.removeAttribute('data-vt'); };
     activeVT = t;
     t.finished.then(clean, clean);
   }
@@ -133,18 +133,29 @@
     try { if (mode === 'system') localStorage.removeItem('ep_theme'); else localStorage.setItem('ep_theme', mode); } catch (e) { /* bỏ qua */ }
     var de = document.documentElement;
     if (!document.startViewTransition || reduced()) { themeApply(mode); return; }
-    // Chỉ bỏ qua hiệu ứng khi đang có chuyển cảnh thật sự chạy; data-vt còn sót thì dọn
+    // Chuyển cảnh thật sự đang chạy (tab/thiết bị/giao diện) thì bỏ qua nó; mỗi chuyển cảnh có "thẻ" riêng để dọn đúng phần của mình
     if (activeVT) { try { activeVT.skipTransition(); } catch (e) { /* bỏ qua */ } activeVT = null; }
-    de.removeAttribute('data-vt');
     var w = root.innerWidth, h = root.innerHeight, r = origin && origin.getBoundingClientRect ? origin.getBoundingClientRect() : null;
     var hasR = r && (r.width || r.height);
     var x = hasR ? r.left + r.width / 2 : w / 2, y = hasR ? r.top + r.height / 2 : 0;
-    de.style.setProperty('--vt-x', x + 'px'); de.style.setProperty('--vt-y', y + 'px');
-    de.style.setProperty('--vt-r', Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y))) + 'px');
+    var rad = Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y)));
+    de.style.setProperty('--vt-x', x + 'px'); de.style.setProperty('--vt-y', y + 'px'); de.style.setProperty('--vt-r', rad + 'px');
     de.setAttribute('data-vt', 'theme');
-    var done = function () { de.removeAttribute('data-vt'); de.style.removeProperty('--vt-x'); de.style.removeProperty('--vt-y'); de.style.removeProperty('--vt-r'); };
     var t;
-    try { t = document.startViewTransition(function () { themeApply(mode); }); } catch (e) { done(); themeApply(mode); return; }
+    var done = function () {
+      if (activeVT !== t && activeVT) return; // đã có chuyển cảnh mới hơn: để nó tự dọn
+      if (activeVT === t) activeVT = null;
+      de.removeAttribute('data-vt'); de.style.removeProperty('--vt-x'); de.style.removeProperty('--vt-y'); de.style.removeProperty('--vt-r');
+    };
+    try { t = document.startViewTransition(function () { themeApply(mode); }); } catch (e) { activeVT = null; done(); themeApply(mode); return; }
+    activeVT = t;
+    // Chạy vòng tròn bằng Web Animations: không phụ thuộc selector CSS/data-vt nên không thể "mất" hiệu ứng
+    t.ready.then(function () {
+      try {
+        de.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + rad + 'px at ' + x + 'px ' + y + 'px)'] },
+          { duration: 650, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both', pseudoElement: '::view-transition-new(root)' });
+      } catch (e) { /* CSS vtThemeReveal vẫn chạy */ }
+    }, function () { /* bị bỏ qua */ });
     t.finished.then(done, done);
   }
   root.EP = root.EP || {};
