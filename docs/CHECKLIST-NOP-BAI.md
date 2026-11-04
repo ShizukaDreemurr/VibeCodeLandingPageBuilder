@@ -11,11 +11,11 @@ Ký hiệu: ✅ đã xong trong repo · ⬜ còn phải làm (nhóm)
 - ✅ Ghi chú: `js/firebase-config.js` là cấu hình Firebase Web (công khai theo thiết kế, bảo vệ bằng `firebase/firestore.rules`); khoá Gemini do người dùng nhập, không lưu trong mã nguồn.
 - ✅ `docs/minh-chung-ai.md` khoảng 450 từ, 5 vị trí ảnh.
 - ✅ `docs/bang-kiem-thu.md`: 15 ca, có 3 nhóm ca bắt buộc (bình thường / nhập thiếu-sai / biên) và cột "Kết quả thực tế".
-- ⬜ **Kiểm tra đúng số lượng mẫu**: README ghi 165 mẫu (theo `tools/templates.json`). Nếu cần con số khác thì sửa README cho khớp số thực tế trong app.
+- ✅ **Kiểm tra đúng số lượng mẫu**: README ghi 172 mẫu, khớp với thư viện trong app (`EP.templates.list.length` = 172: 165 mẫu trong `tools/templates.json` + mẫu dựng sẵn trong `js/templates.js` và Mộc Coffee).
 
 ## Bước 2 — Sửa trước khi nộp (cần làm)
 
-- ⬜ **Câu cảnh báo mô phỏng AI**: quy định yêu cầu đúng câu `Bản demo vòng loại - Dữ liệu mô phỏng AI` trong giao diện và README. Giao diện hiện đang hiển thị "Dữ liệu AI mô phỏng" (`index.html`, `#mock-note`). Cần đổi trong app (việc này là thay đổi mã nguồn, không làm trong đợt cập nhật tài liệu này).
+- ✅ **Câu cảnh báo mô phỏng AI**: giao diện (`index.html`, `#mock-note`) và mọi thông báo mô phỏng trong `js/` đều dùng đúng câu `Bản demo vòng loại - Dữ liệu mô phỏng AI`.
 - ⬜ Chạy lại `tests/e2e-local.cjs` và `firebase/rules.test.mjs` sau khi sửa để chắc kết quả trong `docs/bang-kiem-thu.md` còn đúng.
 - ⬜ Dòng "Chưa kiểm chứng" trong bảng kiểm thử: nếu có Gemini key thật hoặc Apps Script thật thì thử và cập nhật kết quả; nếu không thì giữ nguyên ghi chú.
 

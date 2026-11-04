@@ -10,7 +10,7 @@ Kết quả thực tế lấy từ các lần chạy kiểm thử tự động b
 | Ca nhập thiếu / sai | **TC02**, TC03 | Bỏ trống tên sự kiện; SĐT và email sai định dạng |
 | Ca biên | **TC05**, TC07, TC08 | Đăng ký trùng SĐT; sự kiện đã diễn ra; đủ chỗ → danh sách chờ |
 
-Lưu ý: dòng cảnh báo mô phỏng AI trong giao diện hiện là "Dữ liệu AI mô phỏng". Quy định yêu cầu đúng câu "Bản demo vòng loại - Dữ liệu mô phỏng AI" (xem README, mục 1 và checklist nộp bài).
+Lưu ý: dòng cảnh báo mô phỏng AI trong giao diện đã được đổi thành đúng câu "Bản demo vòng loại - Dữ liệu mô phỏng AI" (xem README, mục 1 và checklist nộp bài).
 
 | Mã ca | Loại ca | Dữ liệu và bước thử | Kỳ vọng | Kết quả thực tế | Đạt/Chưa đạt |
 |---|---|---|---|---|---|

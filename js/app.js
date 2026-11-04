@@ -2040,7 +2040,7 @@
     add(!!(ev.images && ev.images.hero), 'Có ảnh bìa', 'Chưa có ảnh bìa – trang dùng nền màu mặc định', 'warn');
     var docBytes = JSON.stringify({ e: ev, c: c }).length;
     add(docBytes < 1000000, 'Dung lượng trang vừa đủ để xuất bản (' + Math.round(docBytes / 1024) + ' KB)', 'Trang quá nặng (' + Math.round(docBytes / 1024) + ' KB, tối đa khoảng 970 KB) – bớt ảnh hoặc dùng logo nhẹ hơn', 'block');
-    add(c.source !== 'mock', 'Nội dung do AI thật viết hoặc đã chỉnh tay', 'Nội dung đang là bản AI mô phỏng – nên đọc lại hoặc sửa trực tiếp trước khi gửi khách', 'warn');
+    add(c.source !== 'mock', 'Nội dung do AI thật viết hoặc đã chỉnh tay', 'Bản demo vòng loại - Dữ liệu mô phỏng AI: nội dung đang là bản mô phỏng – nên đọc lại hoặc sửa trực tiếp trước khi gửi khách', 'warn');
     // SEO (chỉ gợi ý, không chặn xuất bản)
     var SEO = EP.seo, sr = SEO.resolve(ev, c), tpl0 = TPL.get(ev.templateId);
     var tl = sr.title.length, dl = sr.description.length;
@@ -2274,7 +2274,7 @@
       saveAndRender(ev, gen, tone);
       pendingTpl = null;
       celebrateGenerated(isRegenerate);
-      setMsg('Đã tạo nội dung bằng AI mô phỏng (offline).', 'success');
+      setMsg('Bản demo vòng loại - Dữ liệu mô phỏng AI: đã tạo nội dung offline.', 'success');
       return;
     }
 

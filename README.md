@@ -32,7 +32,7 @@ Tiêu chí vòng loại: https://vibecoding.info.vn/tieu-chi-cham-thi
 ## 3. Tính năng mở rộng
 
 - **Giao diện theo phong cách Lucian** (xem mục 9) với chế độ **sáng / tối**.
-- **Thư viện 165 mẫu** lọc theo ngành, loại sự kiện và mục đích (công nghệ, giáo dục, F&B, bất động sản, thiệp cưới, thôi nôi, mừng thọ…), có xem trước và chế độ xem dạng **Reels**. Đổi mẫu giữ nguyên nội dung. Mẫu **Mộc Coffee** dùng ảnh thật (`assets/demo/moc-*.webp`).
+- **Thư viện 172 mẫu** lọc theo ngành, loại sự kiện và mục đích (công nghệ, giáo dục, F&B, bất động sản, thiệp cưới, thôi nôi, mừng thọ…), có xem trước và chế độ xem dạng **Reels**. Đổi mẫu giữ nguyên nội dung. Mẫu **Mộc Coffee** dùng ảnh thật (`assets/demo/moc-*.webp`).
 - **Builder theo section**: đổi thứ tự, ẩn/hiện (phần bắt buộc bị khoá), sửa chữ trực tiếp trên trang, chỉnh màu/font/nút.
 - **Thư viện media**: tải, cắt và nén ảnh bìa, ảnh diễn giả, album; tự nén theo ngân sách dung lượng.
 - **Brand DNA bằng Gemini từ tài liệu**: tải PDF, TXT, MD hoặc ảnh guideline, Gemini đọc và tạo bộ nhận diện (màu, font, giọng văn); người dùng xem lại trước khi lưu.

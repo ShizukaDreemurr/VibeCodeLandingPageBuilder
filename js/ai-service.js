@@ -149,13 +149,13 @@
     var description = obj.description || obj.desc || obj.mo_ta;
     var benefits = obj.benefits || obj.loi_ich || [];
 
-    if (!headline) { warnings.push('Thiếu headline, đã dùng bản mô phỏng.'); headline = fallback.headline; }
-    if (!description) { warnings.push('Thiếu mô tả, đã dùng bản mô phỏng.'); description = fallback.description; }
+    if (!headline) { warnings.push('Bản demo vòng loại - Dữ liệu mô phỏng AI: thiếu headline, đã dùng bản thay thế.'); headline = fallback.headline; }
+    if (!description) { warnings.push('Bản demo vòng loại - Dữ liệu mô phỏng AI: thiếu mô tả, đã dùng bản thay thế.'); description = fallback.description; }
     if (!Array.isArray(benefits)) benefits = [benefits];
     benefits = benefits.filter(Boolean).map(String);
     if (benefits.length > 3) { warnings.push('AI trả về ' + benefits.length + ' lợi ích, chỉ giữ 3 ý đầu.'); }
     while (benefits.length < 3) {
-      warnings.push('Thiếu lợi ích số ' + (benefits.length + 1) + ', đã bù bằng bản mô phỏng.');
+      warnings.push('Bản demo vòng loại - Dữ liệu mô phỏng AI: thiếu lợi ích số ' + (benefits.length + 1) + ', đã bù bằng bản thay thế.');
       benefits.push(fallback.benefits[benefits.length]);
     }
     return {
