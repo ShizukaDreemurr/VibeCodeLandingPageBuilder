@@ -719,6 +719,7 @@
 
   // Đổi mẫu: giữ nguyên nội dung, chỉ đổi giao diện; form trống thì điền dữ liệu mẫu của mẫu đó
   function applyTemplate(id) {
+    chosenThisSession = true;
     setTemplate(id);
     closeTemplates();
     if (!form.elements.name.value.trim()) fillSample();
@@ -2251,7 +2252,10 @@
   function currentMode() { return form.querySelector('input[name="aiMode"]:checked').value; }
 
   function generate(isRegenerate) {
-    var ev = readForm(state && state.event ? state.event.id : null);
+    var prev = state && state.event ? state.event : null;
+    var ev = readForm(prev ? prev.id : null);
+    // Trang demo chỉ được ghi đè khi form vẫn là đúng trang đó; form của trang khác thì tạo sự kiện mới
+    if (prev && EP.demo && EP.demo.isDemoId(prev.id) && (ev.name !== prev.name || ev.templateId !== prev.templateId)) ev.id = S.newId('evt');
     var errors = V.validateEvent(ev);
     showErrors(errors);
     if (Object.keys(errors).length) { setMsg('Vui lòng kiểm tra lại các ô được đánh dấu đỏ.', 'error'); return; }
@@ -3748,7 +3752,12 @@
   });
   $('#btn-new').addEventListener('click', resetAll);
   $('#btn-new-2').addEventListener('click', function () { resetAll(true); });
-  $('#btn-sample').addEventListener('click', fillSample);
+  // Điền dữ liệu mẫu = lựa chọn của người dùng: mở một sự kiện MỚI (id mới, không dùng trang demo)
+  $('#btn-sample').addEventListener('click', function () {
+    chosenThisSession = true;
+    clearEditor();
+    fillSample();
+  });
   $('#btn-sheet-test').addEventListener('click', testSheet);
   $('#btn-export').addEventListener('click', exportCsv);
   $('#btn-clear-regs').addEventListener('click', function () {
