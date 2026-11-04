@@ -586,8 +586,7 @@ html[data-vt="device"]::view-transition-old(root), html[data-vt="device"]::view-
 html[data-vt="theme"] body * { view-transition-name: none !important; }
 html[data-vt="theme"]::view-transition-group(root) { animation: none; }
 html[data-vt="theme"]::view-transition-old(root) { animation: none; mix-blend-mode: normal; z-index: 1; }
-html[data-vt="theme"]::view-transition-new(root) { animation: vtThemeReveal 650ms cubic-bezier(.2, .8, .2, 1) both; mix-blend-mode: normal; z-index: 2; }
-@keyframes vtThemeReveal { from { clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 0px)); } to { clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 0px)); } }
+html[data-vt="theme"]::view-transition-new(root) { animation: none; mix-blend-mode: normal; z-index: 2; } /* vòng tròn chạy bằng Web Animations trong EP.theme */
 @keyframes vtFadeOut { to { opacity: 0; } }
 @keyframes vtFadeIn { from { opacity: 0; transform: scale(0.985); } }
 @keyframes vtOutLeft { to { opacity: 0; transform: translateX(-32px); } }
