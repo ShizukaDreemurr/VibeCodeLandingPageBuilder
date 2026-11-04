@@ -652,8 +652,9 @@
 
   // Xem trước toàn trang của mẫu với dữ liệu mẫu và nội dung mô phỏng (không gửi đăng ký thật)
   // Vẽ trang landing của mẫu với dữ liệu mẫu vào container (dùng cho xem trước và Reels); trả về {update}
-  function tplRenderLanding(container, t) {
+  function tplRenderLanding(container, t, still) {
     var ev = t.sample();
+    if (still) ev.style = Object.assign({}, ev.style, { motion: 'off' }); // Reels: không chạy aurora/hoạt ảnh/hiện dần để lướt mượt
     ev.id = 'tpl-preview-' + t.id; ev.templateId = t.id; ev.sheetUrl = '';
     ev.images = ev.images || {};
     var seats = ev.capacity ? Math.floor(Number(ev.capacity) * 0.42) : 36;

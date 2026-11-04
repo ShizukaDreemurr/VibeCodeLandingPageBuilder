@@ -112,7 +112,7 @@
   }
 
   /* ---------- Reels: mỗi màn một mẫu, lướt dọc ---------- */
-  var reel, hud, slides = [], list = [], cur = -1, opener = null, mounted = {}, mountT = 0, dirty = true;
+  var reel, hud, slides = [], list = [], cur = -1, opener = null, mounted = {}, dirty = true;
   var ICON = {
     up: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14.5l6-6 6 6"/></svg>',
     down: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>',
@@ -120,6 +120,7 @@
     hand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M7 11l5-5 5 5"/></svg>',
     grid: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>',
     wand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19L16 8M14 6l4 4M7 5v2M6 6h2M18 14v2M17 15h2"/></svg>',
+    play2: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6l9.2-5.8z" fill="currentColor" stroke="none"/></svg>',
     play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="lt-m-play" d="M8.5 6.2v11.6l9.2-5.8z"/><path class="lt-m-pause" d="M8.5 6.5v11M15.5 6.5v11"/></svg>',
     theme: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><path d="M12 4.5a7.5 7.5 0 0 1 0 15z" fill="currentColor"/></svg>'
   };
@@ -140,6 +141,7 @@
       '<button class="lt-hud-b lt-hud-ic lt-theme" type="button" data-act="theme" aria-label="Đổi giao diện">' + ICON.theme + '</button></div>';
     doc.body.appendChild(reel); doc.body.appendChild(hud);
     reel.addEventListener('scroll', onScroll, { passive: true });
+    if (hasScrollEnd) reel.addEventListener('scrollend', onSettle);
     reel.addEventListener('click', onReelClick);
     hud.addEventListener('click', function (e) {
       var b = e.target.closest('[data-act]'); if (!b) return;
@@ -182,17 +184,19 @@
     });
     reel.appendChild(frag);
     cur = -1; dirty = false;
+    watchSlides();
     $('[data-r="prog-t"]', hud).textContent = String(list.length).padStart(3, '0');
   }
   function fill(p) {
     var s = slides[p];
     if (!s || s._f) return;
-    s.innerHTML = slideHtml(list[p]); s._f = true;
+    s.innerHTML = slideHtml(list[p]); s._f = true; s._fit = false;
   }
   function empty(p) { var s = slides[p]; if (s && s._f && !mounted[p]) { s.innerHTML = ''; s._f = false; } }
-  // Khung trình duyệt vừa với vùng stage, giữ tỉ lệ; trang landing vẽ ở bề rộng thật (1280 hoặc 390) rồi thu nhỏ
-  function fit(p) {
-    var s = slides[p]; if (!s || !s._f) return;
+  // Khung trình duyệt vừa với vùng stage, giữ tỉ lệ; trang landing vẽ ở bề rộng thật (1280 hoặc 390) rồi thu nhỏ bằng transform.
+  // Chỉ đo layout khi cần (mới đổ nội dung / đổi cỡ), không đo trong lúc cuộn.
+  function fit(p, force) {
+    var s = slides[p]; if (!s || !s._f || (s._fit && !force)) return;
     var st = $('.lt-slide-stage', s), dev = $('.lt-device', s), live = $('.lt-live', s), lp = $('.lt-lp', s);
     var sw = st.clientWidth, sh = st.clientHeight; if (!sw || !sh) return;
     var narrow = mobileQ.matches, boxW = narrow ? 390 : 1280, ratio = narrow ? 390 / 600 : 16 / 10, chrome = 30;
@@ -202,16 +206,18 @@
     live.style.height = fh + 'px';
     lp.style.width = boxW + 'px'; lp.style.height = (fh / k) + 'px';
     lp.style.transform = 'scale(' + k.toFixed(4) + ')';
+    s._fit = true;
   }
   function mount(p) {
     if (mounted[p] || !slides[p]) return;
     fill(p); fit(p);
     var s = slides[p], lp = $('.lt-lp > .landing', s);
     try {
-      api.render(lp, list[p]);
       mounted[p] = true;
-      s.classList.add('is-live');
-    } catch (e) { lp.innerHTML = ''; /* giữ ảnh chụp làm hình thay thế */ }
+      api.render(lp, list[p], true);
+      // bật lớp is-live ở khung hình kế tiếp: trang thật mờ dần phủ lên ảnh chụp, không nháy
+      requestAnimationFrame(function () { if (mounted[p]) s.classList.add('is-live'); });
+    } catch (e) { delete mounted[p]; lp.innerHTML = ''; /* giữ ảnh chụp làm hình thay thế */ }
   }
   function unmount(p) {
     if (!mounted[p]) return;
@@ -219,34 +225,56 @@
     delete mounted[p];
   }
   function unmountAll() { Object.keys(mounted).forEach(function (k) { unmount(+k); }); }
+  var idleT = 0, ric = root.requestIdleCallback ? function (f) { return root.requestIdleCallback(f, { timeout: 160 }); } : function (f) { return setTimeout(f, 16); };
+  var cic = root.cancelIdleCallback ? function (id) { root.cancelIdleCallback(id); } : function (id) { clearTimeout(id); };
+  // Việc nhẹ chạy ngay khi slide đổi (class, số thứ tự, đổ HTML 2 bên); việc nặng (vẽ trang thật) chờ dừng hẳn
   function setCurrent(p) {
     if (p === cur || p < 0 || p >= slides.length) return;
     if (cur >= 0 && slides[cur]) slides[cur].classList.remove('is-on');
     cur = p;
-    for (var k = Math.max(0, p - 2); k <= Math.min(slides.length - 1, p + 2); k++) fill(k);
+    for (var k = Math.max(0, p - 1); k <= Math.min(slides.length - 1, p + 1); k++) { fill(k); fit(k); }
     slides[p].classList.add('is-on');
-    slides.forEach(function (s, k) { if (s._f && Math.abs(k - p) > 4) empty(k); });
-    Object.keys(mounted).forEach(function (k) { if (+k !== p) unmount(+k); });
-    // chỉ vẽ trang thật cho màn đang xem, chờ dừng cuộn một nhịp để lướt nhanh không bị khựng
-    clearTimeout(mountT);
-    mountT = setTimeout(function () { if (reelOpen() && cur === p) mount(p); }, reduced() ? 0 : 220);
-    for (var j = Math.max(0, p - 1); j <= Math.min(slides.length - 1, p + 1); j++) fit(j);
     var t = list[p];
     $('[data-r="prog-n"]', hud).textContent = api.num(t);
     $('[data-r="prog-bar"]', hud).style.setProperty('--p', ((p + 1) / slides.length).toFixed(4));
+    settled = false;
   }
-  var raf = 0;
-  function onScroll() {
-    if (raf) return;
-    raf = requestAnimationFrame(function () {
-      raf = 0;
-      setCurrent(Math.round(reel.scrollTop / (reel.clientHeight || 1)));
+  var settled = true;
+  // Khi cuộn dừng (scrollend, hoặc dự phòng bằng nhịp im lặng ngắn): vẽ trang thật cho slide hiện tại ngay, rồi lân cận lúc rảnh
+  function onSettle() {
+    if (!reelOpen() || cur < 0) return;
+    settled = true;
+    var p = cur;
+    mount(p);
+    cic(idleT);
+    idleT = ric(function () {
+      if (!reelOpen() || cur !== p) return;
+      [p + 1, p - 1].forEach(function (j) { if (j >= 0 && j < slides.length) { fill(j); fit(j); mount(j); } });
+      Object.keys(mounted).forEach(function (k) { if (Math.abs(+k - p) > 1) unmount(+k); });
+      slides.forEach(function (s, k) { if (s._f && Math.abs(k - p) > 3) empty(k); });
+      for (var j = Math.max(0, p - 2); j <= Math.min(slides.length - 1, p + 2); j++) fill(j);
     });
   }
+  var hasScrollEnd = 'onscrollend' in root, quietT = 0;
+  function onScroll() {
+    if (hasScrollEnd) return;
+    clearTimeout(quietT); quietT = setTimeout(onSettle, 70);
+  }
+  function watchSlides() {
+    if (io) io.disconnect();
+    if (!('IntersectionObserver' in root)) return;
+    // slide nào đè lên đường giữa màn hình thì là slide hiện tại (không đo layout, không timer)
+    io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) setCurrent(+e.target.dataset.p); });
+    }, { root: reel, rootMargin: '-49% 0px -49% 0px', threshold: 0 });
+    slides.forEach(function (s) { io.observe(s); });
+  }
+  var io = null;
   function goTo(p, smooth) {
     p = Math.max(0, Math.min(slides.length - 1, p));
+    // cuộn bản địa (có scroll-snap) nên không có hoạt ảnh JS tranh chấp; slide hiện tại do IntersectionObserver báo
     reel.scrollTo({ top: p * reel.clientHeight, behavior: smooth && !reduced() ? 'smooth' : 'auto' });
-    if (!smooth) setCurrent(p);
+    if (!smooth) { setCurrent(p); onSettle(); }
   }
   function onReelClick(e) {
     var b = e.target.closest('[data-act]'); if (!b) return;
@@ -274,21 +302,21 @@
     doc.body.setAttribute('data-lt-view', 'reel');
     de.classList.add('lt-lock');
     reel.setAttribute('aria-hidden', 'false'); hud.setAttribute('aria-hidden', 'false');
-    setInert(true);
+    dismissCoach(); setInert(true);
     syncThemeBtns(); syncMotionBtns();
     requestAnimationFrame(function () {
       goTo(p, false);
       var s = slides[p]; s.setAttribute('tabindex', '-1'); s.focus({ preventScroll: true });
-      fit(p);
+      fit(p, true); swipeHint();
     });
   }
   function close(instant) {
     if (!reel || !reelOpen()) return;
-    clearTimeout(mountT);
+    clearTimeout(quietT); cic(idleT);
     doc.body.removeAttribute('data-lt-view');
     de.classList.remove('lt-lock');
     reel.setAttribute('aria-hidden', 'true'); hud.setAttribute('aria-hidden', 'true');
-    setInert(false);
+    hideSwipe(); setInert(false);
     unmountAll();
     cur = -1;
     if (instant !== true && opener && opener.isConnected) opener.focus({ preventScroll: true });
@@ -312,20 +340,81 @@
     clearTimeout(rT);
     rT = setTimeout(function () {
       if (!reelOpen()) return;
-      Object.keys(mounted).forEach(function (k) { fit(+k); });
-      for (var j = Math.max(0, cur - 1); j <= Math.min(slides.length - 1, cur + 1); j++) fit(j);
+      slides.forEach(function (s) { s._fit = false; });
+      for (var j = Math.max(0, cur - 1); j <= Math.min(slides.length - 1, cur + 1); j++) fit(j, true);
       if (cur >= 0) reel.scrollTop = cur * reel.clientHeight;
     }, 120);
   });
+
+  /* ---------- Gợi ý lần đầu: mẹo vuốt trong Reels, bong bóng chỉ nút Reels ở trang mẫu ---------- */
+  var LS = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } } };
+  var swipeEl = null, swipeT = 0;
+  function hideSwipe() { clearTimeout(swipeT); if (swipeEl) swipeEl.classList.remove('is-on'); }
+  function swipeHint() {
+    if (!mobileQ.matches || LS.get('ep_reels_swipe')) return;
+    if (!swipeEl) {
+      swipeEl = doc.createElement('div'); swipeEl.className = 'lt-swipe'; swipeEl.setAttribute('role', 'status');
+      swipeEl.innerHTML = '<i aria-hidden="true">' + ICON.up + '</i><span>Vuốt lên để xem mẫu tiếp</span>';
+      doc.body.appendChild(swipeEl);
+      reel.addEventListener('scroll', function () { if (swipeEl.classList.contains('is-on')) { hideSwipe(); LS.set('ep_reels_swipe', '1'); } }, { passive: true });
+    }
+    setTimeout(function () { if (reelOpen()) swipeEl.classList.add('is-on'); }, 500);
+    swipeT = setTimeout(function () { hideSwipe(); LS.set('ep_reels_swipe', '1'); }, 5200);
+  }
+  function coachUi() {
+    var cta = R('reel-cta'), fab = doc.createElement('button');
+    fab.type = 'button'; fab.className = 'lt-reel-fab'; fab.setAttribute('data-r', 'reel-fab'); fab.setAttribute('aria-label', 'Lướt xem mẫu toàn màn hình');
+    fab.innerHTML = ICON.play2 + '<span>Lướt xem mẫu</span>';
+    doc.body.appendChild(fab);
+    function start(e) { var l = api.list(); if (l.length) { dismissCoach(); open(l[0].id, e.currentTarget); } }
+    cta.addEventListener('click', start); fab.addEventListener('click', start);
+    if (LS.get('ep_reels_hint')) return;
+    var tip = doc.createElement('div');
+    tip.className = 'lt-coach'; tip.setAttribute('role', 'dialog'); tip.setAttribute('aria-label', 'Gợi ý: chế độ lướt xem mẫu');
+    tip.innerHTML = '<b>Mới: lướt xem mẫu như Reels</b><span>Mỗi lần vuốt là một trang thật, xem nhanh hàng chục mẫu.</span><button type="button">Đã hiểu</button>';
+    doc.body.appendChild(tip);
+    var pulses = [cta, fab];
+    function place() {
+      var a = mobileQ.matches ? fab : cta, r = a.getBoundingClientRect();
+      if (!r.width || page.hidden) { tip.classList.remove('is-on'); return; }
+      var w = Math.min(280, root.innerWidth - 24);
+      tip.style.width = w + 'px';
+      var left = Math.max(12, Math.min(root.innerWidth - w - 12, r.left + r.width / 2 - w / 2));
+      var above = r.top > 150;
+      tip.style.left = left + 'px';
+      tip.style.top = above ? 'auto' : (r.bottom + 12) + 'px';
+      tip.style.bottom = above ? (root.innerHeight - r.top + 12) + 'px' : 'auto';
+      tip.style.setProperty('--ax', (r.left + r.width / 2 - left) + 'px');
+      tip.classList.toggle('is-below', !above);
+      tip.classList.add('is-on');
+    }
+    dismissCoach = function () {
+      LS.set('ep_reels_hint', '1'); tip.classList.remove('is-on');
+      pulses.forEach(function (n) { n.classList.remove('is-pulse'); });
+      root.removeEventListener('resize', place);
+      setTimeout(function () { if (tip.parentNode) tip.parentNode.removeChild(tip); }, 400);
+      dismissCoach = function () {};
+    };
+    tip.querySelector('button').addEventListener('click', dismissCoach);
+    tip.addEventListener('keydown', function (e) { if (e.key === 'Escape') dismissCoach(); });
+    root.addEventListener('resize', place);
+    setTimeout(function () {
+      if (page.hidden || reelOpen()) return;
+      pulses.forEach(function (n) { n.classList.add('is-pulse'); });
+      place();
+    }, 1400);
+  }
+  var dismissCoach = function () {};
 
   /* ---------- Giao diện công khai ---------- */
   function init(a) {
     api = a; page = a.root;
     if (wired) return; wired = true;
-    searchUi(); filterUi(); stuckUi();
+    searchUi(); filterUi(); stuckUi(); coachUi();
     R('motion-btn').addEventListener('click', toggleMotion);
     R('theme-btn').addEventListener('click', function (e) { toggleTheme(e.currentTarget); });
     R('reel-btn').addEventListener('click', function (e) {
+      dismissCoach();
       var l = api.list();
       if (l.length) open(l[0].id, e.currentTarget);
     });

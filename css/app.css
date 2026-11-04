@@ -2312,11 +2312,11 @@ html.tpv-lock { overflow: hidden; }
 
   /* ===== Reels toàn màn hình (mỗi màn một mẫu) ===== */
   html.lt-lock, html.lt-lock body { overflow: hidden; }
-  .lt-reel { position: fixed; inset: 0; z-index: 700; overflow-y: auto; overflow-x: hidden; scroll-snap-type: y mandatory; overscroll-behavior: contain; scrollbar-width: none; background: var(--ground);
+  .lt-reel { position: fixed; inset: 0; z-index: 700; overflow-y: auto; overflow-x: hidden; scroll-snap-type: y mandatory; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; contain: strict; scrollbar-width: none; background: var(--ground);
     opacity: 0; visibility: hidden; transform: scale(.985); transition: opacity .45s var(--ux-ease), transform .6s var(--ux-ease), visibility 0s linear .6s; }
   .lt-reel::-webkit-scrollbar { display: none; }
   body[data-lt-view="reel"] .lt-reel { opacity: 1; visibility: visible; transform: none; transition: opacity .45s var(--ux-ease), transform .6s var(--ux-ease); }
-  .lt-slide { position: relative; height: 100vh; height: 100dvh; min-height: 520px; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; isolation: isolate; }
+  .lt-slide { position: relative; height: 100vh; height: 100dvh; min-height: 520px; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; isolation: isolate; contain: layout paint; }
   .lt-slide-bg { position: absolute; inset: -12%; z-index: -1; pointer-events: none;
     background:
       radial-gradient(38% 44% at 30% 36%, color-mix(in oklab, var(--h, #7B61FF) var(--lt-glow), transparent), transparent 72%),
@@ -2325,15 +2325,17 @@ html.tpv-lock { overflow: hidden; }
     animation: lt-drift 16s ease-in-out infinite alternate; }
   @keyframes lt-drift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(2%, 1.5%, 0) scale(1.06); } }
   .lt-slide:not(.is-on) .lt-slide-bg { animation-play-state: paused; }
+  .lt-slide.is-live .lt-lp .lp-fx { display: none; }
   .lt-slide-stage { position: absolute; left: 16px; right: 16px; top: 76px; bottom: 300px; display: grid; place-items: center; }
-  .lt-device { position: relative; border-radius: 18px; overflow: hidden; background: var(--surface); box-shadow: 0 0 0 1px var(--border), 0 40px 80px -30px var(--lt-shadow), 0 12px 24px -12px var(--lt-shadow); transition: opacity .6s var(--ux-ease), filter .7s var(--ux-ease), transform .8s var(--ux-spring); }
-  .lt-slide:not(.is-on) .lt-device { opacity: 0; filter: blur(8px); transform: translateY(24px) scale(.97); }
+  .lt-device { position: relative; border-radius: 18px; overflow: hidden; background: var(--surface); box-shadow: 0 0 0 1px var(--border), 0 40px 80px -30px var(--lt-shadow), 0 12px 24px -12px var(--lt-shadow); transition: opacity .32s var(--ux-ease), transform .5s var(--ux-ease); transform-origin: 50% 60%; }
+  .lt-slide:not(.is-on) .lt-device { opacity: 0; transform: translate3d(0, 18px, 0) scale(.965); }
+  .lt-slide.is-on .lt-device { will-change: transform, opacity; }
   .lt-device .lt-chrome { height: 30px; padding: 0 14px; gap: 6px; }
   .lt-device .lt-chrome i { width: 8px; height: 8px; }
   .lt-device .lt-chrome span { font-size: 11px; text-align: center; margin-right: 38px; }
   .lt-live { position: relative; overflow: hidden; background: var(--surface); }
-  .lt-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; transition: opacity .5s var(--ux-ease) .1s; }
-  .lt-lp { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; opacity: 0; overflow: hidden; transition: opacity .5s var(--ux-ease); }
+  .lt-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; transition: opacity 0s linear .38s; }
+  .lt-lp { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; opacity: 0; overflow: hidden; transition: opacity .32s var(--ux-ease); contain: layout paint; }
   .lt-lp > .landing { width: 100%; min-height: 100%; }
   .lt-slide.is-live .lt-lp { opacity: 1; }
   .lt-slide.is-live .lt-poster { opacity: 0; }
@@ -2352,11 +2354,11 @@ html.tpv-lock { overflow: hidden; }
   .lt-btn--pri:hover { box-shadow: 0 10px 22px -12px var(--lt-shadow); }
   .lt-slide-hint { display: none; align-items: center; gap: 8px; margin: 14px 0 0; padding: 8px 14px 8px 10px; width: fit-content; border-radius: 999px; background: var(--lt-rail); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px var(--border); font-size: 13px; font-weight: 620; color: var(--text-muted); }
   .lt-slide-hint svg { width: 16px; height: 16px; fill: none; stroke: var(--accent-ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .lt-slide-meta > * { transition: opacity .6s var(--ux-ease), transform .8s var(--ux-spring); }
-  .lt-slide:not(.is-on) .lt-slide-meta > * { opacity: 0; transform: translateY(16px); }
-  .lt-slide.is-on .lt-slide-meta > :nth-child(2) { transition-delay: .05s; }
-  .lt-slide.is-on .lt-slide-meta > :nth-child(3) { transition-delay: .1s; }
-  .lt-slide.is-on .lt-slide-meta > :nth-child(4) { transition-delay: .15s; }
+  .lt-slide-meta > * { transition: opacity .35s var(--ux-ease), transform .5s var(--ux-ease); }
+  .lt-slide:not(.is-on) .lt-slide-meta > * { opacity: 0; transform: translate3d(0, 14px, 0); }
+  .lt-slide.is-on .lt-slide-meta > :nth-child(2) { transition-delay: .04s; }
+  .lt-slide.is-on .lt-slide-meta > :nth-child(3) { transition-delay: .08s; }
+  .lt-slide.is-on .lt-slide-meta > :nth-child(4) { transition-delay: .12s; }
   .lt-slide-cta [data-act="preview"] { display: none; }
   .lt-rail { position: absolute; right: 14px; bottom: 28px; display: flex; flex-direction: column; gap: 12px; }
   .lt-rb { display: flex; flex-direction: column; align-items: center; gap: 6px; border: 0; background: none; padding: 0; border-radius: 16px; font: inherit; color: var(--text); cursor: pointer; }
@@ -2959,3 +2961,32 @@ html.motion-off .xl-od-col, html.motion-off .ch-ring, html.motion-off .xl-live {
     .lf-st.lf-st-last small { text-align: right; }
   }
 }
+
+
+/* ===== Lối vào Reels: nút nổi bật, nút nổi trên di động, bong bóng gợi ý, mẹo vuốt ===== */
+.lt-reel-cta { position: relative; margin-top: 14px; height: 46px; padding: 0 20px 0 16px; border: 0; border-radius: 999px; display: inline-flex; align-items: center; gap: 9px; background: var(--ux-grad); color: #fff; font: inherit; font-size: 15px; font-weight: 720; letter-spacing: -.01em; cursor: pointer; box-shadow: 0 10px 28px -8px var(--accent-soft), inset 0 0 0 1px rgba(255,255,255,.18); transition: transform .35s var(--ux-spring), box-shadow .3s; }
+.lt-reel-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 32px -8px var(--accent-soft), inset 0 0 0 1px rgba(255,255,255,.28); }
+.lt-reel-cta:active { transform: scale(.96); }
+.lt-reel-cta svg, .lt-reel-fab svg { width: 20px; height: 20px; flex: none; }
+.lt-reel-cta em { font-style: normal; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 3px 7px; border-radius: 999px; background: rgba(255,255,255,.24); }
+.lt-reel-fab { position: fixed; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 90; height: 52px; padding: 0 20px 0 16px; border: 0; border-radius: 999px; display: none; align-items: center; gap: 8px; background: var(--ux-grad); color: #fff; font: inherit; font-size: 15px; font-weight: 720; cursor: pointer; box-shadow: 0 14px 30px -8px var(--accent-soft), 0 2px 8px rgba(0,0,0,.18); transition: transform .35s var(--ux-spring), opacity .25s; }
+.lt-reel-fab:active { transform: scale(.94); }
+body[data-lt-view="reel"] .lt-reel-fab { opacity: 0; pointer-events: none; }
+@media (max-width: 760px) { .lt-reel-fab { display: inline-flex; } .lt-reel-cta { display: none; } }
+@keyframes lt-pulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 55%, transparent); } 100% { box-shadow: 0 0 0 20px transparent; } }
+.lt-reel-cta.is-pulse, .lt-reel-fab.is-pulse { animation: lt-pulse 1.1s ease-out 3; }
+.lt-coach { position: fixed; z-index: 95; padding: 14px 16px 12px; border-radius: 16px; background: var(--text); color: var(--ground); display: grid; gap: 4px; font-size: 13.5px; line-height: 1.45; box-shadow: 0 18px 40px -12px rgba(0,0,0,.45); opacity: 0; transform: translate3d(0, 8px, 0) scale(.96); pointer-events: none; transition: opacity .3s var(--ux-ease), transform .45s var(--ux-spring); }
+.lt-coach.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.lt-coach b { font-size: 14.5px; font-weight: 740; }
+.lt-coach span { opacity: .78; }
+.lt-coach button { justify-self: end; margin-top: 6px; height: 32px; padding: 0 14px; border: 0; border-radius: 999px; background: var(--ground); color: var(--text); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.lt-coach::after { content: ""; position: absolute; left: var(--ax, 50%); bottom: -6px; width: 14px; height: 14px; margin-left: -7px; background: inherit; transform: rotate(45deg); border-radius: 3px; }
+.lt-coach.is-below::after { bottom: auto; top: -6px; }
+.lt-swipe { position: fixed; left: 50%; top: 84px; white-space: nowrap; z-index: 720; display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px 10px 12px; border-radius: 999px; background: var(--text); color: var(--ground); font-size: 14px; font-weight: 650; pointer-events: none; opacity: 0; transform: translate3d(-50%, 12px, 0); transition: opacity .35s var(--ux-ease), transform .5s var(--ux-spring); }
+.lt-swipe.is-on { opacity: 1; transform: translate3d(-50%, 0, 0); }
+.lt-swipe i { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ground); color: var(--text); animation: lt-swipe-up 1.3s var(--ux-ease) infinite; }
+.lt-swipe svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes lt-swipe-up { 0% { transform: translateY(5px); } 60%, 100% { transform: translateY(-5px); } }
+@media (prefers-reduced-motion: reduce) { .lt-reel-cta.is-pulse, .lt-reel-fab.is-pulse, .lt-swipe i { animation: none; } .lt-coach, .lt-swipe { transition-duration: .001ms; } }
+html.motion-off .lt-reel-cta.is-pulse, html.motion-off .lt-reel-fab.is-pulse, html.motion-off .lt-swipe i { animation: none; }
+body:has(#view-templates[hidden]) .lt-reel-fab, body:has(#view-templates[hidden]) .lt-coach, body:has(.pv-overlay:not([hidden])) .lt-reel-fab { display: none !important; }
