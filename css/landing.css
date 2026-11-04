@@ -565,3 +565,18 @@ html.lp-lb-open { overflow: hidden; }
   .landing .lp-about-section .lp-about-body { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
   .landing .lp-about-section .lp-about-body > p { max-width: none; }
 }
+
+/* Chuyển động bổ sung (motionInit). Cảm hứng Lucian Lab (MIT, © 2026 Seokwoooo); màu theo biến --lp-*; chỉ transform/opacity */
+@media screen {
+  .lp-word { display: inline-block; animation: lpWord 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes lpWord { from { opacity: 0; transform: translate3d(0, 0.5em, 0); } to { opacity: 1; transform: none; } }
+  .lp-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 40; background: var(--lp-accent); transform: scaleX(0); transform-origin: 0 50%; pointer-events: none; will-change: transform; }
+  .lp-cta, .lp-submit, .lp-sticky-btn { position: relative; overflow: hidden; }
+  .lp-ripple { position: absolute; border-radius: 50%; background: var(--lp-accent-contrast); opacity: 0.35; transform: scale(0); animation: lpRipple 0.6s ease-out forwards; pointer-events: none; }
+  @keyframes lpRipple { to { transform: scale(1); opacity: 0; } }
+  .lp-quote { transition: transform 0.25s ease; }
+  .lp-quote:hover { transform: translate3d(0, -3px, 0); }
+}
+html.motion-off .lp-word, html.motion-off .lp-ripple, .st-motion-off .lp-word { animation: none !important; opacity: 1; transform: none; }
+html.motion-off .lp-progress, .st-motion-off .lp-progress, .is-editable .lp-progress { display: none; }
+@media (prefers-reduced-motion: reduce) { .lp-word { animation: none; } .lp-progress, .lp-ripple { display: none; } .lp-quote { transition: none; } .lp-quote:hover { transform: none; } }
