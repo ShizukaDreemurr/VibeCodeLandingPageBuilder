@@ -1922,8 +1922,14 @@ html.tpv-lock { overflow: hidden; }
 .xl-d:active { transform: scale(0.92); }
 .xl-d svg { width: 30px; height: 30px; transform: rotate(-90deg); }
 .xl-d circle { fill: none; stroke-width: 3.4; stroke-linecap: round; }
-.xl-d .t { stroke: var(--xl-c1); stroke-opacity: 0.2; }
+.xl-d .t { stroke: var(--text); stroke-opacity: 0.14; }
 .xl-d .v { stroke: var(--xl-c1); }
+.xl-d svg { width: 34px; height: 34px; }
+.xl-d circle { stroke-width: 4; }
+.xl-d-p { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--xl-c1); font-variant-numeric: tabular-nums; line-height: 1; margin-top: -2px; }
+.xl-it-x { display: block; font-size: 12px; color: var(--text-muted); }
+.xl-it-x:empty { display: none; }
+.xl-ln-part { stroke-dasharray: 3 5; stroke-opacity: 0.55; }
 .xl-sum { margin: 10px 2px 0; font-size: 13px; color: var(--text-muted); }
 .xl-sum b { color: var(--text); }
 
