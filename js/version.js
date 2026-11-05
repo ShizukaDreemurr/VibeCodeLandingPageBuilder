@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.9.4',
+    version: '2.10.0',
     date: '2026-10-27',
-    notes: 'Reels trên máy tính: bố cục 3 cột cân đối, khung trang lớn theo màn hình, nền liền mạch',
+    notes: 'Tạo ảnh bằng AI (Gemini/Imagen) trong Thư viện ảnh, tách mục Ảnh tải lên / Ảnh AI; không ghi đè trang của khách sau khi tải lại',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
