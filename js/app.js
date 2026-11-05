@@ -3100,7 +3100,7 @@
     if (chosenThisSession || publicEventId || !EP.demo || !EP.demo.ensure) return;
     try { if (C.currentUser() || localStorage.getItem('ep_signed_in')) return; } catch (e) {}
     var id = 'demo_evt_coffee';
-    if (state && state.event.id === id) { chosenThisSession = true; return; }
+    if (state) { chosenThisSession = true; return; } // đã có trang (kể cả khôi phục sau khi tải lại): không ghi đè bằng demo
     var saved = EP.demo.ensure('coffee');
     if (!saved) return;
     chosenThisSession = true;

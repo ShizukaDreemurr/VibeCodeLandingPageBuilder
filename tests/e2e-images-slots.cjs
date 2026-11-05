@@ -26,7 +26,7 @@ const ok = (name, cond, extra) => { if (!cond) failed++; console.log((cond ? '�
   const overflow = (pg) => pg.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
   // 0. Chưa có trang: thẻ có gợi ý, chưa có ô
-  await p.goto(URL_); await p.click('[data-tab="builder"]');
+  await p.goto(URL_); await p.click('#btn-new'); await p.click('[data-tab="builder"]'); // khách mở builder sẽ thấy demo Mộc; bắt đầu trang trống trước
   ok('card shows hint before a page exists', (await p.textContent('#img-card')).includes('Tạo landing page trước') && await p.locator('#img-card .img-tile').count() === 0);
   await p.click('#btn-sample'); await p.click('#btn-generate'); await p.waitForTimeout(900);
 
