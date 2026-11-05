@@ -32,9 +32,9 @@
     return null;
   }
   // Mở Thư viện ảnh dùng chung (EP.media); không có thì quay về hộp chọn tệp của trình duyệt
-  function pickFile() {
+  function pickFile(slot) {
     if (root.EP && root.EP.media) {
-      return root.EP.media.open().then(function (file) {
+      return root.EP.media.open({ slot: slot }).then(function (file) {
         var err = checkFile(file);
         if (err) throw err;
         return file;
@@ -148,7 +148,7 @@
       return r.data;
     });
   }
-  function pick(slot) { return pickFile().then(function (file) { return fromFile(file, slot); }); }
+  function pick(slot) { return pickFile(slot).then(function (file) { return fromFile(file, slot); }); }
 
   // Nén lại một ảnh đã có (dataURL) xuống ≤ max byte
   function recompress(dataUrl, slot, max) {

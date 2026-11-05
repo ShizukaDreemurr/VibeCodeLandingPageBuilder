@@ -56,6 +56,7 @@ Tiêu chí vòng loại: https://vibecoding.info.vn/tieu-chi-cham-thi
 ## 5. Tích hợp AI
 
 - **Gemini**: mặc định `gemini-3.5-flash-lite`, có thể chọn model khác; khi model lỗi hoặc hết lượt thì chuyển sang model nhanh miễn phí. Key do người dùng nhập, **chỉ lưu trong trình duyệt của họ** (localStorage), hiển thị dạng ẩn, **không có key nào trong mã nguồn**. Key được gửi trực tiếp từ trình duyệt tới Google, không qua máy chủ của nhóm.
+- **Tạo ảnh bằng AI** (Thư viện ảnh → tab "Tạo bằng AI"): Gemini ảnh gốc (Nano Banana) hoặc Imagen, dùng chính key Gemini của người dùng. Model tạo ảnh **cần bật thanh toán (billing)**, key miễn phí sẽ báo lỗi 429 "limit: 0". Ảnh AI lưu riêng ở tab "Ảnh AI", có nhãn "AI" và nhắc ghi "Ảnh minh hoạ tạo bằng AI". Danh sách model: `docs/gemini-models.md`.
 - **Copy prompt**: prompt chuẩn được sao chép sẵn; người dùng dán JSON kết quả về app.
 - **AI mô phỏng**: nội dung ghép từ công thức copywriting theo giọng văn (trang trọng / trẻ trung / gấp rút). Giao diện hiển thị cảnh báo mô phỏng; checklist xuất bản nhắc đọc lại nếu còn nội dung mô phỏng.
 - **Kiểm soát đầu ra AI**: tách JSON khỏi lời dẫn và markdown, sửa lỗi JSON thường gặp, kiểm tra đủ trường và độ dài; thiếu trường thì bù bằng bản mô phỏng và báo rõ. Prompt cấm AI bịa ngày giờ, địa điểm, giá, tên người.
@@ -90,6 +91,7 @@ VibeCodeLandingPageBuilder/
 │   ├── templates.js, templates-data.js  # thư viện mẫu (sinh từ tools/templates.json)
 │   ├── content-generator.js # AI mô phỏng
 │   ├── ai-service.js        # Gemini, copy prompt, đọc kết quả AI
+│   ├── ai-image.js          # Tạo ảnh Gemini/Imagen (EP.aiImage)
 │   ├── brand-ai.js          # Brand DNA từ tài liệu bằng Gemini
 │   ├── media-library.js     # thư viện media
 │   ├── charts.js            # biểu đồ SVG

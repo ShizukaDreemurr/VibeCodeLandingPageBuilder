@@ -12,4 +12,6 @@
 | 4 | Bảo mật dữ liệu khách trên Firebase | Viết quy tắc bảo mật Firestore | Cần chứng minh người lạ không đọc được danh sách | Chạy 33 ca kiểm thử trên Firebase Emulator | 33/33 đạt; người lạ bị `permission-denied` `[Ảnh 4]` |
 | 5 | Đăng nhập Google khi xuất bản | Agent tự đăng nhập để kiểm thử | Bấm đăng nhập "không phản hồi", không có thông báo | Thêm thông báo trạng thái + dịch lỗi đăng nhập sang tiếng Việt; người thật đăng nhập | Xuất bản, quét QR trên điện thoại, số đếm tăng `[Ảnh 5]` |
 
+**Bổ sung**: tính năng tạo ảnh bằng Gemini/Imagen trong Thư viện ảnh được Claude viết và kiểm thử bằng mock API; ảnh AI luôn có nhãn "AI" và nhắc ghi "Ảnh minh hoạ tạo bằng AI".
+
 **Bài học**: không tin ngay "đã đạt chuẩn" hay "đã hoàn thành" — luôn tự đo lại (độ tương phản), thử ở điều kiện thật (2 thiết bị, mất mạng, người lạ truy cập) rồi mới chốt.

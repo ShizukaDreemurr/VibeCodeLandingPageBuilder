@@ -3020,3 +3020,36 @@ body:has(#view-templates[hidden]) .lt-reel-fab, body:has(#view-templates[hidden]
     .tpl-pv .pv-stage { padding-top: 8px; }
   }
 }
+
+/* ===== Tạo ảnh bằng AI trong Thư viện ảnh ===== */
+@layer app {
+  .ml-ai { display: flex; flex-direction: column; gap: 12px; padding-bottom: 8px; }
+  .ml-ai-note { font-size: 13px; line-height: 1.5; padding: 10px 12px; border-radius: 8px; background: var(--accent-soft); color: var(--text); }
+  .ml-ai-f { display: flex; flex-direction: column; gap: 4px; }
+  .ml-ai-f > label { font-size: 13px; font-weight: 600; }
+  .ml-ai-prompt, .ml-ai-key, .ml-ai-sel { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; box-sizing: border-box; width: 100%; min-height: 40px; }
+  .ml-ai-prompt { resize: vertical; line-height: 1.5; }
+  .ml-ai-sug { align-self: flex-start; min-height: 36px; }
+  .ml-ai-opts { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+  .ml-ai-hint { font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+  .ml-ai-hint a { color: var(--accent); text-decoration: underline; }
+  .ml-ai-go { align-self: flex-start; min-height: 44px; padding: 0 24px; font-weight: 600; }
+  .ml-ai-go[disabled] { opacity: .7; cursor: progress; }
+  .ml-ai-err { min-height: 18px; font-size: 13px; color: var(--danger); }
+  .ml-ai-skel { aspect-ratio: 4 / 3; border-radius: 10px; background: linear-gradient(90deg, var(--ground), var(--border), var(--ground)); background-size: 200% 100%; animation: ml-ai-pulse 1.2s linear infinite; }
+  @keyframes ml-ai-pulse { to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { .ml-ai-skel { animation: none; } }
+  .ml-ai-res .ml-item img { aspect-ratio: auto; max-height: 220px; object-fit: contain; }
+  @media (max-width: 560px) {
+    .ml-ai-opts { grid-template-columns: 1fr 1fr; }
+    .ml-ai-opts > :first-child { grid-column: 1 / -1; }
+    .ml-ai-go { align-self: stretch; }
+    .ml-tabs { gap: 14px; overflow-x: auto; }
+    .ml-tab { white-space: nowrap; }
+  }
+}
+
+@layer app {
+  .ml-item { position: relative; }
+  .ml-badge { position: absolute; top: 12px; left: 12px; font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; border-radius: 999px; background: var(--accent); color: var(--on-accent, #fff); box-shadow: 0 1px 3px rgba(0, 0, 0, .3); }
+}
