@@ -8,7 +8,7 @@ const SP = process.argv[2] || require('os').tmpdir();
   const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
   const errs = []; p.on('pageerror', e => errs.push(e.message));
   const log = (k, v) => console.log(k.padEnd(30), v);
-  const upload = async (sel, file) => { const [fc] = await Promise.all([p.waitForEvent('filechooser'), p.click(sel)]); await fc.setFiles(SP + '/' + file); await p.waitForFunction(() => /nén/.test(document.querySelector('#toast').textContent), null, { timeout: 30000 }); const t = await p.textContent('#toast'); await p.evaluate(() => { document.querySelector('#toast').textContent = ''; }); return t; };
+  const upload = async (sel, file) => { const [fc] = await Promise.all([p.waitForEvent('filechooser'), p.click(sel)]); await fc.setFiles(SP + '/' + file); await p.waitForFunction(() => /nén/.test(document.querySelector('#toast').textContent), null, { timeout: 30000 }); const t = await p.textContent('#toast'); if (await p.locator('dialog.ie-dialog[open]').count()) { await p.keyboard.press('Escape'); await p.waitForFunction(() => !document.querySelector('dialog.ie-dialog'), null, { timeout: 5000 }); } await p.evaluate(() => { document.querySelector('#toast').textContent = ''; }); return t; };
   const imgs = () => p.evaluate(() => { const id = JSON.parse(localStorage.ep_current_id); const ev = JSON.parse(localStorage.ep_events)[id].event; return ev.images; });
   await p.goto('http://localhost:8000/');
   log('webp supported', await p.evaluate(() => EP.images.webp));

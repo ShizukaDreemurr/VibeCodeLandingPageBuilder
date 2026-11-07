@@ -11,8 +11,11 @@
   // w, h (null = giữ tỉ lệ), quality: chất lượng khởi đầu, max: trần dung lượng, alpha: giữ nền trong suốt
   var SLOTS = {
     hero: { w: 1600, h: null, quality: 0.82, max: 320000 },
+    og: { w: 1200, h: 630, quality: 0.82, max: 200000 },
     avatar: { w: 320, h: 320, quality: 0.85, max: 40000 },
     gallery: { w: 1000, h: null, quality: 0.8, max: 150000 },
+    about: { w: 1200, h: 900, quality: 0.82, max: 200000 },
+    offer: { w: 600, h: 600, quality: 0.85, max: 80000 },
     logo: { w: 480, h: null, quality: 0.9, max: 60000, alpha: true }
   };
   var MIN_QUALITY = 0.42, MIN_WIDTH = 120;
@@ -22,16 +25,28 @@
     try { var c = document.createElement('canvas'); c.width = c.height = 1; return c.toDataURL('image/webp').indexOf('data:image/webp') === 0; } catch (e) { return false; }
   })();
 
-  function pickFile() {
+  function checkFile(file) {
+    if (!file) return new Error('Chưa chọn ảnh.');
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return new Error('Chỉ nhận ảnh JPG, PNG hoặc WebP.');
+    if (file.size > MAX_INPUT_BYTES) return new Error('Ảnh quá lớn (tối đa 25MB).');
+    return null;
+  }
+  // Mở Thư viện ảnh dùng chung (EP.media); không có thì quay về hộp chọn tệp của trình duyệt
+  function pickFile(slot) {
+    if (root.EP && root.EP.media) {
+      return root.EP.media.open({ slot: slot }).then(function (file) {
+        var err = checkFile(file);
+        if (err) throw err;
+        return file;
+      });
+    }
     return new Promise(function (resolve, reject) {
       var input = document.createElement('input');
       input.type = 'file';
       input.accept = 'image/jpeg,image/png,image/webp';
       input.addEventListener('change', function () {
-        var file = input.files && input.files[0];
-        if (!file) return reject(new Error('Chưa chọn ảnh.'));
-        if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return reject(new Error('Chỉ nhận ảnh JPG, PNG hoặc WebP.'));
-        if (file.size > MAX_INPUT_BYTES) return reject(new Error('Ảnh quá lớn (tối đa 25MB).'));
+        var file = input.files && input.files[0], err = checkFile(file);
+        if (err) return reject(err);
         resolve(file);
       });
       input.click();
@@ -95,18 +110,45 @@
     return { data: best, width: width };
   }
 
+  // Nén một canvas đã dựng sẵn (từ trình chỉnh ảnh) xuống ≤ max: hạ chất lượng, chưa đủ thì thu nhỏ 85%
+  function compressCanvas(canvas, slot, max) {
+    var cfg = typeof slot === 'string' ? (SLOTS[slot] || SLOTS.hero) : (slot || SLOTS.hero);
+    max = max || cfg.max;
+    var lossy = WEBP || !cfg.alpha;
+    var cur = canvas, best = null;
+    for (var round = 0; round < 12; round++) {
+      var q = cfg.quality;
+      while (true) {
+        var out = encode(cur, cfg, q);
+        if (!best || out.length < best.length) best = out;
+        if (out.length <= max) return { data: out, width: cur.width, height: cur.height };
+        if (!lossy || q <= MIN_QUALITY) break;
+        q = Math.max(MIN_QUALITY, q - 0.08);
+      }
+      if (cur.width <= MIN_WIDTH) break;
+      var next = document.createElement('canvas');
+      next.width = Math.max(MIN_WIDTH, Math.round(cur.width * 0.85));
+      next.height = Math.max(1, Math.round(cur.height * next.width / cur.width));
+      var nctx = next.getContext('2d');
+      nctx.imageSmoothingQuality = 'high';
+      nctx.drawImage(cur, 0, 0, next.width, next.height);
+      cur = next;
+    }
+    return { data: best, width: cur.width, height: cur.height };
+  }
+
   var lastInfo = null;
   // Chọn ảnh từ máy → cắt, thu nhỏ, nén cho vừa trần của loại ảnh. Trả về dataURL
-  function pick(slot) {
-    var cfg = SLOTS[slot] || SLOTS.hero;
-    return pickFile().then(function (file) {
-      return loadImage(file).then(function (img) {
-        var r = compress(img, cfg, cfg.max);
-        lastInfo = { slot: slot, before: file.size, after: Math.round(r.data.length * 0.75), width: r.width };
-        return r.data;
-      });
+  function fromFile(file, slot) {
+    var cfg = SLOTS[slot] || SLOTS.hero, err = checkFile(file);
+    if (err) return Promise.reject(err);
+    return loadImage(file).then(function (img) {
+      var r = compress(img, cfg, cfg.max);
+      lastInfo = { slot: slot, before: file.size, after: Math.round(r.data.length * 0.75), width: r.width };
+      return r.data;
     });
   }
+  function pick(slot) { return pickFile(slot).then(function (file) { return fromFile(file, slot); }); }
 
   // Nén lại một ảnh đã có (dataURL) xuống ≤ max byte
   function recompress(dataUrl, slot, max) {
@@ -115,7 +157,7 @@
   }
 
   // Tổng ảnh vượt budget → nén ảnh nặng nhất xuống ~70% (lặp lại) cho tới khi vừa.
-  // images: { hero, speakers: {i: url}, gallery: [url] }. Trả về { images (bản sao), count (số ảnh đã nén), fits }
+  // images: { hero, about, offer, speakers: {i: url}, gallery: [url] }. Trả về { images (bản sao), count (số ảnh đã nén), fits }
   function shrinkToFit(images, budget) {
     var copy = JSON.parse(JSON.stringify(images || {}));
     var touched = {};
@@ -123,6 +165,8 @@
       var out = [];
       if (copy.hero) out.push({ get: function () { return copy.hero; }, set: function (v) { copy.hero = v; }, slot: 'hero', id: 'hero' });
       Object.keys(copy.speakers || {}).forEach(function (k) { if (copy.speakers[k]) out.push({ get: function () { return copy.speakers[k]; }, set: function (v) { copy.speakers[k] = v; }, slot: 'avatar', id: 's' + k }); });
+      if (copy.about) out.push({ get: function () { return copy.about; }, set: function (v) { copy.about = v; }, slot: 'about', id: 'about' });
+      if (copy.offer) out.push({ get: function () { return copy.offer; }, set: function (v) { copy.offer = v; }, slot: 'offer', id: 'offer' });
       (copy.gallery || []).forEach(function (u, i) { if (u) out.push({ get: function () { return copy.gallery[i]; }, set: function (v) { copy.gallery[i] = v; }, slot: 'gallery', id: 'g' + i }); });
       return out;
     }
@@ -154,7 +198,7 @@
 
   root.EP = root.EP || {};
   root.EP.images = {
-    pick: pick, recompress: recompress, shrinkToFit: shrinkToFit, totalBytes: totalBytes, SLOTS: SLOTS, webp: WEBP,
+    pick: pick, fromFile: fromFile, recompress: recompress, compressCanvas: compressCanvas, load: loadFrom, shrinkToFit: shrinkToFit, totalBytes: totalBytes, SLOTS: SLOTS, webp: WEBP,
     lastInfo: function () { return lastInfo; }
   };
 })(window);

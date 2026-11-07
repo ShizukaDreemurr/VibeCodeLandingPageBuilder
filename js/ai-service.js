@@ -61,9 +61,9 @@
     var speakers = (ev.speakers || []).map(function (s) {
       return '- ' + s.name + (s.title ? ' (' + s.title + ')' : '');
     }).join('\n');
-    if (ev.templateId === 'wedding') {
+    if (root.EP.templates && root.EP.templates.get(ev.templateId).wedding) {
       return [
-        'Bạn là người viết lời mời cưới tinh tế, ấm áp bằng tiếng Việt.',
+        'Bạn là người viết lời mời cưới bằng tiếng Việt, giọng ấm áp, chân thành, như người trong nhà.',
         'Viết nội dung cho thiệp cưới online dưới đây.',
         '',
         'THÔNG TIN',
@@ -85,22 +85,33 @@
       ]).join('\n');
     }
     return [
-      'Bạn là copywriter marketing sự kiện tại Việt Nam.',
+      'Bạn là copywriter người Việt cấp cao, hơn 10 năm viết landing page sự kiện cho các thương hiệu F&B, giáo dục, làm đẹp và công nghệ.',
+      'Bạn viết như một marketer thật: cụ thể, ấm, ngắn gọn, nói chuyện với một người bạn đang cân nhắc có đi hay không. Không viết như quảng cáo máy móc.',
       'Viết nội dung cho landing page sự kiện dưới đây, giọng văn ' + (TONE_TEXT[tone] || TONE_TEXT.formal) + '.',
       '',
       'THÔNG TIN SỰ KIỆN',
       'Tên: ' + ev.name,
       'Thời gian: ' + formatDate(ev.startAt),
       'Địa điểm: ' + ev.location,
+      'Sức chứa: ' + (ev.capacity ? ev.capacity + ' chỗ' : 'không rõ'),
       'Diễn giả:\n' + (speakers || '- (chưa có)'),
       'Ưu đãi đăng ký sớm: ' + (ev.earlyBird || 'không có'),
     ].concat(brandBlock(ev), [
       '',
+      'KHUNG COPYWRITING BẮT BUỘC',
+      '- Cấu trúc mô tả theo AIDA hoặc PAS: mở bằng nỗi băn khoăn/mong muốn của người đọc, nêu sự kiện giải quyết nó thế nào, kết bằng một lời mời hành động.',
+      '- Headline theo 4U: Useful (có ích), Urgent (có lý do làm ngay), Unique (khác biệt), Ultra-specific (con số/chi tiết cụ thể lấy từ dữ liệu trên).',
+      '- Benefits theo FAB: đặc điểm → lợi thế → kết quả người tham dự nhận được. Viết thành KẾT QUẢ và CẢM GIÁC cụ thể, không liệt kê tính năng. Dùng chi tiết thật từ dữ liệu (tên diễn giả, địa điểm, con số, ưu đãi). Nếu là F&B, dùng ngôn ngữ giác quan (mùi, vị, âm thanh, cảm giác).',
+      '- Dùng bằng chứng xã hội/uy tín có trong dữ liệu (chức danh diễn giả, số năm kinh nghiệm). Chỉ nhắc khan hiếm/gấp rút khi gắn với sức chứa hoặc hạn ưu đãi THẬT ở trên.',
+      '- Chỉ một lời kêu gọi hành động duy nhất: đăng ký.',
+      '',
       'YÊU CẦU',
-      '1. headline: tối đa 90 ký tự, nêu giá trị chính của sự kiện.',
-      '2. description: 2–3 câu, tối đa 350 ký tự.',
-      '3. benefits: đúng 3 lợi ích khi tham dự, mỗi ý tối đa 110 ký tự, theo thứ tự: giá trị cốt lõi, tính ứng dụng, giảm rủi ro/công sức.',
-      '4. Chỉ dùng thông tin đã cho. KHÔNG bịa thêm ngày giờ, địa điểm, giá vé, số liệu hay tên người.',
+      '1. headline: tối đa 12 từ và 90 ký tự, theo 4U, đọc như người viết.',
+      '2. description: 2–3 câu ngắn, tối đa 350 ký tự, gọi người đọc là "bạn".',
+      '3. benefits: đúng 3 ý, mỗi ý tối đa 110 ký tự, theo thứ tự: kết quả cốt lõi, kết quả áp dụng/cảm nhận cụ thể, giảm rủi ro hoặc công sức (đăng ký nhanh, không cần chuẩn bị...). Mỗi ý bắt đầu bằng động từ hoặc kết quả, không bắt đầu bằng "Được".',
+      '4. CẤM các từ và kiểu sáo rỗng: "đẳng cấp", "tinh tế", "nâng tầm", "trải nghiệm tuyệt vời", "không thể bỏ lỡ", "hành trình", "khám phá", "độc quyền", "bùng nổ", "đột phá", "hàng đầu", emoji, nhiều dấu chấm than, và tiêu đề kiểu "Tên sự kiện: khẩu hiệu chung chung".',
+      '5. Câu ngắn, tiếng Việt tự nhiên, nói như người thật. Không dịch word-by-word từ tiếng Anh.',
+      '6. Chỉ dùng thông tin đã cho. KHÔNG bịa thêm ngày giờ, địa điểm, giá vé, số liệu, giải thưởng, thành tích hay tên người. Thiếu dữ kiện thì viết khéo quanh những gì có.',
       '',
       'Chỉ trả về đúng một khối JSON, không giải thích, không markdown:',
       '{"headline": "...", "description": "...", "benefits": ["...", "...", "..."]}'
@@ -138,13 +149,13 @@
     var description = obj.description || obj.desc || obj.mo_ta;
     var benefits = obj.benefits || obj.loi_ich || [];
 
-    if (!headline) { warnings.push('Thiếu headline, đã dùng bản mô phỏng.'); headline = fallback.headline; }
-    if (!description) { warnings.push('Thiếu mô tả, đã dùng bản mô phỏng.'); description = fallback.description; }
+    if (!headline) { warnings.push('Bản demo vòng loại - Dữ liệu mô phỏng AI: thiếu headline, đã dùng bản thay thế.'); headline = fallback.headline; }
+    if (!description) { warnings.push('Bản demo vòng loại - Dữ liệu mô phỏng AI: thiếu mô tả, đã dùng bản thay thế.'); description = fallback.description; }
     if (!Array.isArray(benefits)) benefits = [benefits];
     benefits = benefits.filter(Boolean).map(String);
     if (benefits.length > 3) { warnings.push('AI trả về ' + benefits.length + ' lợi ích, chỉ giữ 3 ý đầu.'); }
     while (benefits.length < 3) {
-      warnings.push('Thiếu lợi ích số ' + (benefits.length + 1) + ', đã bù bằng bản mô phỏng.');
+      warnings.push('Bản demo vòng loại - Dữ liệu mô phỏng AI: thiếu lợi ích số ' + (benefits.length + 1) + ', đã bù bằng bản thay thế.');
       benefits.push(fallback.benefits[benefits.length]);
     }
     return {
@@ -163,17 +174,19 @@
   }
 
   // Gọi Gemini thật. Lỗi được dịch sang thông báo dễ hiểu, không lộ khoá API.
-  function callGemini(apiKey, model, prompt) {
+  function callGemini(apiKey, model, prompt, opts) {
+    opts = opts || {};
+    var parts = typeof prompt === 'string' ? [{ text: prompt }] : prompt;
     var info = modelInfo(model);
-    var limit = info && info.tier === 'slow' ? 180000 : TIMEOUT_MS;
+    var limit = opts.timeout || (info && info.tier === 'slow' ? 180000 : TIMEOUT_MS);
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = controller && setTimeout(function () { controller.abort(); }, limit);
     return fetch(GEMINI_URL.replace('{model}', encodeURIComponent(model)), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.8, responseMimeType: 'application/json' }
+        contents: [{ parts: parts }],
+        generationConfig: { temperature: opts.temperature == null ? 0.8 : opts.temperature, responseMimeType: 'application/json' }
       }),
       signal: controller ? controller.signal : undefined
     }).then(function (res) {
@@ -204,10 +217,10 @@
 
   // Gọi model đã chọn; lỗi do model (hết lượt, cần trả phí, quá lâu, máy chủ lỗi) thì tự chuyển model nhanh.
   // Lỗi key / mất mạng thì báo luôn. onSwitch(model, lý do) để app báo cho người dùng.
-  function generate(apiKey, model, prompt, onSwitch) {
+  function generate(apiKey, model, prompt, onSwitch, opts) {
     var tried = [model];
     function attempt(m) {
-      return callGemini(apiKey, m, prompt).then(function (text) { return { text: text, model: m }; }, function (e) {
+      return callGemini(apiKey, m, prompt, opts).then(function (text) { return { text: text, model: m }; }, function (e) {
         if (e.kind === 'key' || e.kind === 'network') throw e;
         var next = FALLBACKS.filter(function (f) { return tried.indexOf(f) < 0; })[0];
         if (!next) throw e;

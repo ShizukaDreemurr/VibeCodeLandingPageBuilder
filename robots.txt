@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/sitemap.xml

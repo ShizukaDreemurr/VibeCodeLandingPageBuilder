@@ -15,9 +15,13 @@
     var de = document.documentElement;
     if (reduced() || !document.startViewTransition) { update(); return; }
     if (kind) de.setAttribute('data-vt', kind);
-    var t = document.startViewTransition(update);
-    t.finished.then(function () { de.removeAttribute('data-vt'); }, function () { de.removeAttribute('data-vt'); });
+    var t;
+    try { t = document.startViewTransition(update); } catch (e) { de.removeAttribute('data-vt'); update(); return; }
+    var clean = function () { if (activeVT !== t) return; activeVT = null; de.removeAttribute('data-vt'); };
+    activeVT = t;
+    t.finished.then(clean, clean);
   }
+  var activeVT = null;
 
   // FLIP: ghi vị trí các phần tử, đổi bố cục, rồi trượt từ chỗ cũ sang chỗ mới
   function flipRecord(nodes) {
@@ -109,6 +113,59 @@
     bar.style.transform = 'translateX(' + act.offsetLeft + 'px)';
   }
 
+  // ---------- Giao diện sáng/tối: MỘT hàm dùng chung cho mọi nút (thanh trên, Reels, bảng lệnh) ----------
+  // Hiệu ứng: vòng tròn loang ra từ nút vừa bấm (View Transitions); không hỗ trợ / giảm chuyển động thì đổi ngay.
+  var THEME_L = { system: 'Theo hệ thống', light: 'Sáng', dark: 'Tối' }, THEME_NEXT = { system: 'light', light: 'dark', dark: 'system' };
+  function themeGet() { try { var t = localStorage.getItem('ep_theme'); return t === 'light' || t === 'dark' ? t : 'system'; } catch (e) { return 'system'; } }
+  function themeIsDark() {
+    var a = document.documentElement.getAttribute('data-theme');
+    if (a) return a === 'dark';
+    return !!(root.matchMedia && root.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  function themeApply(m) {
+    var de = document.documentElement;
+    if (m === 'system') de.removeAttribute('data-theme'); else de.setAttribute('data-theme', m);
+    var b = document.getElementById('btn-theme');
+    if (b) { b.dataset.mode = m; var t = 'Giao diện: ' + THEME_L[m]; b.title = t; b.setAttribute('aria-label', t + '. Bấm để đổi'); }
+  }
+  function themeSet(mode, origin) {
+    if (mode !== 'light' && mode !== 'dark') mode = 'system';
+    try { if (mode === 'system') localStorage.removeItem('ep_theme'); else localStorage.setItem('ep_theme', mode); } catch (e) { /* bỏ qua */ }
+    var de = document.documentElement;
+    if (!document.startViewTransition || reduced()) { themeApply(mode); return; }
+    // Chuyển cảnh thật sự đang chạy (tab/thiết bị/giao diện) thì bỏ qua nó; mỗi chuyển cảnh có "thẻ" riêng để dọn đúng phần của mình
+    if (activeVT) { try { activeVT.skipTransition(); } catch (e) { /* bỏ qua */ } activeVT = null; }
+    // Toạ độ tâm nút theo viewport bố cục (cùng hệ với ảnh chụp chuyển cảnh); bán kính lấy kích thước lớn nhất có thể (thanh địa chỉ Android co/giãn, zoom)
+    var vv = root.visualViewport, r = origin && origin.getBoundingClientRect ? origin.getBoundingClientRect() : null;
+    var w = Math.max(root.innerWidth || 0, de.clientWidth || 0, vv ? vv.width + vv.offsetLeft : 0);
+    var h = Math.max(root.innerHeight || 0, de.clientHeight || 0, vv ? vv.height + vv.offsetTop : 0);
+    var hasR = r && (r.width || r.height);
+    var x = hasR ? r.left + r.width / 2 : w / 2, y = hasR ? r.top + r.height / 2 : 0;
+    var rad = Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y))) + 2;
+    de.setAttribute('data-vt', 'theme');
+    var t;
+    var done = function () {
+      if (activeVT !== t && activeVT) return; // đã có chuyển cảnh mới hơn: để nó tự dọn
+      if (activeVT === t) activeVT = null;
+      de.removeAttribute('data-vt');
+    };
+    try { t = document.startViewTransition(function () { themeApply(mode); }); } catch (e) { activeVT = null; done(); themeApply(mode); return; }
+    activeVT = t;
+    // Chạy vòng tròn bằng Web Animations: không phụ thuộc selector CSS/data-vt nên không thể "mất" hiệu ứng
+    t.ready.then(function () {
+      try {
+        de.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + rad + 'px at ' + x + 'px ' + y + 'px)'] },
+          { duration: 550, easing: 'ease-in-out', fill: 'both', pseudoElement: '::view-transition-new(root)' });
+      } catch (e) { /* bỏ qua */ }
+    }, function () { /* bị bỏ qua */ });
+    t.finished.then(done, done);
+  }
   root.EP = root.EP || {};
+  root.EP.theme = {
+    get: themeGet, isDark: themeIsDark, set: themeSet, apply: themeApply,
+    cycle: function (origin) { themeSet(THEME_NEXT[themeGet()], origin); },
+    toggle: function (origin) { themeSet(themeIsDark() ? 'light' : 'dark', origin); }
+  };
+
   root.EP.motion = { reduce: reduced, pref: function () { return pref; }, setPref: setPref, transition: transition, flipRecord: flipRecord, flipPlay: flipPlay, stagger: stagger, replay: replay, countUp: countUp, collapse: collapse, morph: morph, indicator: indicator };
 })(typeof window !== 'undefined' ? window : globalThis);

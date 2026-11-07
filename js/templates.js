@@ -5,9 +5,20 @@
  */
 (function (root) {
   var FILTERS = {
-    industry: { label: 'Ngành nghề', options: { tech: 'Công nghệ', education: 'Giáo dục', beauty: 'Làm đẹp / Spa', fnb: 'F&B', finance: 'Tài chính', personal: 'Sự kiện cá nhân' } },
-    type: { label: 'Loại sự kiện', options: { workshop: 'Workshop', seminar: 'Hội thảo', webinar: 'Webinar', opening: 'Khai trương', launch: 'Ra mắt sản phẩm', wedding: 'Đám cưới' } },
-    goal: { label: 'Mục đích', options: { lead: 'Thu lead', enroll: 'Tuyển sinh', sales: 'Bán hàng', brand: 'Thương hiệu', gratitude: 'Tri ân / mời khách' } }
+    industry: { label: 'Ngành nghề', options: { tech: 'Công nghệ', education: 'Giáo dục', beauty: 'Làm đẹp / Spa', fnb: 'F&B', finance: 'Tài chính', personal: 'Sự kiện cá nhân',
+      health: 'Sức khoẻ / Thể thao', realestate: 'Bất động sản', travel: 'Du lịch / Khách sạn', entertainment: 'Âm nhạc / Giải trí', community: 'Cộng đồng / Phi lợi nhuận',
+      retail: 'Thời trang / Bán lẻ', art: 'Nghệ thuật / Sáng tạo', corporate: 'Doanh nghiệp / Nhân sự' } },
+    type: { label: 'Loại sự kiện', options: { workshop: 'Workshop', seminar: 'Hội thảo', webinar: 'Webinar', opening: 'Khai trương', launch: 'Ra mắt sản phẩm', wedding: 'Đám cưới',
+      concert: 'Hoà nhạc / Show', exhibition: 'Triển lãm / Hội chợ', networking: 'Networking / Meetup', training: 'Khoá học / Đào tạo', party: 'Tiệc / Gala',
+      sports: 'Giải đấu / Chạy bộ', charity: 'Thiện nguyện / Gây quỹ', tour: 'Tour / Trải nghiệm', birthday: 'Sinh nhật / Kỷ niệm' } },
+    goal: { label: 'Mục đích', options: { lead: 'Thu lead', enroll: 'Tuyển sinh', sales: 'Bán hàng', brand: 'Thương hiệu', gratitude: 'Tri ân / mời khách',
+      community: 'Kết nối cộng đồng', recruit: 'Tuyển dụng', fundraise: 'Gây quỹ' } },
+    // Bộ lọc nâng cao (theo báo cáo Deep Research): gắn nhãn ở tools/extra-tags.json
+    scale: { label: 'Quy mô', advanced: true, options: { intimate: 'Thân mật (< 50 người)', medium: 'Vừa (50–200)', large: 'Lớn (200–1.000)', mass: 'Đại chúng (> 1.000)' } },
+    format: { label: 'Hình thức', advanced: true, options: { offline: 'Trực tiếp', online: 'Trực tuyến', hybrid: 'Kết hợp' } },
+    cost: { label: 'Chi phí tham dự', advanced: true, options: { free: 'Miễn phí', paid: 'Bán vé / có phí', donation: 'Quyên góp' } },
+    audience: { label: 'Đối tượng khách', advanced: true, options: { b2b: 'Doanh nghiệp (B2B)', b2c: 'Khách tiêu dùng (B2C)', genz: 'Giới trẻ / Gen Z', family: 'Gia đình & trẻ em' } },
+    season: { label: 'Mùa / dịp lễ', advanced: true, options: { tet: 'Tết & khai xuân', wedding_season: 'Mùa cưới', summer_enroll: 'Mùa hè & tuyển sinh', year_end: 'Cuối năm & Black Friday', midautumn: 'Trung thu', holiday: 'Ngày lễ khác (8/3, 20/10, 1/6…)' } }
   };
 
   var DEFAULT_LABELS = {
@@ -33,6 +44,7 @@
   var TEMPLATES = [
     {
       id: 'tech',
+      art: { motif: 'circuit', variant: 0 },
       name: 'Tech Workshop',
       tags: { industry: ['tech'], type: ['workshop', 'seminar'], goal: ['lead', 'brand'] },
       theme: { primary: '#1e2a78', accent: '#d6336c', surface: '#f4f5fb', bg: '#ffffff', text: '#16193a', muted: '#5b6078' },
@@ -47,6 +59,7 @@
     },
     {
       id: 'edu',
+      art: { motif: 'books', variant: 0 },
       name: 'Hội thảo Giáo dục',
       tags: { industry: ['education'], type: ['seminar', 'workshop'], goal: ['enroll', 'lead'] },
       theme: { primary: '#0b4f8a', accent: '#c2410c', surface: '#eef6fc', bg: '#ffffff', text: '#0f2537', muted: '#4a5a6a' },
@@ -62,6 +75,7 @@
     },
     {
       id: 'beauty',
+      art: { motif: 'petals', variant: 0 },
       name: 'Workshop Làm đẹp',
       tags: { industry: ['beauty'], type: ['workshop', 'launch'], goal: ['sales', 'lead'] },
       theme: { primary: '#9d174d', accent: '#be185d', surface: '#fdf2f8', bg: '#ffffff', text: '#3b0a20', muted: '#7a4a5e' },
@@ -77,6 +91,7 @@
     },
     {
       id: 'fnb',
+      art: { motif: 'coffee', variant: 0 },
       name: 'Khai trương Cửa hàng',
       tags: { industry: ['fnb', 'beauty'], type: ['opening', 'launch'], goal: ['sales', 'brand'] },
       theme: { primary: '#991b1b', accent: '#b45309', surface: '#fff7ed', bg: '#ffffff', text: '#3b1a0a', muted: '#6b4a3a' },
@@ -85,13 +100,34 @@
         return {
           name: 'Khai trương Mộc Coffee chi nhánh Cầu Giấy', startAt: future(7, 8), location: '25 Trần Thái Tông, Cầu Giấy, Hà Nội', capacity: 200,
           speakers: [{ name: 'Barista Minh Khôi', title: 'Quán quân Barista 2025' }],
-          agenda: [{ time: '08:00', title: 'Cắt băng khai trương' }, { time: '08:30', title: 'Mua 1 tặng 1 toàn menu' }, { time: '19:00', title: 'Đêm nhạc acoustic' }],
-          earlyBird: 'Tặng 1 ly cà phê miễn phí cho 200 khách đăng ký', earlyBirdUntil: future(6, 23)
+          agenda: [{ time: '08:00', title: 'Cắt băng và mời ly đầu tiên trong ngày' }, { time: '08:30', title: 'Mua 1 tặng 1 toàn menu đến 11:00' }, { time: '19:00', title: 'Nhạc acoustic bên ly cà phê cuối ngày' }],
+          earlyBird: 'Mời 1 ly signature miễn phí cho 200 khách đăng ký đầu tiên', earlyBirdUntil: future(6, 23)
+        };
+      }
+    },
+    {
+      id: 'moc-coffee',
+      art: { motif: 'coffee', variant: 0 },
+      name: 'Khai trương quán cà phê (Mộc)',
+      tags: { industry: ['fnb'], type: ['opening'], goal: ['sales', 'brand'] },
+      theme: { primary: '#5b3a29', accent: '#b45309', surface: '#fff7ed', bg: '#fffaf3', text: '#2d1b12', muted: '#6b4a3a' },
+      labels: { countdown: 'Đếm ngược đến giờ khai trương', speakers: 'Khách mời đặc biệt', agenda: 'Lịch trình khai trương', offer: 'Quà tặng khai trương', submit: 'Đăng ký nhận quà' },
+      // Mẫu đầy đủ ảnh + nội dung: lấy từ trang demo Mộc Coffee (js/demo-data.js), chỉ đổi ngày theo thời điểm hiện tại
+      sample: function () {
+        var d = root.EP && root.EP.demo && root.EP.demo.templateSample && root.EP.demo.templateSample('coffee');
+        if (!d) return { name: 'Khai trương Mộc Coffee Hồ Tây', startAt: future(25, 8), location: '25 Quảng An, Tây Hồ, Hà Nội', capacity: 200, speakers: [], agenda: [], earlyBird: '', earlyBirdUntil: '' };
+        var e = d.event;
+        return {
+          name: e.name, startAt: future(25, 8), location: e.location, capacity: e.capacity,
+          speakers: e.speakers.slice(), agenda: e.agenda.slice(), earlyBird: e.earlyBird, earlyBirdUntil: future(23, 23),
+          images: e.images, texts: e.texts, rich: e.rich, blocks: e.blocks, sections: e.sections, seo: e.seo, style: e.style, brand: e.brand,
+          content: d.content
         };
       }
     },
     {
       id: 'finance',
+      art: { motif: 'chart', variant: 0 },
       name: 'Webinar Tài chính',
       tags: { industry: ['finance'], type: ['webinar', 'seminar'], goal: ['lead', 'brand'] },
       theme: { primary: '#065f46', accent: '#0369a1', surface: '#ecfdf5', bg: '#ffffff', text: '#0b2e24', muted: '#46635a' },
@@ -107,6 +143,7 @@
     },
     {
       id: 'wedding',
+      art: { motif: 'rings', variant: 0 },
       name: 'Thiệp cưới Online',
       wedding: true,
       tags: { industry: ['personal'], type: ['wedding'], goal: ['gratitude'] },
@@ -127,6 +164,31 @@
       }
     }
   ];
+
+  // 50 mẫu bổ sung (js/templates-data.js, sinh từ tools/templates.json bằng tools/build-templates.cjs)
+  (root.EP && root.EP.templateData || []).forEach(function (d) {
+    if (TEMPLATES.some(function (t) { return t.id === d.id; })) return;
+    var smp = d.sample;
+    TEMPLATES.push({
+      id: d.id, name: d.name, tags: d.tags, theme: d.theme, labels: d.labels, wedding: !!d.wedding, art: d.art,
+      sample: function () {
+        return {
+          name: smp.name, startAt: future(smp.startDays, smp.startHour), location: smp.location, capacity: smp.capacity,
+          speakers: smp.speakers.slice(), agenda: smp.agenda.slice(), earlyBird: smp.earlyBird,
+          earlyBirdUntil: smp.earlyBirdDays == null ? '' : future(smp.earlyBirdDays, 23),
+          studioName: smp.studioName || '', studioUrl: smp.studioUrl || ''
+        };
+      }
+    });
+  });
+  // Ảnh nền mặc định (vẽ sẵn, tools/make-art.cjs) và ảnh đại diện = ảnh chụp phần đầu trang (tools/make-thumbs.cjs)
+  var EXTRA = (root.EP && root.EP.templateTags) || {};
+  TEMPLATES.forEach(function (t) {
+    var x = EXTRA[t.id] || {};
+    ['scale', 'format', 'cost', 'audience', 'season'].forEach(function (k) { t.tags[k] = (x[k] || []).slice(); });
+    t.hero = 'assets/templates/' + t.id + '.svg';
+    t.thumb = 'assets/templates/' + t.id + '-thumb.jpg';
+  });
 
   function get(id) {
     return TEMPLATES.find(function (t) { return t.id === id; }) || TEMPLATES[0];

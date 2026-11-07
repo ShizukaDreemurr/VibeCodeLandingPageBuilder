@@ -3,34 +3,119 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Xclipse – Tạo landing page sự kiện trong 5 phút</title>
+  <title>Xclipse – Tạo landing page sự kiện trong 5 phút bằng AI</title>
+  <meta name="description" content="Xclipse giúp bạn tạo landing page sự kiện bằng AI: nhập thông tin, nhận trang đăng ký có đếm ngược, mã QR và danh sách khách. Miễn phí, dùng thử ngay!">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/">
+  <meta name="theme-color" content="#131416">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Xclipse">
+  <meta property="og:title" content="Xclipse – Tạo landing page sự kiện trong 5 phút bằng AI">
+  <meta property="og:description" content="Xclipse giúp bạn tạo landing page sự kiện bằng AI: nhập thông tin, nhận trang đăng ký có đếm ngược, mã QR và danh sách khách. Miễn phí, dùng thử ngay!">
+  <meta property="og:url" content="https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/">
+  <meta property="og:image" content="https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Xclipse – tạo landing page sự kiện bằng AI">
+  <meta property="og:locale" content="vi_VN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Xclipse – Tạo landing page sự kiện trong 5 phút bằng AI">
+  <meta name="twitter:description" content="Xclipse giúp bạn tạo landing page sự kiện bằng AI: nhập thông tin, nhận trang đăng ký có đếm ngược, mã QR và danh sách khách. Miễn phí, dùng thử ngay!">
+  <meta name="twitter:image" content="https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/og-image.jpg">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Xclipse", "url": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "inLanguage": "vi", "description": "Xclipse giúp bạn tạo landing page sự kiện bằng AI: nhập thông tin, nhận trang đăng ký có đếm ngược, mã QR và danh sách khách. Miễn phí, dùng thử ngay!", "image": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/og-image.jpg", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "VND"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Xclipse", "url": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/", "logo": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/apple-touch-icon.png"}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Xclipse", "url": "https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/", "inLanguage": "vi"}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;700;800&family=Nunito:wght@400;600;800&family=Lora:wght@500;700&display=swap">
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/app.css">
-  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/tokens.css?v=2.10.0">
+  <link rel="stylesheet" href="css/app.css?v=2.10.0">
+  <link rel="stylesheet" href="css/landing.css?v=2.10.0">
+  <script>/* áp theme đã chọn trước khi vẽ (không chọn = theo hệ thống) */
+(function(d){try{var t=localStorage.getItem('ep_theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t);}catch(e){}})(document.documentElement);</script>
+  <script>/* chọn tab đầu trước khi vẽ: link chia sẻ ẩn app; người từng đăng nhập vào thẳng "Sự kiện của tôi" */
+  (function(d){try{if(/[?&]e=/.test(location.search))d.className+=' boot-public';else if(localStorage.getItem('ep_signed_in')==='1')d.className+=' boot-events';}catch(e){}})(document.documentElement);</script>
+  <style>.boot-public .topbar,.boot-public .app-footer,.boot-public .skip-link,.boot-public main.view,.boot-events #view-templates{display:none!important}</style>
 </head>
 <body>
+  <a class="skip-link" href="#view-builder" id="skip-link">Bỏ qua, tới nội dung chính</a>
   <header class="topbar">
     <a class="brand" href="./" aria-label="Xclipse – trang chủ">
-      <svg class="brand-mark" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15.5" cy="10" r="7" fill="var(--accent)"/></svg>
-      <span>Xclipse</span>
+      <span class="brand-mark brand-orb" aria-hidden="true"></span>
+      <span class="brand-name">Xclipse</span><span class="brand-sub">Landing Builder</span>
     </a>
     <nav class="tabs" role="tablist">
+      <button type="button" class="tab is-active" data-tab="templates" role="tab" aria-selected="true">Thư viện mẫu</button>
       <button type="button" class="tab" data-tab="events" role="tab" aria-selected="false">Sự kiện của tôi</button>
-      <button type="button" class="tab is-active" data-tab="builder" role="tab" aria-selected="true">Thông tin &amp; nội dung</button>
+      <button type="button" class="tab" data-tab="builder" role="tab" aria-selected="false">Thông tin &amp; nội dung</button>
       <button type="button" class="tab" data-tab="editor" role="tab" aria-selected="false">Thiết kế trang</button>
       <button type="button" class="tab" data-tab="admin" role="tab" aria-selected="false">Danh sách đăng ký</button>
       <button type="button" class="tab" data-tab="brand" role="tab" aria-selected="false">Brand DNA</button>
     </nav>
     <span class="user-email" id="user-email" hidden></span>
     <button type="button" class="btn btn-ghost" id="btn-auth" hidden>Đăng nhập Google</button>
+    <button type="button" class="btn btn-ghost theme-toggle" id="btn-theme" data-mode="system" title="Giao diện: Theo hệ thống" aria-label="Giao diện: Theo hệ thống. Bấm để đổi">
+      <svg class="ic ic-system" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+      <svg class="ic ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="ic ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
     <button type="button" class="btn btn-primary" id="btn-new" aria-label="Tạo trang mới"><span data-icon="plus"></span><span class="lbl">Tạo trang mới</span></button>
   </header>
 
-  <main id="view-builder" class="workspace-form view">
+  <main id="view-templates" class="view tpl-page lt-page">
+    <!-- Bố cục chuyển thể từ Lucian UX/UI Prompt gallery (MIT © 2026 Seokwoooo) -->
+    <header class="lt-head" aria-labelledby="tpl-page-title">
+      <h1 class="lt-title" id="tpl-page-title"><span class="lt-w">Thư viện</span> <b class="lt-w">mẫu</b></h1>
+      <div class="lt-intro">
+        <p class="lt-sub" id="tpl-page-sub">Chọn một mẫu, bấm “Dùng mẫu này” và có ngay trang đăng ký có đếm ngược, mã QR, danh sách khách. Lọc theo ngành, loại sự kiện, mục đích, hoặc lướt từng mẫu toàn màn hình ở chế độ Reels.</p>
+        <p class="lt-meta"><span><b data-r="total">0</b> mẫu</span><i class="lt-dot" aria-hidden="true"></i><span data-r="meta-ind">0 ngành</span><i class="lt-dot" aria-hidden="true"></i><span>Xem trước đầy đủ</span></p>
+        <button class="lt-reel-cta" type="button" data-r="reel-cta" aria-label="Lướt xem mẫu toàn màn hình"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6l9.2-5.8z" fill="currentColor" stroke="none"/></svg><span>Lướt xem mẫu</span><em>Mới</em></button>
+      </div>
+    </header>
+    <div class="lt-bar" data-r="bar">
+      <div class="lt-bar-in">
+        <div class="lt-sets" data-r="sets" role="group" aria-label="Mục đích"><span class="lt-sets-pill" aria-hidden="true"></span></div>
+        <div class="lt-cats-wrap">
+          <nav class="lt-cats tpl-chips" data-r="chips" role="group" aria-label="Chọn nhanh theo ngành"><span class="lt-cats-pill" aria-hidden="true"></span></nav>
+        </div>
+        <div class="lt-tools">
+          <div class="lt-search tpl-search" data-r="searchbox">
+            <button class="lt-tool lt-search-btn" type="button" data-r="search-btn" aria-label="Mở ô tìm mẫu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.2 4.2"/></svg></button>
+            <input type="search" data-r="search" placeholder="Tiệc cưới, marathon, khai trương…" aria-label="Tìm mẫu" autocomplete="off">
+          </div>
+          <button class="lt-tool" type="button" data-r="filter-btn" aria-label="Bộ lọc" aria-expanded="false" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span class="lt-dotmark" aria-hidden="true"></span></button>
+          <button class="lt-tool lt-motion" type="button" data-r="motion-btn" aria-pressed="true" aria-label="Tạm dừng chuyển động"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="lt-m-play" d="M8.5 6.2v11.6l9.2-5.8z"/><path class="lt-m-pause" d="M8.5 6.5v11M15.5 6.5v11"/></svg></button>
+          <button class="lt-tool lt-tool--label" type="button" data-r="reel-btn" aria-label="Lướt từng mẫu toàn màn hình (Reels)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="17" rx="3"/><path d="M10.5 9.6v4.8l4-2.4z" fill="currentColor" stroke="none"/></svg><span>Reels</span></button>
+          <button class="lt-tool lt-theme" type="button" data-r="theme-btn" aria-label="Đổi giao diện"><svg viewBox="0 0 24 24" aria-hidden="true"><mask id="lt-moon-mask"><rect width="24" height="24" fill="#fff"/><circle class="lt-moon-cut" cx="24" cy="4" r="7" fill="#000"/></mask><circle class="lt-sun-core" cx="12" cy="12" r="5" mask="url(#lt-moon-mask)" fill="currentColor" stroke="none"/><g class="lt-sun-rays"><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="lt-panel" data-r="panel" hidden>
+      <div class="tpl-filters" data-r="filters"></div>
+    </div>
+    <div class="tpl-status lt-status">
+      <p class="tpl-count" data-r="count" role="status" aria-live="polite"></p>
+      <button type="button" class="lt-pillbtn" data-r="clear" hidden>Xoá bộ lọc</button>
+    </div>
+    <div class="tpl-results">
+      <h2 class="sr-only">Danh sách mẫu</h2>
+      <div class="tpl-pgrid" data-r="grid" aria-label="Mẫu khớp đủ"></div>
+      <details class="tpl-near" data-r="near" open hidden>
+        <summary><span data-r="near-title">Gần đúng</span></summary>
+        <div class="tpl-pgrid" data-r="grid-near"></div>
+      </details>
+      <div class="tpl-empty" data-r="empty" hidden>
+        <strong>Chưa có mẫu nào khớp</strong>
+        <p class="hint">Thử bỏ bớt một bộ lọc hoặc đổi từ khoá tìm kiếm.</p>
+        <button type="button" class="lt-pillbtn" data-r="empty-clear">Xoá bộ lọc</button>
+      </div>
+    </div>
+  </main>
+
+  <main id="view-builder" class="workspace-form view" hidden>
     <!-- BƯỚC 1: FORM NHẬP + AI -->
     <div class="title-row">
       <div>
@@ -135,6 +220,12 @@
           <button type="button" class="btn btn-ghost btn-small" id="btn-tpl">Đổi mẫu</button>
         </div>
 
+        <section class="img-card" id="img-card" aria-labelledby="img-card-title">
+          <h3 class="img-card-title" id="img-card-title">Hình ảnh</h3>
+          <p class="hint">Bấm ô hoặc kéo ảnh vào để thêm. Ảnh được tự cắt và nén cho nhẹ.</p>
+          <div data-img-host></div>
+        </section>
+
 
         <fieldset class="segmented" id="ai-mode">
           <legend class="sr-only">Chế độ AI</legend>
@@ -192,9 +283,9 @@
     <div class="editor-bar">
       <button type="button" class="icon-btn" id="btn-back-info" aria-label="Sửa thông tin &amp; nội dung" title="Sửa thông tin &amp; nội dung"><span data-icon="arrow-left"></span></button>
       <nav class="menubar" id="menubar" role="menubar" aria-label="Menu trang thiết kế"></nav>
-      <h1 id="editor-title">Thiết kế trang</h1>
+      <h2 id="editor-title">Thiết kế trang</h2>
       <span class="pill" id="editor-status">Bản nháp</span>
-      <span class="mock-note" id="mock-note" hidden>Dữ liệu AI mô phỏng</span>
+      <span class="mock-note" id="mock-note" hidden>Bản demo vòng loại - Dữ liệu mô phỏng AI</span>
       <span class="sheet-status" id="sheet-status" hidden></span>
       <div class="editor-bar-right">
         <div class="history-btns" role="group" aria-label="Hoàn tác">
@@ -252,6 +343,13 @@
       <button type="button" class="btn btn-ghost btn-small" id="btn-regenerate-2"><span data-icon="refresh"></span>AI viết lại nội dung</button>
         </div>
       </section>
+      <section class="ws-panel" data-panel="images" data-title="Hình ảnh">
+        <div class="ws-body">
+          <h2 class="panel-title">Hình ảnh</h2>
+          <p class="hint">Bấm ô hoặc kéo ảnh vào để thêm. Ảnh được tự cắt và nén cho nhẹ.</p>
+          <div data-img-host></div>
+        </div>
+      </section>
       <section class="ws-panel" data-panel="blocks" data-title="Khối">
         <div class="ws-body">
           <h2 class="panel-title">Thư viện khối</h2>
@@ -292,6 +390,55 @@
         <button type="button" class="btn btn-ghost btn-small" id="btn-export-html"><span data-icon="download"></span>Tải file HTML</button>
       </div>
       <p class="hint">File HTML chạy độc lập (mở bằng trình duyệt, đưa lên hosting bất kỳ). Đếm ngược và biến số tự chạy; nút đăng ký dẫn về trang đã xuất bản.</p>
+      <h2 class="panel-title">SEO &amp; chia sẻ</h2>
+      <p class="hint">Giúp trang hiện đẹp trên Google và khi gửi link qua Zalo, Facebook. Để trống để dùng gợi ý tự động.</p>
+      <div class="field">
+        <label for="seo-title">Tiêu đề SEO</label>
+        <input id="seo-title" type="text" autocomplete="off" aria-describedby="seo-title-count">
+        <p class="seo-count" id="seo-title-count" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for="seo-desc">Mô tả SEO</label>
+        <textarea id="seo-desc" rows="3" autocomplete="off" aria-describedby="seo-desc-count"></textarea>
+        <p class="seo-count" id="seo-desc-count" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for="seo-image">Ảnh chia sẻ (og:image)</label>
+        <input id="seo-image" type="url" inputmode="url" placeholder="https://… (khuyên dùng 1200×630)" autocomplete="off">
+        <div class="seo-row"><button type="button" class="btn btn-ghost btn-small" id="btn-seo-image"><span data-icon="image"></span>Tải ảnh lên</button><span class="seo-count" id="seo-image-note"></span></div>
+      </div>
+      <div class="field">
+        <label for="seo-og-title">Tiêu đề khi chia sẻ (og:title)</label>
+        <input id="seo-og-title" type="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="seo-og-desc">Mô tả khi chia sẻ (og:description)</label>
+        <textarea id="seo-og-desc" rows="2" autocomplete="off"></textarea>
+      </div>
+      <div class="field">
+        <label for="seo-canonical">Canonical URL</label>
+        <input id="seo-canonical" type="url" inputmode="url" placeholder="Để trống = link trang đã xuất bản" autocomplete="off">
+      </div>
+      <label class="seo-check"><input type="checkbox" id="seo-noindex"> Không cho Google lập chỉ mục (noindex)</label>
+      <p class="hint">Bot của Zalo/Facebook không chạy JavaScript nên chỉ đọc đủ thẻ ở file HTML đã tải về (thẻ được viết sẵn trong &lt;head&gt;). Ảnh tải lên chỉ hiển thị chắc chắn khi có link https công khai.</p>
+      <button type="button" class="btn btn-ghost btn-small" id="btn-seo-reset">Dùng gợi ý tự động</button>
+      <div class="seo-prev" aria-label="Xem trước kết quả Google">
+        <p class="seo-prev-label">Trên Google</p>
+        <div class="serp" id="serp-prev">
+          <p class="serp-url" id="serp-url"></p>
+          <p class="serp-title" id="serp-title"></p>
+          <p class="serp-desc" id="serp-desc"></p>
+        </div>
+        <p class="seo-prev-label">Khi chia sẻ Facebook / Zalo</p>
+        <div class="fbcard" id="fb-prev">
+          <img id="fb-img" alt="" width="1200" height="630">
+          <div class="fbcard-body">
+            <p class="fbcard-host" id="fb-host"></p>
+            <p class="fbcard-title" id="fb-title"></p>
+            <p class="fbcard-desc" id="fb-desc"></p>
+          </div>
+        </div>
+      </div>
       <h2 class="panel-title">Xem thử trạng thái</h2>
         <label class="sim-label" id="sim-wrap" hidden><span data-icon="clock"></span>
           <select id="sim-state" aria-label="Xem thử trạng thái trang">
@@ -329,6 +476,8 @@
       </div>
       <button type="button" class="btn btn-ghost" id="btn-new-2"><span data-icon="plus"></span>Tạo sự kiện mới</button>
     </div>
+    <div class="xl-dash" id="events-dash" hidden></div>
+    <div class="xl-chips xl-fbar" id="events-filter" role="group" aria-label="Lọc sự kiện" hidden></div>
     <div class="event-grid" id="event-grid"></div>
   </main>
 
@@ -340,6 +489,7 @@
       </div>
       <button type="button" class="btn btn-primary" id="btn-brand-new"><span data-icon="plus"></span>Tạo thương hiệu</button>
     </div>
+    <details class="brand-ai-wrap" id="brand-ai-wrap"><summary>Tạo Brand DNA từ tài liệu bằng AI</summary><section class="bai" id="brand-ai" aria-label="Tạo Brand DNA từ tài liệu"></section></details>
     <div class="brand-layout">
       <nav class="brand-list" id="brand-list" aria-label="Danh sách thương hiệu"></nav>
       <section class="brand-editor" id="brand-editor" aria-label="Chỉnh thương hiệu"></section>
@@ -354,23 +504,45 @@
   </main>
 
   <main id="view-admin" class="admin view" hidden>
-    <div class="title-row">
-      <div>
-        <h1 id="admin-title">Danh sách đăng ký</h1>
-        <p class="subline" id="admin-source">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
+    <section id="admin-picker" class="admin-picker" aria-label="Chọn landing page">
+      <div class="title-row">
+        <div>
+          <h1>Danh sách đăng ký</h1>
+          <p class="subline">Chọn landing page để xem số liệu và danh sách đăng ký riêng của trang đó.</p>
+        </div>
       </div>
-      <div class="actions">
-        <button type="button" class="btn btn-ghost" id="btn-export"><span data-icon="download"></span>Xuất CSV</button>
-        <button type="button" class="btn btn-danger" id="btn-clear-regs"><span data-icon="trash"></span>Xoá toàn bộ</button>
+      <div class="xl-dash" id="admin-dash" hidden></div>
+      <div class="admin-search" id="admin-search-wrap" hidden>
+        <input type="search" id="admin-search" placeholder="Tìm landing page theo tên hoặc địa điểm" aria-label="Tìm landing page">
       </div>
-    </div>
-    <div class="metric-grid" id="metric-grid"></div>
-    <div class="table-wrap">
-      <table class="table">
-        <thead><tr><th class="num">#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th class="num">Thời gian</th><th>Trạng thái</th><th>Chăm sóc</th><th>Liên hệ</th><th>Lưu ở</th></tr></thead>
-        <tbody id="admin-rows"></tbody>
-      </table>
-    </div>
+      <div id="admin-pick-list"></div>
+    </section>
+    <section id="admin-detail" class="admin-detail" hidden>
+      <button type="button" class="btn btn-ghost btn-small admin-back" id="btn-admin-back"><span data-icon="arrow-left"></span>Tất cả landing page</button>
+      <div class="title-row">
+        <div>
+          <h1 id="admin-title">Danh sách đăng ký</h1>
+          <p class="subline" id="admin-source">Dữ liệu chỉ lưu trên trình duyệt này (localStorage).</p>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="btn-export"><span data-icon="download"></span>Xuất CSV</button>
+          <button type="button" class="btn btn-danger" id="btn-clear-regs"><span data-icon="trash"></span>Xoá toàn bộ</button>
+        </div>
+      </div>
+      <div class="xl-dash" id="admin-hero"></div>
+      <div class="metric-grid" id="metric-grid"></div>
+      <div class="seg" id="admin-seg" role="group" aria-label="Chế độ xem">
+        <button type="button" class="seg-btn is-active" data-admin-view="summary" aria-pressed="true">Tóm tắt</button>
+        <button type="button" class="seg-btn" data-admin-view="list" aria-pressed="false">Danh sách</button>
+      </div>
+      <div class="ch-grid-wrap" id="admin-summary"></div>
+      <div class="table-wrap" id="admin-table" hidden>
+        <table class="table">
+          <thead><tr><th class="num">#</th><th>Họ tên</th><th>Số điện thoại</th><th>Email</th><th class="num">Thời gian</th><th>Trạng thái</th><th>Chăm sóc</th><th>Liên hệ</th><th>Lưu ở</th></tr></thead>
+          <tbody id="admin-rows"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <dialog class="tpl-dialog check-dialog" id="check-dialog" aria-labelledby="check-title">
@@ -389,8 +561,27 @@
       <button type="button" class="icon-btn" id="btn-tpl-close" aria-label="Đóng"><span data-icon="x"></span></button>
     </div>
     <p class="hint">Lọc theo ngành, loại và mục đích sự kiện. Đổi mẫu giữ nguyên nội dung đã viết.</p>
-    <div class="tpl-filters" id="tpl-filters"></div>
-    <div class="tpl-grid" id="tpl-grid"></div>
+    <div class="tpl-search">
+      <span class="tpl-search-icon" data-icon="zoom-in" aria-hidden="true"></span>
+      <input type="search" id="tpl-search" data-r="search" placeholder="Tìm mẫu: tiệc cưới, marathon, khai trương…" aria-label="Tìm mẫu" autocomplete="off">
+    </div>
+    <div class="tpl-filters" id="tpl-filters" data-r="filters"></div>
+    <div class="tpl-status">
+      <p class="tpl-count" id="tpl-count" data-r="count" role="status" aria-live="polite"></p>
+      <button type="button" class="btn btn-ghost btn-small" id="tpl-clear" data-r="clear" hidden>Xoá bộ lọc</button>
+    </div>
+    <div class="tpl-results" id="tpl-results">
+      <div class="tpl-grid" id="tpl-grid" data-r="grid" aria-label="Mẫu khớp đủ"></div>
+      <details class="tpl-near" id="tpl-near" data-r="near" open hidden>
+        <summary><span id="tpl-near-title" data-r="near-title">Gần đúng</span></summary>
+        <div class="tpl-grid" id="tpl-grid-near" data-r="grid-near"></div>
+      </details>
+      <div class="tpl-empty" id="tpl-empty" data-r="empty" hidden>
+        <strong>Chưa có mẫu nào khớp</strong>
+        <p class="hint">Thử bỏ bớt một bộ lọc hoặc đổi từ khoá tìm kiếm.</p>
+        <button type="button" class="btn btn-ghost btn-small" id="tpl-empty-clear" data-r="empty-clear">Xoá bộ lọc</button>
+      </div>
+    </div>
   </dialog>
 
   <dialog class="tpl-dialog help-dialog" id="help-dialog" aria-labelledby="help-title">
@@ -435,26 +626,44 @@
   <script src="vendor/firebase/firebase-auth-compat.js"></script>
   <script src="vendor/firebase/firebase-firestore-compat.js"></script>
   <script src="vendor/qrcode/qrcode.js"></script>
-  <script src="js/firebase-config.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/validators.js"></script>
-  <script src="js/event-status.js"></script>
-  <script src="js/registrations.js"></script>
-  <script src="js/content-generator.js"></script>
-  <script src="js/ai-service.js"></script>
-  <script src="js/sheet-sync.js"></script>
-  <script src="js/cloud.js"></script>
-  <script src="js/templates.js"></script>
-  <script src="js/images.js"></script>
-  <script src="js/brands.js"></script>
-  <script src="js/icons.js"></script>
-  <script src="js/motion.js"></script>
-  <script src="js/page-style.js"></script>
-  <script src="js/lp-utils.js"></script>
-  <script src="js/landing-renderer.js"></script>
-  <script src="js/inspector.js"></script>
-  <script src="js/workspace.js"></script>
-  <script src="js/version.js"></script>
-  <script src="js/app.js"></script>
+  <script defer src="js/firebase-config.js?v=2.10.0"></script>
+  <script defer src="js/storage.js?v=2.10.0"></script>
+  <script defer src="js/validators.js?v=2.10.0"></script>
+  <script defer src="js/event-status.js?v=2.10.0"></script>
+  <script defer src="js/registrations.js?v=2.10.0"></script>
+  <script defer src="js/content-generator.js?v=2.10.0"></script>
+  <script defer src="js/ai-service.js?v=2.10.0"></script>
+  <script defer src="js/sheet-sync.js?v=2.10.0"></script>
+  <script defer src="js/cloud.js?v=2.10.0"></script>
+  <script defer src="js/templates-data.js?v=2.10.0"></script>
+  <script defer src="js/templates.js?v=2.10.0"></script>
+  <script defer src="js/images.js?v=2.10.0"></script>
+  <script defer src="js/ai-image.js?v=2.10.0"></script>
+  <script defer src="js/media-library.js?v=2.10.0"></script>
+  <script defer src="js/image-editor.js?v=2.10.0"></script>
+  <script defer src="js/brands.js?v=2.10.0"></script>
+  <script defer src="js/brand-ai.js?v=2.10.0"></script>
+  <script defer src="js/icons.js?v=2.10.0"></script>
+  <script defer src="js/motion.js?v=2.10.0"></script>
+  <script defer src="js/page-style.js?v=2.10.0"></script>
+  <script defer src="js/lp-utils.js?v=2.10.0"></script>
+  <script defer src="js/seo.js?v=2.10.0"></script>
+  <script defer src="js/landing-renderer.js?v=2.10.0"></script>
+  <script defer src="js/inspector.js?v=2.10.0"></script>
+  <script defer src="js/workspace.js?v=2.10.0"></script>
+  <script defer src="js/version.js?v=2.10.0"></script>
+  <script defer src="js/charts.js?v=2.10.0"></script>
+  <script defer src="js/demo-data.js?v=2.10.0"></script>
+  <script defer src="js/popup.js?v=2.10.0"></script>
+  <script defer src="js/ux-lucian.js?v=2.10.0"></script>
+  <script defer src="js/ux-lucian-editor.js?v=2.10.0"></script>
+  <script defer src="js/tpl-gallery.js?v=2.10.0"></script>
+  <script defer src="js/ux-lucian-dash.js?v=2.10.0"></script>
+  <script defer src="js/app.js?v=2.10.0"></script>
+  <script defer src="js/ux-lucian-form.js?v=2.10.0"></script>
+<script>/* nút giao diện: Theo hệ thống -> Sáng -> Tối (logic + hiệu ứng ở EP.theme, js/motion.js) */
+(function(){var b=document.getElementById('btn-theme');
+b.addEventListener('click',function(){EP.theme.cycle(b);});
+document.addEventListener("DOMContentLoaded",function(){EP.theme.apply(EP.theme.get());});})();</script>
 </body>
 </html>

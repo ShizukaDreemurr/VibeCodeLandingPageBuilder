@@ -2,7 +2,7 @@
 .landing { background: var(--lp-bg); color: var(--lp-text); container-type: inline-size; }
 .lp-hero { background: var(--lp-primary); }
 .lp-eyebrow { margin: 0 0 20px; font-size: clamp(16px, 2.2cqi, 20px); line-height: 1.4; font-weight: 500; opacity: 0.88; max-width: 52ch; }
-.lp-headline { font-family: var(--lp-heading-font, inherit); margin: 0 0 16px; line-height: 1.1; letter-spacing: -0.02em; max-width: 22ch; text-wrap: balance; }
+.lp-headline { font-family: var(--lp-heading-font, inherit); margin: 0 0 16px; line-height: 1.28; letter-spacing: -0.02em; max-width: 22ch; text-wrap: balance; }
 .lp-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0 0 32px; font-size: clamp(15px, 1.8cqi, 17px); }
 .lp-meta-item { display: inline-flex; align-items: center; gap: 8px; }
 .lp-meta-item .lp-ic { opacity: 0.8; }
@@ -20,7 +20,7 @@
 .lp-badge.is-ended::before { background: currentColor; opacity: 0.5; }
 
 .lp-section { }
-.lp-section h2 { font-family: var(--lp-heading-font, inherit); margin: 0 0 24px; line-height: 1.2; text-wrap: balance; color: var(--lp-primary); }
+.lp-section h2 { font-family: var(--lp-heading-font, inherit); margin: 0 0 24px; line-height: 1.3; text-wrap: balance; color: var(--lp-primary); }
 .lp-countdown-section { text-align: center; background: var(--lp-surface); }
 .lp-countdown { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .lp-cd-box { background: var(--lp-primary); color: #fff; border-radius: var(--radius-small); padding: 10px 14px; min-width: 72px; }
@@ -51,7 +51,9 @@
 .lp-form { display: grid; gap: 4px; max-width: 480px; }
 .lp-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
 .lp-field label { font-weight: 600; font-size: 14px; }
-.lp-field input { font: inherit; padding: 10px 12px; border: 1px solid #d6d9e6; border-radius: var(--radius-small); }
+.lp-field input { font: inherit; padding: 10px 12px; border: 1px solid #d6d9e6; border-radius: var(--radius-small); background: #fff; color: #16193a; color-scheme: light; }
+.landing, dialog.lp-reg, dialog.lp-pop { color-scheme: light; }
+.lp-field input::placeholder { color: #8a8fa8; opacity: 1; }
 .lp-consent { font-size: 14px; display: flex; gap: 8px; align-items: flex-start; }
 .lp-error { margin: 0; color: #c0262d; font-size: 13px; }
 .lp-form-msg { margin: 8px 0 0; font-weight: 600; }
@@ -71,19 +73,40 @@ img.lp-avatar { object-fit: cover; }
 /* Nút đổi ảnh (chỉ hiện khi soạn) */
 .lp-img-btn { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 13px; font-weight: 600; border: 1px dashed currentColor; background: rgba(255, 255, 255, 0.9); color: #16193a; border-radius: 999px; padding: 4px 12px; cursor: pointer; }
 .lp-hero .lp-img-btn { position: absolute; top: 16px; right: 16px; }
+.lp-hero .lp-img-btn.lp-img-edit { right: auto; left: 16px; }
 
 /* Album ảnh cưới */
 .lp-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .lp-gallery-item { position: relative; border-radius: var(--radius-small); overflow: hidden; aspect-ratio: 4 / 3; background: var(--lp-surface); display: grid; place-items: center; }
 .lp-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
 .lp-gallery-item .lp-img-btn { position: absolute; bottom: 8px; right: 8px; }
+.lp-gallery-item .lp-img-btn.lp-img-edit { right: auto; left: 8px; }
 .lp-gallery-item.is-empty .lp-img-btn { position: static; }
 
 /* Chân trang: ghi nguồn studio + phễu */
 .lp-footer p { margin: 4px 0; }
 .lp-credit { display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
 .lp-credit-cta { color: var(--lp-accent-contrast); background: var(--lp-accent); text-decoration: none; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
-.lp-made-with { display: inline-block; margin-top: 8px; color: var(--lp-primary); font-weight: 600; }
+/* Nút lan truyền "Tạo trang như thế này": gradient chuyển động, ánh sáng lướt, mũi tên nhún – mời bấm */
+.lp-made-with { position: relative; display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; padding: 12px 20px 12px 16px; border-radius: 999px; color: #fff; font-weight: 600; font-size: 15px; text-decoration: none; overflow: hidden; isolation: isolate;
+  background: linear-gradient(110deg, #d6336c, #7c3aed 45%, #2563eb 70%, #d6336c); background-size: 250% 100%; box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35); }
+.lp-made-with strong { font-weight: 800; }
+.lp-mw-spark { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); font-size: 13px; }
+.lp-mw-arrow { display: inline-block; font-size: 18px; line-height: 1; }
+.lp-made-with::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%); transform: translateX(-120%); }
+.lp-made-with:hover, .lp-made-with:focus-visible { box-shadow: 0 10px 28px rgba(124, 58, 237, 0.5); transform: translateY(-2px); }
+.lp-made-with:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+@media screen {
+  .lp-made-with { animation: lpMwGrad 6s ease-in-out infinite; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease; }
+  .lp-made-with::after { animation: lpMwShine 3.2s ease-in-out infinite; }
+  .lp-mw-arrow { animation: lpMwNudge 1.6s ease-in-out infinite; }
+  .lp-mw-spark { animation: lpMwSpin 4s linear infinite; }
+}
+@keyframes lpMwGrad { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes lpMwShine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+@keyframes lpMwNudge { 0%, 100% { transform: none; } 50% { transform: translateX(4px); } }
+@keyframes lpMwSpin { to { transform: rotate(360deg); } }
+html.motion-off .lp-made-with, html.motion-off .lp-made-with::after, html.motion-off .lp-mw-arrow, html.motion-off .lp-mw-spark { animation: none !important; }
 
 /* Mẫu thiệp cưới: căn giữa, trang nhã */
 .tpl-wedding .lp-hero, .tpl-wedding .lp-section { text-align: center; }
@@ -100,13 +123,13 @@ img.lp-avatar { object-fit: cover; }
 /* ---------- Animation landing page (tắt khi giảm chuyển động) ---------- */
 @media screen {
   /* Hiện dần khi cuộn tới */
-  .lp-reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .lp-reveal { opacity: 0; transform: translate3d(0, 16px, 0); transition: opacity 0.45s ease-out, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
   .lp-reveal.is-in { opacity: 1; transform: none; }
-  .lp-reveal .lp-benefits li, .lp-reveal .lp-speaker, .lp-reveal .lp-agenda li, .lp-reveal .lp-gallery-item { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .lp-reveal .lp-benefits li, .lp-reveal .lp-speaker, .lp-reveal .lp-agenda li, .lp-reveal .lp-gallery-item { opacity: 0; transform: translate3d(0, 10px, 0); transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
   .lp-reveal.is-in .lp-benefits li, .lp-reveal.is-in .lp-speaker, .lp-reveal.is-in .lp-agenda li, .lp-reveal.is-in .lp-gallery-item { opacity: 1; transform: none; }
-  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(2) { transition-delay: 0.1s; }
-  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(3) { transition-delay: 0.2s; }
-  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(n+4) { transition-delay: 0.3s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(2) { transition-delay: 0.05s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(3) { transition-delay: 0.1s; }
+  .lp-reveal.is-in :is(.lp-benefits li, .lp-speaker, .lp-agenda li, .lp-gallery-item):nth-child(n+4) { transition-delay: 0.15s; }
 
   /* Hero xuất hiện lần lượt */
   .lp-hero > * { animation: lpUp 0.7s ease both; }
@@ -114,7 +137,9 @@ img.lp-avatar { object-fit: cover; }
   .lp-hero > :nth-child(3) { animation-delay: 0.16s; }
   .lp-hero > :nth-child(4) { animation-delay: 0.24s; }
   .lp-hero > :nth-child(n+5) { animation-delay: 0.32s; }
-  .lp-hero.has-image { background-size: auto, 110%, auto; animation: lpKen 18s ease-in-out infinite alternate; }
+  /* Hiệu ứng ảnh bìa trôi chậm chạy bằng transform trên lớp riêng (GPU), không vẽ lại ảnh khi cuộn */
+  .lp-hero.has-image { position: relative; isolation: isolate; overflow: hidden; }
+  .lp-hero.has-image::before { content: ''; position: absolute; inset: -6% 0; z-index: -1; background: linear-gradient(rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62)), rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62))), var(--lp-hero-image) center / cover no-repeat; animation: lpKen 18s ease-in-out infinite alternate; will-change: transform; pointer-events: none; }
 
   /* Nút chính: nhịp nhẹ thu hút, nổi lên khi rê chuột */
   .lp-cta { animation: lpUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
@@ -141,7 +166,7 @@ img.lp-avatar { object-fit: cover; }
 @keyframes lpTick { 0% { transform: translateY(-35%); opacity: 0.3; } 100% { transform: none; opacity: 1; } }
 @keyframes lpBump { 0% { transform: scale(1); } 30% { transform: scale(1.45); } 100% { transform: scale(1); } }
 @keyframes lpBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
-@keyframes lpKen { from { background-position: center, 50% 40%, center; } to { background-position: center, 50% 60%, center; } }
+@keyframes lpKen { from { transform: translate3d(0, -3%, 0) scale(1.04); } to { transform: translate3d(0, 3%, 0) scale(1.04); } }
 
 /* ---------- Tuỳ chỉnh giao diện (page-style.js) ----------
    Lựa chọn Đơn giản đặt biến qua class st-*; thông số Studio đặt biến inline trên .landing (ưu tiên hơn). */
@@ -158,6 +183,7 @@ img.lp-avatar { object-fit: cover; }
 .lp-hero, .lp-section, .lp-footer { padding-inline: max(32px, (100% - var(--lp-maxw)) / 2); }
 .lp-section { padding-block: var(--lp-pad); }
 /* Lớp phủ trung tính trên ảnh để chữ đọc được (ngoại lệ hợp lệ). */
+.lp-hero.has-art { --lp-hero-overlay: var(--lp-art-overlay, 0.18); }
 .lp-hero.has-image { /* taste-skill-ignore */ background: linear-gradient(rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62)), rgba(var(--lp-overlay-rgb), var(--lp-hero-overlay, 0.62))), var(--lp-hero-image) center / cover no-repeat, var(--lp-primary); }
 .lp-cd-box, .lp-benefits li, .lp-field input, .lp-gallery-item { border-radius: var(--lp-radius); }
 .lp-cta, .lp-submit { border-radius: var(--lp-btn-radius); }
@@ -227,7 +253,7 @@ img.lp-avatar { object-fit: cover; }
 /* Mức hiệu ứng */
 .st-motion-off *, .st-motion-off *::before { animation: none !important; transition: none !important; }
 .st-motion-subtle .lp-cta { animation: lpUp 0.7s ease 0.32s both; }
-.st-motion-subtle .lp-hero.has-image { animation: none; }
+.st-motion-subtle .lp-hero.has-image::before { animation: none; transform: none; inset: 0; }
 
 /* Đang soạn: không chạy lại hiệu ứng xuất hiện mỗi lần trang vẽ lại */
 .is-editable .lp-hero > *, .is-editable .lp-cta { animation: none; }
@@ -236,7 +262,7 @@ img.lp-avatar { object-fit: cover; }
 
 /* Bố cục biên tập khi khung rộng: tiêu đề phần ở cột trái (1/3), nội dung ở cột phải (2/3),
    để mỗi phần dùng hết bề ngang thay vì dồn sang trái. Phần căn giữa (thiệp cưới, chọn "Giữa") giữ một cột. */
-@container (min-width: 820px) {
+@container (min-width: 960px) {
   .landing:not(.tpl-wedding) .lp-section:not(.lp-countdown-section):not(.lp-align-center) {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); column-gap: 56px; align-items: start;
   }
@@ -253,7 +279,7 @@ html.motion-off .landing *, html.motion-off .landing *::before { animation: none
 
 /* Chữ nâng cao (Studio / ô font): giãn dòng tiêu đề, độ đậm & giãn chữ nội dung, giãn từ, thụt đầu dòng, khoảng cách đoạn, căn lề */
 .landing { font-weight: var(--lp-bw, 400); letter-spacing: var(--lp-bls, normal); word-spacing: var(--lp-ws, normal); }
-.landing .lp-headline { line-height: var(--lp-hlh, 1.1); }
+.landing .lp-headline { line-height: var(--lp-hlh, 1.28); }
 .landing .lp-section h2 { line-height: var(--lp-hlh, 1.2); }
 .st-hitalic .lp-headline, .st-hitalic .lp-section h2 { font-style: italic; }
 .landing .lp-section p:not(.lp-social-proof):not(.lp-ended):not(.lp-error):not(.lp-form-msg) { text-indent: var(--lp-indent, 0); text-align: var(--lp-balign, inherit); margin-top: 0; margin-bottom: var(--lp-para, 1em); }
@@ -307,3 +333,457 @@ html.motion-off .landing *, html.motion-off .landing *::before { animation: none
 .lp-cta, .lp-submit { transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease; }
 /* Link trong chữ có định dạng */
 .lp-section p a, .lp-section li a, .lp-section h2 a, .lp-hero p a, .lp-headline a, .lp-faq-item a { color: inherit; text-decoration: underline; text-decoration-color: var(--lp-accent); text-underline-offset: 3px; }
+/* Điện thoại: 4 ô đếm ngược luôn nằm một hàng */
+@container (max-width: 560px) {
+  .lp-countdown { flex-wrap: nowrap; gap: 8px; }
+  .lp-cd-box { flex: 1 1 0; min-width: 0; max-width: 84px; padding: 10px 4px; }
+  .lp-cd-num { font-size: 24px; }
+}
+
+/* ---------- Popup đăng ký thành công (js/landing-renderer.js; nằm trong file HTML xuất) ---------- */
+dialog.lp-pop { border: 0; padding: 0; background: transparent; color: var(--lp-text, #111); max-width: none; max-height: none; overflow: visible; margin: auto; font-family: inherit; }
+dialog.lp-pop::backdrop { background: rgba(10, 10, 20, .5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: lp-pop-fade .2s ease both; }
+.lp-pop-card { position: relative; box-sizing: border-box; width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; background: var(--lp-bg, #fff); color: var(--lp-text, #111); border-radius: 20px; padding: 30px 24px 22px; text-align: center; box-shadow: 0 28px 70px rgba(10, 10, 20, .35); animation: lp-pop-in .45s cubic-bezier(.2, 1.3, .35, 1) both; }
+.lp-pop-icon { width: 58px; height: 58px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; font-size: 28px; font-weight: 700; background: var(--lp-accent, #d6336c); color: var(--lp-accent-contrast, #fff); }
+.lp-pop.is-waitlist .lp-pop-icon { background: var(--lp-primary, #222); color: #fff; }
+.lp-pop-title { margin: 0 0 6px; font-size: 24px; line-height: 1.25; font-weight: 800; letter-spacing: -.01em; font-family: var(--lp-heading-font, inherit); }
+.lp-pop-sub { margin: 0 0 14px; opacity: .8; line-height: 1.5; }
+.lp-pop-meta { list-style: none; margin: 0 0 18px; padding: 12px 14px; display: grid; gap: 8px; text-align: left; border-radius: 12px; background: color-mix(in srgb, var(--lp-text, #111) 6%, transparent); font-size: 15px; }
+.lp-pop-meta li { display: flex; gap: 10px; align-items: flex-start; }
+.lp-pop-meta .lp-ic { flex: none; margin-top: 2px; opacity: .8; }
+.lp-pop-actions { display: grid; gap: 8px; }
+.lp-pop-btn { font: inherit; font-weight: 700; min-height: 46px; padding: 0 18px; border-radius: 12px; border: 1.5px solid color-mix(in srgb, var(--lp-text, #111) 22%, transparent); background: transparent; color: inherit; cursor: pointer; }
+.lp-pop-btn.is-primary { background: var(--lp-accent, #d6336c); border-color: var(--lp-accent, #d6336c); color: var(--lp-accent-contrast, #fff); }
+.lp-pop-btn:focus-visible { outline: 3px solid var(--lp-accent, #d6336c); outline-offset: 2px; }
+.lp-pop-burst { position: absolute; left: 50%; top: 58px; width: 0; height: 0; pointer-events: none; }
+.lp-pop-burst i { position: absolute; width: 8px; height: 8px; border-radius: 2px; background: var(--lp-accent, #d6336c); opacity: 0; animation: lp-pop-burst 1.1s ease-out both; }
+.lp-pop-burst i:nth-child(3n+1) { background: var(--lp-primary, #222); }
+.lp-pop-burst i:nth-child(3n+2) { background: #f5b83d; }
+@keyframes lp-pop-burst { 0% { opacity: 1; transform: rotate(var(--a)) translateY(0); } 100% { opacity: 0; transform: rotate(var(--a)) translateY(calc(var(--d) * -2)) rotate(300deg); } }
+@keyframes lp-pop-in { from { opacity: 0; transform: translateY(18px) scale(.9); } to { opacity: 1; transform: none; } }
+@keyframes lp-pop-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lp-pop-sheet { from { transform: translateY(100%); } to { transform: none; } }
+html.motion-off .lp-pop-card, html.motion-off dialog.lp-pop::backdrop, html.motion-off .lp-pop-burst { animation: none !important; }
+html.motion-off .lp-pop-burst { display: none; }
+@media (prefers-reduced-motion: reduce) { .lp-pop-card, dialog.lp-pop::backdrop { animation: none !important; } .lp-pop-burst { display: none; } }
+@media (max-width: 560px) {
+  dialog.lp-pop { margin: auto 0 0; width: 100%; }
+  .lp-pop-card { width: 100%; border-radius: 22px 22px 0 0; padding-bottom: calc(18px + env(safe-area-inset-bottom)); animation-name: lp-pop-sheet; }
+}
+
+/* ---------- Tối ưu chuyển đổi: chip, thẻ ưu đãi, thẻ lợi ích, thanh CTA dính, popup đăng ký ----------
+   Chỉ dùng transform/opacity (GPU). Không thêm vùng cuộn overflow và không animate background-position. */
+.lp-hero-action { row-gap: 14px; }
+.lp-chip { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; padding: 6px 12px 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); color: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22); }
+.lp-chip[hidden] { display: none; }
+.lp-chip-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lp-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-accent) 35%, transparent); flex: none; }
+
+/* Lợi ích dạng thẻ */
+.lp-benefits { counter-reset: lpb; max-width: none; gap: 14px; grid-template-columns: 1fr; }
+.lp-benefits li { counter-increment: lpb; padding: 16px 18px 16px 62px; min-height: 60px; font-size: 1.0625em;
+  background: color-mix(in srgb, currentColor 5%, transparent); border: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+.lp-benefits li::before { left: 16px; top: 16px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; font-size: 15px; line-height: 1;
+  background: var(--lp-accent); color: var(--lp-accent-contrast); }
+.st-bullet-none .lp-benefits li { padding-left: 18px; }
+.st-bullet-dot .lp-benefits li::before { top: 16px; font-size: 10px; }
+@container (min-width: 960px) {
+  .lp-benefits { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+  .lp-benefits li { padding: 64px 20px 22px; }
+  .lp-benefits li::before { left: 20px; top: 20px; width: 34px; height: 34px; }
+  .lp-benefits li::after { content: counter(lpb, decimal-leading-zero); position: absolute; right: 18px; top: 16px; font-weight: 800; font-size: 1.6em; line-height: 1; opacity: 0.14; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .st-bullet-none .lp-benefits li { padding-top: 22px; }
+}
+
+/* Ưu đãi: thẻ quà nổi bật */
+.lp-offer-card { --lp-para: 2px; position: relative; display: flex; align-items: flex-start; gap: 16px; padding: 20px 20px 20px 18px; max-width: 640px;
+  background: #fff; color: var(--lp-text); border-radius: calc(var(--lp-radius) + 4px); box-shadow: 0 0 0 2px var(--lp-accent), 0 14px 34px rgba(22, 25, 58, 0.14); overflow: hidden; }
+
+.lp-offer-ico { flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--lp-accent); color: var(--lp-accent-contrast); margin-left: 6px; }
+.lp-offer-body { flex: 1 1 auto; min-width: 0; }
+.landing .lp-offer-card .lp-offer-text { font-size: 1.125em; font-weight: 700; line-height: 1.4; color: var(--lp-text); }
+.landing .lp-offer-card .lp-offer-until { font-size: 14px; color: var(--lp-muted); }
+.lp-offer-left { flex: none; align-self: flex-start; margin: 0; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 800; white-space: nowrap; background: color-mix(in srgb, var(--lp-accent) 14%, #fff); color: var(--lp-text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-accent) 55%, transparent); }
+.lp-offer-left[hidden] { display: none; }
+@container (max-width: 520px) {
+  .lp-offer-card { flex-wrap: wrap; gap: 12px; padding: 16px; }
+  .lp-offer-left { order: 1; margin-left: auto; align-self: center; }
+  .lp-offer-body { order: 2; }
+  .lp-offer-ico { width: 44px; height: 44px; margin-left: 4px; }
+  .lp-offer-body { flex-basis: 100%; }
+}
+
+/* Nhịp điệu chữ & khoảng cách trên điện thoại */
+@container (max-width: 520px) {
+  .lp-headline { margin-bottom: 14px; line-height: 1.25; }
+  .lp-eyebrow { margin-bottom: 14px; font-size: 16px; }
+  .lp-meta { flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .lp-hero-action { flex-direction: row; gap: 12px 14px; width: 100%; }
+  .lp-hero-action .lp-cta { flex: 1 1 100%; text-align: center; padding: 15px 22px; font-size: 17px; }
+  .lp-section h2 { margin-bottom: 16px; }
+  .lp-section { padding-block: 40px; }
+  .lp-footer { padding-bottom: 40px; }
+}
+.lp-cta { box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18); }
+
+/* Thanh CTA dính đáy (chỉ điện thoại) */
+.lp-sticky-wrap { display: none; }
+@container (max-width: 720px) {
+  .lp-sticky-wrap { display: block; position: sticky; bottom: 0; height: 0; z-index: 40; }
+}
+.lp-sticky { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--lp-bg); color: var(--lp-text);
+  box-shadow: 0 -1px 0 rgba(22, 25, 58, 0.08), 0 -10px 28px rgba(22, 25, 58, 0.14);
+  transform: translate3d(0, 105%, 0); visibility: hidden; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.3s; will-change: transform; }
+.lp-sticky.is-on { transform: none; visibility: visible; transition-delay: 0s; }
+.lp-sticky-info { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.lp-sticky-main { font-size: 15px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lp-sticky-sub { font-size: 13px; color: var(--lp-muted); }
+.lp-sticky-sub:empty { display: none; }
+.lp-sticky-btn { flex: none; font: inherit; font-weight: 700; min-height: 46px; padding: 0 22px; border: 0; border-radius: var(--lp-btn-radius); cursor: pointer; background: var(--lp-accent); color: var(--lp-accent-contrast); }
+.lp-sticky-btn:focus-visible { outline: 3px solid var(--lp-primary); outline-offset: 2px; }
+.lp-sticky-btn:active { transform: scale(0.97); }
+
+/* Popup đăng ký */
+dialog.lp-reg { border: 0; padding: 0; background: transparent; color: var(--lp-text, #111); max-width: none; max-height: none; overflow: visible; margin: auto; font-family: var(--lp-body-font, inherit); font-size: 16px; line-height: 1.5; }
+dialog.lp-reg::backdrop { background: rgba(10, 10, 20, 0.55); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); animation: lp-pop-fade 0.2s ease both; }
+.lp-reg-card { position: relative; box-sizing: border-box; width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain;
+  background: var(--lp-bg, #fff); color: var(--lp-text, #111); border-radius: 20px; padding: 28px 24px 20px; box-shadow: 0 28px 70px rgba(10, 10, 20, 0.35); animation: lp-pop-in 0.4s cubic-bezier(0.2, 1.2, 0.35, 1) both; outline: none; text-align: left; }
+.lp-reg-x { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--lp-text, #111) 8%, transparent); color: inherit; cursor: pointer; }
+.lp-reg-x:hover { background: color-mix(in srgb, var(--lp-text, #111) 14%, transparent); }
+.lp-reg-x:focus-visible { outline: 3px solid var(--lp-accent); outline-offset: 2px; }
+.lp-reg-kicker { margin: 0 44px 4px 0; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--lp-muted); }
+.lp-reg-title { margin: 0 44px 12px 0; font-family: var(--lp-heading-font, inherit); font-size: 24px; line-height: 1.2; font-weight: 800; color: var(--lp-primary); text-wrap: balance; }
+.lp-reg-meta { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 6px; font-size: 15px; }
+.lp-reg-meta li { display: flex; gap: 10px; align-items: flex-start; }
+.lp-reg-meta .lp-ic { flex: none; margin-top: 3px; opacity: 0.75; }
+.lp-reg-offer { display: flex; gap: 10px; align-items: center; margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; font-weight: 700; font-size: 15px; line-height: 1.35; background: color-mix(in srgb, var(--lp-accent) 14%, var(--lp-bg, #fff)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-accent) 50%, transparent); }
+.lp-reg-offer-ico { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--lp-accent); color: var(--lp-accent-contrast); }
+.lp-reg-offer-ico svg { width: 20px; height: 20px; }
+.lp-reg-seats { margin: 0 0 14px; font-weight: 800; font-size: 14px; color: var(--lp-primary); }
+.lp-reg-seats::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: #3fd08a; vertical-align: 1px; }
+.lp-reg-seats.is-hot { color: #c0262d; }
+.lp-reg-seats.is-hot::before { background: #ff6b6b; }
+.lp-reg-seats[hidden], .lp-reg-card [hidden] { display: none; }
+.lp-reg-card .lp-form { max-width: none; margin: 0; padding: 0; background: none; box-shadow: none; text-align: left; }
+.lp-reg-card .lp-field label, .lp-reg-card .lp-consent { color: var(--lp-text); }
+.lp-reg-card .lp-field input { font-size: 16px; height: 46px; min-height: 0; box-sizing: border-box; padding: 0 12px; background: #fff; color: #16193a; }
+.lp-reg-card .lp-submit { width: 100%; min-height: 50px; margin-top: 6px; font-size: 17px; }
+.lp-reg-trust { display: flex; align-items: center; gap: 8px; margin: 14px 0 0; font-size: 13px; color: var(--lp-muted); }
+.lp-reg-trust .lp-ic { display: block; }
+.lp-reg-card .lp-closed { margin: 8px 0 0; font-size: 17px; }
+html.motion-off .lp-reg-card, html.motion-off dialog.lp-reg::backdrop, .st-motion-off dialog.lp-reg::backdrop, .st-motion-off .lp-reg-card { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .lp-reg-card, dialog.lp-reg::backdrop { animation: none !important; } .lp-sticky { transition: none; } }
+@media (max-width: 560px) {
+  dialog.lp-reg { margin: auto 0 0; width: 100%; }
+  .lp-reg-card { width: 100%; max-height: 92vh; max-height: 92dvh; border-radius: 22px 22px 0 0; padding: 24px 18px calc(18px + env(safe-area-inset-bottom)); animation-name: lp-pop-sheet; animation-duration: 0.35s; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+}
+
+/* ---------- Tinh chỉnh điện thoại: diễn giả, chân trang, nút Xclipse ---------- */
+/* Không để thanh đăng ký đang ẩn (trượt xuống dưới) tạo khoảng trống cuối trang */
+.landing { overflow: clip; }
+.lp-speaker-info { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.lp-foot-name { color: var(--lp-text); font-weight: 600; }
+.lp-foot-addr { text-wrap: balance; }
+.lp-mw-brand { white-space: nowrap; }
+@container (max-width: 560px) {
+  /* Diễn giả: mỗi người một hàng (ảnh trái, tên + chức danh phải) – đẹp với mọi số người, không thừa ô lẻ */
+  .lp-speakers { grid-template-columns: 1fr; gap: 12px; }
+  .lp-speaker { flex-direction: row; align-items: center; text-align: left; gap: 14px; padding: 12px 14px; border-radius: var(--radius-small); background: color-mix(in srgb, var(--lp-primary) 5%, transparent); }
+  .lp-speaker .lp-img-btn { order: 3; margin-left: auto; }
+  .lp-speaker .lp-avatar { flex: none; width: 56px; height: 56px; font-size: 20px; }
+  .lp-speaker-info { min-width: 0; align-items: flex-start; }
+  /* Nút Xclipse gọn một dòng */
+  .lp-made-with { font-size: 14px; padding: 10px 16px 10px 12px; gap: 8px; white-space: nowrap; max-width: 100%; }
+  .lp-mw-long { display: none; }
+  .lp-mw-spark { width: 22px; height: 22px; }
+  .lp-footer { font-size: 13px; }
+}
+/* Màn rộng vừa (2–3 diễn giả): chia đều thành một hàng thay vì để thừa ô */
+@container (min-width: 561px) {
+  .lp-speakers:has(> .lp-speaker:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lp-speakers:has(> .lp-speaker:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 220px)); justify-content: center; }
+}
+
+/* ---------- Ảnh: giới thiệu, quà tặng, album, lightbox ---------- */
+.lp-slot-add { margin: 12px 0 0; }
+.lp-about.has-media { display: grid; gap: 20px; align-items: center; }
+.lp-about-media { position: relative; margin: 0; border-radius: var(--lp-radius, var(--radius-small)); overflow: hidden; aspect-ratio: 4 / 3; background: var(--lp-surface); box-shadow: var(--lp-shadow); }
+.lp-about-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lp-about-media .lp-img-btn { position: absolute; bottom: 10px; right: 10px; }
+.lp-about-media .lp-img-btn.lp-img-edit { right: auto; left: 10px; }
+.lp-about-body > p { margin-top: 0; }
+@media (min-width: 760px) { .lp-about.has-media { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 36px; } }
+.lp-offer-photo { position: relative; flex: none; margin: 0; width: 96px; height: 96px; border-radius: 16px; overflow: hidden; aspect-ratio: 1 / 1; background: var(--lp-surface); box-shadow: 0 0 0 3px var(--lp-accent); }
+.lp-offer-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lp-offer-photo .lp-img-btn { position: absolute; bottom: 4px; left: 4px; padding: 2px 8px; font-size: 12px; }
+.lp-offer-photo .lp-img-btn.lp-img-edit { display: none; }
+@media (max-width: 560px) { .lp-offer-photo { width: 72px; height: 72px; border-radius: 14px; } }
+.lp-gallery-item.is-empty { min-height: 90px; }
+.lp-gallery-open { display: block; width: 100%; height: 100%; padding: 0; margin: 0; border: 0; background: none; cursor: zoom-in; font: inherit; }
+.lp-gallery-open:focus-visible { outline: 3px solid var(--lp-accent); outline-offset: -3px; }
+.lp-gallery[data-count="1"] { grid-template-columns: 1fr; max-width: 760px; margin-inline: auto; }
+.lp-gallery[data-count="1"] .lp-gallery-item { aspect-ratio: 16 / 10; }
+.lp-gallery[data-count="3"] .lp-gallery-item:first-child, .lp-gallery[data-count="5"] .lp-gallery-item:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+@media (min-width: 760px) {
+  .lp-gallery { gap: 14px; }
+  .lp-gallery.is-editing, .lp-gallery[data-count="6"] { grid-template-columns: repeat(3, 1fr); }
+  .lp-gallery[data-count="4"], .lp-gallery[data-count="5"] { grid-template-columns: repeat(4, 1fr); }
+  .lp-gallery[data-count="3"] { grid-template-columns: 2fr 1fr; }
+  .lp-gallery[data-count="3"] .lp-gallery-item:first-child { grid-column: auto; grid-row: span 2; aspect-ratio: auto; min-height: 100%; }
+  .lp-gallery[data-count="5"] .lp-gallery-item:first-child { grid-column: span 4; aspect-ratio: 21 / 9; }
+}
+@keyframes lp-img-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+.lp-about-media img, .lp-offer-photo img, .lp-gallery-item img { animation: lp-img-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@media (hover: hover) {
+  .lp-gallery-item:not(.is-empty) { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease; }
+  .lp-gallery-item:not(.is-empty):hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16); }
+  .lp-about-media, .lp-offer-photo { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+  .lp-about-media:hover, .lp-offer-photo:hover { transform: translateY(-3px); }
+}
+html.motion-off .lp-about-media img, html.motion-off .lp-offer-photo img, html.motion-off .lp-gallery-item img,
+html.motion-off .lp-gallery-item, html.motion-off .lp-about-media, html.motion-off .lp-offer-photo, html.motion-off .lp-lb-img { animation: none !important; transition: none !important; transform: none !important; }
+.st-motion-off .lp-about-media img, .st-motion-off .lp-offer-photo img, .st-motion-off .lp-gallery-item img { animation: none !important; }
+.lp-lightbox { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; background: rgba(8, 10, 20, 0.97); animation: lp-lb-fade 0.2s ease; }
+.lp-lb-img { max-width: min(96vw, 1400px); max-height: 86vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+.lp-lb-img.is-in { animation: lp-img-in 0.3s ease both; }
+.lp-lb-count { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); color: #fff; font: 600 14px/1 system-ui, sans-serif; opacity: 0.85; }
+.lp-lb-btn { position: absolute; width: 48px; height: 48px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.16); color: #fff; font: 400 28px/1 system-ui, sans-serif; cursor: pointer; display: grid; place-items: center; }
+.lp-lb-btn:hover { background: rgba(255, 255, 255, 0.28); }
+.lp-lb-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.lp-lb-btn[hidden] { display: none; }
+.lp-lb-x { top: 12px; right: 12px; font-size: 20px; }
+.lp-lb-prev { left: 12px; top: 50%; margin-top: -24px; }
+.lp-lb-next { right: 12px; top: 50%; margin-top: -24px; }
+@keyframes lp-lb-fade { from { opacity: 0; } to { opacity: 1; } }
+html.lp-lb-open { overflow: hidden; }
+@media (max-width: 560px) { .lp-lb-prev, .lp-lb-next { top: auto; bottom: 18px; margin-top: 0; } .lp-lb-img { max-height: 76vh; } }
+
+/* Giới thiệu có ảnh, khung rộng: 2 cột bằng nhau – trái: tiêu đề + ảnh lớn, phải: đoạn giới thiệu (không còn cột trống) */
+@container (min-width: 960px) {
+  .landing:not(.tpl-wedding) .lp-section.lp-about-section:not(.lp-align-center) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); row-gap: 24px; }
+  .landing .lp-about-section .lp-about.has-media { display: contents; }
+  .landing:not(.tpl-wedding) .lp-about-section:not(.lp-align-center) > h2 { grid-row: 1; }
+  .landing .lp-about-section .lp-about-media { grid-column: 1; grid-row: 2; margin: 0; }
+  .landing .lp-about-section .lp-about-body { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  .landing .lp-about-section .lp-about-body > p { max-width: none; }
+}
+
+/* Chuyển động bổ sung (motionInit). Cảm hứng Lucian Lab (MIT, © 2026 Seokwoooo); màu theo biến --lp-*; chỉ transform/opacity */
+@media screen {
+  .lp-word { display: inline-block; animation: lpWord 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes lpWord { from { opacity: 0; transform: translate3d(0, 0.5em, 0); } to { opacity: 1; transform: none; } }
+  .lp-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 40; background: var(--lp-accent); transform: scaleX(0); transform-origin: 0 50%; pointer-events: none; will-change: transform; }
+  .lp-cta, .lp-submit, .lp-sticky-btn { position: relative; overflow: hidden; }
+  .lp-ripple { position: absolute; border-radius: 50%; background: var(--lp-accent-contrast); opacity: 0.35; transform: scale(0); animation: lpRipple 0.6s ease-out forwards; pointer-events: none; }
+  @keyframes lpRipple { to { transform: scale(1); opacity: 0; } }
+  .lp-quote { transition: transform 0.25s ease; }
+  .lp-quote:hover { transform: translate3d(0, -3px, 0); }
+}
+html.motion-off .lp-word, html.motion-off .lp-ripple, .st-motion-off .lp-word { animation: none !important; opacity: 1; transform: none; }
+html.motion-off .lp-progress, .st-motion-off .lp-progress, .is-editable .lp-progress { display: none; }
+@media (prefers-reduced-motion: reduce) { .lp-word { animation: none; } .lp-progress, .lp-ripple { display: none; } .lp-quote { transition: none; } .lp-quote:hover { transform: none; } }
+
+/* ======================================================================
+   Nâng cấp trang công khai: cổng thật từ Lucian Lab (MIT, © 2026 Seokwoooo).
+   Màu chỉ lấy từ biến --lp-*; trang luôn sáng; chuyển động transform/opacity (ngoại lệ ghi chú bên dưới).
+   Mọi phần có bản tĩnh khi không có JS / giảm chuyển động / html.motion-off / .st-motion-off.
+   ====================================================================== */
+@property --o { syntax: '<number>'; inherits: false; initial-value: 0; }
+
+/* --- Hero: aurora (#319 aurora-mesh, canvas) + lưới sáng theo con trỏ (#226 grid-beam-hero) --- */
+.lp-hero.has-fx { position: relative; isolation: isolate; overflow: hidden; }
+.lp-fx { position: absolute; pointer-events: none; z-index: -1; max-width: none; }
+.lp-hero > .lp-fx { animation: none; }
+.lp-fx-aurora { left: -8%; top: -8%; width: 116%; height: 116%; opacity: 0.42; mix-blend-mode: screen; }
+.lp-fx-grid, .lp-fx-gridlit { inset: 0; background-size: 44px 44px; background-position: -1px -1px; }
+.lp-fx-grid { background-image: linear-gradient(color-mix(in srgb, #fff 9%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, #fff 9%, transparent) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(75% 85% at 50% 45%, #000, transparent); mask-image: radial-gradient(75% 85% at 50% 45%, #000, transparent); }
+.lp-fx-gridlit { background-image: linear-gradient(color-mix(in srgb, var(--lp-accent) 55%, #fff) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--lp-accent) 55%, #fff) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(150px 150px at var(--mx, -300px) var(--my, -300px), #000, transparent); mask-image: radial-gradient(150px 150px at var(--mx, -300px) var(--my, -300px), #000, transparent); }
+@media (max-width: 700px) { .lp-fx-grid, .lp-fx-gridlit { background-size: 34px 34px; } .lp-fx-gridlit { display: none; } }
+
+/* --- Đếm ngược: đồng hồ lật (#100 flip-clock-timer) --- */
+.lp-cd-box.has-flip { position: relative; background: none; box-shadow: none; padding: 0; min-width: 0; color: var(--lp-muted); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.lp-bg-primary .lp-cd-box.has-flip { background: none; color: rgba(255, 255, 255, 0.85); }
+.lp-cd-box.has-flip .lp-cd-num { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.lp-cd-box.has-flip .lp-cd-label { opacity: 1; font-weight: 600; }
+.lp-flip { --fw: clamp(30px, 7.2cqi, 56px); --fh: calc(var(--fw) * 1.45); --lp-fl-bg: var(--lp-primary); display: flex; gap: 3px; }
+.lp-bg-primary .lp-flip { --lp-fl-bg: color-mix(in srgb, var(--lp-primary) 78%, #fff); }
+.lp-fl { position: relative; width: var(--fw); height: var(--fh); border-radius: calc(var(--fw) * 0.2); font-size: calc(var(--fw) * 1.02); font-weight: 800; letter-spacing: -0.03em; line-height: var(--fh); text-align: center; color: #fff; font-variant-numeric: tabular-nums; box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.5); }
+.lp-fl > span { position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: var(--lp-fl-bg); }
+.lp-fl > span b { position: absolute; left: 0; right: 0; height: var(--fh); font: inherit; }
+.lp-fl-t, .lp-fl-ft { top: 0; border-radius: calc(var(--fw) * 0.2) calc(var(--fw) * 0.2) 0 0; transform-origin: 50% 100%; background: linear-gradient(color-mix(in srgb, var(--lp-fl-bg) 86%, #fff), var(--lp-fl-bg)) !important; }
+.lp-fl-b, .lp-fl-fb { bottom: 0; border-radius: 0 0 calc(var(--fw) * 0.2) calc(var(--fw) * 0.2); transform-origin: 50% 0; }
+.lp-fl-b b, .lp-fl-fb b { top: calc(var(--fh) / -2); }
+.lp-fl-t b, .lp-fl-ft b { top: 0; }
+.lp-fl-ft { z-index: 2; transform: perspective(320px) rotateX(-90deg); }
+.lp-fl-fb { z-index: 2; transform: perspective(320px) rotateX(90deg); }
+.lp-fl::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; z-index: 3; height: 2px; margin-top: -1px; background: rgba(0, 0, 0, 0.45); }
+@container (max-width: 560px) { .lp-cd-box.has-flip { flex: 0 0 auto; max-width: none; } .lp-countdown:has(.has-flip) { gap: 10px; } }
+
+/* --- Lợi ích: bento (#214 bento-features) + viền phát sáng theo con trỏ (#228 glow-border-cards) --- */
+.landing .lp-benefits li, .landing .lp-speaker, .landing .lp-quote { --o: 0; transition: --o 0.3s ease; }
+.landing .lp-benefits li {
+  border: 1px solid transparent;
+  background:
+    radial-gradient(260px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 11%), transparent), transparent 60%) padding-box,
+    linear-gradient(var(--lp-bg), var(--lp-bg)) padding-box,
+    radial-gradient(180px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 90%), transparent), transparent 70%) border-box,
+    linear-gradient(color-mix(in srgb, var(--lp-text) 12%, transparent), color-mix(in srgb, var(--lp-text) 12%, transparent)) border-box;
+}
+.landing .lp-bg-primary .lp-benefits li { background: color-mix(in srgb, currentColor 8%, transparent); border-color: color-mix(in srgb, currentColor 18%, transparent); }
+@container (min-width: 720px) {
+  .lp-benefits { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .lp-benefits:has(> li:nth-child(3)) { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: dense; }
+  .lp-benefits:has(> li:nth-child(3)) > li:nth-child(1) { grid-column: span 2; }
+  .lp-benefits:has(> li:nth-child(3)) > li:nth-child(2) { grid-row: span 2; }
+  .lp-benefits:has(> li:nth-child(3):last-child) > li:nth-child(3) { grid-column: span 2; }
+  .lp-benefits li { padding: 64px 20px 22px; min-height: 150px; }
+  .lp-benefits li::before { left: 20px; top: 20px; width: 34px; height: 34px; }
+  .lp-benefits li::after { content: counter(lpb, decimal-leading-zero); position: absolute; right: 18px; top: 16px; font-weight: 800; font-size: 1.6em; line-height: 1; opacity: 0.14; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .st-bullet-none .lp-benefits li { padding-top: 22px; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .landing .lp-benefits li { transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.3s, --o 0.3s ease; }
+  .landing .lp-benefits li:hover { transform: translateY(-3px); box-shadow: 0 14px 26px -16px var(--lp-accent); }
+}
+
+/* --- Diễn giả: thẻ có viền phát sáng, ảnh có vòng (#228) --- */
+@container (min-width: 561px) {
+  .landing .lp-speakers { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+  .landing .lp-speaker { padding: 26px 16px 22px; border: 1px solid transparent; border-radius: var(--lp-radius);
+    background:
+      radial-gradient(260px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 10%), transparent), transparent 60%) padding-box,
+      linear-gradient(var(--lp-bg), var(--lp-bg)) padding-box,
+      radial-gradient(180px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 90%), transparent), transparent 70%) border-box,
+      linear-gradient(color-mix(in srgb, var(--lp-text) 12%, transparent), color-mix(in srgb, var(--lp-text) 12%, transparent)) border-box; }
+  .landing .lp-bg-primary .lp-speaker { background: color-mix(in srgb, currentColor 8%, transparent); border-color: color-mix(in srgb, currentColor 18%, transparent); }
+  .landing .lp-speaker .lp-avatar { width: 88px; height: 88px; font-size: 32px; margin-bottom: 6px; box-shadow: 0 0 0 3px var(--lp-bg), 0 0 0 5px color-mix(in srgb, var(--lp-accent) 70%, transparent); }
+  .landing .lp-speaker strong { font-size: 1.05em; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .landing .lp-speaker { transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.3s, --o 0.3s ease; }
+  .landing .lp-speaker:hover { transform: translateY(-4px); box-shadow: 0 16px 30px -18px var(--lp-accent); }
+}
+
+/* --- Chương trình: lộ trình vẽ theo cuộn (#318 scroll-draw-route). Bản tĩnh: đường kẻ + chấm bằng CSS --- */
+.lp-agenda { position: relative; padding-left: 44px; gap: 6px; }
+.lp-agenda li { position: relative; padding: 10px 0; align-items: center; }
+.lp-agenda:not(.has-route)::before { content: ''; position: absolute; left: 19px; top: 18px; bottom: 18px; width: 2px; background: color-mix(in srgb, var(--lp-text) 16%, transparent); border-radius: 2px; }
+.lp-agenda:not(.has-route) li::before { content: ''; position: absolute; left: -30px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--lp-accent); box-shadow: 0 0 0 4px var(--lp-bg); }
+.lp-route { position: absolute; left: 0; top: 0; width: 40px; overflow: visible; pointer-events: none; }
+.lp-route-guide { fill: none; stroke: color-mix(in srgb, var(--lp-text) 22%, transparent); stroke-width: 2.5; stroke-dasharray: 2 7; stroke-linecap: round; }
+.lp-route-line { fill: none; stroke: var(--lp-accent); stroke-width: 3.5; stroke-linecap: round; }
+.lp-route-dot { fill: var(--lp-bg); stroke: color-mix(in srgb, var(--lp-text) 28%, transparent); stroke-width: 2.5; transition: stroke 0.3s; }
+.lp-route-dot.on { stroke: var(--lp-accent); }
+.lp-route-dotc { fill: var(--lp-accent); transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); transition: transform 0.45s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.lp-route-dotc.on { transform: scale(1); }
+.lp-route-pl { fill: var(--lp-primary); }
+.lp-agenda.has-route .lp-agenda-time { transition: color 0.3s; color: var(--lp-muted); }
+.lp-agenda.has-route li.is-on .lp-agenda-time { color: var(--lp-primary); }
+.lp-bg-primary .lp-agenda:not(.has-route)::before { background: rgba(255, 255, 255, 0.3); }
+.lp-bg-primary .lp-agenda:not(.has-route) li::before { box-shadow: none; background: #fff; }
+.lp-bg-primary .lp-route-line, .lp-bg-primary .lp-route-pl { stroke: #fff; }
+.lp-bg-primary .lp-route-pl, .lp-bg-primary .lp-route-dotc { fill: #fff; }
+.lp-bg-primary .lp-route-dot { fill: var(--lp-primary); stroke: rgba(255, 255, 255, 0.5); }
+.lp-bg-primary .lp-route-dot.on { stroke: #fff; }
+.lp-bg-primary .lp-agenda.has-route .lp-agenda-time, .lp-bg-primary .lp-agenda.has-route li.is-on .lp-agenda-time { color: #fff; }
+
+/* --- Nhận xét: thẻ + bức tường cuộn dọc (#207 testimonial-columns) --- */
+.landing .lp-quote { margin: 0; padding: 20px; border: 1px solid transparent; border-radius: var(--lp-radius);
+  background:
+    radial-gradient(260px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 10%), transparent), transparent 60%) padding-box,
+    linear-gradient(var(--lp-bg), var(--lp-bg)) padding-box,
+    radial-gradient(180px circle at var(--cx, -400px) var(--cy, -400px), color-mix(in srgb, var(--lp-accent) calc(var(--o) * 90%), transparent), transparent 70%) border-box,
+    linear-gradient(color-mix(in srgb, var(--lp-text) 12%, transparent), color-mix(in srgb, var(--lp-text) 12%, transparent)) border-box; }
+.lp-quote::before { content: '★★★★★'; display: block; margin-bottom: 8px; color: var(--lp-accent); font-size: 0.9em; letter-spacing: 2px; } /* taste-skill-ignore */
+.lp-quote blockquote { font-size: 1.05em; }
+.lp-quotes { gap: 16px; }
+.lp-quotes.is-wall { grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 14px; height: min(440px, 72vh); overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); }
+.lp-wall-col { overflow: hidden; min-width: 0; }
+.lp-wall-tr { display: flex; flex-direction: column; gap: 14px; animation: lpWall var(--t, 30s) linear infinite; animation-direction: var(--dir, normal); }
+.lp-wall-col:hover .lp-wall-tr, .lp-wall-col:focus-within .lp-wall-tr, .lp-quotes.is-off .lp-wall-tr { animation-play-state: paused; }
+@keyframes lpWall { to { transform: translate3d(0, calc(-50% - 7px), 0); } }
+.landing .lp-bg-primary .lp-quote { background: color-mix(in srgb, currentColor 8%, transparent); border-color: color-mix(in srgb, currentColor 18%, transparent); }
+.lp-bg-primary .lp-quote figcaption { color: rgba(255, 255, 255, 0.8); }
+
+/* --- Ưu đãi: vé có khía, xé cuống (#298 coupon-tear) --- */
+.lp-offer-card { display: flex; align-items: stretch; gap: 0; padding: 0; max-width: 760px; overflow: visible; background: none; box-shadow: none; border-radius: 0; color: var(--lp-accent-contrast);
+  filter: drop-shadow(0 16px 22px color-mix(in srgb, var(--lp-accent) 30%, transparent)); }
+.lp-offer-main { position: relative; flex: 1 1 auto; min-width: 0; display: flex; align-items: flex-start; gap: 16px; padding: 24px 26px 24px 22px; border-radius: 18px 0 0 18px;
+  background: linear-gradient(135deg, var(--lp-accent), color-mix(in srgb, var(--lp-accent) 60%, var(--lp-primary)));
+  -webkit-mask: radial-gradient(circle 10px at 100% 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
+  mask: radial-gradient(circle 10px at 100% 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) bottom / 100% 51% no-repeat; }
+.lp-offer-stub { position: relative; flex: none; width: 176px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 18px 16px;
+  border-left: 2px dashed color-mix(in srgb, var(--lp-accent-contrast) 65%, transparent); border-radius: 0 18px 18px 0; transform-origin: 0 100%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--lp-accent) 78%, var(--lp-primary)), color-mix(in srgb, var(--lp-accent) 40%, var(--lp-primary)));
+  -webkit-mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at 0 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
+  mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at 0 100%, transparent 98%, #000) bottom / 100% 51% no-repeat; }
+.lp-offer-ico { background: color-mix(in srgb, var(--lp-accent-contrast) 20%, transparent); color: var(--lp-accent-contrast); margin-left: 0; }
+.lp-offer-photo { box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-accent-contrast) 70%, transparent); }
+.landing .lp-offer-card .lp-offer-text { color: inherit; }
+.landing .lp-offer-card .lp-offer-until { color: inherit; opacity: 0.85; }
+.lp-offer-stub .lp-offer-left { align-self: center; background: var(--lp-accent-contrast); color: var(--lp-accent); }
+.lp-offer-stub .lp-cta.lp-offer-claim { width: 100%; box-sizing: border-box; text-align: center; padding: 11px 12px; background: var(--lp-accent-contrast); color: var(--lp-accent); box-shadow: none; }
+.lp-offer-card .lp-offer-stub { transition: transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1), opacity 0.4s; }
+.lp-offer-card.is-torn .lp-offer-stub { transform: translate(18px, 120px) rotate(28deg); opacity: 0; pointer-events: none; transition: transform 0.6s cubic-bezier(0.5, 0, 0.6, 1), opacity 0.4s 0.3s; }
+@container (max-width: 560px) {
+  .lp-offer-card { flex-direction: column; }
+  .lp-offer-main { padding: 20px 18px 24px; border-radius: 18px 18px 0 0;
+    -webkit-mask: radial-gradient(circle 10px at 0 100%, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) right / 51% 100% no-repeat;
+    mask: radial-gradient(circle 10px at 0 100%, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) right / 51% 100% no-repeat; }
+  .lp-offer-body { flex-basis: auto; }
+  .lp-offer-stub { width: auto; flex-direction: row; justify-content: space-between; border-left: 0; border-top: 2px dashed color-mix(in srgb, var(--lp-accent-contrast) 65%, transparent); border-radius: 0 0 18px 18px; transform-origin: 0 0; padding: 18px 16px 16px;
+    -webkit-mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at 100% 0, transparent 98%, #000) right / 51% 100% no-repeat;
+    mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at 100% 0, transparent 98%, #000) right / 51% 100% no-repeat; }
+  .lp-offer-stub .lp-cta.lp-offer-claim { width: auto; flex: 1 1 auto; max-width: 190px; }
+  .lp-offer-card.is-torn .lp-offer-stub { transform: translate(-14px, 100px) rotate(-16deg); }
+}
+
+/* --- Album: ngăn ảnh mở rộng (#389 accordion-image-panels). Chỉ khi khung rộng và có từ 3 ảnh; bố cục lưới là bản dự phòng --- */
+.lp-gallery.is-acc { display: flex; gap: 8px; height: clamp(300px, 34cqi, 440px); max-width: none; margin-inline: 0; }
+.lp-gallery.is-acc .lp-gallery-item { flex: 1 1 0; min-width: 0; grid-column: auto; grid-row: auto; aspect-ratio: auto; min-height: 0; transform: none; box-shadow: none; transition: flex-grow 0.6s cubic-bezier(0.3, 1, 0.3, 1); }
+.lp-gallery.is-acc .lp-gallery-item.on { flex-grow: 5; }
+.lp-gallery.is-acc .lp-gallery-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 55%, rgba(0, 0, 0, 0.5)); pointer-events: none; }
+.lp-acc-n { position: absolute; left: 14px; bottom: 12px; z-index: 1; color: #fff; font-size: 14px; font-weight: 800; letter-spacing: 0.08em; pointer-events: none; font-variant-numeric: tabular-nums; }
+.lp-gallery:not(.is-acc) .lp-acc-n { display: none; }
+
+/* --- Form: nhãn nổi (#25 floating-label-field). Chỉ ở trang xem; khi soạn giữ nhãn phía trên để sửa chữ --- */
+@supports selector(:has(a)) {
+  .landing:not(.is-editable) .lp-register:not(.lp-bg-primary) .lp-form { --lp-in-h: 52px; }
+  .landing:not(.is-editable) .lp-reg-card .lp-form { --lp-in-h: 48px; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field { position: relative; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field input { height: var(--lp-in-h, 52px); box-sizing: border-box; padding: 0 14px; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field label { position: absolute; z-index: 1; left: 10px; top: 0; height: var(--lp-in-h, 52px); display: flex; align-items: center; padding: 0 4px; margin: 0; font-size: 16px; font-weight: 500; color: var(--lp-muted); transform-origin: 0 50%; pointer-events: none; white-space: nowrap; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field input::placeholder { opacity: 0; transition: opacity 0.2s; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field input:focus::placeholder { opacity: 1; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field:is(:focus-within, :has(input:not(:placeholder-shown))) label { transform: translate(0, calc(var(--lp-in-h, 52px) / -2)) scale(0.82); background: linear-gradient(transparent 50%, #fff 50%); color: var(--lp-primary); font-weight: 700; }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field:focus-within label { color: var(--lp-accent); }
+  :is(.landing:not(.is-editable) .lp-register:not(.lp-bg-primary), .landing:not(.is-editable) .lp-reg-card) .lp-field:has(input[aria-invalid="true"]) label { color: #c0262d; }
+}
+
+/* --- Pháo giấy khi đăng ký thành công (#320 scratch-card: confetti bắn theo góc, thêm rơi xuống) --- */
+.lp-pop-card { overflow-x: hidden; }
+.lp-pop-burst i { width: 9px; height: 14px; border-radius: 2px; animation: lp-confetti 1.7s cubic-bezier(0.2, 0.7, 0.3, 1) var(--dl, 0ms) both; }
+.lp-pop-burst i:nth-child(3n) { width: 8px; height: 8px; border-radius: 50%; }
+.lp-pop-burst i:nth-child(5n) { background: var(--lp-accent); }
+.lp-pop-burst i:nth-child(5n+1) { background: var(--lp-primary); }
+.lp-pop-burst i:nth-child(5n+2) { background: color-mix(in srgb, var(--lp-accent) 55%, #fff); }
+.lp-pop-burst i:nth-child(5n+3) { background: color-mix(in srgb, var(--lp-primary) 60%, #fff); }
+.lp-pop-burst i:nth-child(5n+4) { background: color-mix(in srgb, var(--lp-accent) 50%, var(--lp-primary)); }
+@keyframes lp-confetti {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg) scale(0.6); }
+  35% { opacity: 1; transform: translate3d(var(--dx), var(--dy), 0) rotate(calc(var(--r) * 0.5)) scale(1); }
+  100% { opacity: 0; transform: translate3d(calc(var(--dx) * 1.15), calc(var(--dy) + 200px), 0) rotate(var(--r)) scale(0.9); }
+}
+
+/* --- Giảm chuyển động / tắt hiệu ứng --- */
+@media (prefers-reduced-motion: reduce) {
+  .lp-wall-tr { animation: none; }
+  .lp-gallery.is-acc .lp-gallery-item, .lp-offer-card .lp-offer-stub, .lp-route-dotc { transition: none; }
+  .lp-pop-burst i { animation: none; }
+}
+html.motion-off .lp-wall-tr, .st-motion-off .lp-wall-tr { animation: none; }
+
+.lp-gallery.lp-acc-init .lp-gallery-item { transition: none !important; }

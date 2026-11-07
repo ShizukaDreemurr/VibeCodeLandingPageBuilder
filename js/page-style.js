@@ -324,9 +324,10 @@
       '--lp-primary': primary,
       '--lp-accent': accent,
       '--lp-accent-contrast': s.btnTextColor || textOn(accent),
-      '--lp-surface': s.surfaceColor || (s.primary ? mix(primary, '#ffffff', 0.92) : theme.surface),
-      '--lp-hero-overlay': (s.heroOverlay / 100).toFixed(2)
+      '--lp-surface': s.surfaceColor || (s.primary ? mix(primary, '#ffffff', 0.92) : theme.surface)
     };
+    // Độ tối lớp phủ: chỉ đặt khi người dùng đã chỉnh (mặc định: ảnh tự tải 62%, ảnh vẽ sẵn của mẫu nhẹ hơn)
+    if (style && style.heroOverlay != null && style.heroOverlay !== '') vars['--lp-art-overlay'] = vars['--lp-hero-overlay'] = (s.heroOverlay / 100).toFixed(2);
     var headF = fontFamilyName(s.headingFont, s.headingFontCustom);
     var bodyF = fontFamilyName(s.bodyFont, s.bodyFontCustom);
     loadFont(headF); loadFont(bodyF);

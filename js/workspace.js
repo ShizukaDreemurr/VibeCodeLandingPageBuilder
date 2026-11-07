@@ -10,7 +10,7 @@
 (function (root) {
   var KEY = 'ep_ws_layout';
   var DEFAULT = {
-    left: { w: 280, groups: [{ tabs: ['layout', 'blocks', 'layers'], active: 'layout' }] },
+    left: { w: 280, groups: [{ tabs: ['layout', 'images', 'blocks', 'layers'], active: 'layout' }] },
     right: { w: 320, groups: [{ tabs: ['style', 'publish'], active: 'style' }] },
     float: [],
     hidden: []
@@ -119,7 +119,7 @@
     var all = Object.keys(panels);
     if (name === 'focus') { layout = sanitize({ left: { w: layout.left.w, groups: [] }, right: { w: layout.right.w, groups: [] }, float: [], hidden: all }); }
     else if (name === 'right') { layout = sanitize({ left: { w: 280, groups: [] }, right: { w: 340, groups: [{ tabs: all, active: all[0] }] }, float: [], hidden: [] }); }
-    else if (name === 'split') { layout = sanitize({ left: { w: 280, groups: [{ tabs: ['layout', 'blocks', 'layers'], active: 'layout' }, { tabs: ['publish'], active: 'publish' }] }, right: { w: 320, groups: [{ tabs: ['style'], active: 'style' }] }, float: [], hidden: [] }); }
+    else if (name === 'split') { layout = sanitize({ left: { w: 280, groups: [{ tabs: ['layout', 'images', 'blocks', 'layers'], active: 'layout' }, { tabs: ['publish'], active: 'publish' }] }, right: { w: 320, groups: [{ tabs: ['style'], active: 'style' }] }, float: [], hidden: [] }); }
     else layout = sanitize(clone(DEFAULT));
     commit();
   }

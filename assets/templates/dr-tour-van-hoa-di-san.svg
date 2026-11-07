@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" preserveAspectRatio="xMidYMid slice"><defs>
+  <linearGradient id="bg" gradientTransform="rotate(120 .5 .5)"><stop offset="0" stop-color="#834522"/><stop offset="1" stop-color="#421d08"/></linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.15" r="0.6"><stop offset="0" stop-color="#B4092F" stop-opacity=".55"/><stop offset="1" stop-color="#B4092F" stop-opacity="0"/></radialGradient>
+  <linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="#421d08" stop-opacity=".85"/><stop offset=".55" stop-color="#421d08" stop-opacity="0"/></linearGradient>
+  <filter id="soft"><feGaussianBlur stdDeviation="30"/></filter>
+</defs>
+<rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#glow)"/>
+<circle cx="1369.9208499863744" cy="586.2913781544194" r="227.24649908952415" fill="#fffdf3" opacity="0.09" filter="url(#soft)"/>
+<circle cx="780.5804485222325" cy="89.67365592252463" r="151.1617426108569" fill="#fffdf3" opacity="0.17" filter="url(#soft)"/>
+<circle cx="1017.6263474859297" cy="698.752617300488" r="200.0173540133983" fill="#B4092F" opacity="0.16" filter="url(#soft)"/>
+<circle cx="900.8849427103996" cy="683.9929533423856" r="206.39082363806665" fill="#a77c63" opacity="0.11" filter="url(#soft)"/>
+<g transform="translate(2360 0) scale(-1 1)"><circle cx="1180" cy="450" r="300" stroke="#fffdf3" stroke-width="6" fill="none" opacity=".7"/><ellipse cx="1180" cy="450" rx="55" ry="300" stroke="#fffdf3" stroke-width="3" fill="none" opacity=".45"/><path d="M880 250 H1480" stroke="#fffdf3" stroke-width="3" opacity=".35"/><ellipse cx="1180" cy="450" rx="110" ry="300" stroke="#fffdf3" stroke-width="3" fill="none" opacity=".45"/><path d="M880 350 H1480" stroke="#fffdf3" stroke-width="3" opacity=".35"/><ellipse cx="1180" cy="450" rx="165" ry="300" stroke="#fffdf3" stroke-width="3" fill="none" opacity=".45"/><path d="M880 450 H1480" stroke="#fffdf3" stroke-width="3" opacity=".35"/><ellipse cx="1180" cy="450" rx="220" ry="300" stroke="#fffdf3" stroke-width="3" fill="none" opacity=".45"/><path d="M880 550 H1480" stroke="#fffdf3" stroke-width="3" opacity=".35"/><ellipse cx="1180" cy="450" rx="275" ry="300" stroke="#fffdf3" stroke-width="3" fill="none" opacity=".45"/><path d="M880 650 H1480" stroke="#fffdf3" stroke-width="3" opacity=".35"/><path d="M820 640 C 1000 420, 1300 760, 1560 300" stroke="#B4092F" stroke-width="7" fill="none" stroke-dasharray="18 14"/></g>
+<rect width="1600" height="900" fill="url(#fade)"/></svg>

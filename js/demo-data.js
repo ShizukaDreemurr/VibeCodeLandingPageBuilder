@@ -1,0 +1,527 @@
+/*
+ * demo-data.js — dữ liệu mẫu cho lần mở đầu tiên (để người chấm xem được ngay, không cần tạo gì).
+ * Ghi vào localStorage đúng định dạng thật của app (tiền tố ep_): events, current_id, brands,
+ * regs_<id>, metrics_<id>. Mọi mục mẫu có id bắt đầu bằng "demo_" và cờ demo: true để xoá riêng.
+ * Chạy TRƯỚC app.js nên app thấy đã có sự kiện và mở thẳng tab "Sự kiện của tôi".
+ * Xác định (PRNG có hạt giống): ai mở cũng thấy cùng nội dung; ngày giờ CỐ ĐỊNH (khai trương Mộc Coffee 28/11/2026) để luôn nằm trong tương lai suốt kỳ chấm.
+ * Bỏ qua khi: trình duyệt tự động (navigator.webdriver) trừ khi URL có ?demo=1, trang công khai (?e=), đã có dữ liệu.
+ */
+(function (root) {
+  var EP = root.EP = root.EP || {};
+  var S = EP.storage;
+  var DAY = 86400000;
+  var PREFIX = 'demo_';
+  var FLAG = 'demo_seeded';
+  var VERSION_KEY = 'demo_version';
+  var VERSION = '9'; // tăng khi đổi nội dung mẫu: trình duyệt có bản cũ sẽ được nâng cấp
+  var MSG = 'Đây là dữ liệu mẫu để bạn xem nhanh. Bấm \'Tạo trang mới\' để làm trang của riêng bạn.';
+
+  // ---------- PRNG ----------
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function pick(rng, arr) { return arr[Math.floor(rng() * arr.length)]; }
+  function wpick(rng, items, weights) {
+    var sum = weights.reduce(function (a, b) { return a + b; }, 0), r = rng() * sum;
+    for (var i = 0; i < items.length; i++) { r -= weights[i]; if (r < 0) return items[i]; }
+    return items[items.length - 1];
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function localStr(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+
+  // ---------- Họ tên, SĐT, email ----------
+  var SURNAMES = ['Nguyễn', 'Nguyễn', 'Nguyễn', 'Nguyễn', 'Trần', 'Trần', 'Lê', 'Lê', 'Phạm', 'Phạm', 'Hoàng', 'Huỳnh', 'Phan', 'Vũ', 'Võ', 'Đặng', 'Bùi', 'Đỗ', 'Hồ', 'Ngô', 'Dương', 'Lý', 'Đinh', 'Trương', 'Mai', 'Lương', 'Tạ', 'Cao'];
+  var MID_M = ['Văn', 'Hữu', 'Minh', 'Quốc', 'Đức', 'Thanh', 'Anh', 'Gia', 'Hoàng', 'Công', 'Xuân', 'Tuấn'];
+  var MID_F = ['Thị', 'Ngọc', 'Thu', 'Khánh', 'Phương', 'Mai', 'Hồng', 'Thanh', 'Bảo', 'Diệu', 'Kim', 'Hải'];
+  var GIVEN_M = ['Hùng', 'Dũng', 'Nam', 'Khoa', 'Long', 'Phúc', 'Tuấn', 'Quân', 'Huy', 'Hiếu', 'Sơn', 'Bảo', 'Trung', 'Đạt', 'Khang', 'Thịnh', 'Kiên', 'Việt', 'Tâm', 'Bách', 'Duy', 'Thắng', 'Lâm', 'Hải', 'Nghĩa', 'Đức', 'Vinh', 'Toàn'];
+  var GIVEN_F = ['Lan', 'Hương', 'Trang', 'Linh', 'Ngân', 'Thảo', 'Vy', 'Nhi', 'Hà', 'My', 'Quyên', 'Chi', 'Uyên', 'Giang', 'Yến', 'Oanh', 'Phượng', 'Thủy', 'Ánh', 'Diệp', 'Hạnh', 'Trâm', 'Ngọc', 'Châu', 'Mai', 'Nga', 'Thư', 'Hằng'];
+  var PREFIXES = ['032', '033', '034', '035', '036', '037', '038', '039', '086', '096', '097', '098', // Viettel
+    '081', '082', '083', '084', '085', '088', '091', '094', // VinaPhone
+    '070', '076', '077', '078', '079', '089', '090', '093', // MobiFone
+    '052', '056', '058', '092']; // Vietnamobile
+  var COMPANY_DOMAINS = ['tanphatgroup.vn', 'vinasoft.com.vn', 'saigonlogistics.vn', 'hoangminh-jsc.vn', 'bluelotus.com.vn'];
+
+  function ascii(s) {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+
+  function makePerson(rng) {
+    var female = rng() < 0.56;
+    var sur = pick(rng, SURNAMES);
+    var given = pick(rng, female ? GIVEN_F : GIVEN_M);
+    var mid = rng() < 0.85 ? pick(rng, female ? MID_F : MID_M) : '';
+    var name = [sur, mid, given].filter(Boolean).join(' ');
+    var f = ascii(given), s = ascii(sur), m = mid ? ascii(mid)[0] : '';
+    var yy = 82 + Math.floor(rng() * 24), dd = 1 + Math.floor(rng() * 28);
+    var local = [f + '.' + s, f + s + pad(dd), s + f + yy, f + m + dd + pad(Math.floor(rng() * 12) + 1), f + (1985 + Math.floor(rng() * 20)), s + '.' + f + (m ? '.' + m : '')][Math.floor(rng() * 6)];
+    var dom = wpick(rng, ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'company'], [74, 8, 7, 3, 8]);
+    if (dom === 'company') dom = pick(rng, COMPANY_DOMAINS);
+    var digits = '';
+    for (var i = 0; i < 7; i++) digits += Math.floor(rng() * 10);
+    return { name: name, email: local + '@' + dom, phone: pick(rng, PREFIXES) + digits };
+  }
+
+  // Thời điểm đăng ký: dồn nhiều lúc mở bán và lúc gần hạn, giờ hành chính + tối
+  var HOUR_W = [1, 1, 1, 1, 1, 1, 2, 3, 6, 10, 11, 9, 6, 7, 10, 10, 8, 7, 6, 8, 11, 10, 6, 3];
+  function hourPick(rng) { return wpick(rng, HOUR_W.map(function (_, i) { return i; }), HOUR_W); }
+  function expo(rng) { return Math.min(1, -Math.log(1 - rng() * 0.98) * 0.16); }
+  function makeTime(rng, from, to) {
+    var r = rng(), x = r < 0.45 ? expo(rng) : r < 0.8 ? 1 - expo(rng) : rng();
+    var d = new Date(from + x * (to - from));
+    d.setHours(hourPick(rng), Math.floor(rng() * 60), Math.floor(rng() * 60), 0);
+    if (d.getTime() > to) d = new Date(d.getTime() - DAY);
+    if (d.getTime() < from) d = new Date(from + rng() * (to - from));
+    return d;
+  }
+
+  // ---------- Brand DNA ----------
+  var BRANDS = [
+    { id: 'demo_brand_techup', name: 'TechUp Academy', tagline: 'Học thật, làm được, đi làm ngay',
+      primary: '#1e3a8a', accent: '#c2410c', textColor: '#0f172a', bgColor: '#ffffff',
+      headingFont: 'Montserrat', bodyFont: 'Be Vietnam Pro', button: 'solid', radius: 'soft', tone: 'young',
+      voiceUse: 'thực chiến, làm ngay, lộ trình rõ ràng, đồng hành', voiceAvoid: 'cam kết 100%, siêu hot, học là giàu, bí kíp',
+      audience: 'Nhân viên marketing, chủ shop online và sinh viên năm cuối muốn ứng dụng AI vào công việc.',
+      ctaText: 'Giữ chỗ ngay', hotline: '1900 6868', website: 'https://techup-academy.example.com', fanpage: 'https://facebook.com/techup.academy.demo' },
+    { id: 'demo_brand_moc', name: 'Mộc Coffee', tagline: 'Một ly cà phê, một câu chuyện',
+      primary: '#5b3a29', accent: '#b45309', textColor: '#2d1b12', bgColor: '#fffaf3',
+      headingFont: 'Lora', bodyFont: 'Nunito', button: 'pill', radius: 'round', tone: 'young',
+      voiceUse: 'ấm áp, mộc mạc, hạt cà phê, góc nhỏ bình yên', voiceAvoid: 'rẻ nhất, khuyến mãi sốc, cực kỳ hot',
+      audience: 'Dân văn phòng và sinh viên 20–35 tuổi sống quanh khu vực chi nhánh, thích quán yên tĩnh để làm việc và gặp bạn.',
+      ctaText: 'Đăng ký nhận quà', hotline: '1900 7979', website: 'https://moc-coffee.example.com', fanpage: 'https://facebook.com/moc.coffee.demo' },
+    { id: 'demo_brand_anhduong', name: 'Ánh Dương Wedding Studio', tagline: 'Lưu giữ ngày đẹp nhất của bạn',
+      primary: '#831843', accent: '#a16207', textColor: '#3b1f2b', bgColor: '#fff8f5',
+      headingFont: 'Playfair Display', bodyFont: 'Lora', button: 'pill', radius: 'soft', tone: 'formal',
+      voiceUse: 'trân trọng, ấm cúng, khoảnh khắc, kỷ niệm', voiceAvoid: 'giá sốc, chốt đơn, khuyến mại lớn',
+      audience: 'Cặp đôi chuẩn bị cưới trong 3–12 tháng tới và gia đình hai bên, ưu tiên phong cách tự nhiên, nhẹ nhàng.',
+      ctaText: 'Xác nhận tham dự', hotline: '1900 8686', website: 'https://anhduong-studio.example.com', fanpage: 'https://facebook.com/anhduong.studio.demo' }
+  ];
+
+  // ---------- Sự kiện ----------
+  // opt: các khối thêm hiển thị (faq, testimonials, sponsors, map, cta2)
+  function sections(opt) {
+    var order = ['countdown', 'about', 'benefits', 'speakers', 'gallery', 'agenda', 'offer', 'testimonials', 'faq', 'sponsors', 'map', 'cta2', 'register'];
+    return order.map(function (k) {
+      var optional = ['testimonials', 'faq', 'sponsors', 'map', 'cta2'].indexOf(k) >= 0;
+      return { key: k, visible: k === 'gallery' ? opt.indexOf('gallery') >= 0 : (optional ? opt.indexOf(k) >= 0 : true) };
+    });
+  }
+
+  var SPECS = [
+    { key: 'ai', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'tech', brand: 'demo_brand_techup', date: '2026-12-05T09:00', ebUntil: '2026-11-30T23:59', launch: '2026-10-20T08:00', tone: 'young',
+      name: 'Workshop AI Marketing 2026', location: 'Hội trường Lotus, 12 Duy Tân, Cầu Giấy, Hà Nội', capacity: 150,
+      speakers: [{ name: 'Nguyễn Hoài Nam', title: 'Head of Growth, startup thương mại điện tử' }, { name: 'Lê Thu Phương', title: 'Chuyên gia nội dung AI, 8 năm làm agency' }, { name: 'Trần Quang Vinh', title: 'Data Lead, nền tảng quảng cáo số' }],
+      agenda: [['08:30', 'Check-in, nhận bộ tài liệu và ly cà phê đầu ngày'], ['09:00', 'Mở màn: 5 việc nên giao cho AI, 3 việc đừng bao giờ'], ['09:30', 'Viết nội dung có kiểm duyệt: giữ giọng thương hiệu ngay từ bản nháp'], ['10:30', 'Giải lao, làm quen người cùng nghề'], ['10:45', 'Thực hành: dựng chiến dịch 7 ngày từ bộ prompt mẫu'], ['11:45', 'Hỏi đáp và mang tài liệu về']],
+      earlyBird: 'Giảm 30% học phí cho 50 người đăng ký đầu tiên',
+      texts: { 'offer.title': 'Giảm 30% cho 50 người đến trước', 'register.title': 'Giữ chỗ trong 30 giây', 'benefits.title': 'Bạn mang gì về sau buổi sáng này?', 'about.title': 'Vì sao bài AI viết vẫn "nghe như robot"?' },
+      content: {
+        headline: 'Chỉ 45 phút để dựng xong kế hoạch marketing 7 ngày cùng AI',
+        description: 'AI viết bài nhanh, nhưng bài ra vẫn nghe như robot và bạn lại mất cả buổi ngồi sửa. Sáng nay, 3 người đang làm nghề chỉ bạn cách giao đúng việc cho AI mà vẫn giữ giọng thương hiệu. Bạn thực hành trên bài toán của chính mình và về nhà với bộ prompt chạy được từ thứ Hai.',
+        benefits: ['Rời phòng với kế hoạch chiến dịch 7 ngày của riêng bạn, dựng trong 45 phút thực hành', 'Bộ 30 prompt đã kiểm chứng: mở file, dán, chạy, bớt gần nửa buổi viết nội dung mỗi tuần', 'Hỏi thẳng 3 người đang làm nghề về đúng tình huống của bạn, không lý thuyết suông'] },
+      seo: { title: 'Workshop AI Marketing 2026 – Thực hành dựng kế hoạch 7 ngày', description: 'Workshop AI Marketing 2026 tại Cầu Giấy, Hà Nội: thực hành dựng kế hoạch 7 ngày cùng AI, mang về 30 prompt dùng ngay. Giảm 30% cho 50 người đầu, đăng ký ngay!', ogTitle: 'Chỉ 45 phút để AI viết đúng giọng thương hiệu của bạn', ogDescription: 'Sáng 5/12 tại Hà Nội, 3 người đang làm nghề chỉ bạn cách giao việc cho AI và về nhà với kế hoạch marketing 7 ngày của riêng mình. Giữ chỗ trong 30 giây.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/ai-hero.webp' },
+      secs: ['testimonials', 'faq', 'map'],
+      faq: [['Chưa dùng AI bao giờ thì có theo kịp không?', 'Có. Chúng mình bắt đầu từ thao tác đầu tiên và mỗi bài thực hành đều có mẫu để làm theo. Người chưa dùng AI vẫn ra về với một kế hoạch hoàn chỉnh.'], ['Có cần mang laptop không?', 'Nên mang. Mỗi bàn có ổ cắm và wifi riêng nên bạn khỏi lo hết pin giữa buổi.'], ['Học phí và thanh toán thế nào?', 'Bạn đăng ký trước, chưa phải trả tiền. Ban tổ chức gọi xác nhận trong 24 giờ và gửi hướng dẫn thanh toán. Suất giảm 30% được giữ đến hết 30/11.']],
+      quotes: [['“Mình áp dụng bộ prompt vào kế hoạch tuần sau và tiết kiệm gần nửa ngày viết bài.”', 'Thu Hà · Marketing Manager, học viên khoá trước'], ['“Diễn giả nói thẳng việc nào giao cho AI, việc nào phải tự làm. Nghe là áp dụng được.”', 'Quốc Bảo · chủ shop online, học viên khoá trước']],
+      regs: 105, sheet: false, funnel: 11 },
+    { key: 'coffee', picPrefix: 'moc', templateId: 'fnb', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['opening', 'barista', 'tasting', 'beans', 'acoustic'] }, brand: 'demo_brand_moc', date: '2026-11-28T08:00', ebUntil: '2026-11-26T23:59', launch: '2026-10-20T08:00', tone: 'young',
+      name: 'Khai trương Mộc Coffee Hồ Tây', location: '25 Quảng An, Tây Hồ, Hà Nội', capacity: 200,
+      speakers: [{ name: 'Barista Minh Khôi', title: 'Quán quân Barista Hà Nội 2025, 9 năm pha chế' }, { name: 'Nguyễn Hà My', title: 'Nhà sáng lập, tự chọn từng mẻ hạt của Mộc' }, { name: 'Đức Anh', title: 'Ca sĩ acoustic, ban nhạc Chiều Hồ Tây' }],
+      agenda: [['08:00', 'Cắt băng và mời ly đầu tiên trong ngày'], ['08:30', 'Mua 1 tặng 1 toàn menu đến 11:00, rủ cả team đi cùng'], ['10:00', 'Barista Minh Khôi dạy pha phin: tự tay pha, mang ly mình pha về bàn'], ['14:00', 'Bịt mắt nếm thử 3 loại hạt cà phê, xem bạn hợp với loại nào nhất'], ['17:00', 'Giờ vàng: 100 khách đầu tiên nhận gói hạt rang mang về'], ['19:00', 'Nhạc acoustic bên hồ, hồ lên đèn']],
+      earlyBird: 'Ly signature (giá 55.000đ) mời miễn phí cho 200 khách đăng ký đầu tiên. Đến quầy, đọc số điện thoại đã đăng ký là nhận ly.',
+      texts: {
+        'hero.eyebrow': 'Khai trương chi nhánh thứ hai của Mộc',
+        'countdown.title': 'Còn bao lâu đến ly cà phê đầu tiên?',
+        'about.title': '☕ Mộc có một góc mới bên Hồ Tây, hẹn bạn sáng thứ Bảy này.',
+        'benefits.title': 'Sáng 28/11, bạn mang về gì?',
+        'speakers.title': 'Những người đứng sau ly cà phê',
+        'agenda.title': 'Một ngày ở Mộc Hồ Tây',
+        'offer.title': 'Ly signature đầu tiên, mời bạn',
+        'register.title': 'Giữ phần cà phê của bạn',
+        'form.submit': 'Giữ ly miễn phí cho tôi',
+        'faq.title': 'Trước khi đăng ký, bạn có thể đang băn khoăn',
+        'testimonials.title': 'Khách quen Mộc Cầu Giấy nói gì',
+        'cta2.title': 'Còn {con_cho} ly signature chưa có tên',
+        'cta2.text': 'Đã có {so_dang_ky} người giữ phần. Cửa quán mở sau {dem_nguoc} ngày nữa, 8:00 sáng thứ Bảy 28/11. Đủ 200 người là chúng mình dừng tặng, bạn đăng ký trước 26/11 để chắc phần.',
+        'cta2.btn': 'Giữ ly của tôi'
+      },
+      content: {
+        headline: 'Mộc Hồ Tây TẶNG MIỄN PHÍ 200 ly cà phê cho những khách hàng ĐẦU TIÊN!',
+        description: 'Sau hai năm ở Cầu Giấy, Mộc mang câu chuyện cà phê của mình đến một nơi có thêm gió hồ, khoảng trời rộng và những buổi sáng thật chậm. Vẫn là hương cà phê được rang ngay tại quầy, thơm nức mỗi sớm mai. Chỉ khác là lần này, bạn có thể nhâm nhi một ly cà phê yêu thích bên Hồ Tây. 📍 8:00 sáng, thứ Bảy ngày 28/11, Mộc chính thức khai trương và dành tặng 1 ly cà phê signature cho 200 khách đầu tiên ghé thăm. Bạn chỉ mất khoảng 30 giây để đăng ký trước. Đến quán, đọc số điện thoại là có thể nhận quà. Một góc mới đã sẵn sàng. Còn bạn, mình hẹn nhau sáng thứ Bảy nhé! 🤎',
+        // Đoạn giới thiệu chia đoạn (xuống dòng) bằng chữ có định dạng
+        descriptionHtml: 'Sau hai năm ở Cầu Giấy, Mộc mang câu chuyện cà phê của mình đến một nơi có thêm gió hồ, khoảng trời rộng và những buổi sáng thật chậm.<br><br>Vẫn là hương cà phê được rang ngay tại quầy, thơm nức mỗi sớm mai. Chỉ khác là lần này, bạn có thể nhâm nhi một ly cà phê yêu thích bên Hồ Tây.<br><br>📍 8:00 sáng, thứ Bảy ngày 28/11, Mộc chính thức khai trương và dành tặng 1 ly cà phê signature cho 200 khách đầu tiên ghé thăm.<br><br>Bạn chỉ mất khoảng 30 giây để đăng ký trước. Đến quán, đọc số điện thoại là có thể nhận quà.<br><br>Một góc mới đã sẵn sàng. Còn bạn, mình hẹn nhau sáng thứ Bảy nhé! 🤎',
+        benefits: ['Ly signature đầu tiên do chúng mình mời: béo dịu, hậu ngọt, thơm mùi hạt vừa rang sáng nay', 'Ngồi cạnh barista Minh Khôi, tự tay pha phin và nếm thử 3 loại hạt: Cầu Đất, Buôn Ma Thuột, Sơn La', 'Có ngay một góc quen nhìn ra Hồ Tây: ổ cắm, wifi, ghế êm, tối thứ Bảy có nhạc acoustic'] },
+      seo: { title: 'Khai trương Mộc Coffee Hồ Tây – Ly signature miễn phí', description: 'Sáng thứ Bảy 28/11, Mộc Coffee Hồ Tây khai trương. 200 khách đăng ký đầu tiên nhận ly signature miễn phí, mua 1 tặng 1 đến 11:00, workshop pha phin và nhạc acoustic.', ogTitle: 'Mộc Hồ Tây khai trương – tặng 200 ly signature miễn phí', ogDescription: 'Đăng ký 30 giây, nhận ly cà phê signature bên Hồ Tây sáng thứ Bảy 28/11.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/moc-hero.webp' },
+      secs: ['testimonials', 'faq', 'cta2'],
+      faq: [['Đăng ký rồi có phải đến đúng 8:00 không?', 'Không. Bạn ghé lúc nào trong ngày 28/11 cũng được. Đến quầy đọc số điện thoại đã đăng ký là nhận ly. Quà dành cho 200 người đăng ký đầu tiên nên bạn đăng ký sớm cho chắc phần.'], ['Tôi đi một mình thì có ngại không?', 'Nhiều khách quen của Mộc đi một mình với cái laptop. Dọc cửa sổ có ổ cắm ở mọi bàn và wifi miễn phí, bạn cứ ngồi lâu.'], ['Gửi xe ở đâu?', 'Bãi xe máy miễn phí ngay trước quán. Ô tô đỗ ở khu cách quán 50 m.'], ['Mang thú cưng được không?', 'Khu sân vườn đón thú cưng nhỏ có dây dắt. Khu trong nhà chưa nhận.']],
+      quotes: [['“Mình ngồi làm ở Mộc Cầu Giấy hai năm vì ly bạc xỉu ở đây chưa bao giờ bị loãng.”', 'Thu Trang · nhân viên thiết kế, khách quen Cầu Giấy'], ['“Sáng nào cũng ghé lấy ly phin mang lên văn phòng. Nghe có chi nhánh gần nhà là đăng ký liền.”', 'Anh Tuấn · kế toán, khách quen Cầu Giấy']],
+      regs: 64, funnel: 12 },
+    { key: 'edu', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'edu', brand: '', date: '2026-12-12T14:00', ebUntil: '2026-12-05T23:59', launch: '2026-10-20T08:00', tone: 'formal',
+      name: 'Hội thảo Định hướng Du học Úc & Canada 2027', location: 'Saigon Learning Hub, 88 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', capacity: 120,
+      speakers: [{ name: 'ThS. Lê Minh Châu', title: 'Chuyên gia tư vấn du học, 12 năm kinh nghiệm' }, { name: 'Phạm Quỳnh Anh', title: 'Cựu sinh viên học bổng toàn phần tại Melbourne' }, { name: 'Ông David Nguyễn', title: 'Đại diện tuyển sinh khu vực Canada' }],
+      agenda: [['14:00', 'Đón tiếp, nhận bộ tài liệu theo từng quốc gia'], ['14:30', 'Úc hay Canada: ngành nào đang mở rộng cửa năm 2027'], ['15:15', 'Quỳnh Anh kể cách làm hồ sơ học bổng toàn phần'], ['16:00', 'Giải lao, hỏi nhanh tại các gian tư vấn'], ['16:20', 'Chi phí thật, visa và lộ trình hồ sơ 12 tháng'], ['17:00', 'Ngồi riêng với chuyên gia theo hồ sơ của con bạn']],
+      earlyBird: 'Tặng bộ hồ sơ học bổng mẫu cho 100 gia đình đăng ký sớm',
+      texts: { 'offer.title': 'Bộ hồ sơ học bổng mẫu, tặng 100 gia đình', 'register.title': 'Giữ chỗ miễn phí cho gia đình bạn' },
+      content: {
+        headline: 'Du học Úc hay Canada? Chốt trong một buổi chiều',
+        description: 'Chọn sai nước, sai ngân sách là điều tốn kém nhất của mùa du học. Chiều 12/12, bạn nghe thẳng từ chuyên gia tư vấn 12 năm, một cựu sinh viên học bổng toàn phần và đại diện tuyển sinh Canada. Có tư vấn riêng theo hồ sơ, không bán khoá học tại chỗ.',
+        benefits: ['Về nhà với bảng mốc thời gian, điểm số và chứng chỉ cho từng nước, không còn lo trễ hạn', 'Nghe Quỳnh Anh kể từng bước làm hồ sơ học bổng toàn phần Melbourne, bước nào làm trước', 'Ngồi riêng với chuyên gia để chốt ngân sách, visa và phương án dự phòng cho hồ sơ của con bạn'] },
+      seo: { title: 'Hội thảo Du học Úc & Canada 2027 – Miễn phí tại TP.HCM', description: 'Hội thảo du học Úc và Canada 2027 miễn phí chiều 12/12 tại Quận 3, TP.HCM: lộ trình, học bổng, chi phí, tư vấn riêng theo hồ sơ. Chỉ 120 chỗ, giữ chỗ ngay!', ogTitle: 'Du học Úc hay Canada? Chốt trong một buổi chiều', ogDescription: 'Cùng chuyên gia 12 năm kinh nghiệm và cựu sinh viên học bổng toàn phần, tìm đúng nước, đúng ngân sách cho con. Chiều 12/12, miễn phí, giữ chỗ cho gia đình bạn.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/edu-hero.webp' },
+      secs: ['testimonials', 'faq', 'sponsors'],
+      faq: [['Hội thảo có thu phí không?', 'Không. Bạn chỉ cần đăng ký trước để ban tổ chức chuẩn bị chỗ ngồi và tài liệu.'], ['Con mới học lớp 10, 11 có nên đi không?', 'Nên. Biết sớm cần môn nào, chứng chỉ nào giúp con chuẩn bị từ bây giờ thay vì chạy nước rút năm lớp 12.'], ['Phụ huynh đi một mình được không?', 'Được. Mỗi gia đình đăng ký một suất, đi cùng con hoặc đi riêng đều được.']],
+      quotes: [['“Con mình xác định được ngành và trường chỉ sau một buổi, đỡ cả tháng tìm hiểu.”', 'Chị Thu Hằng · phụ huynh khoá trước'], ['“Phần chia sẻ hồ sơ học bổng rất chi tiết, mình chỉnh lại bài luận ngay hôm sau.”', 'Gia Bảo · du học sinh Úc']],
+      sponsorNames: ['Đại học Melbourne (mẫu)', 'Hiệp hội Du học Việt Nam (mẫu)', 'Ngân hàng An Bình (mẫu)', 'Hội đồng Anh (mẫu)'],
+      regs: 112, funnel: 9 },
+    { key: 'beauty', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'beauty', brand: '', date: '2026-12-02T15:00', ebUntil: '2026-11-25T23:59', launch: '2026-10-20T08:00', tone: 'formal',
+      name: 'Workshop Chăm sóc da mùa hanh khô', location: 'Lumi Skin Studio, 42 Lê Lợi, Quận 1, TP.HCM', capacity: 40,
+      speakers: [{ name: 'BS. Hoàng Yến', title: 'Bác sĩ da liễu, 10 năm khám và điều trị' }, { name: 'Ngô Bảo Trân', title: 'Chuyên viên chăm sóc da, Lumi Skin Studio' }],
+      agenda: [['15:00', 'Check-in, tách trà thảo mộc ấm'], ['15:30', 'Vì sao da bạn bong dù đã thoa kem dày'], ['16:15', 'Quy trình 5 bước gọn, đúng thứ tự'], ['17:00', 'Nằm thử liệu trình phục hồi mẫu'], ['17:45', 'Hỏi đáp riêng và nhận quà']],
+      earlyBird: 'Voucher 300.000đ cho 20 khách đăng ký đầu tiên',
+      texts: { 'offer.title': 'Voucher 300.000đ cho 20 người đầu tiên', 'register.title': 'Vào danh sách chờ' },
+      content: {
+        headline: 'Da khô mãi không khỏi? Một buổi chiều để tìm ra nguyên nhân',
+        description: 'Trời hanh, da căng rát, bong từng mảng, thoa kem dày hơn mà vẫn không đỡ. Thường là lớp màng bảo vệ da đang yếu, không phải thiếu kem. Bác sĩ da liễu sẽ soi da cho từng người, trong nhóm tối đa 40 khách để ai cũng được hỏi.',
+        benefits: ['Được soi da miễn phí, biết da đang thiếu nước hay thiếu dầu trước khi mua thêm món nào', 'Ra về với quy trình 5 bước gọn, đúng thứ tự, khỏi lo mua trùng công dụng', 'Thử liệu trình phục hồi mẫu trong phòng riêng yên tĩnh, kèm tách trà thảo mộc ấm'] },
+      seo: { title: 'Workshop Chăm sóc da mùa hanh khô – Soi da miễn phí', description: 'Workshop chăm sóc da mùa hanh khô cùng bác sĩ da liễu tại Quận 1, TP.HCM: soi da miễn phí, quy trình 5 bước gọn nhẹ. Nhóm chỉ 40 khách, vào danh sách chờ ngay!', ogTitle: 'Da khô mãi không khỏi? Một buổi chiều để hiểu làn da của bạn', ogDescription: 'Bác sĩ da liễu soi da cho từng người, trà thảo mộc ấm và liệu trình phục hồi mẫu. Nhóm nhỏ 40 khách ngày 2/12, vào danh sách chờ để giữ chỗ khi có người huỷ.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/beauty-hero.webp' },
+      secs: ['testimonials', 'faq'],
+      faq: [['Đã hết chỗ thì tôi làm sao?', 'Bạn đăng ký vào danh sách chờ. Khi có người huỷ, ban tổ chức gọi báo theo thứ tự đăng ký, thường trước buổi 1 đến 2 ngày.'], ['Da nhạy cảm có tham gia được không?', 'Được. Bác sĩ tư vấn riêng cho da nhạy cảm và chỉ làm mẫu trên sản phẩm dịu nhẹ.'], ['Tôi cần chuẩn bị gì?', 'Đến với làn da sạch, không trang điểm đậm để soi da chính xác hơn.']],
+      quotes: [['“Lần đầu có người giải thích vì sao da mình bong dù đã dùng rất nhiều kem.”', 'Khánh Linh · khách workshop trước'], ['“Không ai ép mua gì. Trà chiều và quà tặng chu đáo hơn mình nghĩ.”', 'Phương Thảo · khách workshop trước']],
+      regs: 54, funnel: 10 },
+    { key: 'wedding', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'wedding', brand: 'demo_brand_anhduong', date: '2026-12-20T11:00', ebUntil: '', launch: '2026-10-20T08:00', tone: 'formal',
+      name: 'Lễ cưới Minh Anh & Hoàng Nam', location: 'Trung tâm Tiệc cưới Riverside, 286 Nguyễn Văn Cừ, Long Biên, Hà Nội', capacity: 150,
+      speakers: [{ name: 'Nguyễn Minh Anh', title: 'Cô dâu' }, { name: 'Trần Hoàng Nam', title: 'Chú rể' }],
+      agenda: [['10:30', 'Đón khách, chụp ảnh cùng cô dâu chú rể'], ['11:00', 'Lễ thành hôn'], ['11:45', 'Khai tiệc'], ['13:30', 'Cắt bánh và nâng ly'], ['14:00', 'Ảnh gia đình và lưu bút']],
+      earlyBird: 'Sự có mặt của bạn là món quà lớn nhất của gia đình chúng mình',
+      studioName: 'Ánh Dương Wedding Studio', studioUrl: 'https://anhduong-studio.example.com',
+      texts: { 'offer.title': 'Lời nhắn từ gia đình', 'register.title': 'Báo cho chúng mình biết bạn sẽ đến' },
+      content: {
+        headline: 'Minh Anh & Hoàng Nam cưới rồi, mời bạn đến chung vui',
+        description: 'Sau nhiều năm bên nhau, chúng mình quyết định về chung một nhà. Sẽ rất vui nếu hôm đó có bạn ngồi cùng bàn. Bạn báo giúp một tiếng để gia đình sắp chỗ cho chu đáo nhé.',
+        benefits: ['Chứng kiến khoảnh khắc hai gia đình chính thức thành một nhà', 'Gặp lại bạn cũ trong bữa trưa ấm cúng, có chỗ ngồi ghi sẵn tên bạn', 'Báo tham dự trong 30 giây, giờ giấc và đường đi nằm sẵn ngay trên thiệp này'] },
+      seo: { title: 'Thiệp mời cưới Minh Anh & Hoàng Nam – 20/12/2026', description: 'Thiệp mời cưới Minh Anh & Hoàng Nam: lễ thành hôn 11:00 ngày 20/12/2026 tại Riverside, Long Biên, Hà Nội. Bấm xác nhận tham dự để gia đình sắp chỗ nhé.', ogTitle: 'Minh Anh & Hoàng Nam cưới rồi, mời bạn đến chung vui', ogDescription: 'Sẽ thật vui nếu hôm đó có bạn ngồi cùng bàn. 11:00, 20/12/2026, Long Biên, Hà Nội. Báo cho chúng mình biết bạn sẽ đến chỉ trong 30 giây.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/wedding-hero.webp' },
+      secs: ['map', 'faq'],
+      faq: [['Tôi có thể đi cùng người thân không?', 'Rất vui nếu được. Bạn ghi số người đi cùng khi xác nhận để gia đình sắp chỗ.'], ['Có chỗ gửi xe không?', 'Trung tâm có hầm gửi ô tô và bãi xe máy miễn phí cho khách mời.'], ['Dress code thế nào?', 'Không bắt buộc. Gam màu pastel nhẹ sẽ rất hợp với không gian buổi tiệc.']],
+      quotes: [],
+      regs: 86, funnel: 5 },
+    { key: 'finance', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'finance', brand: '', date: '2026-10-25T20:00', ebUntil: '2026-10-20T23:59', launch: '2026-09-25T08:00', tone: 'formal',
+      name: 'Webinar Quản lý tài chính cá nhân 2026', location: 'Trực tuyến qua Zoom (gửi link sau khi đăng ký)', capacity: 500,
+      speakers: [{ name: 'Đỗ Thanh Tùng', title: 'Chuyên gia hoạch định tài chính cá nhân' }, { name: 'Nguyễn Hải Yến', title: 'Cố vấn đầu tư, 9 năm tại công ty chứng khoán' }],
+      agenda: [['20:00', 'Lương về đi đâu: bức tranh tài chính của người đi làm'], ['20:30', 'Chia lương thành các phần và dựng quỹ dự phòng'], ['21:00', 'Bước đầu tư an toàn cho người mới'], ['21:30', 'Hỏi đáp trực tiếp']],
+      earlyBird: 'Tặng e-book "Kế hoạch tài chính 12 tháng" cho người đăng ký trước',
+      texts: { 'offer.title': 'E-book kế hoạch tài chính 12 tháng' },
+      content: {
+        headline: 'Lương về là biết rõ từng đồng đi đâu',
+        description: 'Webinar 90 phút cho người đi làm muốn hết cảnh cuối tháng hỏi "tiền đi đâu hết". Bạn lập ngân sách, dựng quỹ dự phòng và bắt đầu đầu tư với mức rủi ro vừa phải, trên số liệu thật và bảng tính mẫu dùng được ngay sau buổi.',
+        benefits: ['Lập xong bảng ngân sách cá nhân theo quy tắc chia lương dễ nhớ, ngay trong buổi', 'Biết mình cần giữ bao nhiêu tháng chi phí để ngủ ngon khi có biến', 'Nhận bảng tính mẫu và e-book kế hoạch 12 tháng, mở ra là dùng'] },
+      seo: { title: 'Webinar Quản lý tài chính cá nhân 2026 – Lập ngân sách', description: 'Webinar quản lý tài chính cá nhân 2026 về ngân sách, quỹ dự phòng và đầu tư an toàn cho người mới. Đã diễn ra 25/10, để lại email nhận bản ghi và e-book.', ogTitle: 'Lương về là biết rõ từng đồng đi đâu', ogDescription: 'Hết cảnh cuối tháng hỏi tiền đi đâu hết: lập ngân sách, dựng quỹ dự phòng và bắt đầu đầu tư an toàn trong 90 phút. Nhận bảng tính mẫu và e-book kế hoạch 12 tháng.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/finance-hero.webp' },
+      secs: ['testimonials'],
+      faq: [], quotes: [['“Bảng tính mẫu rất dễ dùng, tháng này mình đã tách được quỹ dự phòng.”', 'Hoàng Nhi · người tham dự'], ['“Phần hỏi đáp cuối buổi giải đáp đúng thắc mắc về đầu tư của mình.”', 'Minh Tuấn · người tham dự']],
+      regs: 118, ended: true, funnel: 12 },
+    { key: 'hackathon', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'hackathon', brand: '', date: '2026-12-12T08:00', ebUntil: '2026-12-01T23:59', launch: '2026-10-20T08:00', tone: 'young',
+      name: 'Hackathon 48 giờ 2026', location: 'Toà nhà Innovation Hub, 8 Phạm Hùng, Nam Từ Liêm, Hà Nội', capacity: 120,
+      speakers: [{ name: 'Vũ Đức Minh', title: 'Kỹ sư trưởng, nền tảng thanh toán số' }, { name: 'Phạm Ngọc Lan', title: 'Product Lead, startup logistics' }, { name: 'Lê Hải Đăng', title: 'Chuyên gia bảo mật và hạ tầng đám mây' }],
+      agenda: [['08:00', 'Check-in, nhận áo đội và chọn bàn làm việc'], ['09:00', 'Khai mạc, công bố đề bài và bộ dữ liệu'], ['10:00', 'Bắt đầu 48 giờ: lập kế hoạch, chia việc, viết dòng code đầu tiên'], ['20:00', 'Mentor đi từng bàn góp ý lần một'], ['Ngày 2 · 14:00', 'Chốt tính năng, đóng băng mã nguồn'], ['Ngày 2 · 15:30', 'Demo 5 phút trước ban giám khảo'], ['Ngày 2 · 17:30', 'Trao giải và chụp ảnh cùng các đội']],
+      earlyBird: 'Tặng áo hoodie và bộ credit đám mây trị giá 2.000.000đ cho 40 đội đăng ký đầu tiên',
+      texts: { 'offer.title': 'Hoodie và credit đám mây cho 40 đội đầu tiên', 'register.title': 'Đăng ký đội của bạn', 'benefits.title': 'Bạn nhận gì sau 48 giờ?' },
+      content: {
+        headline: '48 giờ để biến ý tưởng thành sản phẩm chạy được',
+        description: 'Một đề bài, một đội nhỏ, 48 giờ không nghỉ trưa. Ngày 12–13/12 tại Hà Nội, 120 lập trình viên, nhà thiết kế và người làm sản phẩm cùng dựng một bản demo thật với sự kèm cặp của các mentor đang làm nghề. Đăng ký theo đội hoặc đi một mình, chúng mình ghép đội giúp bạn.',
+        benefits: ['Giải thưởng tổng 100 triệu đồng và cơ hội vào vòng phỏng vấn tại các công ty đồng hành', 'Mentor đi từng bàn góp ý về kiến trúc, sản phẩm và cách trình bày demo', 'Đồ ăn, nước uống, chỗ nghỉ chợp mắt và ổ cắm tại mỗi bàn suốt 48 giờ'] },
+      seo: { title: 'Hackathon 48 giờ 2026 – Cuộc thi lập trình tại Hà Nội', description: 'Hackathon 48 giờ tại Hà Nội ngày 12–13/12/2026: lập trình đội nhóm, mentor kèm sát, giải thưởng 100 triệu đồng. Rủ đội và đăng ký sớm, chỉ nhận 120 người!', ogTitle: '48 giờ để biến ý tưởng thành sản phẩm chạy được', ogDescription: 'Lập đội, ngủ ít, code nhiều và demo trước ban giám khảo thật. Hackathon 12–13/12 tại Hà Nội có mentor kèm sát và giải thưởng 100 triệu đồng. Đăng ký ngay!', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/hackathon-hero.webp' },
+      secs: ['testimonials', 'faq', 'sponsors'],
+      faq: [['Tôi chưa có đội thì sao?', 'Bạn đăng ký cá nhân, ban tổ chức tổ chức buổi ghép đội 30 phút ngay sau khai mạc. Mỗi đội 3 đến 5 người.'], ['Cần biết ngôn ngữ lập trình nào?', 'Không giới hạn. Đội chọn công nghệ quen tay nhất, miễn demo chạy được vào cuối ngày 2.'], ['Người không code có tham gia được không?', 'Được. Đội nào cũng cần người thiết kế, làm sản phẩm hoặc thuyết trình. Bạn ghi rõ vai trò khi đăng ký.'], ['Có chỗ ngủ không?', 'Có khu nghỉ yên tĩnh với đệm hơi và chăn. Bạn nên mang theo đồ vệ sinh cá nhân.']],
+      quotes: [['“Bốn đứa lạ ghép đội, sau 48 giờ có sản phẩm chạy thật. Lời góp ý của mentor đáng giá hơn cả giải thưởng.”', 'Tuấn Kiệt · lập trình viên, thí sinh mùa trước'], ['“Ban tổ chức lo từ bữa khuya đến chỗ ngủ, mình chỉ việc tập trung vào code.”', 'Bảo Ngọc · sinh viên năm cuối, thí sinh mùa trước']],
+      sponsorNames: ['CloudNam (mẫu)', 'Pixel Studio (mẫu)', 'Ngân hàng Số Việt (mẫu)', 'Cộng đồng Dev Hà Nội (mẫu)'],
+      regs: 96, funnel: 9 },
+    { key: 'demoday', pics: { hero: 'hero', about: 'about', offer: 'gift', gallery: ['g1', 'g2'] }, templateId: 'demo-day-startup', brand: '', date: '2026-12-18T17:30', ebUntil: '2026-12-10T23:59', launch: '2026-10-20T08:00', tone: 'formal',
+      name: 'Demo Day Startup 2026', location: 'Gem Center, 8 Nguyễn Bỉnh Khiêm, Quận 1, TP.HCM', capacity: 180,
+      speakers: [{ name: 'Trần Khải Hoàn', title: 'Quản lý quỹ đầu tư giai đoạn sớm' }, { name: 'Nguyễn Thuỳ Dương', title: 'Nhà sáng lập, chuỗi thương mại điện tử đã gọi vốn Series A' }, { name: 'Đặng Quốc Việt', title: 'Cố vấn chiến lược, 15 năm làm doanh nghiệp công nghệ' }],
+      agenda: [['17:30', 'Đón khách, nhận thẻ tên và thưởng thức đồ uống nhẹ'], ['18:00', 'Khai mạc và giới thiệu 10 đội startup vào chung kết'], ['18:20', 'Vòng pitch: mỗi đội 5 phút và 3 phút hỏi đáp'], ['20:00', 'Nghỉ giải lao, ghé gian trưng bày sản phẩm'], ['20:20', 'Bình chọn khán giả và công bố đội xuất sắc'], ['20:45', 'Networking cùng nhà đầu tư và nhà sáng lập']],
+      earlyBird: 'Bộ hồ sơ giới thiệu 10 startup và vé mời vào buổi networking riêng cho 100 khách đăng ký sớm',
+      texts: { 'offer.title': 'Hồ sơ 10 startup và vé networking riêng', 'register.title': 'Giữ chỗ tham dự miễn phí', 'benefits.title': 'Bạn nhận gì tối 18/12?' },
+      content: {
+        headline: '10 startup, 5 phút pitch, một buổi tối có thể đổi đời',
+        description: 'Tối 18/12, 10 đội startup sau ba tháng ươm tạo bước lên sân khấu trình bày sản phẩm trước nhà đầu tư và khách mời. Bạn xem demo thật, nghe câu hỏi khó từ ban giám khảo và gặp trực tiếp những người đứng sau. Tham dự miễn phí, chỉ cần đăng ký trước.',
+        benefits: ['Xem 10 sản phẩm thật được trình diễn, nghe nhà đầu tư hỏi những câu mà đội nào cũng phải trả lời', 'Nhận bộ hồ sơ tóm tắt từng startup để liên hệ hợp tác hoặc đầu tư sau sự kiện', 'Một giờ networking với nhà sáng lập, nhà đầu tư và cố vấn ngay tại chỗ'] },
+      seo: { title: 'Demo Day Startup 2026 – Gặp nhà đầu tư tại TP.HCM', description: 'Demo Day Startup 2026 tại TP.HCM ngày 18/12: 10 startup pitch trực tiếp trước nhà đầu tư và khách mời, kèm networking. Đăng ký tham dự miễn phí, số chỗ có hạn!', ogTitle: '10 startup, 5 phút pitch, một buổi tối có thể đổi đời', ogDescription: 'Tối 18/12 tại TP.HCM, xem 10 đội startup trình bày trước nhà đầu tư thật và gặp những người đứng sau. Đăng ký tham dự miễn phí để giữ chỗ.', image: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/assets/demo/demoday-hero.webp' },
+      secs: ['testimonials', 'faq', 'sponsors', 'map'],
+      faq: [['Tham dự có mất phí không?', 'Không. Bạn đăng ký trước để ban tổ chức chuẩn bị chỗ ngồi và thẻ tên.'], ['Tôi muốn gặp một startup cụ thể thì sao?', 'Bạn ghi tên đội quan tâm trong form, ban tổ chức sắp xếp buổi gặp ngắn ở phần networking.'], ['Có được quay phim, chụp ảnh không?', 'Bạn được chụp ảnh. Phần demo có thông tin chưa công bố nên vui lòng không quay toàn bộ bài pitch.']],
+      quotes: [['“Mình gặp được hai nhà đầu tư quan tâm đến bài toán logistics ngay trong giờ networking.”', 'Khánh Vy · nhà sáng lập, đội chung kết mùa trước'], ['“Pitch 5 phút nghe áp lực nhưng chính những câu hỏi sau đó giúp đội chỉnh lại mô hình kinh doanh.”', 'Hữu Phước · đồng sáng lập, đội chung kết mùa trước']],
+      sponsorNames: ['Quỹ Khởi Nghiệp Sao Mai (mẫu)', 'Vườn ươm Hạt Giống (mẫu)', 'Ngân hàng Số Việt (mẫu)', 'Hiệp hội Doanh nghiệp Trẻ (mẫu)'],
+      regs: 128, funnel: 10 }
+  ];
+
+  function leadFor(rng, recency, ended) {
+    if (ended) return wpick(rng, ['won', 'contacted', 'lost', 'new'], [62, 10, 18, 10]);
+    var pNew = 0.12 + 0.7 * recency;
+    var r = rng();
+    if (r < pNew) return 'new';
+    return wpick(rng, ['contacted', 'won', 'lost'], [45, 45, 10]);
+  }
+
+  function buildRegs(spec, idx, now, startMs, eventId) {
+    var rng = mulberry32(7919 * (idx + 1) + 13);
+    // Mốc cố định: mở đăng ký từ spec.launch, kết thúc ở min(bây giờ, hạn ưu đãi hoặc giờ diễn ra) nên luôn nằm trong quá khứ
+    var deadline = spec.ended ? startMs - 3 * 3600000 : (spec.ebUntil ? new Date(spec.ebUntil).getTime() : startMs);
+    var to = Math.min(now.getTime() - 60000, deadline);
+    var from = new Date(spec.launch).getTime();
+    if (from >= to - DAY) from = to - 7 * DAY; // đồng hồ máy lệch quá xa thì vẫn hợp lệ
+    var phones = {}, emails = {}, out = [], times = [];
+    while (out.length < spec.regs) {
+      var p = makePerson(rng);
+      if (phones[p.phone] || emails[p.email]) continue;
+      phones[p.phone] = emails[p.email] = true;
+      out.push(p);
+      times.push(makeTime(rng, from, to).getTime());
+    }
+    times.sort(function (a, b) { return a - b; });
+    return out.map(function (p, i) {
+      var waitlist = i >= spec.capacity;
+      return {
+        id: eventId.replace('demo_evt_', 'demo_reg_') + '_' + (i + 1),
+        name: p.name, phone: p.phone, email: p.email,
+        status: waitlist ? 'waitlist' : 'new',
+        createdAt: new Date(times[i]).toISOString(),
+        synced: true,
+        leadStatus: leadFor(rng, (i + 1) / out.length, spec.ended)
+      };
+    });
+  }
+
+  // Ảnh minh hoạ (tạo bằng Gemini) nằm trong assets/demo; đường dẫn tuyệt đối để dùng được cả trong url() của CSS
+  // READY_PICS: khoá sự kiện đã có đủ ảnh trong assets/demo (tên <tiền-tố>-<tên>.webp). Thêm khoá vào đây sau khi bỏ ảnh vào thư mục.
+  var READY_PICS = ['coffee'];
+  function picsReady(spec) { return !!spec.pics && READY_PICS.indexOf(spec.key) >= 0; }
+  function demoPics(spec) {
+    if (!picsReady(spec)) return {};
+    var p = spec.pics, prefix = spec.picPrefix || spec.key;
+    var abs = function (n) { var u = 'assets/demo/' + prefix + '-' + n + '.webp'; try { return new URL(u, document.baseURI).href; } catch (e) { return u; } };
+    return { hero: abs(p.hero), about: abs(p.about), offer: abs(p.offer), gallery: p.gallery.map(abs) };
+  }
+
+  function buildEvent(spec, idx, now) {
+    var id = PREFIX + 'evt_' + spec.key;
+    var texts = {};
+    var blocks = {};
+    if (spec.secs.indexOf('faq') >= 0 && spec.faq.length) {
+      spec.faq.forEach(function (q, i) { texts['faq.q.' + i] = q[0]; texts['faq.a.' + i] = q[1]; });
+      blocks.faq = { count: spec.faq.length };
+    }
+    if (spec.secs.indexOf('testimonials') >= 0 && spec.quotes.length) {
+      spec.quotes.forEach(function (q, i) { texts['testimonials.q.' + i] = q[0]; texts['testimonials.by.' + i] = q[1]; });
+      blocks.testimonials = { count: spec.quotes.length };
+    }
+    if (spec.sponsorNames) {
+      spec.sponsorNames.forEach(function (n, i) { texts['sponsors.name.' + i] = n; });
+      blocks.sponsors = { count: spec.sponsorNames.length };
+    }
+    Object.keys(spec.texts || {}).forEach(function (k) { texts[k] = spec.texts[k]; });
+    var ev = {
+      id: id, name: spec.name, startAt: spec.date, location: spec.location, capacity: spec.capacity,
+      speakers: spec.speakers,
+      agenda: spec.agenda.map(function (a) { return { time: a[0], title: a[1] }; }),
+      earlyBird: spec.earlyBird,
+      earlyBirdUntil: spec.ebUntil || '',
+      sheetUrl: '', templateId: spec.templateId,
+      studioName: spec.studioName || '', studioUrl: spec.studioUrl || '',
+      images: demoPics(spec), sections: sections(picsReady(spec) ? spec.secs.concat('gallery') : spec.secs), style: null,
+      texts: texts, elStyles: null, elStylesBy: null, rich: spec.content.descriptionHtml ? { description: { plain: spec.content.description, html: spec.content.descriptionHtml } } : null,
+      blocks: Object.keys(blocks).length ? blocks : null,
+      brandId: '', brand: null, seo: spec.seo && !picsReady(spec) && spec.seo.image ? Object.assign({}, spec.seo, { image: '' }) : spec.seo, published: false, demo: true, demoPublished: true
+    };
+    var brand = spec.brand && BRANDS.filter(function (b) { return b.id === spec.brand; })[0];
+    if (brand && EP.brands && EP.brands.applyTo) EP.brands.applyTo(ev, brand);
+    var c = spec.content;
+    return {
+      event: ev,
+      content: { headline: c.headline, description: c.description, benefits: c.benefits, source: 'manual' },
+      tone: spec.tone, updatedAt: new Date(now.getTime() - idx * 3600000).toISOString(), demo: true
+    };
+  }
+
+  // Mẫu "Khai trương quán cà phê (Mộc)" trong thư viện dùng lại đúng dữ liệu của trang demo (một nguồn duy nhất)
+  function templateSample(key) {
+    var spec = SPECS.filter(function (k) { return k.key === key; })[0];
+    return spec ? buildEvent(spec, 0, new Date()) : null;
+  }
+
+  function buildMetrics(spec, regs, idx) {
+    var rng = mulberry32(104729 * (idx + 3));
+    var n = regs.length;
+    var views = Math.round(n * (spec.funnel + rng() * 2.5));
+    var ctaClicks = Math.max(n + 8, Math.round(n * (2.3 + rng() * 0.9)));
+    return { views: views, ctaClicks: ctaClicks, studioClicks: spec.studioName ? Math.round(n * 0.18) : 0, appClicks: Math.round(views * 0.012) + 3 };
+  }
+
+  // ---------- Gieo / xoá ----------
+  function isDemoId(id) { return String(id || '').indexOf(PREFIX) === 0; }
+
+  function seed() {
+    var now = new Date();
+    var events = S.read('events', {});
+    var brands = S.read('brands', {});
+    BRANDS.forEach(function (b) {
+      var copy = Object.assign({ logo: '' }, b, { updatedAt: now.toISOString(), demo: true });
+      brands[b.id] = copy;
+    });
+    S.write('brands', brands); // ghi trước để applyTo/ghim thương hiệu dùng được
+    SPECS.forEach(function (spec, i) {
+      var st = buildEvent(spec, i, now);
+      var regs = buildRegs(spec, i, now, new Date(st.event.startAt).getTime(), st.event.id);
+      events[st.event.id] = st;
+      S.write('regs_' + st.event.id, regs);
+      S.write('metrics_' + st.event.id, buildMetrics(spec, regs, i));
+    });
+    S.write('events', events);
+    var cur = S.read('current_id', null);
+    if (!cur || isDemoId(cur) || !events[cur]) S.write('current_id', PREFIX + 'evt_' + SPECS[0].key);
+    S.write(FLAG, now.toISOString());
+    S.write(VERSION_KEY, VERSION);
+  }
+
+  // Đảm bảo có đúng một trang mẫu (và thương hiệu của nó) mà không đụng tới dữ liệu khác; trả về state hoặc null
+  function ensure(key) {
+    var id = PREFIX + 'evt_' + key;
+    var events = S.read('events', {});
+    if (events[id]) return events[id];
+    for (var i = 0; i < SPECS.length; i++) {
+      if (SPECS[i].key !== key) continue;
+      var now = new Date();
+      var spec = SPECS[i];
+      var brands = S.read('brands', {});
+      BRANDS.forEach(function (b) { if (b.id === spec.brand && !brands[b.id]) brands[b.id] = Object.assign({ logo: '' }, b, { updatedAt: now.toISOString(), demo: true }); });
+      S.write('brands', brands);
+      var st = buildEvent(spec, i, now);
+      var regs = buildRegs(spec, i, now, new Date(st.event.startAt).getTime(), st.event.id);
+      events[id] = st;
+      S.write('regs_' + id, regs);
+      S.write('metrics_' + id, buildMetrics(spec, regs, i));
+      S.write('events', events);
+      return st;
+    }
+    return null;
+  }
+
+  function removeDemo() {
+    var events = S.read('events', {});
+    Object.keys(events).forEach(function (id) {
+      if (isDemoId(id) || (events[id] && events[id].demo)) {
+        delete events[id];
+        S.remove('regs_' + id);
+        S.remove('metrics_' + id);
+      }
+    });
+    S.write('events', events);
+    var brands = S.read('brands', {});
+    Object.keys(brands).forEach(function (id) { if (isDemoId(id) || (brands[id] && brands[id].demo)) delete brands[id]; });
+    S.write('brands', brands);
+    var cur = S.read('current_id', null);
+    if (isDemoId(cur)) S.remove('current_id');
+    S.write(FLAG, 'removed');
+  }
+
+  function hasDemo() {
+    var events = S.read('events', {});
+    return Object.keys(events).some(function (id) { return isDemoId(id); });
+  }
+
+  function shouldSeed() {
+    var q = root.location.search || '';
+    if (/[?&]e=/.test(q)) return false;                              // trang công khai của khách
+    if (root.navigator && root.navigator.webdriver && !/[?&]demo=1\b/.test(q)) return false; // test tự động
+    try {
+      if (root.localStorage.getItem('ep_events') !== null) return false;
+      if (root.localStorage.getItem('ep_' + FLAG) !== null) return false;
+    } catch (e) { return false; }
+    return true;
+  }
+
+  // Nâng cấp bản mẫu cũ: chỉ thay mục demo_, giữ nguyên dữ liệu của người dùng.
+  // Không làm gì nếu người dùng đã xoá dữ liệu mẫu (cờ 'removed' hoặc không còn mục demo_ nào).
+  function upgradeIfStale() {
+    var q = root.location.search || '';
+    if (/[?&]e=/.test(q)) return false;
+    try {
+      var flag = S.read(FLAG, null);
+      if (!flag || flag === 'removed') return false;
+      if (S.read(VERSION_KEY, '1') === VERSION) return false;
+      if (!hasDemo()) return false;
+      removeDemo();
+      seed();
+      return true;
+    } catch (e) { return false; }
+  }
+
+  var firstLoad = false;
+  if (shouldSeed()) { seed(); firstLoad = true; } else { upgradeIfStale(); }
+
+  // ---------- Giao diện: banner + chân trang ----------
+  function reload() { root.location.reload(); }
+  function doRestore() {
+    var msg = 'Khôi phục dữ liệu mẫu? Các sự kiện, đăng ký và thương hiệu mẫu sẽ được đặt lại như ban đầu. Dữ liệu của bạn không bị ảnh hưởng.';
+    root.EP.popup.confirm({ tone: 'warn', title: 'Khôi phục dữ liệu mẫu?', body: msg.replace(/^Khôi phục dữ liệu mẫu\? /, ''), confirmLabel: 'Khôi phục' }).then(function (ok) { if (!ok) return; removeDemo(); seed(); reload(); });
+  }
+  function doRemove() {
+    root.EP.popup.confirm({ tone: 'warn', title: 'Xoá dữ liệu mẫu?', body: 'Chỉ các sự kiện, đăng ký và thương hiệu mẫu bị xoá; dữ liệu của bạn được giữ nguyên.', confirmLabel: 'Xoá dữ liệu mẫu' }).then(function (ok) { if (!ok) return; removeDemo(); reload(); });
+  }
+
+  function mkBtn(text, cls, fn, id) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = cls; b.textContent = text;
+    if (id) b.id = id;
+    b.addEventListener('click', fn);
+    return b;
+  }
+
+  function ui() {
+    var grid = document.getElementById('event-grid');
+    var dismissed = false;
+    try { dismissed = root.localStorage.getItem('ep_demo_banner_off') === '1'; } catch (e) { /* bỏ qua */ }
+    if (grid && hasDemo() && !dismissed) {
+      var bar = document.createElement('div');
+      bar.className = 'demo-banner'; bar.id = 'demo-banner'; bar.setAttribute('role', 'note');
+      var t = document.createElement('p'); t.textContent = MSG;
+      var acts = document.createElement('div'); acts.className = 'demo-banner-actions';
+      acts.appendChild(mkBtn('Xoá dữ liệu mẫu', 'btn btn-ghost btn-small', doRemove, 'demo-remove-2'));
+      acts.appendChild(mkBtn('Ẩn', 'btn btn-ghost btn-small', function () {
+        try { root.localStorage.setItem('ep_demo_banner_off', '1'); } catch (e) { /* bỏ qua */ }
+        bar.remove();
+      }, 'demo-dismiss'));
+      bar.appendChild(t); bar.appendChild(acts);
+      grid.parentNode.insertBefore(bar, grid);
+    }
+    var meta = document.querySelector('#app-footer .app-footer-meta');
+    if (meta) {
+      var wrap = document.createElement('span');
+      wrap.className = 'demo-footer';
+      wrap.appendChild(mkBtn('Khôi phục dữ liệu mẫu', 'demo-link', doRestore, 'demo-restore'));
+      wrap.appendChild(document.createTextNode(' · '));
+      wrap.appendChild(mkBtn('Xoá dữ liệu mẫu', 'demo-link', doRemove, 'demo-remove'));
+      meta.parentNode.insertBefore(wrap, meta);
+    }
+    if (firstLoad) {
+      var tt = document.getElementById('toast');
+      if (tt) {
+        tt.textContent = MSG; tt.hidden = false;
+        setTimeout(function () { if (tt.textContent === MSG) tt.hidden = true; }, 5000);
+      }
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ui); else ui();
+
+  // Trang mẫu "đã xuất bản sẵn": dựng lại từ dữ liệu đóng gói (không cần máy chủ), ai mở link ?e=<id> cũng xem được
+  function publicEvent(id) {
+    var now = new Date();
+    for (var i = 0; i < SPECS.length; i++) {
+      if (PREFIX + 'evt_' + SPECS[i].key !== id) continue;
+      var st = buildEvent(SPECS[i], i, now);
+      return { event: st.event, content: st.content, regs: buildRegs(SPECS[i], i, now, new Date(st.event.startAt).getTime(), st.event.id) };
+    }
+    return null;
+  }
+
+  EP.demo = { templateSample: templateSample, publicEvent: publicEvent, VERSION: VERSION, upgrade: upgradeIfStale, seed: seed, ensure: ensure, remove: removeDemo, restore: function () { removeDemo(); seed(); }, hasDemo: hasDemo, isDemoId: isDemoId, brands: BRANDS };
+})(window);
