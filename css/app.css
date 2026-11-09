@@ -3053,3 +3053,18 @@ body:has(#view-templates[hidden]) .lt-reel-fab, body:has(#view-templates[hidden]
   .ml-item { position: relative; }
   .ml-badge { position: absolute; top: 12px; left: 12px; font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; border-radius: 999px; background: var(--accent); color: var(--on-accent, #fff); box-shadow: 0 1px 3px rgba(0, 0, 0, .3); }
 }
+
+@layer app {
+  /* Nhãn "Bản demo vòng loại" trên thanh công cụ: luôn một dòng, không xuống dòng.
+     Từ 1101px thanh công cụ nowrap nên không đủ chỗ cho nhãn: khi nhãn hiện, thanh được phép xuống dòng và nhãn nằm dòng riêng bên dưới
+     (các nút bên phải giữ nguyên vị trí). Chỉ rút gọn bằng dấu … khi màn hình hẹp (<1100px). */
+  .editor-bar .mock-note { flex: none; white-space: nowrap; font-size: 13px; line-height: 20px; height: 24px; padding: 0 10px; }
+  @media (min-width: 1101px) {
+    html.is-editor #view-editor .editor-bar:has(> #mock-note:not([hidden])) { flex-wrap: wrap; row-gap: 6px; }
+    html.is-editor #view-editor .editor-bar:has(> #mock-note:not([hidden])) h2 { flex: 1 1 0; }
+    html.is-editor #view-editor .editor-bar > #mock-note { order: 1; }
+  }
+  @media (max-width: 1099px) {
+    .editor-bar .mock-note { flex: 0 1 auto; min-width: 0; max-width: 240px; overflow: hidden; text-overflow: ellipsis; display: inline-block; }
+  }
+}
