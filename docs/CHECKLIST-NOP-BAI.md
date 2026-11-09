@@ -21,10 +21,10 @@ Ký hiệu: ✅ đã xong trong repo · ⬜ còn phải làm (nhóm)
 
 ## Bước 3 — Video demo (≤ 2 phút)
 
-- ⬜ Quay màn hình thao tác thật trên bản xuất bản GitHub Pages (không quay bản mock tĩnh).
-- ⬜ Thể hiện đủ 5 tính năng: form nhập, AI sinh nội dung, render landing page, đăng ký + số đếm thời gian thực, tạo trang mới.
-- ⬜ Thời lượng ≤ 2:00; kiểm tra lại trước khi tải lên.
-- ⬜ Điền link video vào README (mục 1) và vào form nộp bài.
+- ✅ Quay màn hình thao tác thật trên bản xuất bản GitHub Pages (không quay bản mock tĩnh).
+- ✅ Thể hiện đủ 5 tính năng: form nhập, AI sinh nội dung, render landing page, đăng ký + số đếm thời gian thực, tạo trang mới.
+- ✅ Thời lượng ≤ 2:00; kiểm tra lại trước khi tải lên.
+- ✅ Link video https://youtu.be/Wjn4xhXQXnc đã điền vào README (mục 1). ⬜ Còn điền link vào form nộp bài (Bước 8).
 
 ## Bước 4 — Source ZIP
 

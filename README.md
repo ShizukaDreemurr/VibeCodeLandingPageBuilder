@@ -14,7 +14,7 @@ Marketer tổ chức workshop, hội thảo hay khai trương thường phải c
 | Bảng thi | Bảng B - Kinh tế |
 | Đề bài | Đề số 8 — Tạo landing page sự kiện trong 5 phút |
 | Demo trực tuyến | https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/ |
-| Video demo (≤ 2 phút) | `<URL – nhóm điền trước hạn nộp>` |
+| Video demo (≤ 2 phút) | https://youtu.be/Wjn4xhXQXnc |
 | Source ZIP | `<URL – nhóm điền, quyền truy cập: ai có link đều xem được>` |
 | Minh chứng dùng AI | `docs/minh-chung-ai.md` (kèm ảnh chụp chọn lọc) |
 | Bảng kiểm thử | `docs/bang-kiem-thu.md` |
