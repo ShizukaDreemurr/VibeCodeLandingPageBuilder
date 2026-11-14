@@ -4,9 +4,9 @@
  */
 (function (root) {
   var INFO = {
-    version: '2.10.0',
-    date: '2026-10-27',
-    notes: 'Tạo ảnh bằng AI (Gemini/Imagen) trong Thư viện ảnh, tách mục Ảnh tải lên / Ảnh AI; không ghi đè trang của khách sau khi tải lại',
+    version: '2.10.1',
+    date: '2026-11-09',
+    notes: 'Sửa nhãn mô phỏng AI xuống dòng, ẩn nút đăng ký khi sự kiện đã qua',
     repo: 'ShizukaDreemurr/VibeCodeLandingPageBuilder',
     branch: 'claude/serene-ramanujan-7wxqwr' // nhánh GitHub Pages đang xuất bản
   };
