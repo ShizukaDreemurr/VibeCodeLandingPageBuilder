@@ -1,6 +1,12 @@
 # Bộ Nhận Diện Thương Hiệu Xclipse — VIBE-CODING 2026 (Chung Kết)
 
-> **Định hướng:** Kế thừa tinh thần thị giác của **Samsung Exynos & GPU Xclipse** (sự kết hợp giữa *Exynos* = Thông minh & Bền vững và *Eclipse* = Nhật thực), chuyển thể thành hệ thống giao diện B2B/Kinh doanh sạch sẽ, tin cậy vào ban ngày và tập trung sắc nét vào ban đêm — **không** mang dáng dấp gaming hầm hố.
+> [!IMPORTANT]
+> **BẢN CHỐT CHÍNH THỨC (Final Lock-in):**
+> - **File giao diện mẫu chuẩn:** `skills/vibe-sprint/brand/xclipse-ui-ux-tam-nhin.html`
+> - **Bảng màu chốt:** `#DBF2FC` (Ice Sky Blue — nền sáng thoáng) · `#072D59` (Deep Navy — chữ chính & khối Hero) · `#FD6E88` (Coral Pink — CTA chính & điểm nhấn)
+> - **Phong cách:** Hero chia 2 mảng sáng/tối, kính sọc dọc (*Fluted Glass*) + quả cầu 3D hồng-xanh, tiêu đề phối `Be Vietnam Pro` + `Playfair Display` italic, tích hợp tương tác **Lucian UX/UI** (`#002`, `#013`, `#163`).
+
+> **Định hướng nền tảng:** Kế thừa tinh thần thị giác của **Samsung Exynos & GPU Xclipse** (sự kết hợp giữa *Exynos* = Thông minh & Bền vững và *Eclipse* = Nhật thực), chuyển thể thành hệ thống giao diện B2B/Kinh doanh sạch sẽ, tin cậy và sắc nét.
 
 ---
 
