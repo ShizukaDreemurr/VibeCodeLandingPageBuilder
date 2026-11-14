@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xclipse UI/UX V4 — #09318D · #FCFFFF · #FD91CC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+      /* Palette 4: #09318D · #FCFFFF · #FD91CC */
+      --cobalt: #09318D;
+      --cobalt-mid: #1654D1;
+      --cobalt-light: #3B82F6;
+      --ice: #FCFFFF;
+      --rose: #FD91CC;
+      --rose-deep: #E84393;
+      --ink: #0F172A;
+      --muted: #475569;
+      --line: #E2E8F0;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: var(--font); background: var(--ice); color: var(--ink);
+      line-height: 1.55; overflow-x: hidden;
+    }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+
+    /* Hero Blue Atmosphere (like SOLIX reference) */
+    .hero-zone {
+      position: relative;
+      background:
+        radial-gradient(900px 460px at 50% 42%, #246BFD 0%, #0E3FA9 48%, #09318D 80%, #061F5E 100%);
+      color: #FCFFFF;
+      padding-bottom: 110px;
+      overflow: hidden;
+    }
+    /* Subtle dot matrix texture */
+    .hero-zone::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(252, 255, 255, 0.14) 1px, transparent 1px);
+      background-size: 22px 22px;
+      mask-image: radial-gradient(circle at 50% 45%, black 35%, transparent 80%);
+    }
+
+    /* Topbar */
+    .nav { position: relative; z-index: 10; padding: 18px 0; }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; color: #FCFFFF; text-decoration: none; letter-spacing: -0.02em; }
+    .brand img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255,255,255,0.3); }
+
+    .pill-nav {
+      display: flex; align-items: center; gap: 6px; padding: 5px;
+      background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px;
+    }
+    .pill-nav a {
+      color: rgba(252, 255, 255, 0.88); text-decoration: none; font-size: 13px; font-weight: 500;
+      padding: 6px 14px; border-radius: 999px; transition: background 150ms, color 150ms;
+    }
+    .pill-nav a:hover, .pill-nav a.active { background: rgba(255, 255, 255, 0.2); color: #FFFFFF; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 42px; padding: 0 20px; border-radius: 999px; font-family: var(--font);
+      font-size: 14px; font-weight: 700; cursor: pointer; border: 1px solid transparent;
+      transition: all 180ms var(--ease);
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-sm { height: 36px; padding: 0 16px; font-size: 13px; }
+    .btn-rose {
+      background: linear-gradient(135deg, #FD91CC, #F0529C); color: #FFFFFF;
+      box-shadow: 0 10px 26px rgba(253, 145, 204, 0.45);
+    }
+    .btn-rose:hover { filter: brightness(1.06); transform: translateY(-1px); }
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.16); color: #FCFFFF;
+      border-color: rgba(255, 255, 255, 0.35); backdrop-filter: blur(10px);
+    }
+    .btn-glass:hover { background: rgba(255, 255, 255, 0.25); }
+    .btn-cobalt { background: var(--cobalt); color: #FCFFFF; }
+    .btn-cobalt:hover { background: #0C3FB5; }
+    .btn-outline { background: transparent; color: var(--ink); border-color: #CBD5E1; }
+    .btn-outline:hover { background: #F1F5F9; border-color: var(--cobalt); }
+
+    /* Hero Content */
+    .hero-center { position: relative; z-index: 5; text-align: center; max-width: 760px; margin: 28px auto 0; }
+    .palette-strip { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .color-chip {
+      display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px 4px 6px;
+      border-radius: 999px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24);
+      color: #FCFFFF; font-size: 12px; font-family: var(--mono); cursor: pointer;
+    }
+    .color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); }
+
+    .mini-flow {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 18px;
+      font-size: 12.5px; color: rgba(252, 255, 255, 0.85); margin-bottom: 14px;
+    }
+    .hero-title {
+      margin: 0; font-size: clamp(32px, 5vw, 52px); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em;
+    }
+    .hero-sub { margin: 16px auto 26px; max-width: 560px; font-size: 15px; color: rgba(252, 255, 255, 0.86); }
+    .hero-cta { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+    /* Overlapping 3 Dashboard Cards */
+    .cards-overlap {
+      position: relative; z-index: 10;
+      margin-top: -72px;
+      display: grid; grid-template-columns: 1fr 1.05fr 1fr; gap: 18px; align-items: stretch;
+    }
+    .dash-card {
+      background: var(--ice); border: 1px solid var(--line); border-radius: 20px; padding: 20px;
+      box-shadow: 0 20px 48px rgba(9, 49, 141, 0.14);
+    }
+    .dash-card.featured {
+      background: linear-gradient(155deg, #FD91CC 0%, #F45CA8 55%, #D63384 100%);
+      color: #FCFFFF; border-color: rgba(255,255,255,0.4);
+      box-shadow: 0 24px 54px rgba(232, 67, 147, 0.35);
+      display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center;
+    }
+    .card-lbl { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+
+    /* Progress Rows (Left Card) */
+    .prog-row { margin-bottom: 12px; }
+    .prog-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+    .prog-track { height: 8px; border-radius: 999px; background: #E2E8F0; overflow: hidden; display: flex; }
+    .prog-blue { background: var(--cobalt-mid); height: 100%; }
+    .prog-pink { background: var(--rose); height: 100%; }
+
+    /* Gauge (Center Featured Card) */
+    .gauge-wrap { position: relative; width: 200px; height: 112px; margin: 6px auto 0; }
+    .gauge-score { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 42px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+
+    /* Body Sections */
+    .sec { padding: 52px 0; border-bottom: 1px solid var(--line); }
+    .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
+    .sec-head h2 { margin: 0 0 4px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--cobalt); }
+    .sec-head p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .panel { background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: 0 4px 16px rgba(9, 49, 141, 0.04); }
+    .panel h3 { margin: 0 0 14px; font-size: 15px; font-weight: 700; }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+    .input {
+      width: 100%; height: 40px; padding: 0 12px; border-radius: 10px;
+      border: 1px solid #CBD5E1; background: #F8FAFC; color: var(--ink);
+      font-family: var(--font); font-size: 14px;
+    }
+    .input:focus { outline: none; border-color: var(--cobalt-mid); box-shadow: 0 0 0 3px rgba(22, 84, 209, 0.16); }
+    .input.is-error { border-color: var(--rose-deep); }
+    .err-msg { font-size: 12px; color: var(--rose-deep); margin-top: 5px; display: none; }
+    .err-msg.show { display: block; }
+
+    .switch-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .switch {
+      position: relative; width: 44px; height: 24px; border-radius: 999px;
+      background: #CBD5E1; cursor: pointer; transition: background 200ms;
+    }
+    .switch::after {
+      content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+      border-radius: 50%; background: #FFFFFF; transition: transform 200ms var(--ease);
+    }
+    .switch.on { background: var(--cobalt-mid); }
+    .switch.on.rose { background: var(--rose-deep); }
+    .switch.on::after { transform: translateX(20px); }
+
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge-cobalt { background: #E0E7FF; color: var(--cobalt); }
+    .badge-rose { background: #FCE7F3; color: #BE185D; }
+    .badge-ok { background: #D1FAE5; color: #065F46; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    td { padding: 12px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+    tr:hover td { background: #F8FAFC; }
+
+    /* Modal & Toast */
+    .backdrop {
+      position: fixed; inset: 0; z-index: 60;
+      background: rgba(9, 49, 141, 0.45); backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .backdrop.open { display: flex; }
+    .modal {
+      width: 100%; max-width: 440px; border-radius: 20px; padding: 24px;
+      background: var(--ice); border: 1px solid var(--line);
+      box-shadow: 0 28px 64px rgba(9, 49, 141, 0.28);
+      animation: popIn 220ms var(--ease);
+    }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 70;
+      background: var(--cobalt); color: #FCFFFF;
+      border-left: 4px solid var(--rose);
+      padding: 12px 18px; border-radius: 12px; font-size: 13px; font-weight: 600;
+      box-shadow: 0 16px 36px rgba(9, 49, 141, 0.3);
+      opacity: 0; transform: translateY(8px); pointer-events: none; transition: all 200ms var(--ease);
+    }
+    .toast.show { opacity: 1; transform: none; }
+
+    @media (max-width: 880px) {
+      .pill-nav { display: none; }
+      .cards-overlap { grid-template-columns: 1fr; margin-top: -48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-zone">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="#">
+          <img src="logo-dark.jpg" alt="Xclipse" onerror="this.style.display='none'" />
+          <span>XCLIPSE</span>
+        </a>
+        <nav class="pill-nav">
+          <a class="active" href="#">Trang chủ</a>
+          <a href="#components">Nền tảng</a>
+          <a href="#forms">Giải pháp</a>
+          <a href="#data">Dữ liệu</a>
+        </nav>
+        <button class="btn btn-glass btn-sm" id="openPopupTop" type="button">Yêu cầu demo</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="hero-center">
+        <div class="palette-strip">
+          <button class="color-chip" data-hex="#09318D"><span class="color-dot" style="background:#09318D"></span>#09318D</button>
+          <button class="color-chip" data-hex="#FCFFFF"><span class="color-dot" style="background:#FCFFFF"></span>#FCFFFF</button>
+          <button class="color-chip" data-hex="#FD91CC"><span class="color-dot" style="background:#FD91CC"></span>#FD91CC</button>
+        </div>
+
+        <div class="mini-flow">
+          <span>→ Phân tích dữ liệu</span>
+          <span>→ Tối ưu bằng AI</span>
+          <span>→ Giảm rủi ro vận hành</span>
+        </div>
+
+        <h1 class="hero-title">
+          Vận hành doanh nghiệp<br />Không còn phức tạp
+        </h1>
+        <p class="hero-sub">
+          Theo dõi chỉ số kinh doanh, tối ưu chi phí và quản lý dữ liệu khách hàng trên một nền tảng thông minh duy nhất.
+        </p>
+        <div class="hero-cta">
+          <button class="btn btn-rose" id="openPopupHero" type="button">Bắt đầu giám sát</button>
+          <button class="btn btn-glass" type="button" onclick="toast('Đang mở bản xem thử trực tiếp!')">Yêu cầu demo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 Overlapping Dashboard Cards -->
+  <div class="container">
+    <div class="cards-overlap">
+      <!-- Left Card -->
+      <div class="dash-card">
+        <div class="card-lbl">
+          <span>Phân bổ theo danh mục</span>
+          <span class="badge badge-cobalt">4 nhóm</span>
+        </div>
+        <div class="prog-row">
+          <div class="prog-top"><span>Đơn hàng mới</span><span>184</span></div>
+          <div class="prog-track"><div class="prog-blue" style="width:45%"></div><div class="prog-pink" style="width:25%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-top"><span>Biên lợi nhuận</span><span>36%</span></div>
+          <div class="prog-track"><div class="prog-blue" style="width:30%"></div><div class="prog-pink" style="width:42%"></div></div>
+        </div>
+        <div class="prog-row" style="margin-bottom:0;">
+          <div class="prog-top"><span>Tồn kho an toàn</span><span>243</span></div>
+          <div class="prog-track"><div class="prog-blue" style="width:65%"></div><div class="prog-pink" style="width:15%"></div></div>
+        </div>
+      </div>
+
+      <!-- Center Featured Rose Card -->
+      <div class="dash-card featured">
+        <div class="card-lbl" style="justify-content:center;color:#FCFFFF;">
+          <span>● Điểm hiệu suất hệ thống</span>
+        </div>
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 200 110" width="200" height="110">
+            <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="14" stroke-linecap="round"/>
+            <path id="gaugeArc" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#FCFFFF" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="68"/>
+          </svg>
+          <div class="gauge-score" id="scoreVal">73</div>
+        </div>
+        <input id="scoreRange" type="range" min="20" max="100" value="73" style="width:85%;accent-color:#FCFFFF;margin-top:8px;" aria-label="Kéo thử điểm hiệu suất" />
+      </div>
+
+      <!-- Right Card -->
+      <div class="dash-card">
+        <div class="card-lbl">
+          <span>Đã mở vs. Đã xử lý</span>
+          <span class="badge badge-rose">Realtime</span>
+        </div>
+        <svg viewBox="0 0 280 120" width="100%" height="120">
+          <defs>
+            <linearGradient id="areaBlue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1654D1" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#1654D1" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M10 95 Q60 80 100 55 T190 48 T270 30 L270 110 L10 110 Z" fill="url(#areaBlue)"/>
+          <path d="M10 95 Q60 80 100 55 T190 48 T270 30" fill="none" stroke="#09318D" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="145" cy="52" r="5" fill="#FD91CC" stroke="#09318D" stroke-width="2"/>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+          <span>Tháng 9</span><span>Tháng 10</span><span>Tháng 11</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- Components -->
+    <section class="sec" id="components">
+      <div class="sec-head">
+        <div>
+          <h2>Thành phần UI/UX trên nền sáng #FCFFFF</h2>
+          <p>Xanh `#09318D` tạo uy tín doanh nghiệp, hồng `#FD91CC` thu hút ánh nhìn vào nút hành động chính.</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Buttons & Badges</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;">
+            <button class="btn btn-rose" type="button" onclick="toast('Đã bấm nút nhấn #FD91CC!')">Bắt đầu ngay</button>
+            <button class="btn btn-cobalt" type="button" onclick="toast('Đã lưu dữ liệu #09318D!')">Lưu báo cáo</button>
+            <button class="btn btn-outline" type="button">Xem chi tiết</button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="badge badge-rose">● Ưu tiên cao</span>
+            <span class="badge badge-cobalt">● Đang đồng bộ</span>
+            <span class="badge badge-ok">✓ Hoàn tất</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Công tắc trạng thái</h3>
+          <div class="switch-row">
+            <div>
+              <div style="font-size:14px;font-weight:600;">Giám sát tự động 24/7</div>
+              <div style="font-size:12px;color:var(--muted);">Nền xanh #1654D1 chuẩn mực</div>
+            </div>
+            <div class="switch on" role="switch" tabindex="0"></div>
+          </div>
+          <div class="switch-row" style="border-bottom:none;">
+            <div>
+              <div style="font-size:14px;font-weight:600;">Cảnh báo nhanh bằng AI</div>
+              <div style="font-size:12px;color:var(--muted);">Điểm nhấn hồng #E84393</div>
+            </div>
+            <div class="switch on rose" role="switch" tabindex="0"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Forms & Table -->
+    <section class="sec" id="forms" style="border-bottom:none;">
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Biểu mẫu kiểm tra lỗi</h3>
+          <div class="field">
+            <label for="fName">Tên chiến dịch</label>
+            <input class="input" id="fName" type="text" placeholder="Ví dụ: Chiến dịch Tháng 11" />
+            <div class="err-msg" id="eName">Vui lòng nhập tên chiến dịch.</div>
+          </div>
+          <div class="field">
+            <label for="fEmail">Email quản trị</label>
+            <input class="input" id="fEmail" type="email" placeholder="admin@xclipse.vn" />
+            <div class="err-msg" id="eEmail">Email chưa đúng định dạng.</div>
+          </div>
+          <button class="btn btn-cobalt" id="validateBtn" type="button">Kiểm tra & Gửi</button>
+        </div>
+
+        <div class="panel" id="data">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;">
+            <h3 style="margin:0;">Danh sách chiến dịch</h3>
+            <input class="input" id="searchInput" type="search" placeholder="Lọc nhanh..." style="max-width:170px;height:34px;" />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tên</th><th>Số lượng</th><th>Trạng thái</th></tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div class="backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 style="margin:0;font-size:18px;font-weight:800;color:var(--cobalt);">Yêu cầu Demo Xclipse</h3>
+        <button class="btn btn-outline btn-sm" id="closeModal" type="button">Đóng</button>
+      </div>
+      <p style="margin:0 0 16px;font-size:14px;color:var(--muted);">
+        Giao diện sáng sạch #FCFFFF kết hợp xanh #09318D và điểm nhấn hồng #FD91CC.
+      </p>
+      <div class="field">
+        <label>Tên doanh nghiệp / Nhóm</label>
+        <input class="input" type="text" value="Đội thi Xclipse — VIBE-CODING 2026" />
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+        <button class="btn btn-outline" id="cancelModal" type="button">Hủy</button>
+        <button class="btn btn-rose" id="confirmModal" type="button">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl">Thông báo</div>
+
+  <script>
+    const toastEl = document.getElementById('toastEl');
+    let tTimer;
+    function toast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(tTimer);
+      tTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    document.querySelectorAll('.color-chip').forEach(b => {
+      b.onclick = () => { navigator.clipboard?.writeText(b.dataset.hex); toast('Đã sao chép ' + b.dataset.hex); };
+    });
+
+    // Gauge slider interaction
+    const scoreRange = document.getElementById('scoreRange');
+    const scoreVal = document.getElementById('scoreVal');
+    const gaugeArc = document.getElementById('gaugeArc');
+    scoreRange.oninput = () => {
+      const v = Number(scoreRange.value);
+      scoreVal.textContent = v;
+      const offset = 251.2 * (1 - v / 100);
+      gaugeArc.setAttribute('stroke-dashoffset', offset.toFixed(1));
+    };
+
+    document.querySelectorAll('.switch').forEach(sw => { sw.onclick = () => sw.classList.toggle('on'); });
+
+    document.getElementById('validateBtn').onclick = () => {
+      const name = document.getElementById('fName');
+      const email = document.getElementById('fEmail');
+      const eName = document.getElementById('eName');
+      const eEmail = document.getElementById('eEmail');
+      let ok = true;
+      if (!name.value.trim()) { name.classList.add('is-error'); eName.classList.add('show'); ok = false; }
+      else { name.classList.remove('is-error'); eName.classList.remove('show'); }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email.classList.add('is-error'); eEmail.classList.add('show'); ok = false; }
+      else { email.classList.remove('is-error'); eEmail.classList.remove('show'); }
+      if (ok) toast('✓ Đã lưu thành công!');
+    };
+
+    const rows = [
+      { name: 'Flash Sale Tháng 11', qty: 420, badge: ['badge-rose', '● Ưu tiên'] },
+      { name: 'Chiến dịch B2B SaaS', qty: 285, badge: ['badge-cobalt', '● Đang chạy'] },
+      { name: 'Chăm sóc Khách hàng', qty: 510, badge: ['badge-ok', '✓ Hoàn tất'] }
+    ];
+    const tbody = document.getElementById('tableBody');
+    function renderTable(q = '') {
+      tbody.innerHTML = '';
+      rows.filter(r => r.name.toLowerCase().includes(q.toLowerCase())).forEach(r => {
+        tbody.innerHTML += `<tr><td><strong>${r.name}</strong></td><td>${r.qty}</td><td><span class="badge ${r.badge[0]}">${r.badge[1]}</span></td></tr>`;
+      });
+    }
+    renderTable();
+    document.getElementById('searchInput').oninput = (e) => renderTable(e.target.value);
+
+    const backdrop = document.getElementById('modalBackdrop');
+    const openModal = () => backdrop.classList.add('open');
+    const closeModal = () => backdrop.classList.remove('open');
+    document.getElementById('openPopupTop').onclick = openModal;
+    document.getElementById('openPopupHero').onclick = openModal;
+    document.getElementById('closeModal').onclick = closeModal;
+    document.getElementById('cancelModal').onclick = closeModal;
+    document.getElementById('confirmModal').onclick = () => { closeModal(); toast('Đã gửi yêu cầu demo!'); };
+    backdrop.onclick = (e) => { if (e.target === backdrop) closeModal(); };
+  </script>
+</body>
+</html>
