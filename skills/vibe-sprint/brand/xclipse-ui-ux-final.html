@@ -16,8 +16,10 @@
 
       --cobalt: #09318D;
       --cobalt-mid: #1654D1;
-      --coral: #FC734D;
-      --coral-deep: #E04F26;
+      --coral: #FF5C00;
+      --coral-deep: #D9480F;
+      --coral-soft: #FFF4ED;
+      --coral-border: #FFD8BF;
 
       --ux-page: #FCFFFF;
       --ux-surface: #FFFFFF;
@@ -29,20 +31,25 @@
       --ux-line: rgba(15, 23, 42, 0.09);
       --ux-line-2: rgba(15, 23, 42, 0.18);
       --ux-accent: #09318D;
-      --ux-accent-2: #FC734D;
+      --ux-accent-2: #FF5C00;
       --ux-accent-soft: rgba(9, 49, 141, 0.10);
       --ux-accent-ink: #FCFFFF;
       --ux-mint: #0D9488;
-      --ux-warn: #E04F26;
+      --ux-warn: #D9480F;
       --ux-danger: #E11D48;
-      --ux-shadow: rgba(9, 49, 141, 0.12);
-      --ux-shadow-strong: rgba(9, 49, 141, 0.25);
+      --ux-shadow: rgba(9, 49, 141, 0.10);
+      --ux-shadow-strong: rgba(9, 49, 141, 0.22);
       --ux-ease: cubic-bezier(.2, .8, .2, 1);
       --ux-spring: cubic-bezier(.34, 1.45, .64, 1);
     }
 
     html[data-theme="dark"] {
       color-scheme: dark;
+      --coral: #FC734D;
+      --coral-deep: #FF8A65;
+      --coral-soft: rgba(252, 115, 77, 0.16);
+      --coral-border: rgba(252, 115, 77, 0.30);
+
       --ux-page: #02070A;
       --ux-surface: #0A1118;
       --ux-surface-2: #111A24;
@@ -84,12 +91,12 @@
     }
     .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
 
-    /* Hero Blue Atmosphere (V4 layout + Eclipse Glow) */
+    /* Hero Blue Atmosphere (Clean Cobalt — no muddy orange halo) */
     .hero-zone {
       position: relative;
       background:
-        radial-gradient(420px 260px at 50% 82%, rgba(252, 115, 77, 0.36), transparent 70%),
-        radial-gradient(900px 460px at 50% 42%, #1D5CE0 0%, #0D3A9C 50%, #09318D 82%, #041338 100%);
+        radial-gradient(620px 320px at 50% 18%, rgba(56, 130, 255, 0.34), transparent 70%),
+        radial-gradient(960px 500px at 50% 42%, #1D5CE0 0%, #0D3A9C 52%, #09318D 85%, #051847 100%);
       color: #FCFFFF;
       padding-bottom: 112px;
       overflow: hidden;
@@ -129,8 +136,8 @@
     .btn:active { transform: scale(0.97); }
     .btn-sm { height: 36px; padding: 0 14px; font-size: 13px; }
     .btn-coral {
-      background: linear-gradient(135deg, #FC734D, #E04F26); color: #FCFFFF;
-      box-shadow: 0 10px 26px rgba(252, 115, 77, 0.4);
+      background: linear-gradient(135deg, #FF6B1A, #F04F00); color: #FFFFFF;
+      box-shadow: 0 10px 24px rgba(255, 92, 0, 0.30);
     }
     .btn-coral:hover { filter: brightness(1.06); transform: translateY(-1px); }
     .btn-glass {
@@ -168,10 +175,14 @@
       transition: background .3s var(--ux-ease), border-color .3s var(--ux-ease);
     }
     .dash-card.featured {
-      background: linear-gradient(155deg, #FC734D 0%, #E8552E 58%, #B83514 100%);
-      color: #FCFFFF; border-color: rgba(255,255,255,0.32);
-      box-shadow: 0 24px 54px rgba(252, 115, 77, 0.35);
+      background: linear-gradient(155deg, #FF701F 0%, #FF5500 58%, #E64800 100%);
+      color: #FFFFFF; border-color: rgba(255,255,255,0.34);
+      box-shadow: 0 22px 48px rgba(255, 92, 0, 0.28);
       display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center;
+    }
+    html[data-theme="dark"] .dash-card.featured {
+      background: linear-gradient(155deg, #FC734D 0%, #E8552E 60%, #C43B16 100%);
+      box-shadow: 0 24px 54px rgba(252, 115, 77, 0.35);
     }
     .card-lbl { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
 
@@ -212,10 +223,9 @@
     .err-msg.show { display: block; }
 
     .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-    .badge-cobalt { background: rgba(22, 84, 209, 0.14); color: var(--ux-accent); }
-    .badge-coral { background: rgba(252, 115, 77, 0.16); color: var(--coral-deep); }
-    html[data-theme="dark"] .badge-coral { color: #FC734D; }
-    .badge-ok { background: rgba(13, 148, 136, 0.16); color: var(--ux-mint); }
+    .badge-cobalt { background: rgba(22, 84, 209, 0.12); color: var(--ux-accent); }
+    .badge-coral { background: var(--coral-soft); color: var(--coral-deep); border: 1px solid var(--coral-border); }
+    .badge-ok { background: rgba(13, 148, 136, 0.14); color: var(--ux-mint); }
 
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -270,7 +280,7 @@
           <button class="color-chip" data-hex="#09318D"><span class="color-dot" style="background:#09318D"></span>#09318D (Cobalt)</button>
           <button class="color-chip" data-hex="#FCFFFF"><span class="color-dot" style="background:#FCFFFF"></span>#FCFFFF (Sáng)</button>
           <button class="color-chip" data-hex="#02070A"><span class="color-dot" style="background:#02070A"></span>#02070A (Eclipse Dark)</button>
-          <button class="color-chip" data-hex="#FC734D"><span class="color-dot" style="background:#FC734D"></span>#FC734D (Solar Coral)</button>
+          <button class="color-chip" data-hex="#FF5C00"><span class="color-dot" style="background:#FF5C00"></span>#FF5C00 (Cam sạch · Light)</button>
         </div>
 
         <div class="mini-flow">
@@ -283,13 +293,13 @@
           Vận hành doanh nghiệp<br />Không còn phức tạp
         </h1>
         <p class="hero-sub">
-          Bố cục sáng rõ chuẩn hội trường (V4) kết hợp sắc cam Nhật thực (V2), nút đổi Dark Mode và các thành phần tương tác mượt từ <strong>Lucian UX/UI</strong>.
+          Bố cục sáng rõ chuẩn hội trường (V4) kết hợp sắc cam sạch sẽ cho giao diện sáng (<code>#FF5C00</code>) và dịu mắt khi bật Dark Mode (<code>#FC734D</code>), tích hợp tương tác từ <strong>Lucian UX/UI</strong>.
         </p>
 
         <div class="hero-cta">
           <!-- Lucian UX/UI Prompt #002 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#002 -->
           <style>
-          .u002{--bg:#FCFFFF;--fg:#09318D;--blob:linear-gradient(135deg,#FC734D,#E04F26 60%,#09318D);
+          .u002{--bg:#FCFFFF;--fg:#09318D;--blob:linear-gradient(135deg,var(--coral),#09318D);
             position:relative;display:inline-grid;place-items:center}
           .u002-mag{transition:translate .9s var(--ux-spring)}
           .u002-btn{position:relative;display:flex;align-items:center;gap:14px;height:54px;padding:0 7px 0 24px;border:0;border-radius:999px;background:var(--bg);color:var(--fg);overflow:hidden;isolation:isolate;
@@ -411,7 +421,7 @@
           </defs>
           <path d="M10 95 Q60 80 100 55 T190 48 T270 30 L270 110 L10 110 Z" fill="url(#areaBlue)"/>
           <path d="M10 95 Q60 80 100 55 T190 48 T270 30" fill="none" stroke="#1654D1" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="145" cy="52" r="5" fill="#FC734D" stroke="#09318D" stroke-width="2"/>
+          <circle cx="145" cy="52" r="5" fill="var(--coral)" stroke="#09318D" stroke-width="2"/>
         </svg>
         <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ux-ink-2);">
           <span>Tháng 9</span><span>Tháng 10</span><span>Tháng 11</span>
@@ -436,12 +446,12 @@
           <h3 style="width:100%;"><span>Công tắc co giãn</span><span class="lucian-tag">Lucian #013</span></h3>
           <!-- Lucian UX/UI Prompt #013 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#013 -->
           <style>
-          .u013{--on:linear-gradient(135deg,#FC734D,#09318D);position:relative;width:280px;height:185px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+          .u013{--on:linear-gradient(135deg,var(--coral),#09318D);position:relative;width:280px;height:185px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
           .u013-sw{position:relative;width:140px;height:76px;border:0;padding:0;border-radius:999px;background:var(--ux-surface-3);touch-action:none;
             box-shadow:inset 0 2px 6px rgba(0,0,0,.12),inset 0 0 0 1px var(--ux-line);transition:box-shadow .5s var(--ux-ease)}
           .u013-sw::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--on);opacity:0;transition:opacity .45s var(--ux-ease)}
           .u013.is-on .u013-sw::before{opacity:1}
-          .u013.is-on .u013-sw{box-shadow:inset 0 2px 6px rgba(0,0,0,.12),0 16px 30px -16px rgba(252,115,77,.75)}
+          .u013.is-on .u013-sw{box-shadow:inset 0 2px 6px rgba(0,0,0,.12),0 16px 30px -16px rgba(255,92,0,.65)}
           .u013-knob{position:absolute;top:8px;left:8px;width:60px;height:60px;border-radius:999px;background:#fff;display:grid;place-items:center;
             box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 6px 14px -4px rgba(0,0,0,.28);transition:left .5s var(--ux-spring),width .32s var(--ux-ease)}
           .u013.is-on .u013-knob{left:72px}
@@ -658,7 +668,7 @@
         <button class="btn btn-outline btn-sm" id="closeModal" type="button">Đóng</button>
       </div>
       <p style="margin:0 0 16px;font-size:14px;color:var(--ux-ink-2);">
-        Bản ghép hoàn chỉnh: Bố cục V4 sáng rõ + Màu Nhật thực #09318D / #FC734D / #02070A + Chuyển động Lucian UX/UI.
+        Bản ghép hoàn chỉnh: Bố cục V4 sáng rõ + Xanh dương #09318D + Cam sạch #FF5C00 (Light) / #FC734D (Dark #02070A) + Chuyển động Lucian UX/UI.
       </p>
       <div class="field">
         <label>Tên đội thi / Doanh nghiệp</label>
