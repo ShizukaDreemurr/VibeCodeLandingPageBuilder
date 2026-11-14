@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tầm nhìn Thông minh — Xclipse AI Consulting (#DBF2FC · #072D59 · #FD6E88)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,600;1,700&family=Playfair+Display:ital,wght@1,600;1,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* Lucian UX/UI Prompt theme tokens mapped to #DBF2FC · #072D59 · #FD6E88 */
+    :root {
+      color-scheme: light;
+      --font: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+      --serif: 'Playfair Display', Georgia, serif;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+      --ice: #DBF2FC;
+      --navy: #072D59;
+      --navy-mid: #0E4A8A;
+      --pink: #FD6E88;
+      --pink-deep: #D93656;
+
+      --ux-page: #F5FBFF;
+      --ux-surface: #FFFFFF;
+      --ux-surface-2: #EAF6FD;
+      --ux-surface-3: #DBF2FC;
+      --ux-ink: #072D59;
+      --ux-ink-2: #36567A;
+      --ux-ink-3: #647F9E;
+      --ux-line: rgba(7, 45, 89, 0.10);
+      --ux-line-2: rgba(7, 45, 89, 0.20);
+      --ux-accent: #072D59;
+      --ux-accent-2: #FD6E88;
+      --ux-accent-soft: rgba(7, 45, 89, 0.08);
+      --ux-mint: #0D9488;
+      --ux-danger: #D9264E;
+      --ux-shadow: rgba(7, 45, 89, 0.10);
+      --ux-shadow-strong: rgba(7, 45, 89, 0.24);
+      --ux-ease: cubic-bezier(.2, .8, .2, 1);
+      --ux-spring: cubic-bezier(.34, 1.45, .64, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: var(--font); background: var(--ux-page); color: var(--ux-ink);
+      line-height: 1.55; overflow-x: hidden;
+    }
+    .ux, .ux *, .ux *::before, .ux *::after { box-sizing: border-box; }
+    .ux :focus-visible { outline: 2px solid var(--ux-accent); outline-offset: 3px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important; scroll-behavior: auto !important;
+      }
+    }
+
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+    /* ============================================================
+       HERO SECTION — Faithful recreation of the "Tầm nhìn Thông minh" layout
+       ============================================================ */
+    .hero-showcase {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      background:
+        /* Bottom-left blue horizon wave */
+        radial-gradient(95% 58% at 18% 102%, #072D59 0%, #0C4B8E 38%, #217CE0 62%, rgba(219, 242, 252, 0) 85%),
+        /* Top-left airy ice-sky mist */
+        linear-gradient(125deg, #FFFFFF 0%, #EDF8FE 32%, #DBF2FC 62%, #BBE5FA 100%);
+    }
+
+    /* Right-side Dark Navy Prism Canvas (with Fluted Glass + 3D Pink/Blue Orb) */
+    .hero-visual-pane {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 50%;
+      background:
+        radial-gradient(480px 420px at 30% 48%, rgba(253, 110, 136, 0.35), transparent 68%),
+        radial-gradient(600px 540px at 70% 52%, #0E4D92 0%, #072D59 55%, #041A36 100%);
+      overflow: hidden;
+      z-index: 1;
+    }
+    /* Soft feather mask on the left edge of the right pane so it blends smoothly into #DBF2FC */
+    .hero-visual-pane::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 130px;
+      background: linear-gradient(90deg, rgba(219, 242, 252, 0.72) 0%, rgba(219, 242, 252, 0) 100%);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    /* Glowing 3D Sphere */
+    .orb-3d {
+      position: absolute;
+      width: 460px;
+      height: 460px;
+      right: -40px;
+      top: 50%;
+      transform: translateY(-48%);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 28% 36%, #FFA8BA 0%, #FD6E88 26%, rgba(253, 110, 136, 0.25) 52%, transparent 72%),
+        radial-gradient(circle at 68% 68%, #2C8DF5 0%, #0A3A75 55%, #03152B 100%);
+      box-shadow:
+        inset -28px -32px 60px rgba(3, 21, 43, 0.85),
+        inset 18px 18px 46px rgba(253, 110, 136, 0.55),
+        0 0 90px rgba(253, 110, 136, 0.28),
+        -30px 20px 80px rgba(14, 77, 146, 0.55);
+      z-index: 2;
+      transition: transform 0.6s var(--ux-ease);
+    }
+
+    /* Secondary Pink Aura Streak behind the fluted glass */
+    .orb-streak {
+      position: absolute;
+      width: 300px;
+      height: 460px;
+      left: 12%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(ellipse at center, rgba(253, 110, 136, 0.82) 0%, rgba(253, 110, 136, 0.35) 45%, transparent 75%);
+      filter: blur(22px);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Fluted / Ribbed Vertical Glass Bars */
+    .fluted-glass {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 58%;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      z-index: 3;
+      pointer-events: none;
+    }
+    .flute-bar {
+      height: 100%;
+      backdrop-filter: blur(16px) saturate(135%);
+      -webkit-backdrop-filter: blur(16px) saturate(135%);
+      background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.22) 0%,
+        rgba(219, 242, 252, 0.06) 28%,
+        rgba(7, 45, 89, 0.16) 76%,
+        rgba(255, 255, 255, 0.10) 100%
+      );
+      border-right: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: inset 2px 0 6px rgba(255, 255, 255, 0.14);
+    }
+
+    /* Top Minimal Nav */
+    .top-nav {
+      position: relative;
+      z-index: 10;
+      padding: 26px 0;
+    }
+    .top-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      color: var(--navy);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      opacity: 0.86;
+      transition: opacity 150ms, color 150ms;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--pink-deep); }
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(7, 45, 89, 0.12);
+      backdrop-filter: blur(8px);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy);
+      text-decoration: none;
+    }
+    .brand-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--navy));
+    }
+
+    /* Hero Main Content (Left Column) */
+    .hero-body {
+      position: relative;
+      z-index: 10;
+      padding: 28px 0 36px;
+    }
+    .hero-left {
+      max-width: 500px;
+    }
+    .hero-headline {
+      margin: 0 0 18px;
+      font-size: clamp(42px, 5.4vw, 66px);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      color: #072D59;
+      font-weight: 400;
+    }
+    .hero-headline .italic-accent {
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 700;
+      font-size: 1.05em;
+      color: #072D59;
+    }
+    .hero-desc {
+      margin: 0 0 28px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #1E3E66;
+      max-width: 440px;
+    }
+
+    /* Coral Pink Pill CTA */
+    .btn-pink {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      height: 46px;
+      padding: 0 26px;
+      border-radius: 999px;
+      border: 0;
+      background: linear-gradient(135deg, #FD6E88 0%, #F24B6B 100%);
+      color: #FFFFFF;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(253, 110, 136, 0.45);
+      transition: transform 180ms var(--ux-spring), filter 180ms var(--ux-ease);
+    }
+    .btn-pink:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .btn-pink:active { transform: scale(0.97); }
+
+    /* Bottom Partner Bar (on Blue Wave) */
+    .hero-partners {
+      position: relative;
+      z-index: 10;
+      padding: 20px 0 34px;
+    }
+    .partners-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(219, 242, 252, 0.85);
+      margin-bottom: 12px;
+    }
+    .partners-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 28px;
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+    .partner-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      opacity: 0.92;
+    }
+
+    /* ============================================================
+       BELOW-THE-FOLD SECTIONS (Harmonized with #DBF2FC · #072D59 · #FD6E88)
+       ============================================================ */
+    .sec { padding: 64px 0; border-bottom: 1px solid var(--ux-line); }
+    .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 26px; flex-wrap: wrap; }
+    .sec-head h2 { margin: 0 0 6px; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--navy); }
+    .sec-head p { margin: 0; color: var(--ux-ink-2); font-size: 14.5px; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--ux-surface);
+      border: 1px solid var(--ux-line);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 28px var(--ux-shadow);
+      transition: transform 200ms var(--ux-ease), box-shadow 200ms var(--ux-ease);
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 18px 38px var(--ux-shadow-strong); }
+    .card-tag {
+      display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 999px; background: var(--ice); color: var(--navy); margin-bottom: 12px;
+    }
+    .card-tag.pink { background: #FFF0F3; color: var(--pink-deep); border: 1px solid #FFC2CE; }
+    .card h3 { margin: 0 0 8px; font-size: 17px; font-weight: 700; color: var(--navy); }
+    .card p { margin: 0; font-size: 14px; color: var(--ux-ink-2); }
+
+    /* Modal */
+    .backdrop {
+      position: fixed; inset: 0; z-index: 60;
+      background: rgba(7, 45, 89, 0.55); backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .backdrop.open { display: flex; }
+    .modal {
+      width: 100%; max-width: 440px; border-radius: 22px; padding: 26px;
+      background: #FFFFFF; border: 1px solid var(--ux-line-2);
+      box-shadow: 0 28px 64px rgba(7, 45, 89, 0.32);
+      animation: popIn 220ms var(--ux-ease);
+    }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(8px); } to { opacity: 1; transform: none; } }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--ux-ink-2); margin-bottom: 6px; }
+    .input {
+      width: 100%; height: 42px; padding: 0 14px; border-radius: 10px;
+      border: 1px solid var(--ux-line-2); background: #F5FBFF; color: var(--navy);
+      font-family: var(--font); font-size: 14px;
+    }
+    .input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(7, 45, 89, 0.12); }
+
+    @media (max-width: 900px) {
+      .hero-visual-pane { width: 100%; height: 340px; top: auto; bottom: 0; opacity: 0.92; }
+      .hero-visual-pane::before { width: 100%; height: 110px; inset: 0 0 auto 0; background: linear-gradient(180deg, rgba(219, 242, 252, 0.95) 0%, rgba(219, 242, 252, 0) 100%); }
+      .hero-showcase { min-height: auto; padding-bottom: 340px; }
+      .orb-3d { width: 300px; height: 300px; right: -20px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO: Sao chép bố cục "Tầm nhìn Thông minh" -->
+  <section class="hero-showcase" id="hero">
+    <!-- Right Visual Pane: Fluted Glass + 3D Pink/Blue Orb -->
+    <div class="hero-visual-pane" aria-hidden="true">
+      <div class="orb-streak"></div>
+      <div class="orb-3d" id="orb3d"></div>
+      <div class="fluted-glass">
+        <div class="flute-bar"></div>
+        <div class="flute-bar"></div>
+        <div class="flute-bar"></div>
+        <div class="flute-bar"></div>
+        <div class="flute-bar"></div>
+        <div class="flute-bar"></div>
+        <div class="flute-bar"></div>
+        <div class="flute-bar"></div>
+      </div>
+    </div>
+
+    <!-- Top Nav -->
+    <header class="top-nav">
+      <div class="container top-nav-inner">
+        <nav class="nav-links" aria-label="Điều hướng chính">
+          <a href="#services">Về chúng tôi</a>
+          <a href="#services">Dịch vụ</a>
+          <a href="#ux-demo">Dự án tiêu biểu</a>
+          <a href="#ux-demo">Lĩnh vực</a>
+        </nav>
+        <a class="brand-pill" href="#">
+          <span class="brand-dot"></span>
+          <span>XCLIPSE · #DBF2FC · #072D59 · #FD6E88</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Hero Copy & CTA -->
+    <div class="hero-body">
+      <div class="container">
+        <div class="hero-left">
+          <h1 class="hero-headline">
+            Tầm nhìn
+            <span class="italic-accent">Thông minh</span>
+          </h1>
+          <p class="hero-desc">
+            Định hình lại dịch vụ tư vấn AI bằng tư duy tiên phong. Chúng tôi kiến tạo giải pháp phù hợp, thúc đẩy chuyển đổi số của bạn.
+          </p>
+
+          <!-- Lucian UX/UI Prompt #002 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#002 -->
+          <button class="btn-pink" id="openConsultBtn" type="button">
+            <span>Tư vấn miễn phí</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom-Left Tech Stack / Partners -->
+    <div class="hero-partners">
+      <div class="container">
+        <div class="partners-label">CÔNG CỤ CÔNG NGHỆ</div>
+        <div class="partners-row">
+          <span class="partner-item">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M1 1h6.5v6.5H1V1zm7.5 0H15v6.5H8.5V1zM1 8.5h6.5V15H1V8.5zm7.5 0H15V15H8.5V8.5z"/></svg>
+            Microsoft
+          </span>
+          <span class="partner-item">Google</span>
+          <span class="partner-item">NVIDIA</span>
+          <span class="partner-item">aws</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Dịch vụ & Giải pháp -->
+  <section class="sec" id="services">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <h2>Giải pháp chuyển đổi số toàn diện</h2>
+          <p>Áp dụng đồng bộ 3 sắc độ hài hòa: Ice Sky (#DBF2FC), Deep Navy (#072D59) và Coral Pink (#FD6E88).</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <span class="card-tag">01 · Chiến lược AI</span>
+          <h3>Tư vấn lộ trình dữ liệu</h3>
+          <p>Chuẩn hóa quy trình thu thập và khai thác dữ liệu doanh nghiệp, sẵn sàng tích hợp mô hình AI thực chiến.</p>
+        </article>
+        <article class="card">
+          <span class="card-tag pink">02 · Tự động hóa</span>
+          <h3>Tối ưu vận hành thông minh</h3>
+          <p>Giảm thao tác thủ công bằng các luồng xử lý tự động, cảnh báo sớm rủi ro theo thời gian thực.</p>
+        </article>
+        <article class="card">
+          <span class="card-tag">03 · Trải nghiệm số</span>
+          <h3>Thiết kế giao diện UI/UX</h3>
+          <p>Xây dựng sản phẩm số hiện đại với độ tương phản rõ nét, tương tác mượt mà trên mọi thiết bị.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Lucian UX Interactive Demo -->
+  <section class="sec" id="ux-demo" style="border-bottom:none;">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <h2>Thành phần tương tác Lucian UX/UI</h2>
+          <p>Kết hợp hiệu ứng vật lý mượt mà trên nền bảng màu #DBF2FC · #072D59 · #FD6E88.</p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));">
+        <!-- #013 Stretchy Switch -->
+        <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <!-- Lucian UX/UI Prompt #013 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#013 -->
+          <style>
+          .u013{--on:linear-gradient(135deg,#FD6E88,#072D59);position:relative;width:280px;height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+          .u013-sw{position:relative;width:140px;height:76px;border:0;padding:0;border-radius:999px;background:#DBF2FC;touch-action:none;cursor:pointer;
+            box-shadow:inset 0 2px 6px rgba(7,45,89,.12),inset 0 0 0 1px rgba(7,45,89,.10);transition:box-shadow .5s var(--ux-ease)}
+          .u013-sw::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--on);opacity:0;transition:opacity .45s var(--ux-ease)}
+          .u013.is-on .u013-sw::before{opacity:1}
+          .u013.is-on .u013-sw{box-shadow:inset 0 2px 6px rgba(0,0,0,.12),0 16px 30px -14px rgba(253,110,136,.65)}
+          .u013-knob{position:absolute;top:8px;left:8px;width:60px;height:60px;border-radius:999px;background:#fff;display:grid;place-items:center;
+            box-shadow:0 6px 14px -4px rgba(7,45,89,.28);transition:left .5s var(--ux-spring),width .32s var(--ux-ease)}
+          .u013.is-on .u013-knob{left:72px}
+          .u013.is-stretch .u013-knob{width:84px;transition:left .5s var(--ux-spring),width .18s var(--ux-ease)}
+          .u013.is-on.is-stretch .u013-knob{left:48px}
+          .u013-knob svg{width:24px;height:24px;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+          .u013-x{stroke:#647F9E;stroke-dasharray:14;stroke-dashoffset:0;transition:stroke-dashoffset .3s var(--ux-ease) .1s}
+          .u013-v{stroke:#072D59;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .35s var(--ux-ease)}
+          .u013.is-on .u013-x{stroke-dashoffset:14;transition-delay:0s}
+          .u013.is-on .u013-v{stroke-dashoffset:0;transition-delay:.18s}
+          .u013-txt{text-align:center}
+          .u013-txt b{display:block;font-size:15px;color:var(--navy)}
+          .u013-sub{display:block;font-size:12.5px;color:var(--ux-ink-2);margin-top:3px}
+          </style>
+          <div class="ux u013">
+            <button class="u013-sw" type="button" role="switch" aria-checked="false">
+              <span class="u013-knob" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path class="u013-x" d="M7.5 7.5l9 9M16.5 7.5l-9 9"/><path class="u013-v" d="M5.5 12.5l4.5 4.5 8.5-9"/></svg>
+              </span>
+            </button>
+            <div class="u013-txt">
+              <b class="u013-lab">Kích hoạt Trợ lý AI</b>
+              <span class="u013-sub" aria-live="polite">Bấm hoặc kéo để chuyển trạng thái</span>
+            </div>
+          </div>
+          <script>
+          (function () {
+            var root = document.currentScript.previousElementSibling;
+            var sw = root.querySelector('.u013-sw');
+            var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var on = false, t = 0;
+            sw.addEventListener('click', function () {
+              on = !on; root.classList.toggle('is-on', on); sw.setAttribute('aria-checked', String(on));
+              if (!rm) { root.classList.add('is-stretch'); clearTimeout(t); t = setTimeout(function () { root.classList.remove('is-stretch'); }, 170); }
+            });
+          })();
+          </script>
+        </div>
+
+        <!-- #163 Bullet Chart -->
+        <div class="card">
+          <span class="card-tag pink">Lucian #163 · Chỉ số mục tiêu</span>
+          <h3>Hiệu suất chuyển đổi số</h3>
+          <!-- Lucian UX/UI Prompt #163 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#163 -->
+          <style>
+          .u163{width:100%;padding-top:10px;font-size:13px}
+          .u163 .bullet{height:40px;position:relative;margin-top:22px;border-radius:8px;background:linear-gradient(90deg,#EAF6FD 0 50%,#DBF2FC 50% 75%,#BBE5FA 75%)}
+          .u163 .actual{position:absolute;height:16px;top:12px;left:0;width:78%;background:#072D59;border-radius:0 4px 4px 0}
+          .u163 .target{position:absolute;width:3px;top:-6px;bottom:-6px;background:#FD6E88;left:70%;transition:left .35s}
+          .u163 .target::before{content:attr(data-value);position:absolute;top:-18px;left:-9px;font-size:11px;color:#D93656;font-weight:700}
+          .u163 input[type="range"]{width:100%;margin-top:14px;accent-color:#FD6E88}
+          </style>
+          <div class="ux u163">
+            <div class="bullet"><div class="actual"></div><div class="target" data-value="70"></div></div>
+            <input class="range" type="range" min="40" max="95" step="5" value="70" aria-label="Mục tiêu" />
+            <div class="status" style="margin-top:6px;color:var(--ux-ink-2);font-size:12.5px;"></div>
+          </div>
+          <script>
+          (()=>{const root=document.currentScript.previousElementSibling;const q=s=>root.querySelector(s);function draw(){const v=+q('.range').value;q('.target').style.left=v+'%';q('.target').dataset.value=v;q('.status').innerHTML=`Thực tế: <b>78%</b> · Mục tiêu: <b>${v}%</b>`;}q('.range').oninput=draw;draw();})();
+          </script>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Consultation Modal -->
+  <div class="backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 id="modalTitle" style="margin:0;font-size:19px;font-weight:800;color:var(--navy);">Đặt lịch Tư vấn miễn phí</h3>
+        <button id="closeModal" type="button" style="border:1px solid var(--ux-line-2);background:#F5FBFF;color:var(--navy);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;">Đóng</button>
+      </div>
+      <p style="margin:0 0 16px;font-size:13.5px;color:var(--ux-ink-2);">
+        Nhập thông tin để đội ngũ Xclipse liên hệ tư vấn giải pháp AI phù hợp cho doanh nghiệp của bạn.
+      </p>
+      <div class="field">
+        <label for="mName">Họ tên / Doanh nghiệp</label>
+        <input class="input" id="mName" type="text" placeholder="Ví dụ: Công ty ABC" />
+      </div>
+      <div class="field">
+        <label for="mEmail">Email liên hệ</label>
+        <input class="input" id="mEmail" type="email" placeholder="lienhe@congty.vn" />
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+        <button class="btn-pink" id="submitModal" type="button" style="height:40px;padding:0 20px;">Gửi yêu cầu</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Subtle mouse parallax on the 3D orb (respects prefers-reduced-motion)
+    const orb = document.getElementById('orb3d');
+    const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!rm && orb) {
+      document.getElementById('hero').addEventListener('pointermove', (e) => {
+        const rx = (e.clientX / window.innerWidth - 0.5) * 18;
+        const ry = (e.clientY / window.innerHeight - 0.5) * 14;
+        orb.style.transform = `translate(${rx.toFixed(1)}px, calc(-48% + ${ry.toFixed(1)}px))`;
+      });
+    }
+
+    // Modal handlers
+    const backdrop = document.getElementById('modalBackdrop');
+    const openModal = () => backdrop.classList.add('open');
+    const closeModal = () => backdrop.classList.remove('open');
+    document.getElementById('openConsultBtn').onclick = openModal;
+    document.getElementById('closeModal').onclick = closeModal;
+    document.getElementById('submitModal').onclick = () => {
+      alert('✓ Đã ghi nhận yêu cầu tư vấn miễn phí!');
+      closeModal();
+    };
+    backdrop.onclick = (e) => { if (e.target === backdrop) closeModal(); };
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  </script>
+</body>
+</html>
