@@ -14,57 +14,57 @@
       --font: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
       --mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-      --cobalt: #09318D;
-      --cobalt-mid: #1654D1;
-      --coral: #FF5C00;
-      --coral-deep: #D9480F;
-      --coral-soft: #FFF4ED;
-      --coral-border: #FFD8BF;
+      --cobalt: #0044FF;
+      --cobalt-mid: #1E6BFF;
+      --coral: #FF1F8F;
+      --coral-deep: #D4006A;
+      --coral-soft: #FFF0F7;
+      --coral-border: #FFB8DC;
 
       --ux-page: #FCFFFF;
       --ux-surface: #FFFFFF;
-      --ux-surface-2: #F1F5F9;
-      --ux-surface-3: #E2E8F0;
-      --ux-ink: #0F172A;
+      --ux-surface-2: #F1F5FF;
+      --ux-surface-3: #E2E8F8;
+      --ux-ink: #0B132B;
       --ux-ink-2: #475569;
       --ux-ink-3: #64748B;
-      --ux-line: rgba(15, 23, 42, 0.09);
-      --ux-line-2: rgba(15, 23, 42, 0.18);
-      --ux-accent: #09318D;
-      --ux-accent-2: #FF5C00;
-      --ux-accent-soft: rgba(9, 49, 141, 0.10);
+      --ux-line: rgba(0, 68, 255, 0.09);
+      --ux-line-2: rgba(0, 68, 255, 0.18);
+      --ux-accent: #0044FF;
+      --ux-accent-2: #FF1F8F;
+      --ux-accent-soft: rgba(0, 68, 255, 0.10);
       --ux-accent-ink: #FCFFFF;
-      --ux-mint: #0D9488;
-      --ux-warn: #D9480F;
+      --ux-mint: #00B894;
+      --ux-warn: #FF1F8F;
       --ux-danger: #E11D48;
-      --ux-shadow: rgba(9, 49, 141, 0.10);
-      --ux-shadow-strong: rgba(9, 49, 141, 0.22);
+      --ux-shadow: rgba(0, 68, 255, 0.10);
+      --ux-shadow-strong: rgba(0, 68, 255, 0.22);
       --ux-ease: cubic-bezier(.2, .8, .2, 1);
       --ux-spring: cubic-bezier(.34, 1.45, .64, 1);
     }
 
     html[data-theme="dark"] {
       color-scheme: dark;
-      --coral: #FC734D;
-      --coral-deep: #FF8A65;
-      --coral-soft: rgba(252, 115, 77, 0.16);
-      --coral-border: rgba(252, 115, 77, 0.30);
+      --coral: #FF3B9A;
+      --coral-deep: #FF70B8;
+      --coral-soft: rgba(255, 59, 154, 0.16);
+      --coral-border: rgba(255, 59, 154, 0.34);
 
-      --ux-page: #02070A;
-      --ux-surface: #0A1118;
-      --ux-surface-2: #111A24;
-      --ux-surface-3: #1C2736;
-      --ux-ink: #F4F7FA;
+      --ux-page: #030712;
+      --ux-surface: #0A1122;
+      --ux-surface-2: #111B33;
+      --ux-surface-3: #1B2847;
+      --ux-ink: #F8FAFC;
       --ux-ink-2: #94A3B8;
       --ux-ink-3: #64748B;
       --ux-line: rgba(255, 255, 255, 0.09);
       --ux-line-2: rgba(255, 255, 255, 0.20);
       --ux-accent: #3B82F6;
-      --ux-accent-2: #FC734D;
-      --ux-accent-soft: rgba(59, 130, 246, 0.16);
-      --ux-accent-ink: #02070A;
+      --ux-accent-2: #FF3B9A;
+      --ux-accent-soft: rgba(59, 130, 246, 0.18);
+      --ux-accent-ink: #030712;
       --ux-mint: #2DD4BF;
-      --ux-warn: #FC734D;
+      --ux-warn: #FF3B9A;
       --ux-danger: #FB7185;
       --ux-shadow: rgba(0, 0, 0, 0.45);
       --ux-shadow-strong: rgba(0, 0, 0, 0.78);
@@ -91,19 +91,20 @@
     }
     .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
 
-    /* Hero Blue Atmosphere (Clean Cobalt — no muddy orange halo) */
+    /* Hero Electric Blue Atmosphere + Subtle Vivid Pink Rim */
     .hero-zone {
       position: relative;
       background:
-        radial-gradient(620px 320px at 50% 18%, rgba(56, 130, 255, 0.34), transparent 70%),
-        radial-gradient(960px 500px at 50% 42%, #1D5CE0 0%, #0D3A9C 52%, #09318D 85%, #051847 100%);
+        radial-gradient(520px 260px at 82% 24%, rgba(255, 31, 143, 0.30), transparent 70%),
+        radial-gradient(620px 320px at 22% 18%, rgba(56, 152, 255, 0.42), transparent 70%),
+        radial-gradient(960px 520px at 50% 42%, #1E6BFF 0%, #0044FF 48%, #0A29A6 82%, #04124D 100%);
       color: #FCFFFF;
       padding-bottom: 112px;
       overflow: hidden;
     }
     .hero-zone::before {
       content: ""; position: absolute; inset: 0; pointer-events: none;
-      background-image: radial-gradient(rgba(252, 255, 255, 0.13) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(252, 255, 255, 0.14) 1px, transparent 1px);
       background-size: 22px 22px;
       mask-image: radial-gradient(circle at 50% 45%, black 35%, transparent 80%);
     }
@@ -116,14 +117,14 @@
 
     .pill-nav {
       display: flex; align-items: center; gap: 6px; padding: 5px;
-      background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 999px;
     }
     .pill-nav a {
-      color: rgba(252, 255, 255, 0.88); text-decoration: none; font-size: 13px; font-weight: 500;
+      color: rgba(252, 255, 255, 0.90); text-decoration: none; font-size: 13px; font-weight: 500;
       padding: 6px 14px; border-radius: 999px; transition: background 150ms;
     }
-    .pill-nav a:hover, .pill-nav a.active { background: rgba(255, 255, 255, 0.22); color: #FFFFFF; }
+    .pill-nav a:hover, .pill-nav a.active { background: rgba(255, 255, 255, 0.24); color: #FFFFFF; }
     .nav-right { display: flex; align-items: center; gap: 8px; }
 
     /* Buttons */
@@ -136,17 +137,17 @@
     .btn:active { transform: scale(0.97); }
     .btn-sm { height: 36px; padding: 0 14px; font-size: 13px; }
     .btn-coral {
-      background: linear-gradient(135deg, #FF6B1A, #F04F00); color: #FFFFFF;
-      box-shadow: 0 10px 24px rgba(255, 92, 0, 0.30);
+      background: linear-gradient(135deg, #FF3399, #E60073); color: #FFFFFF;
+      box-shadow: 0 10px 26px rgba(255, 31, 143, 0.36);
     }
-    .btn-coral:hover { filter: brightness(1.06); transform: translateY(-1px); }
+    .btn-coral:hover { filter: brightness(1.08); transform: translateY(-1px); }
     .btn-glass {
-      background: rgba(255, 255, 255, 0.14); color: #FCFFFF;
-      border-color: rgba(255, 255, 255, 0.32); backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.15); color: #FCFFFF;
+      border-color: rgba(255, 255, 255, 0.34); backdrop-filter: blur(10px);
     }
-    .btn-glass:hover { background: rgba(255, 255, 255, 0.24); }
-    .btn-cobalt { background: var(--cobalt); color: #FCFFFF; }
-    .btn-cobalt:hover { background: #0C3FB5; }
+    .btn-glass:hover { background: rgba(255, 255, 255, 0.25); }
+    .btn-cobalt { background: var(--cobalt); color: #FCFFFF; box-shadow: 0 8px 20px rgba(0, 68, 255, 0.22); }
+    .btn-cobalt:hover { background: #0039D6; }
     .btn-outline { background: transparent; color: var(--ux-ink); border-color: var(--ux-line-2); }
     .btn-outline:hover { background: var(--ux-surface-2); border-color: var(--ux-accent); }
 
@@ -155,13 +156,13 @@
     .palette-strip { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
     .color-chip {
       display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px 4px 6px;
-      border-radius: 999px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 999px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.26);
       color: #FCFFFF; font-size: 12px; font-family: var(--mono); cursor: pointer;
     }
-    .color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); }
-    .mini-flow { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; font-size: 12.5px; color: rgba(252, 255, 255, 0.85); margin-bottom: 14px; }
+    .color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.45); }
+    .mini-flow { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; font-size: 12.5px; color: rgba(252, 255, 255, 0.88); margin-bottom: 14px; }
     .hero-title { margin: 0; font-size: clamp(32px, 5vw, 52px); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; }
-    .hero-sub { margin: 14px auto 24px; max-width: 560px; font-size: 15px; color: rgba(252, 255, 255, 0.88); }
+    .hero-sub { margin: 14px auto 24px; max-width: 560px; font-size: 15px; color: rgba(252, 255, 255, 0.90); }
     .hero-cta { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; }
 
     /* 3 Overlapping Dashboard Cards */
@@ -175,14 +176,14 @@
       transition: background .3s var(--ux-ease), border-color .3s var(--ux-ease);
     }
     .dash-card.featured {
-      background: linear-gradient(155deg, #FF701F 0%, #FF5500 58%, #E64800 100%);
-      color: #FFFFFF; border-color: rgba(255,255,255,0.34);
-      box-shadow: 0 22px 48px rgba(255, 92, 0, 0.28);
+      background: linear-gradient(155deg, #FF3B9A 0%, #FF1485 55%, #C80064 100%);
+      color: #FFFFFF; border-color: rgba(255,255,255,0.36);
+      box-shadow: 0 24px 54px rgba(255, 31, 143, 0.34);
       display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center;
     }
     html[data-theme="dark"] .dash-card.featured {
-      background: linear-gradient(155deg, #FC734D 0%, #E8552E 60%, #C43B16 100%);
-      box-shadow: 0 24px 54px rgba(252, 115, 77, 0.35);
+      background: linear-gradient(155deg, #FF47A3 0%, #E60073 58%, #9E004F 100%);
+      box-shadow: 0 24px 54px rgba(255, 59, 154, 0.38);
     }
     .card-lbl { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
 
@@ -277,10 +278,10 @@
     <div class="container">
       <div class="hero-center">
         <div class="palette-strip">
-          <button class="color-chip" data-hex="#09318D"><span class="color-dot" style="background:#09318D"></span>#09318D (Cobalt)</button>
+          <button class="color-chip" data-hex="#0044FF"><span class="color-dot" style="background:#0044FF"></span>#0044FF (Electric Blue)</button>
+          <button class="color-chip" data-hex="#FF1F8F"><span class="color-dot" style="background:#FF1F8F"></span>#FF1F8F (Vivid Pink)</button>
           <button class="color-chip" data-hex="#FCFFFF"><span class="color-dot" style="background:#FCFFFF"></span>#FCFFFF (Sáng)</button>
-          <button class="color-chip" data-hex="#02070A"><span class="color-dot" style="background:#02070A"></span>#02070A (Eclipse Dark)</button>
-          <button class="color-chip" data-hex="#FF5C00"><span class="color-dot" style="background:#FF5C00"></span>#FF5C00 (Cam sạch · Light)</button>
+          <button class="color-chip" data-hex="#030712"><span class="color-dot" style="background:#030712"></span>#030712 (Dark)</button>
         </div>
 
         <div class="mini-flow">
@@ -293,13 +294,13 @@
           Vận hành doanh nghiệp<br />Không còn phức tạp
         </h1>
         <p class="hero-sub">
-          Bố cục sáng rõ chuẩn hội trường (V4) kết hợp sắc cam sạch sẽ cho giao diện sáng (<code>#FF5C00</code>) và dịu mắt khi bật Dark Mode (<code>#FC734D</code>), tích hợp tương tác từ <strong>Lucian UX/UI</strong>.
+          Bố cục sáng rõ chuẩn hội trường (V4) nâng cấp bảng màu <strong>Xanh dương Electric (#0044FF) &amp; Hồng rực rỡ (#FF1F8F)</strong>, kèm nút đổi Dark Mode và chuyển động <strong>Lucian UX/UI</strong>.
         </p>
 
         <div class="hero-cta">
           <!-- Lucian UX/UI Prompt #002 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#002 -->
           <style>
-          .u002{--bg:#FCFFFF;--fg:#09318D;--blob:linear-gradient(135deg,var(--coral),#09318D);
+          .u002{--bg:#FCFFFF;--fg:#0044FF;--blob:linear-gradient(135deg,var(--coral),#0044FF);
             position:relative;display:inline-grid;place-items:center}
           .u002-mag{transition:translate .9s var(--ux-spring)}
           .u002-btn{position:relative;display:flex;align-items:center;gap:14px;height:54px;padding:0 7px 0 24px;border:0;border-radius:999px;background:var(--bg);color:var(--fg);overflow:hidden;isolation:isolate;
@@ -415,13 +416,13 @@
         <svg viewBox="0 0 280 120" width="100%" height="120">
           <defs>
             <linearGradient id="areaBlue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#1654D1" stop-opacity="0.28"/>
-              <stop offset="100%" stop-color="#1654D1" stop-opacity="0"/>
+              <stop offset="0%" stop-color="#1E6BFF" stop-opacity="0.30"/>
+              <stop offset="100%" stop-color="#1E6BFF" stop-opacity="0"/>
             </linearGradient>
           </defs>
           <path d="M10 95 Q60 80 100 55 T190 48 T270 30 L270 110 L10 110 Z" fill="url(#areaBlue)"/>
-          <path d="M10 95 Q60 80 100 55 T190 48 T270 30" fill="none" stroke="#1654D1" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="145" cy="52" r="5" fill="var(--coral)" stroke="#09318D" stroke-width="2"/>
+          <path d="M10 95 Q60 80 100 55 T190 48 T270 30" fill="none" stroke="#1E6BFF" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="145" cy="52" r="5" fill="var(--coral)" stroke="#0044FF" stroke-width="2"/>
         </svg>
         <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ux-ink-2);">
           <span>Tháng 9</span><span>Tháng 10</span><span>Tháng 11</span>
@@ -446,12 +447,12 @@
           <h3 style="width:100%;"><span>Công tắc co giãn</span><span class="lucian-tag">Lucian #013</span></h3>
           <!-- Lucian UX/UI Prompt #013 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#013 -->
           <style>
-          .u013{--on:linear-gradient(135deg,var(--coral),#09318D);position:relative;width:280px;height:185px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+          .u013{--on:linear-gradient(135deg,var(--coral),#0044FF);position:relative;width:280px;height:185px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
           .u013-sw{position:relative;width:140px;height:76px;border:0;padding:0;border-radius:999px;background:var(--ux-surface-3);touch-action:none;
             box-shadow:inset 0 2px 6px rgba(0,0,0,.12),inset 0 0 0 1px var(--ux-line);transition:box-shadow .5s var(--ux-ease)}
           .u013-sw::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--on);opacity:0;transition:opacity .45s var(--ux-ease)}
           .u013.is-on .u013-sw::before{opacity:1}
-          .u013.is-on .u013-sw{box-shadow:inset 0 2px 6px rgba(0,0,0,.12),0 16px 30px -16px rgba(255,92,0,.65)}
+          .u013.is-on .u013-sw{box-shadow:inset 0 2px 6px rgba(0,0,0,.12),0 16px 30px -16px rgba(255,31,143,.70)}
           .u013-knob{position:absolute;top:8px;left:8px;width:60px;height:60px;border-radius:999px;background:#fff;display:grid;place-items:center;
             box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 6px 14px -4px rgba(0,0,0,.28);transition:left .5s var(--ux-spring),width .32s var(--ux-ease)}
           .u013.is-on .u013-knob{left:72px}
@@ -460,7 +461,7 @@
           .u013.is-drag .u013-knob{transition:width .2s var(--ux-ease)}
           .u013-knob svg{width:24px;height:24px;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
           .u013-x{stroke:#94A3B8;stroke-dasharray:14;stroke-dashoffset:0;transition:stroke-dashoffset .3s var(--ux-ease) .1s}
-          .u013-v{stroke:#09318D;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .35s var(--ux-ease)}
+          .u013-v{stroke:#0044FF;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .35s var(--ux-ease)}
           .u013.is-on .u013-x{stroke-dashoffset:14;transition-delay:0s}
           .u013.is-on .u013-v{stroke-dashoffset:0;transition-delay:.18s}
           .u013-txt{width:250px;text-align:center}
@@ -668,7 +669,7 @@
         <button class="btn btn-outline btn-sm" id="closeModal" type="button">Đóng</button>
       </div>
       <p style="margin:0 0 16px;font-size:14px;color:var(--ux-ink-2);">
-        Bản ghép hoàn chỉnh: Bố cục V4 sáng rõ + Xanh dương #09318D + Cam sạch #FF5C00 (Light) / #FC734D (Dark #02070A) + Chuyển động Lucian UX/UI.
+        Bản ghép hoàn chỉnh: Bố cục V4 sáng rõ + Xanh dương Electric #0044FF + Hồng rực rỡ #FF1F8F (Light) / #FF3B9A (Dark #030712) + Chuyển động Lucian UX/UI.
       </p>
       <div class="field">
         <label>Tên đội thi / Doanh nghiệp</label>
