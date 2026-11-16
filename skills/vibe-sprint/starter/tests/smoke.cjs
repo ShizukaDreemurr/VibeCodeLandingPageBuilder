@@ -297,6 +297,49 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   await page.waitForSelector('.chat-log button.btn-primary');
   ok('chatbot: không biết -> nút chuyển sang để lại thông tin', true);
   if (SHOTS) { await page.screenshot({ path: path.join(SHOTS, 'desktop-light-playground-chat.png') }); }
+
+  console.log('# Lớp Lucian (Thư viện UI)');
+  await page.click('#view-playground .seg label:has-text("Thư viện UI")');
+  await page.waitForSelector('#lx-form');
+  const lxq = (sel) => page.$(sel);
+  ok('EP.lucian có mặt', await page.evaluate(() => !!(EP.lucian && EP.lucian.fmt && EP.lucian.countUp)));
+  ok('segmented có viên trượt', await lxq('#view-playground .seg .lx-ind') !== null);
+  ok('công tắc role=switch bật/tắt bằng click', await (async () => { const sw = await lxq('#lx-sw-form input[role="switch"]:not(:checked)'); await sw.click(); return await sw.isChecked(); })());
+  await page.fill('#lx-form [name="name"]', 'x'.repeat(31)); await page.waitForTimeout(100);
+  ok('bộ đếm ký tự 31/30 báo quá', await page.$eval('#lx-form [data-field="name"] .lx-counter', (n) => n.textContent === '31/30' && n.classList.contains('is-over')));
+  await page.fill('#lx-form [name="price"]', ''); await page.type('#lx-form [name="price"]', '1250000');
+  ok('ô tiền hiện 1.250.000', (await page.inputValue('#lx-form [name="price"]')) === '1.250.000');
+  ok('EP.form đọc tiền về Number', await page.evaluate(() => EP.form.values(document.querySelector('#lx-form'), { price: { type: 'money' } }).price === 1250000));
+  await page.fill('#lx-form [name="name"]', ''); await page.click('#lx-form [type="submit"]'); await page.waitForTimeout(80);
+  ok('gửi form thiếu: có ô lỗi và rung', await page.$eval('#lx-form', (f) => !!f.querySelector('[data-invalid]') && !!f.querySelector('.lx-shake')));
+  await page.waitForTimeout(600);
+  await page.click('#lx-form select[name="kind"]'); await page.waitForSelector('.lx-listbox li');
+  await page.click('.lx-listbox li:has-text("Khách thân thiết")');
+  ok('hộp chọn Lucian đổi giá trị select', (await page.inputValue('#lx-form select[name="kind"]')) === 'vip');
+  ok('KPI đếm lên rồi giữ nguyên chữ cuối', await (async () => { await page.waitForFunction(() => !document.querySelector('#lx-kpi .lx-counting'), null, { timeout: 4000 }); return (await page.textContent('#lx-kpi .kpi-value')).includes('128.450.000'); })());
+  ok('định dạng vi-VN', await page.evaluate(() => EP.lucian.fmt.money(1250000).replace(/\s| /g, '') === '1.250.000₫' && EP.lucian.fmt.compact(2500000000) === '2,5 tỷ' && EP.lucian.fmt.parse('1.234,5') === 1234.5));
+  ok('bảng sticky có thuộc tính + biểu đồ line có pathLength', await page.evaluate(() => !!document.querySelector('[data-lx-sticky]') && document.querySelector('.ch-line').getAttribute('pathLength') === '1'));
+  await page.click('#lx-btn [data-copy]'); await page.waitForSelector('#lx-btn .is-copied');
+  ok('sao chép thành dấu tích', true);
+  await page.click('#lx-msg [data-act="toasts"]'); await page.waitForFunction(() => document.querySelectorAll('.toasts .toast').length >= 3);
+  ok('toast xếp chồng >= 3', true);
+  const tb = await page.$eval('.toasts .toast:last-child', (n) => { const r = n.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+  await page.mouse.move(tb.x, tb.y); await page.mouse.down(); await page.mouse.move(tb.x + 160, tb.y, { steps: 6 }); await page.mouse.up();
+  await page.waitForTimeout(500);
+  ok('vuốt ngang gạt được toast', await page.$$eval('.toasts .toast', (a) => a.length) === 2);
+  await page.click('#lx-btn [data-act="hold"]'); await page.waitForSelector('dialog[open] .lx-hold');
+  await page.click('dialog[open] .lx-hold', { delay: 80 }); await page.waitForTimeout(150);
+  ok('bấm lướt nút giữ: hộp thoại vẫn mở', await page.$('dialog[open]') !== null);
+  const hb = await page.$eval('dialog[open] .lx-hold', (n) => { const r = n.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+  await page.mouse.move(hb.x, hb.y); await page.mouse.down(); await page.waitForTimeout(1200); await page.mouse.up();
+  await page.waitForSelector('dialog[open]', { state: 'detached' });
+  ok('giữ đủ lâu thì xác nhận', true);
+  await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(300);
+  ok('390px: bảng thành thẻ + không tràn ngang', await page.evaluate(() => !!document.querySelector('#view-playground .table-wrap.lx-cards') && document.documentElement.scrollWidth <= document.documentElement.clientWidth));
+  const small = await page.evaluate(() => Array.from(document.querySelectorAll('#view-playground .btn, #view-playground .tab, .icon-btn')).filter((b) => b.offsetParent && b.getBoundingClientRect().height < 43).map((b) => b.className + ':' + b.textContent.trim().slice(0, 12)));
+  ok('390px: nút/tab/icon-btn cao >= 44px', small.length === 0, small);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  if (SHOTS) { await page.screenshot({ path: path.join(SHOTS, 'desktop-light-playground-ui.png') }); }
   }
 
   console.log('# Cài đặt: AI + dữ liệu');

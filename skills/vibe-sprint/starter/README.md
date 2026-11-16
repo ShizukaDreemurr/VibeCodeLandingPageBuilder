@@ -10,7 +10,7 @@ Bộ khung web app thuần HTML/CSS/JS (không build, không CDN) cho cuộc thi
 4. Chạy thử: `python3 -m http.server 8211` rồi mở `http://localhost:8211/` (bảng cổng của skill: 8211 điều phối, 8212-8230 các agent, **không dùng 8000**).
 5. Nhân bản feature (mục 2). Khi đã có feature thật, xoá `features/_example` và `features/_playground` **cùng với hai dòng `<script src="features/_example/feature.js">` và `<script src="features/_playground/feature.js">` trong `index.html`** (xoá thư mục mà quên dòng script thì trình duyệt báo 404 và smoke test đỏ). Smoke test tự bỏ qua các khối của hai feature này khi tab của chúng không còn.
 
-Thứ tự nạp script trong `index.html`: config, version, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, checklist, quiz, chat, timeslot), features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
+Thứ tự nạp script trong `index.html`: config, version, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, checklist, quiz, chat, timeslot), **lucian**, features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
 
 ## 2. Thêm một feature (5 phút)
 
@@ -63,6 +63,30 @@ Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,
 ### Mô-đun tiện ích (đều nhỏ, có chú thích đầu file, demo ở tab "Mô-đun")
 `mock.js` (hash/rng/sentiment/classify tất định), `metrics.js` (chia an toàn, CTR/CPC/CPA/ROAS, VND, xu hướng), `match.js` (bỏ dấu tiếng Việt, FAQ matcher, tìm kiếm), `calc.js` (form -> kết quả trực tiếp), `checklist.js` (chấm điểm có trọng số /100), `quiz.js` (đồng hồ, điểm theo tốc độ, Top 10 đồng hạng), `chat.js` (bong bóng chat + quick reply + FAQ bot), `timeslot.js` (khung giờ, trùng lịch, đếm ngược).
 
+## 2b. Lớp Lucian (vi tương tác cho mọi thành phần)
+
+`css/lucian.css` + `js/lucian.js` là MỘT lớp cắm thêm (nạp sau `app.css`/`ui.js`, trước features) chuyển thể từ thư viện Lucian Lab UI (MIT, (c) 2026 Seokwoooo; giấy phép ở `../vendor/lucian/LICENSE`). Viết HTML/API như cũ là nhận được nâng cấp; không phải gọi gì. Token `--ux-*` của Lucian được ánh xạ sang token của app (`--surface`, `--text`, `--accent`...) nên tự đổi sáng/tối. Xem trực tiếp: tab **Mô-đun > Thư viện UI** (mở thẳng bằng `#/playground/ui`). Đưa phần tử Lucian khác vào: `references/10-lucian-ui.md`.
+
+| Thành phần | Tự động có | Dùng thêm bằng API |
+|---|---|---|
+| Nút | ấn lò xo, nổi nhẹ khi rê, vệt sáng khi `aria-busy` | `.btn-cta` / `data-roll`: nhãn cuộn khi rê; `data-copy="chuỗi|#selector"`: sao chép rồi thành dấu tích; `EP.ui.confirm({ ..., danger: true, hold: true })` (hoặc `hold: 1200` ms): phải **giữ** nút để xác nhận |
+| Công tắc / ô tích / chip | ô tích vẽ dấu, chip bật ra | `{ type:'checkbox', switch:true }` trong `EP.form` hoặc `<input type="checkbox" role="switch">`: công tắc bóp |
+| Tab, segmented | viên trượt lò xo (topbar và `.seg`) | không cần |
+| Ô nhập | nhãn nổi lò xo, **rung khi báo lỗi**, dấu hợp lệ, đếm ký tự `12/30` (từ `rules.maxLength`), textarea tự giãn | `{ type:'money' }`: gõ ra `1.250.000`, `EP.form.values` trả Number |
+| Select | hộp chọn tuỳ biến trên máy có chuột (cảm ứng dùng bộ chọn gốc); bàn phím đủ | `data-native` trên select để tắt |
+| Thẻ | `a.card` nổi lên khi rê | `data-lift` nổi lên; `data-tilt` nghiêng 3D (chỉ chuột, tắt trên cảm ứng) |
+| KPI | **đếm lên** khi view hiện (chữ thật giữ nguyên cho đọc màn hình/test), `tabular-nums` | `data-countup` ở bất kỳ phần tử nào; `EP.lucian.countUp(el)` |
+| Bảng | hàng hiện dần, vạch nhấn khi rê, **thẻ xếp dọc ở <= 720px** (nút sắp xếp thành chip) | `EP.ui.table(el, { sticky: true })` tiêu đề dính; `{ cards: false }` tắt thẻ |
+| Trống / lỗi / chờ | biểu tượng trôi nhẹ; thanh tiến trình mép trên tự chạy khi `EP.ai.generate` đang gọi | `var w = EP.lucian.aiLoading(box, { title, steps }); ... w.stop(htmlKetQua)` |
+| Toast | xếp chồng (cũ lùi sau), **vuốt ngang để gạt**, thanh thời gian | như `EP.ui.toast` |
+| Hộp thoại | lò xo vào, mờ ra; bottom sheet trên di động | như `EP.ui.dialog` |
+| Stepper | thanh đầy dần, dấu tích bật, vòng thở ở bước hiện tại | như `EP.ui.stepper` |
+| Biểu đồ | cột mọc, đường tự vẽ, điểm bật, vòng tròn quét | như `EP.charts.*` |
+| Giao diện sáng/tối | biểu tượng xoay vào; **hiệu ứng loang 650ms ở `core.js` giữ nguyên** | `EP.theme.cycle(btn)` |
+| Định dạng vi-VN | | `EP.lucian.fmt.money(1250000)` = `1.250.000 ₫`, `.compact(2.5e9)` = `2,5 tỷ`, `.percent`, `.signed(-3.5,1,'%')`, `.number`, `.parse('1.234,5')` |
+
+Quy tắc đã tuân thủ: sáng/tối, `prefers-reduced-motion` (hoạt ảnh về ~0, không có phần tử bị ẩn chờ), `:focus-visible`, vùng chạm >= 44px khi màn <= 720px hoặc cảm ứng, không tràn ngang ở 390px, không CDN. Gỡ lớp này: xoá `css/lucian.css` + `js/lucian.js` và hai dòng trong `index.html` (form.js vẫn chạy, chỉ mất hiệu ứng). Kiểm thử: khối "Lớp Lucian" trong `tests/smoke.cjs` chạy khi còn tab `playground`.
+
 ## 3. Quy ước
 - Chữ hiện cho người dùng: **tiếng Việt có dấu**; tên biến, hàm, file, comment code: tiếng Anh hoặc tiếng Việt ngắn gọn, nhưng API công khai dùng tiếng Anh.
 - Mọi kết quả mô phỏng AI phải kèm `MOCK_NOTICE` (cấu hình ở `js/config.js`).
@@ -111,9 +135,11 @@ Không kiểm thử được tự động: đăng nhập Google thật (cần t�
 index.html            vỏ app: skip link, tab, nút giao diện, chân trang, toast
 css/tokens.css        biến thiết kế sáng/tối + khai báo @layer
 css/app.css           toàn bộ thành phần
+css/lucian.css        lớp Lucian: vi tương tác (mục 2b)
 js/                   config, version, core, ui, form, charts, export, ai, demo, app + mô-đun
 features/_example     feature mẫu đầy đủ (CRUD + form + AI + biểu đồ)
-features/_playground  demo calc/checklist/quiz/chat
+js/lucian.js          lớp Lucian (bọc EP.ui/EP.ai, quét DOM)
+features/_playground  demo calc/checklist/quiz/chat + Thư viện UI
 tests/smoke.cjs       Playwright smoke test (+ tests/feature-template.snippet: khối mẫu cho feature thật)
 js/firebase.js        Firebase tuỳ chọn (tắt mặc định): đăng nhập Google + đồng bộ Firestore
 firestore.rules, firebase.json, .firebaserc.example   rules + cấu hình emulator

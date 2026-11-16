@@ -4,6 +4,8 @@
        name:  { label: 'Họ tên', type: 'text', rules: { required: true, maxLength: 80 } },
        phone: { label: 'Số điện thoại', type: 'tel', rules: { required: true, phone: true } },
        qty:   { label: 'Số lượng', type: 'number', rules: { min: 1, max: 100, integer: true } },
+       price: { label: 'Giá (₫)', type: 'money', rules: { min: 0 } },                // gõ tới đâu ra dấu chấm ngăn nghìn tới đó; đọc về là Number
+       vip:   { label: 'Khách VIP', type: 'checkbox', switch: true },               // công tắc lò xo thay cho ô tích
        due:   { label: 'Hạn', type: 'date', rules: { date: 'future' } },        // 'future' | 'past' | 'todayOrFuture' | 'todayOrPast'
        kind:  { label: 'Nhóm', type: 'segmented', options: [{ value:'a', label:'A' }], rules: { required: true } },
        note:  { label: 'Ghi chú', type: 'textarea' }
@@ -46,7 +48,7 @@
     if (r.email && !isEmail(s)) return 'Email chưa đúng định dạng (ví dụ: ten@congty.vn).';
     if (r.phone && !isPhone(s)) return 'Số điện thoại chưa đúng (ví dụ: 0912345678 hoặc +84912345678).';
     if (r.url && !isUrl(s)) return 'Đường dẫn chưa đúng, cần bắt đầu bằng http:// hoặc https://.';
-    if (type === 'number') {
+    if (type === 'number' || type === 'money') {
       var n = Number(s);
       if (!isFinite(n)) return label + ' phải là một con số.';
       if (r.integer && Math.floor(n) !== n) return label + ' phải là số nguyên.';
@@ -87,20 +89,25 @@
         '</div>' + hint.replace('id="' + id + '-msg"', 'id="' + id + '-msg"') + '</fieldset>';
     }
     if (type === 'checkbox') {
-      return '<div class="' + cls + '" data-field="' + esc(name) + '"><label class="check"><input type="checkbox"' + attrs + (v ? ' checked' : '') + '><span>' + esc(spec.label) + '</span></label>' + hint + '</div>';
+      var sw = spec.switch ? ' role="switch"' : '';
+      return '<div class="' + cls + '" data-field="' + esc(name) + '"><label class="check' + (spec.switch ? ' switch' : '') + '"><input type="checkbox"' + sw + attrs + (v ? ' checked' : '') + '><span>' + esc(spec.label) + '</span></label>' + hint + '</div>';
     }
     var control;
     if (type === 'select') {
       control = '<select class="input"' + attrs + '><option value=""' + (v === '' ? ' selected' : '') + ' hidden></option>' +
         (spec.options || []).map(function (o) { return '<option value="' + esc(o.value) + '"' + (String(o.value) === String(v) ? ' selected' : '') + '>' + esc(o.label) + '</option>'; }).join('') + '</select>';
     } else if (type === 'textarea') {
-      control = '<textarea class="input" rows="' + (spec.rows || 3) + '" placeholder=" "' + attrs + '>' + esc(v) + '</textarea>';
+      control = '<textarea class="input" rows="' + (spec.rows || 3) + '" placeholder=" "' + (r.maxLength ? ' data-max="' + r.maxLength + '"' : '') + attrs + '>' + esc(v) + '</textarea>';
     } else {
-      var t = type === 'tel' ? 'tel' : type === 'email' ? 'email' : type === 'number' ? 'number' : type === 'date' ? 'date' : type === 'url' ? 'url' : type === 'time' ? 'time' : 'text';
+      var money = type === 'money';
+      var t = money ? 'text' : type === 'tel' ? 'tel' : type === 'email' ? 'email' : type === 'number' ? 'number' : type === 'date' ? 'date' : type === 'url' ? 'url' : type === 'time' ? 'time' : 'text';
       var ex = '';
       if (type === 'number') { if (r.min != null) ex += ' min="' + r.min + '"'; if (r.max != null) ex += ' max="' + r.max + '"'; ex += ' step="' + (r.integer ? 1 : 'any') + '" inputmode="' + (r.integer ? 'numeric' : 'decimal') + '"'; }
       if (type === 'tel') ex += ' inputmode="tel"';
+      if (money) ex += ' inputmode="numeric" data-lx-money';
+      if (r.maxLength && type !== 'number' && !money) ex += ' data-max="' + r.maxLength + '"';
       if (r.maxLength && type !== 'number') ex += ' maxlength="' + (r.maxLength + 40) + '"'; // cho gõ lố để thấy báo lỗi thay vì bị cắt âm thầm
+      if (money && v !== '' && root.EP.lucian) v = root.EP.lucian.fmt.number(v);
       control = '<input class="input" type="' + t + '" placeholder=" " value="' + esc(v) + '"' + ex + attrs + '>';
     }
     return '<div class="' + cls + '" data-field="' + esc(name) + '">' + control + '<label class="label" for="' + id + '">' + esc(spec.label) + req + '</label>' + hint + '</div>';
@@ -121,6 +128,7 @@
     if (type === 'checkbox') return !!el.checked;
     var v = el.value;
     if (type === 'number') return v === '' ? null : Number(v);
+    if (type === 'money') { var d = String(v).replace(/[^\d-]/g, ''); return d === '' ? null : Number(d); }
     return typeof v === 'string' ? v.trim() : v;
   }
   function setError(form, name, msg) {
@@ -177,6 +185,7 @@
       values: values,
       validate: function () { var res = validate(schema, values()); Object.keys(schema).forEach(function (k) { setError(form, k, res.errors[k] || ''); }); return res; },
       set: function (obj) {
+        setTimeout(function () { if (root.EP.lucian) root.EP.lucian.refresh(form); }, 0);
         Object.keys(obj).forEach(function (k) {
           if (!schema[k]) return;
           if (schema[k].type === 'segmented') { var r = form.querySelector('input[name="' + k + '"][value="' + String(obj[k]).replace(/"/g, '') + '"]'); if (r) r.checked = true; }
@@ -184,7 +193,7 @@
           else if (form.elements[k]) form.elements[k].value = obj[k] == null ? '' : obj[k];
         });
       },
-      reset: function () { form.reset(); touched = {}; Object.keys(schema).forEach(function (k) { setError(form, k, ''); var w = form.querySelector('[data-field="' + k + '"]'); if (w) w.removeAttribute('data-valid'); }); }
+      reset: function () { form.reset(); setTimeout(function () { if (root.EP.lucian) root.EP.lucian.refresh(form); }, 0); touched = {}; Object.keys(schema).forEach(function (k) { setError(form, k, ''); var w = form.querySelector('[data-field="' + k + '"]'); if (w) w.removeAttribute('data-valid'); }); }
     };
   }
 

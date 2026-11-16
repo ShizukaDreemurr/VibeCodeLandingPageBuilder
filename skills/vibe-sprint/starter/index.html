@@ -17,6 +17,8 @@
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/hero.css">
+<!-- Lớp Lucian: vi tương tác cho mọi thành phần (xoá 2 dòng lucian.css + lucian.js nếu không muốn) -->
+<link rel="stylesheet" href="css/lucian.css">
 </head>
 <body>
 <a class="skip-link" href="#main">Bỏ qua, tới nội dung chính</a>
@@ -47,7 +49,7 @@
 
 <div id="toasts" class="toasts" role="region" aria-label="Thông báo" aria-live="polite"></div>
 
-<!-- Thứ tự nạp: config -> version -> core -> ui -> form -> charts -> export -> ai -> demo -> modules -> features -> app -->
+<!-- Thứ tự nạp: config -> version -> core -> ui -> form -> charts -> export -> ai -> demo -> modules -> lucian -> features -> app -->
 <script src="js/config.js"></script>
 <script src="js/version.js"></script>
 <script src="js/core.js"></script>
@@ -68,6 +70,8 @@
 <script src="js/quiz.js"></script>
 <script src="js/chat.js"></script>
 <script src="js/timeslot.js"></script>
+<!-- Lớp Lucian: nạp SAU mọi mô-đun trên (nó bọc EP.ui / EP.ai) và TRƯỚC features -->
+<script src="js/lucian.js"></script>
 <!-- FEATURES: mỗi feature một dòng. Nhân bản features/_example -> features/<ten>/ rồi thêm dòng ở đây. -->
 <script src="features/_example/feature.js"></script>
 <script src="features/_playground/feature.js"></script>
