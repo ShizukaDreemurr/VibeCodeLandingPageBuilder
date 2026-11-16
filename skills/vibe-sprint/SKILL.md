@@ -29,13 +29,17 @@ Khi skill này chạy, **usage/token KHÔNG phải ràng buộc. Thời gian là
 |---|---|---|---|
 | T+0→5 | Đọc đề + thể lệ phát tại chỗ; **mở file dữ liệu mẫu BTC của bảng mình** (tên sheet, cột, định dạng); viết spec 1 trang, 5 tính năng + tiêu chí nghiệm thu (`references/01`) | Điều phối + 1 agent research (Haiku) song song | `docs/spec-nhanh.md` |
 | **T+5 (bắt buộc)** | **Schema Contract** (10-15 dòng, mục 0 của spec: trường + kiểu, tên hàm + hình dạng trả về, collection, id `EP.*`) **và danh sách Giả định** (số nào do BTC cho, số nào đội tự đặt, ghi nguồn/lý do). **Chưa có thì chưa spawn.** | Điều phối | Contract + Giả định dán nguyên văn vào mọi prompt |
+| **T+8→10** | **Gửi 2 prompt song song:** `prompts/14` (khung slide, chưa ảnh) → **Claude Design**; `prompts/16` (giao việc tách rời, nhánh `ag/<x>`, cổng 8240+) → **Gemini Antigravity**. Hai prompt chỉ gửi sau khi có Schema Contract. Thẻ việc theo mốc: `templates/THE-DIEU-PHOI.md`; quy trình: `references/14-quy-trinh-slide-song-song.md` | Điều phối (Nguyên) | Khung slide (T+15–20) để DA, Dũng luyện nói; nhánh `ag/*` |
 | T+5→8 | Chọn starter + UI tokens; kiểm tra UI 2 phút (bảng màu, font, bố cục 3 màn) | Điều phối | `docs/PROGRESS.md` (ghi 5 dòng kiểm UI) |
 | T+8→40 | **Song song** (xem bảng agent dưới) | N agent tính năng + deck + docs + data/demo + QA (+ agent Giả định & mô hình nếu Bảng Kinh tế) | Mỗi agent commit trên worktree/thư mục riêng |
+| T+20→40 | **Luyện nói trên khung slide** (Diệu Anh, Dũng; Nguyên đóng vai kỹ thuật viên, tập câu hiệu lệnh "Mời chuyển slide.") | DA, Dũng, Nguyên | Đúng giờ, đúng cue |
 | T+25 | Merge đợt 1 (khung + dữ liệu), chạy test nhanh, chụp ảnh | Điều phối | App chạy được dù tính năng chưa đủ |
 | T+40→48 | Merge hết, chạy toàn bộ test, `node tools/bump-version.cjs`, `node scripts/scan-secrets.mjs .`, push, deploy Pages | Điều phối + agent QA | Link online chạy |
-| T+45 | **Agent Sonnet chụp ảnh điện thoại dọc:** tự mở web app bằng giả lập điện thoại (390×844 @3x và 360×780, sáng + tối) rồi chụp từng tab bằng `starter/tools/shots-mobile.cjs` hoặc `deck/tools/capture.cjs`. Ảnh dọc này dùng cho slide (khung điện thoại, ≤ 3 máy/slide; không dùng ảnh ngang/desktop) và README | 1 agent Sonnet (deck/QA) | `deck/assets/NN-ten-mobile-light|dark.png` |
+| T+44 | **Khóa giao diện** (chỉ sửa lỗi) | Điều phối | Ảnh slide không lỗi thời |
+| T+45 | **Chụp ảnh slot (prompt 15):** gửi `prompts/15` cho **Claude Sonnet trong Chrome** (khung 390×844 sáng/tối, ZIP đặt tên theo bảng slot của prompt 14), **song song** 1 agent Sonnet trong Claude Code làm dự phòng. Chi tiết dòng dưới. **Agent Sonnet chụp ảnh điện thoại dọc:** tự mở web app bằng giả lập điện thoại (390×844 @3x và 360×780, sáng + tối) rồi chụp từng tab bằng `starter/tools/shots-mobile.cjs` hoặc `deck/tools/capture.cjs`. Ảnh dọc này dùng cho slide (khung điện thoại, ≤ 3 máy/slide; không dùng ảnh ngang/desktop) và README | 1 agent Sonnet (deck/QA) | `deck/assets/NN-ten-mobile-light|dark.png` |
 | T+48→50 | Polish cuối + kiểm tra **mobile 360px VÀ 390px** (5 tiêu chí), sáng/tối, trạng thái rỗng/lỗi. **Sau T+50 không thêm tính năng** | 2–3 agent polish/QA song song | Ảnh chụp sạch |
 | **T+50→55** | **Minh chứng thời điểm chốt:** ảnh điện thoại dọc từng màn chính (360 và 390, sáng/tối, agent Sonnet chụp bằng giả lập) + 1 ảnh desktop, hoặc quay dọc màn hình luồng chính, **kèm hash commit đang chạy trên link** (`git rev-parse --short HEAD`, hiện cả phiên bản trên app). Lưu `docs/minh-chung-chot/` | QA agent + điều phối | Ảnh/video + hash |
+| T+50→55 | Tải ZIP vào Claude Design, gửi Phần 2 của prompt 14 (chèn ảnh + số); **T+55 xuất PDF/PPTX gửi kỹ thuật viên BTC** (thành viên không tự bấm slide; ghi chú có dòng "Cue kỹ thuật") | Điều phối | Deck có ảnh |
 | **T+55→60** | **Nộp 4 món:** (1) link demo/cách mở, (2) mã nguồn, (3) README (cài chạy, công nghệ, dữ liệu mẫu/tài khoản, khai báo khung chuẩn bị trước), (4) minh chứng chốt. Mở link ở cửa sổ ẩn danh kiểm lần cuối. **Không đẩy thêm commit sau khi chụp minh chứng.** | Điều phối + cả đội | 4 món đã nộp |
 | Sau 14:15 | Chuẩn bị pitch (3 bản 10/5/3 phút theo thời lượng BTC báo) + Q&A vòng phản biện (`references/05`) trong lúc giám khảo kiểm tra 14:15–14:45 | Cả đội | Slide + kịch bản demo |
 
@@ -50,7 +54,10 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 | Data/demo | Haiku | Dữ liệu demo thật, sạch, tiếng Việt (`EP.demo.register`) | `prompts/05-data-demo-agent.md` | 8214 |
 | Polish #1, #2 | Sonnet | Motion, a11y, tương phản, copy | `prompts/10-polish-agent.md` | 8215, 8216 |
 | Feature 1…N (mỗi tính năng 1 agent) | Sonnet | Một tính năng (`features/<tên>/feature.js` + `EP.register`) + validation + test | `prompts/02-feature-agent.md` | 8217–8224 |
-| Deck | Sonnet | Slide từ `deck/` (điền `deck.data.js`, **chụp ảnh điện thoại dọc 390×844@3x bằng giả lập**, xuất PDF) | `prompts/07-deck-agent.md` | 8225 |
+| **Khung slide** | Claude Design (claude.ai) | Dựng khung slide 11/7/5 + ô ảnh đặt tên sẵn (T+10), chèn ảnh (T+50) | `prompts/14-claude-design-khung-slide.md` | — |
+| **Chụp ảnh slot** | Sonnet trong Chrome (+ 1 Sonnet Claude Code dự phòng) | Ảnh điện thoại dọc sáng/tối + ZIP | `prompts/15-sonnet-chrome-chup-anh.md` | 8211 (hoặc Pages) |
+| **Gemini Antigravity** | Gemini | Việc tách rời: tính năng riêng, dữ liệu/importer, docs, rà soát giả định; nhánh `ag/<x>` | `prompts/16-gemini-antigravity-giao-viec.md` | 8240–8249 |
+| Deck (dự phòng khi Claude Design chậm) | Sonnet | Slide từ `deck/` (điền `deck.data.js`, **chụp ảnh điện thoại dọc 390×844@3x bằng giả lập**, xuất PDF) | `prompts/07-deck-agent.md` | 8225 |
 | Docs | Haiku | README, bảng kiểm thử, minh chứng AI, kịch bản demo, hỏi đáp | `prompts/08-docs-agent.md` | 8226 |
 | **Giả định & mô hình kinh doanh** (Bảng Kinh tế, bắt buộc) | Sonnet | Danh sách giả định có nguồn, kịch bản lạc quan/cơ sở/bi quan, hòa vốn, độ nhạy, dự phòng, kiểm ưu đãi có lỗ không; dùng `EP.scenario` (`js/scenario.js`) + `EP.importer` (`js/import.js`) của starter; đọc `references/11-mo-hinh-kinh-doanh.md`; nạp file dữ liệu BTC | `prompts/13-business-agent.md` (+ `references/11`, `12`, `kien-thuc/`) | 8231 |
 | QA / second opinion #1–#3 | Sonnet + Haiku | Chụp ảnh điện thoại dọc (360 + 390), chạy test, thử đầu vào sai, mobile | `prompts/06-qa-agent.md` | 8227–8229 |
@@ -64,6 +71,7 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 | **8211** | Điều phối viên / bản merge chính |
 | 8212–8216 | Hỗ trợ: 8212 shell/brand · 8213 AI · 8214 data/demo · 8215–8216 polish #1–#2 |
 | 8217–8224 | Feature agent F1…F8 |
+| 8240–8249 | **Gemini Antigravity** (`ag/ui` 8240, `ag/data` 8241, `ag/docs` 8242, `ag/biz` 8243, còn lại dự phòng) |
 | 8225–8231 | 8225 deck · 8226 docs · 8227–8229 QA #1–#3 · 8230 cấp cứu/dự phòng · 8231 giả định & mô hình kinh doanh |
 | **8000** | **CẤM** (nhiều agent từng dùng chung, server phục vụ nhầm worktree của nhau) |
 
@@ -119,6 +127,7 @@ Mọi thứ nằm trong `skills/vibe-sprint/` (gọi tắt `<SKILL>`). Đường
 - `deck/` — khung slide: sửa dữ liệu `deck/deck.data.js` (chép từ `template.data.js`), chụp ảnh `node tools/capture.cjs`, xuất `node tools/export.cjs` → `deck/out/<tên>.pdf`. Xem `deck/README.md`.
 - `brand/` — bộ nhận diện Xclipse: `01-bo-nhan-dien-xclipse.md`, `02-giong-dieu-va-noi-dung.md`, `03-album-anh-nganh-nghe.md`, logo (`logo-light.jpg`, `logo-dark.jpg`), album ảnh theo ngành (`brand/album/`), bộ UI mẫu `xclipse-ui-ux-*.html`. Shell/deck agent đọc khi cần màu, giọng điệu, ảnh hero.
 - `templates/` — mẫu docs: `spec-nhanh.md`, `README-du-thi.md`, `BANG-KIEM-THU.md`, `MINH-CHUNG-AI.md`, `KICH-BAN-DEMO.md`, `HOI-DAP.md`, `PROGRESS.md`, `DECISIONS.md`, `CLAUDE.md`, `CHECKLIST-CHUNG-KET.md`.
+- `prompts/14`–`16` — khung slide cho Claude Design, chụp ảnh bằng Claude in Chrome, giao việc cho Gemini Antigravity; `references/14-quy-trinh-slide-song-song.md` (dòng thời gian, hiệu lệnh kỹ thuật viên, dự phòng); `templates/THE-DIEU-PHOI.md` (thẻ 1 trang cho Nguyên).
 - `prompts/` — prompt tự đủ ngữ cảnh cho từng loại agent (`00-README.md` là mục lục + bảng cổng).
 - `catalog/` — gợi ý theo loại đề (`de-bai-vong-1.md`, `de-moi-du-doan.md`, `module-map.md`).
 - `scripts/` — `new-project.sh`, `scan-secrets.mjs`.

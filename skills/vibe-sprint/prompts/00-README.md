@@ -40,8 +40,13 @@ Quy tắc đi kèm: **Code tính số, AI diễn giải** (mọi con số do hà
 | 30-45 | QA | `06-qa-agent.md` x 2-3 | Haiku/Sonnet | chạy trên nhánh đã merge; chia theo nhóm feature / viewport |
 | 35-45 | Merge + deploy | `09-merge-deploy.md` | coordinator | |
 | 45-55 | Polish | `10-polish-agent.md` x 2-3 | Sonnet | chia theo view |
+| 10 | Khung slide | `14-claude-design-khung-slide.md` | Claude Design | gửi sau Schema Contract; ảnh chèn ở T+50 (Phần 2) |
+| 10-45 | Gemini song song | `16-gemini-antigravity-giao-viec.md` | Gemini Antigravity | nhánh `ag/<x>`, cổng 8240+, file sở hữu riêng |
+| 45 | Chụp ảnh slot | `15-sonnet-chrome-chup-anh.md` | Sonnet trong Chrome | + 1 agent Claude Code dự phòng (`shots-mobile.cjs`) |
 | bất kỳ | Cấp cứu | `11-emergency.md` | Sonnet | |
 | 55-60 | Nộp | `09-merge-deploy.md` mục cuối | coordinator | kiểm tra link, nộp |
+
+> **Luồng slide mới (T+10):** `14` (khung, Claude Design) và `16` (Gemini) gửi cùng lúc; thành viên không tự bấm slide nên ghi chú có dòng **Cue kỹ thuật**. `12-claude-design-slide.md` là bản một lần khi đã có đủ ảnh; khi lệch với 14 thì theo 14. Chi tiết: `references/14-quy-trinh-slide-song-song.md`.
 
 ## Chọn model
 
@@ -65,6 +70,8 @@ Quy tắc đi kèm: **Code tính số, AI diễn giải** (mọi con số do hà
 | 8226 | 08 docs (chụp minh chứng) |
 | 8227-8229 | 06 QA #1..#3 |
 | 8230 | 11 emergency / dự phòng |
+| 8231 | 13 giả định & mô hình kinh doanh |
+| 8240-8249 | 16 Gemini Antigravity (`ag/ui` 8240, `ag/data` 8241, `ag/docs` 8242, `ag/biz` 8243) |
 
 Agent phải tự `kill` server của mình khi xong. Test hardcode port khác -> chạy bản copy tạm, không commit.
 

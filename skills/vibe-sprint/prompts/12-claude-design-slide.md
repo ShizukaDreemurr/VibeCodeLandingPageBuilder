@@ -1,5 +1,7 @@
 # Prompt chuẩn gửi Claude Design — Thiết kế bộ Slide Chung kết (Team Xclipse)
 
+> **Lưu ý (mới):** luồng chính hiện là `14-claude-design-khung-slide.md` (khung trước, ảnh sau, kèm CSS nhúng đủ và cue cho kỹ thuật viên). Prompt này chỉ dùng khi bỏ qua luồng đó. Hai điểm của 14 áp dụng cả ở đây: tiêu đề **đặt tên** (không khẳng định/khoa trương), ghi chú người nói **5 dòng** (thêm dòng `Cue kỹ thuật: Mời chuyển slide.` trước dòng Chuyền mic), vì thành viên không tự bấm slide.
+>
 > **Cách dùng:** Khi app đã hoàn thiện (mốc T+45), điền các biến `{{...}}` bên dưới rồi **copy toàn bộ khối prompt** gửi cho **Claude Design** để xuất bộ slide đồng bộ 100% với giao diện app Xclipse.
 >
 > **Ảnh phải có TRƯỚC khi gửi.** Chung kết chấm app trên điện thoại (360–390px) nên mọi ảnh app là **ảnh điện thoại DỌC**. Ảnh do **agent Claude Sonnet** chụp: agent tự mở web app bằng giả lập điện thoại (Playwright: 390×844 @3x = 1170×2532, kèm 360×780), sáng + tối, bằng `node tools/shots-mobile.cjs <URL> shots-mobile` (starter) hoặc `node deck/tools/capture.cjs deck/tools/capture.json` (hoặc `--starter-shots <URL>`). Không chụp tay, không nhờ Gemini chụp. Đặt tên `NN-ten-mobile-light.png` / `NN-ten-mobile-dark.png` rồi dán danh sách vào `{{DANH_SACH_ANH}}`.
@@ -113,11 +115,12 @@ Mọi bản: giữ nguyên bộ theme, quy tắc 1 điểm tựa/slide, 3 neo `V
 ## 4. YÊU CẦU CHO NGƯỜI NÓI (PITCH `{{PITCH_MINUTES}}` PHÚT, 3 NGƯỜI)
 
 - **Số slide khớp thời lượng:** 10 phút = 11 slide, 5 phút = 7 slide, 3 phút = 5 slide (xem mục 3). Bản 11 slide: **Diệu Anh** slide 1–3 · **Vũ Trí Dũng** slide 4–7 · **Nguyên** slide 8–11 (kỹ thuật, giả định & cách tính, tổng kết). Đổi tên người theo `{{NGUOI_1}}`, `{{NGUOI_2}}`, `{{NGUOI_3}}` nếu cần.
-- **Speaker notes mỗi slide (bắt buộc)** theo đúng khuôn 4 dòng:
+- **Speaker notes mỗi slide (bắt buộc)** theo đúng khuôn 5 dòng (dòng 4 mới: Cue kỹ thuật):
   1. `Người nói: <tên>`
   2. `Mốc giờ: <mm:ss–mm:ss> (cứng <mm:ss>)`
   3. `3 neo: V <1 câu vấn đề> · T <1 thao tác/điểm nhấn> · S <1 con số>`
-  4. `Chuyền mic: <1 câu cố định>` (chỉ ở slide cuối của mỗi người; còn lại ghi "—")
+  4. `Cue kỹ thuật: Mời chuyển slide.` (hoặc "Mời phát video demo." ở slide demo)
+  5. `Chuyền mic: <1 câu cố định>` (chỉ ở slide cuối của mỗi người; còn lại ghi "—")
 - **KHÔNG đặt tên người nói lên slide** (không name tag ở góc). Giữ slide sạch; tên người chỉ nằm trong speaker notes.
 - **Mỗi slide có đúng 1 điểm tựa thị giác:** hoặc **1 con số lớn** (≥ 120px, `tabular-nums`, màu Navy/Coral) hoặc **1 ảnh chụp app thật dạng điện thoại dọc**. Con số lớn chính là neo `S` của slide đó; không đặt quá 1 con số to cạnh tranh nhau.
 - Mỗi slide tối đa 3 khối thông tin tương ứng 3 neo; chữ gọn để người nói chỉ cần liếc con số là nhớ ý.

@@ -18,7 +18,7 @@ Phần còn lại của tài liệu này mô tả **bản 10 phút** (co giãn t
 
 Nguyên là **neo dự phòng**: nếu hai bạn trước lố giờ, Nguyên rút gọn phần kỹ thuật bằng bản 3:30 / 2:00 / 1:00 (xem `templates/KICH-BAN-DEMO.md` mục 3).
 
-Tài liệu đi kèm: `templates/KICH-BAN-DEMO.md` (run-sheet nguồn sự thật), `templates/CUE-CARDS.md` (thẻ in tay), `templates/HOI-DAP.md` (câu hỏi gắn người trả lời), `prompts/12-claude-design-slide.md` (slide), `deck/` (khung slide).
+Tài liệu đi kèm: `templates/KICH-BAN-DEMO.md` (run-sheet nguồn sự thật), `templates/CUE-CARDS.md` (thẻ in tay), `templates/HOI-DAP.md` (câu hỏi gắn người trả lời), `prompts/14-claude-design-khung-slide.md` (slide), `references/14-quy-trinh-slide-song-song.md` (quy trình), `deck/` (khung slide).
 
 ## Vì sao không học thuộc kịch bản dài
 
@@ -56,7 +56,7 @@ Chuyền mic là điểm dễ đứng hình nhất, nên **đúng một câu, th
 | Từ → Đến | Mẫu câu (điền `{...}`) |
 |---|---|
 | Diệu Anh → Dũng | "Em xin gửi **Dũng** đi vào {tính năng nổi bật} và làm thử ngay cho mọi người xem." |
-| Dũng (slide 5 → demo) | "Giờ mình **bấm thật**." |
+| Dũng (slide 5 → demo) | "Giờ mình xem **bản chạy thật**." |
 | Dũng → Nguyên | "Phần bên trong chạy thế nào, mình xin nhường **Nguyên**." |
 | Nguyên → BGK | "Cảm ơn ban giám khảo, đội xin nhận câu hỏi." |
 
@@ -72,36 +72,52 @@ Người nhận mic **luôn bắt đầu bằng câu mở của mình** (1 câu 
 6. Sai một chữ thì bỏ qua, đi tiếp. Khán giả không biết kịch bản của bạn.
 7. Tập "lạc khỏi kịch bản": mỗi buổi tập, 1 người bị yêu cầu bỏ một câu bất kỳ, cả đội vẫn giữ đúng mốc giờ.
 
-## Bấm chuyển slide (clicker)
+## Chuyển slide bằng lời (kỹ thuật viên của BTC bấm)
 
-- **Người nói tự bấm slide của mình**, bấm ngay khi nói xong câu cuối của neo `S`. Một người một clicker; chuyền clicker cùng lúc với mic.
-- Nếu không có clicker thứ hai: **Nguyên bấm theo hiệu tay** của người nói (người nói giơ 1 ngón tay = "bấm tới", 2 ngón = "lùi"). Hiệu tay thống nhất trước khi vào phòng.
-- Slide đổi, **nói ngay câu đầu của neo `V`** mới (đừng chờ). Tập đúng thao tác "bấm → nhìn slide → nói neo V" 10 lần liền.
-- Mở sẵn `deck.html` toàn màn hình (`F`), kiểm tra phím `←/→` chạy, đã mở PDF dự phòng ở cửa sổ khác.
-- Bấm nhầm: không giải thích, bấm lại, nói neo của slide hiện tại.
+**Thành viên không tự bấm slide.** File slide (PDF + PPTX) giao cho bộ phận kỹ thuật của BTC; kỹ thuật viên đổi slide khi **nghe câu hiệu lệnh**. Quy tắc:
 
-## Demo trên điện thoại (giám khảo chấm app trên điện thoại)
+- **Mỗi slide có dòng "Cue kỹ thuật"** (dòng 4 của ghi chú người nói, in lại trong `templates/CUE-CARDS.md`). Câu chuẩn: **"Mời chuyển slide."** · lùi: **"Mời lùi một slide."** · nhảy: **"Mời chuyển đến slide N."** · video: **"Mời phát video demo."** / **"Mời quay lại slide."** · bản chạy thật: **"Mời mở bản chạy thật."**
+- **Nói cue ngay sau con số `S`**, to và rõ, rồi **dừng 1 giây** chờ slide đổi; sau đó mới nói neo `V` của slide mới (đừng chờ lâu hơn 2 giây; slide chưa đổi thì nhắc lại: "Mời chuyển slide, xin cảm ơn.").
+- **Slide cuối của mỗi người:** nói **câu chuyền mic trước, cue sau**, để slide của người kế đã sẵn khi họ mở lời.
+- Cue là **câu cố định, không đổi theo hứng**; kỹ thuật viên không đoán ý. Bị trễ mốc cứng: nói thẳng cue, bỏ lời giải thích.
+- Nguyên đứng gần kỹ thuật viên (hoặc ra hiệu tay) để nhắc khi cần; **họp 2 phút với kỹ thuật viên trước khi vào phòng** và tập 3 lần "Mời chuyển slide." bằng mic thật. Tờ hiệu lệnh để giao: `templates/THE-DIEU-PHOI.md` mục 2.
+- Tập "nói neo → nói cue → dừng 1 giây → neo V mới" 10 lần liền khi luyện (Nguyên đóng vai kỹ thuật viên).
+- Nói nhầm cue: không giải thích, nói lại đúng cue. Slide hiện sai: "Mời lùi một slide." hoặc "Mời chuyển đến slide N."
+- Mở sẵn PDF dự phòng trên máy kỹ thuật viên; đã kiểm slide cuối có QR.
 
-Chung kết chấm app ở 360–390px, nên slide và demo đều dùng **điện thoại dọc**, không dùng màn hình ngang/desktop làm hình đại diện.
+## Demo (không ai trong đội cầm điện thoại)
 
-- **Slide:** mọi ảnh app là ảnh điện thoại dọc 9:19,5 (390×844@3x = 1170×2532) trong khung điện thoại của `deck/` (loại `phone`, `phones-2`, `phones-3`, `phone-steps`; tối đa 3 điện thoại mỗi slide). Ảnh do **agent Claude Sonnet** tự mở web app bằng giả lập điện thoại và chụp (sáng + tối, thêm bộ 360×780) bằng `starter/tools/shots-mobile.cjs` hoặc `deck/tools/capture.cjs`; không chụp tay.
-- **Demo trực tiếp:** phát màn hình điện thoại lên máy chiếu: Android dùng `scrcpy`; iPhone dùng QuickTime (cáp) hoặc AirPlay. Mang đủ cáp, thử ở phòng thi trước giờ. **Dự phòng:** Chrome DevTools device mode 390×844 (DPR 3) trên laptop.
-- **Ai cầm gì:** Dũng cầm và thao tác điện thoại; Nguyên giữ laptop (slide, đồng hồ, tab dự phòng); Diệu Anh cầm mic. Chuyền điện thoại cùng lúc với mic.
-- **Thứ tự demo theo thanh tab dưới:** trái sang phải, mỗi tab 1 thao tác ≤ 25 giây; ca sai/biên làm sau cùng; kết bằng chuyển Sáng/Tối.
-- **Dự phòng khi hỏng:** ảnh dọc trong slide phụ và video **quay dọc** 30 giây (quay màn hình điện thoại, không quay ngang). Chi tiết: `templates/KICH-BAN-DEMO.md` mục 4.0.
+Chung kết chấm app ở 360–390px, nên slide và demo đều dùng **điện thoại dọc**, không dùng ảnh ngang/desktop làm hình đại diện. **Demo do kỹ thuật viên chiếu**, theo thứ tự ưu tiên:
+
+1. **Video demo dọc 45 giây** (không tiếng, quay từ DevTools 390×844 hoặc ghi hình màn hình điện thoại): cue **"Mời phát video demo."**; người nói thuyết minh đúng nhịp, mỗi thao tác ≤ 25 giây; kết thúc **"Mời quay lại slide."**
+2. **Ảnh điện thoại dọc đánh số trong slide 5–7** (luồng 3 bước, ca sai/biên, giao diện tối): kỹ thuật viên không thao tác, người nói đi theo ghim số.
+3. **Bản chạy thật qua link** ("Mời mở bản chạy thật."): chỉ khi BTC cho kỹ thuật viên thao tác theo lời ("Mời bấm Điền dữ liệu mẫu"); rủi ro cao hơn, luôn có 1–2 đứng sau. QR + link luôn có trên slide để giám khảo tự mở.
+
+- **Slide:** mọi ảnh app là ảnh điện thoại dọc 9:19,5 (390×844@3x = 1170×2532) trong khung điện thoại (loại `phone`, `phones-2`, `phones-3`, `phone-steps`; tối đa 3 điện thoại mỗi slide). Ảnh do **Claude Sonnet trong Chrome** (khung điện thoại, sáng + tối, thêm bộ 360×780) hoặc agent Claude Code (`starter/tools/shots-mobile.cjs`, `deck/tools/capture.cjs`) chụp; không chụp tay. Chi tiết: `prompts/15-sonnet-chrome-chup-anh.md`.
+- **Ai làm gì:** Diệu Anh và Dũng chỉ nói; Nguyên điều phối, giữ đồng hồ, đứng gần kỹ thuật viên. Không ai cầm điện thoại hay clicker.
+- **Thứ tự demo theo thanh tab dưới:** trái sang phải, mỗi tab 1 thao tác ≤ 25 giây; ca sai/biên sau cùng; kết bằng giao diện Tối.
 
 ## Demo lỗi: phương án dự phòng (chuẩn bị trước T+52)
 
-- **Video quay màn hình điện thoại theo chiều DỌC, 30 giây** (luồng chính) lưu máy + USB/điện thoại, mở sẵn ở tab riêng, mở được offline.
+- **Video quay màn hình theo chiều DỌC, 30–45 giây** (luồng chính), giao cho kỹ thuật viên cùng PDF/PPTX, mở được offline.
 - **Ảnh chụp dọc** (390×844@3x) các tính năng trong slide phụ ("Dự phòng") nếu cả hai đều hỏng; agent Sonnet chụp từ app thật bằng `deck/tools/capture.cjs` hoặc `starter/tools/shots-mobile.cjs`.
 - **Bản local:** `python3 -m http.server 8211` trong thư mục app (mở `http://localhost:8211/?demo=1`) hoặc `file://` nếu app không cần server.
-- Quy tắc: demo hỏng **> 10 giây thì chuyển ngay** sang video/ảnh, **không sửa trên sân khấu**. Câu nói bình tĩnh: "Mạng đang chậm, em chuyển sang bản quay sẵn của đúng bản này."
+- Quy tắc: demo hỏng **> 10 giây thì chuyển ngay** sang video/ảnh, **không sửa trên sân khấu**. Câu nói bình tĩnh: "Mạng đang chậm, mời phát video demo." (nói đúng cue)
 - Dữ liệu demo đặt lại bằng "Nạp lại dữ liệu demo" ở Cài đặt (hoặc `?demo=1`) trước khi vào phòng.
 - Luồng demo (slide 6–7): thao tác mỗi cái ≤ 25 giây; luôn có 1 ca nhập sai và 1 ca biên; xem bảng chi tiết ở `KICH-BAN-DEMO.md` mục 4. Nhãn mô phỏng AI chép **nguyên văn** theo đề/BTC (`{{MOCK_NOTICE}}`).
 
-## Luật slide
+## Viết slide (luật nội dung, áp cho cả Claude Design và `deck/`)
 
-Một ý mỗi slide, chữ ≥ 28pt (trên 1920×1080 chữ nội dung ≥ 22px), mỗi slide có **1 con số lớn hoặc 1 ảnh chụp app thật (điện thoại dọc trong khung điện thoại, ≤ 3 máy mỗi slide)** làm điểm tựa thị giác, ghi chú người nói nằm trong notes (không đặt tên người nói lên slide), tiếng Việt có dấu, không đọc nguyên slide. Dựng bằng `deck/` (điền `deck/deck.data.js`; `notes` có người nói + mốc giờ + 3 neo) hoặc `prompts/12-claude-design-slide.md`.
+**1. Tiêu đề và phụ đề là TÊN GỌI, không phải tuyên bố.** Đặt tên cho nội dung của slide ("Bối cảnh các SME hiện nay"), không viết câu cảm xúc hay khẳng định ("Nỗi đau của các SME hiện nay: tay ngang"). Phụ đề xác định phạm vi ("Chân dung người dùng và cách họ làm việc hiện nay"). Cụm danh từ, ≤ 8 từ, không dấu chấm than. Không từ khoa trương: đột phá, cách mạng, siêu, tuyệt đối, hoàn hảo, số 1, tốt nhất, vượt trội, bùng nổ, thay đổi cuộc chơi, "wow", "100%" (trừ kết quả đã đo). Lý lẽ và cảm xúc để cho gạch đầu dòng và lời nói. 15 cặp trước/sau nằm ở `prompts/14` mục 3.1.
+
+**2. Mật độ: vừa đủ để làm prompt nhắc.** Mỗi slide nội dung **3–5 gạch đầu dòng, mỗi gạch ≤ 14 từ, cộng 1 con số chính** (số + đơn vị + nhãn nguồn: `Dữ liệu BTC` / `Giả định của đội` / `Mô phỏng`). Đủ để người đang run liếc vào là nhớ thứ tự ý; không đủ để đọc thay. Gạch là cụm có thông tin cụ thể (ai · làm gì · bao nhiêu · nguồn), chữ đời thường.
+
+**3. Chiều sâu theo phần của từng người (chữ đơn giản, hiểu biết thật):**
+- **Diệu Anh:** *ai* (vai trò, quy mô, thiết bị) · *làm gì hằng ngày* (tần suất, công cụ hiện dùng) · *cái giá hiện nay* (thời gian/tiền/sai sót, có nguồn) · *quyết định giao diện = ràng buộc → xử lý* (một tay, 360–390px, vùng ngón cái, tab dưới, tương phản, Sáng/Tối, tiếng Việt có dấu). Không viết "giao diện đẹp, thân thiện".
+- **Dũng:** mỗi tính năng **đầu vào → quy tắc → kết quả**, gắn với việc của người dùng; ít nhất 1 quy tắc nghiệp vụ có số cụ thể (ngưỡng, công thức, điều kiện từ chối); ca nhập sai và ca biên xử lý ra sao; demo đi theo ảnh có ghim số.
+- **Nguyên:** kiến trúc 4 khối (giao diện → logic tính → AI qua proxy/mô phỏng → lưu trữ), rõ cái gì thật/mô phỏng, khóa API ở đâu; giả định có **giá trị + nguồn + nhãn**; 3 kịch bản; hòa vốn kèm công thức chữ; điều kiện ưu đãi lỗ; 1 giới hạn nói thẳng; tổng kết chỉ lặp lại kết quả đã đo.
+
+**4. Một điểm tựa thị giác mỗi slide:** 1 con số lớn (≥ 120px) hoặc ảnh điện thoại dọc (≤ 3 máy; số S hiện dạng "số nhấn" cạnh ảnh); chữ nội dung ≥ 24px trên 1920×1080; ghi chú người nói **5 dòng** (Người nói · Mốc giờ · 3 neo V·T·S · **Cue kỹ thuật** · Chuyền mic); không đặt tên người nói lên slide; tiếng Việt có dấu; không đọc nguyên slide. Dựng bằng **Claude Design theo `prompts/14`** (khung ở T+10, ảnh ở T+50, quy trình `references/14-quy-trinh-slide-song-song.md`) hoặc `deck/` (dự phòng).
 
 ## Hỏi đáp: ai trả lời câu gì
 
@@ -127,9 +143,10 @@ Các nhóm câu thường gặp (đầy đủ ở `HOI-DAP.md`): cách dùng; ng
 ## Việc cần có trước khi vào phòng
 
 - [ ] Link online mở được trên điện thoại (QR trên slide cuối).
-- [ ] Video dự phòng 30 giây + bản local chạy; ảnh dự phòng trong slide phụ.
+- [ ] PDF + PPTX + video dọc đã giao kỹ thuật viên; đã họp 2 phút tập cue "Mời chuyển slide."
+- [ ] Video dọc 30–45 giây + bản local chạy; ảnh dự phòng trong slide phụ P2–P3.
 - [ ] In `CUE-CARDS.md` (3 thẻ, mỗi người một thẻ), kiểm tra mốc giờ khớp run-sheet.
 - [ ] Mỗi người thuộc: câu mở, câu chuyền, và con số `S` của slide mình; Nguyên thuộc cả ba bản 3:30 / 2:00 / 1:00 và khung "Giả định & cách tính".
 - [ ] Đã tập đủ cả ba bản pitch (10 / 5 / 3 phút) ít nhất 1 lần; biết cách chọn bản trong 10 giây khi BTC báo thời lượng.
-- [ ] Thống nhất hiệu tay (bấm tới / lùi / cắt) và ai giữ clicker.
+- [ ] Thống nhất câu hiệu lệnh (chuyển / lùi / nhảy / video) và hiệu tay nhắc kỹ thuật viên; không ai giữ clicker.
 - [ ] Tập đủ 2 lần có đồng hồ, trong đó 1 lần cố ý trễ 40 giây để Nguyên tập chọn bản rút gọn.

@@ -2,7 +2,7 @@
 
 > Nguồn sự thật cho cả đội. `CUE-CARDS.md` sinh ra từ bảng này: **sửa ở đây trước, rồi cập nhật thẻ**. Điền mọi `{{...}}` bằng nội dung thật của app; không bịa số (chỉ dùng số đã chạy thật, có trong `BANG-KIEM-THU.md`).
 > Phiên bản đội: 3 người, vai cố định. Diệu Anh mở (bài toán, nỗi đau, UI/UX sơ bộ) · Vũ Trí Dũng giữa (tính năng + demo) · Nguyên, trưởng nhóm, cuối (kỹ thuật, tổng kết, phản biện, Q&A) và là **neo dự phòng**.
-> Mỗi slide chỉ có **3 neo**: `V` = 1 câu vấn đề · `T` = 1 thao tác/điểm nhấn · `S` = 1 con số chứng minh. Mỗi neo ≤ 15 giây. Hết mốc giờ của slide thì **chuyển ngay**, dù chưa nói hết.
+> **Thành viên không tự bấm slide**: kỹ thuật viên của BTC đổi slide khi nghe cue (mục 1.1). Mỗi slide chỉ có **3 neo**: `V` = 1 câu vấn đề · `T` = 1 thao tác/điểm nhấn · `S` = 1 con số chứng minh. Mỗi neo ≤ 15 giây. Hết mốc giờ của slide thì **chuyển ngay**, dù chưa nói hết.
 
 > **Thời lượng pitch do BTC báo sau (giống nhau cho mọi đội).** Có 3 bản: **10 phút** (mục 1–5, 11 slide), **5 phút** (mục 6.1, 7 slide), **3 phút** (mục 6.2, 5 slide). Chọn bản ngay khi BTC báo; vai Diệu Anh / Dũng / Nguyên giữ nguyên ở cả ba bản. **Round 1 không có Q&A**; Q&A chỉ ở vòng phản biện (đội được chọn), nơi Bảng Kinh tế phải trình bày thêm **giả định và cách tính**.
 > **Bảng Kinh tế: slide/đoạn "Giả định & cách tính" là BẮT BUỘC trong cả ba bản** (10 phút: slide 10; 5 phút: slide 5; 3 phút: slide 4). Bảng Kỹ thuật dùng cùng vị trí cho "Quy tắc nghiệp vụ & quyết định kỹ thuật".
@@ -15,9 +15,9 @@
 | 2 | Diệu Anh | 00:35–01:30 (cứng 01:35) | V: {{NOI_DAU_CHINH}} · T: kể 1 tình huống có giờ/số của {{PERSONA}} · S: {{SO_NOI_DAU}} | — |
 | 3 | Diệu Anh | 01:30–02:30 (cứng 02:35) | V: giải pháp một câu: {{GIAI_PHAP_1_CAU}} · T: chỉ vào 3 ghim số trên ảnh điện thoại dọc, nêu 1 điểm UI/UX ({{DIEM_UI}}) · S: {{SO_THAO_TAC_HOAN_THANH}} | "Em xin gửi **Dũng** đi vào {{TINH_NANG_NOI_BAT}} và làm thử ngay cho mọi người xem." |
 | 4 | Dũng | 02:30–03:15 (cứng 03:20) | V: 5 tính năng giải đúng đề · T: nhấn 1 quy tắc nghiệp vụ {{QUY_TAC_CHINH}} · S: {{SO_TINH_NANG}} tính năng chạy thật | — |
-| 5 | Dũng | 03:15–03:55 (cứng 04:00) | V: người dùng đi qua bao nhiêu bước · T: chỉ đúng {{SO_BUOC}} bước trên slide · S: {{THOI_GIAN_LUONG_CHINH}} từ đầu đến kết quả | "Giờ mình **bấm thật**." (chuyển sang demo) |
+| 5 | Dũng | 03:15–03:55 (cứng 04:00) | V: người dùng đi qua bao nhiêu bước · T: chỉ đúng {{SO_BUOC}} bước trên slide · S: {{THOI_GIAN_LUONG_CHINH}} từ đầu đến kết quả | "Giờ mình xem **bản chạy thật**." (chuyển sang demo) |
 | 6 | Dũng | 03:55–05:10 (cứng 05:15) | V: ca bình thường · T: {{THAO_TAC_1}} → {{THAO_TAC_2}} → {{THAO_TAC_3}} (mỗi thao tác ≤ 25 giây) · S: kết quả hiện sau {{GIAY_PHAN_HOI}} giây | — |
-| 7 | Dũng | 05:10–06:15 (cứng 06:20) | V: ca nhập sai + ca biên · T: {{CA_SAI}} báo lỗi ngay; {{CA_BIEN}}; 360/390px + Sáng/Tối trên điện thoại · S: {{SO_CA_LOI_BAT_DUOC}} ca lỗi được chặn | "Phần bên trong chạy thế nào, mình xin nhường **Nguyên**." |
+| 7 | Dũng | 05:10–06:15 (cứng 06:20) | V: ca nhập sai + ca biên · T: {{CA_SAI}} báo lỗi ngay; {{CA_BIEN}}; 360/390px + Sáng/Tối trên ảnh dọc · S: {{SO_CA_LOI_BAT_DUOC}} ca lỗi được chặn | "Phần bên trong chạy thế nào, mình xin nhường **Nguyên**." |
 | 8 | Nguyên | 06:15–07:15 (cứng 07:20) | V: kiến trúc + AI/proxy gọn trong 1 hình · T: chỉ chỗ key KHÔNG nằm trong mã/trình duyệt, và nhãn `{{MOCK_NOTICE}}` · S: {{SO_MODULE_HOAC_DIEM_AI}} | — |
 | 9 | Nguyên | 07:15–08:15 (cứng 08:20) | V: kiểm thử + bảo mật · T: chỉ 1 ca đã bắt lỗi thật ({{CA_BAT_LOI}}) · S: {{SO_CA_DAT}}/{{TONG_CA}} ca đạt, quét key: {{KET_QUA_QUET}} | — |
 | 10 | Nguyên | 08:15–09:00 (cứng 09:05) | **Giả định & cách tính (Kinh tế bắt buộc):** V: số trong app dựa trên giả định nào · T: chỉ bảng giả định (giá trị + nguồn), 3 kịch bản, điểm hòa vốn và dòng "ưu đãi có lỗ không"; nói thẳng 1 giới hạn · S: {{SO_HOA_VON}} (điểm hòa vốn) hoặc {{SO_GIA_TRI}} | — |
@@ -26,6 +26,23 @@
 Đệm an toàn: **09:45–10:00** (15 giây) cho sự cố. Nếu chạy đúng giờ, kết thúc sớm hơn là tốt.
 
 Slide 6–7 (demo) là ngoại lệ so với trần 45 giây: chia theo **thao tác**, mỗi thao tác ≤ 25 giây, tổng hai slide ≤ 2:20.
+
+### 1.1. Cue kỹ thuật theo slide (thành viên không tự bấm; kỹ thuật viên BTC đổi slide khi nghe cue)
+
+Nói cue **ngay sau con số `S`**, dừng 1 giây chờ slide đổi, rồi mới nói neo `V` kế tiếp. Slide cuối của mỗi người: câu chuyền mic **trước**, cue **sau**. Dòng cue này nằm ở **dòng 4** của ghi chú người nói (xem `references/05`, `references/14`).
+
+| Slide | Cue nói cuối slide |
+|---|---|
+| 1, 2 | "Mời chuyển slide." |
+| 3 | (chuyền mic) "Em xin gửi **Dũng** đi vào {{TINH_NANG_NOI_BAT}} và làm thử ngay cho mọi người xem." → "Mời chuyển slide." |
+| 4 | "Mời chuyển slide." |
+| 5 | "Giờ mình xem **bản chạy thật**." → "Mời chuyển slide." |
+| 6 (demo) | đầu slide, sau neo `V`: "Mời phát video demo." · cuối: "Mời quay lại slide." → "Mời chuyển slide." |
+| 7 | (chuyền mic) "Phần bên trong chạy thế nào, mình xin nhường **Nguyên**." → "Mời chuyển slide." |
+| 8, 9, 10 | "Mời chuyển slide." (bản rút gọn 2:00: từ 8 sang phần kế dùng "Mời chuyển đến slide {{SO_SLIDE_DICH}}.") |
+| 11 | (chốt) "Cảm ơn ban giám khảo, đội xin nhận câu hỏi." — không cần cue; kỹ thuật viên giữ slide 11 |
+
+Lùi: "Mời lùi một slide." Nhảy: "Mời chuyển đến slide N." Không nghe cue thì kỹ thuật viên giữ nguyên; nói lại "Mời chuyển slide, xin cảm ơn." Bản 5 phút: cue tương tự theo bảng 6.1; bản 3 phút: theo bảng 6.2 (chuyền mic ở slide 1 và 3).
 
 ## 2. Mốc theo dõi giờ (người giữ đồng hồ: Nguyên, nhìn đồng hồ phím `N` hoặc đồng hồ tay)
 
@@ -54,7 +71,7 @@ Slide 8 → 9 → 10 → 11, theo bảng ở mục 1.
 | 9 (Kỹ thuật) hoặc 10 (Kinh tế) | 00:40 | Kỹ thuật: V kiểm thử + bảo mật · T 1 ca bắt lỗi thật · S {{SO_CA_DAT}}/{{TONG_CA}}. **Kinh tế:** V số dựa trên giả định nào · T bảng giả định + hòa vốn + ưu đãi có lỗ không · S {{SO_HOA_VON}} |
 | 11 | 00:40 | V: tổng kết 1 câu · T: QR + link · S: {{SO_NHO_NHAT}} |
 
-Nhảy slide: Kinh tế bỏ slide 9, bấm `→` hai lần từ slide 8 sang 10; Kỹ thuật bỏ slide 10, bấm `→` hai lần từ 9 sang 11.
+Nhảy slide: Kinh tế bỏ slide 9, Nguyên (hoặc người nói) nói "Mời chuyển đến slide 10."; Kỹ thuật bỏ slide 10, nói "Mời chuyển đến slide 11."
 
 ### 3.3. Bản khẩn cấp 1:00 (chỉ 2 slide)
 
@@ -67,18 +84,18 @@ Phần kỹ thuật bị bỏ sẽ trả lời ở Q&A (xem `HOI-DAP.md`, các c
 
 ## 4. Chi tiết demo (slide 6–7, của Dũng)
 
-### 4.0. Demo trên điện thoại (giám khảo chấm app trên điện thoại, nên demo cũng trên điện thoại)
+### 4.0. Demo do kỹ thuật viên chiếu (không ai trong đội cầm điện thoại)
 
 | Việc | Cách làm |
 |---|---|
-| **Phát màn hình điện thoại lên máy chiếu** (ưu tiên) | Android: `scrcpy` (cáp USB, bật gỡ lỗi USB; `scrcpy --max-size 1280 --stay-awake`). iPhone: **QuickTime** (File > New Movie Recording > chọn iPhone, cáp Lightning/USB-C) hoặc **AirPlay** tới laptop (nếu có sẵn ứng dụng nhận). Thử ở phòng thi trước giờ, mang đủ cáp/đầu chuyển. |
-| **Dự phòng 1: Chrome DevTools device mode** | Mở link online trên laptop, F12 > bật Device Toolbar (Ctrl+Shift+M) > **390 × 844** (đặt thêm 360 × 780 cho ca 7c), DPR 3, giả lập cảm ứng. Khung dọc nằm giữa màn chiếu, zoom 100%. |
-| **Dự phòng 2: ảnh/video DỌC** | Ảnh chụp dọc 390×844@3x do agent Sonnet chụp sẵn (slide phụ "Dự phòng") + video quay màn hình điện thoại **theo chiều dọc** 30 giây, mở sẵn ở tab/app riêng. Không dùng ảnh ngang. |
-| **Ai cầm điện thoại** | **Dũng** cầm và thao tác điện thoại (tay thuận cầm, ngón cái bấm); **Nguyên** giữ laptop (slide, tab video/DevTools dự phòng, đồng hồ). Diệu Anh không cầm gì ngoài mic. Chuyền điện thoại đồng thời với mic ở câu "Giờ mình **bấm thật**." |
-| **Thứ tự demo = thứ tự tab dưới cùng** | Đi từ trái sang phải theo thanh tab dưới của app (ví dụ Tổng quan > Mục > Mô-đun); mỗi tab 1 thao tác ≤ 25 giây, người xem luôn biết đang ở đâu. Sau tab cuối mới làm ca sai/biên. |
-| **Chuẩn bị máy** | Pin ≥ 80%, bật Không làm phiền, độ sáng tối đa, tắt xoay tự động (giữ dọc), khóa màn hình không tự tắt, trình duyệt toàn màn hình, link đã mở sẵn, dữ liệu mẫu đã nạp. |
+| **Phương án 1: video dọc 45 giây** (ưu tiên) | Quay trước (T+50–54) từ Chrome DevTools 390 × 844, dữ liệu mẫu, không tiếng. Giao kỹ thuật viên cùng PDF/PPTX. Dũng nói "Mời phát video demo." rồi **thuyết minh đúng nhịp** từng thao tác (≤ 25 giây mỗi cái); kết "Mời quay lại slide." |
+| **Phương án 2: ảnh dọc đánh số** | Slide 5–7 có ảnh điện thoại dọc (luồng 3 bước, ca sai, ca biên, giao diện Tối). Kỹ thuật viên không thao tác; người nói chỉ theo ghim số. |
+| **Phương án 3: bản chạy thật** | "Mời mở bản chạy thật." Chỉ khi BTC cho kỹ thuật viên mở link {{LINK_DEMO}} và làm từng thao tác theo lời ("Mời bấm Điền dữ liệu mẫu"). Rủi ro cao hơn; luôn có phương án 1–2 đứng sau. |
+| **Ai làm gì** | **Dũng** chỉ nói; **Nguyên** giữ đồng hồ, đứng gần kỹ thuật viên; Diệu Anh cầm mic. Không ai cầm điện thoại hay clicker. |
+| **Thứ tự demo = thứ tự tab dưới cùng** | Đi từ trái sang phải theo thanh tab dưới của app (ví dụ Tổng quan > Mục > Mô-đun); mỗi tab 1 thao tác ≤ 25 giây. Sau tab cuối mới làm ca sai/biên. |
+| **Chuẩn bị** | Video và PDF đã giao; QR + link trên slide 6 và 11 quét được; dữ liệu mẫu đã nạp nếu dùng bản chạy thật. |
 
-Chuẩn bị 60 giây trước giờ: điện thoại đã phát lên máy chiếu (mục 4.0) hoặc DevTools 390×844 đã mở, tab link online đã tải, dữ liệu mẫu nạp (`{{LENH_NAP_DU_LIEU}}` hoặc `?demo=1`), zoom 100%, tắt thông báo, video 30 giây mở sẵn ở tab khác, ảnh chụp dọc trong slide phụ.
+Chuẩn bị 60 giây trước giờ: kỹ thuật viên đã mở PDF/PPTX ở slide 1 và video demo dọc sẵn sàng; đã tập cue 3 lần với mic thật; (nếu dùng bản chạy thật) link tải xong, dữ liệu mẫu nạp (`{{LENH_NAP_DU_LIEU}}` hoặc `?demo=1`); ảnh dọc dự phòng trong slide phụ P2–P3.
 
 | Thao tác (slide) | Làm gì trên màn hình | Nói 1 câu | Tính năng |
 |---|---|---|---|
@@ -87,21 +104,23 @@ Chuẩn bị 60 giây trước giờ: điện thoại đã phát lên máy chi�
 | 6c (≤ 25s) | {{THAO_TAC_3}} | {{CAU_NOI_3}} | T3/T4 |
 | 7a (≤ 25s) | Cố tình nhập sai: {{CA_SAI}} | "Báo lỗi ngay, không lưu dữ liệu sai." | Kiểm tra đầu vào |
 | 7b (≤ 25s) | Ca biên: {{CA_BIEN}} | {{CAU_NOI_BIEN}} | Nghiệp vụ |
-| 7c (≤ 15s) | Ngay trên điện thoại: chuyển Sáng/Tối 1 lần, chỉ thanh tab dưới (nếu có máy 360px thì cho xem 1 màn) | "Dùng được trên điện thoại." | Responsive |
+| 7c (≤ 15s) | Trên ảnh dọc: giao diện Tối cạnh giao diện Sáng, chỉ thanh tab dưới; nếu có ảnh 360px thì chỉ 1 màn | "Dùng được trên điện thoại, cả Sáng lẫn Tối." | Responsive |
 
 ### Dự phòng khi demo lỗi (quy tắc: lỗi > 10 giây thì chuyển, không sửa trên sân khấu)
 
 | Tình huống | Làm ngay | Câu nói bình tĩnh |
 |---|---|---|
-| Trang online không tải | Phím chuyển sang tab video DỌC 30 giây (quay trên điện thoại) | "Mạng đang chậm, em chuyển sang bản quay sẵn của đúng bản này." |
+| Bản chạy thật không tải / mất tiếng | "Mời phát video demo." (video dọc đã giao kỹ thuật viên) | "Mạng đang chậm, em chuyển sang bản quay sẵn của đúng bản này." |
 | AI không trả kết quả | Chuyển chế độ mô phỏng, chỉ nhãn | "Đang dùng chế độ mô phỏng, có nhãn rõ trên giao diện." |
 | Form không lưu | Tải lại, nạp dữ liệu mẫu, làm tiếp từ thao tác đang dở | — |
-| Mất mạng hoàn toàn | Bản local (`{{LENH_CHAY_LOCAL}}`) mở trong DevTools 390×844, hoặc ảnh dọc trong slide phụ | "Em xin dùng ảnh chụp, thao tác y hệt." |
-| Phát màn hình điện thoại hỏng (cáp/AirPlay) | Chuyển DevTools device mode 390×844 trên laptop, Nguyên thao tác | "Em chuyển sang giả lập điện thoại 390 pixel, cùng bản đang chạy." |
+| Mất mạng hoàn toàn | PDF/video offline của kỹ thuật viên; ảnh dọc ở slide 5–7 và slide phụ P2–P3 | "Em xin dùng ảnh chụp, thao tác y hệt." |
+| Video không phát được | "Mời quay lại slide." rồi nói theo ảnh dọc ở slide 5–7 | "Em xin dùng ảnh chụp từng bước, cùng bản đang chạy." |
+| Kỹ thuật viên không nghe rõ cue | Nhắc lại "Mời chuyển slide, xin cảm ơn."; Nguyên ra hiệu tay / nhắc trực tiếp | — |
 | Lố giờ | Bỏ thao tác 7b, giữ 7a | "Ca biên có trong bảng kiểm thử." |
 
 ## 5. Sau buổi tập
 - [ ] Ghi lại slide nào vượt mốc cứng; cắt lời, không cắt neo `S` (con số).
+- [ ] Tập cue với kỹ thuật viên (hoặc Nguyên đóng vai): "Mời chuyển slide." nghe rõ ở cự ly thật.
 - [ ] Tập đủ 2 lần có đồng hồ, 1 lần cố ý trễ 40 giây ở Diệu Anh để Nguyên tập chọn bản rút gọn.
 - [ ] Cập nhật `CUE-CARDS.md` và in lại nếu sửa bảng.
 
@@ -115,7 +134,7 @@ Mỗi bản chạy **cùng ba người, cùng câu mở và câu chuyền mic** 
 |---|---|---|---|---|---|
 | 1 | Diệu Anh | 00:00–00:35 (00:40) | Bìa + bài toán | V: {{NHOM_NGUOI_DUNG}} mất {{VIEC_TON_THOI_GIAN}} · T: tên app + 1 câu hứa · S: {{SO_NOI_DAU}} | — |
 | 2 | Diệu Anh | 00:35–01:10 (01:15) | Giải pháp + UI/UX | V: {{GIAI_PHAP_1_CAU}} · T: chỉ ảnh màn chính, 1 điểm {{DIEM_UI}} · S: {{SO_THAO_TAC_HOAN_THANH}} | "Em xin gửi **Dũng** đi vào {{TINH_NANG_NOI_BAT}} và làm thử ngay." |
-| 3 | Dũng | 01:10–01:50 (01:55) | 5 tính năng + luồng 3 bước | V: 5 tính năng giải đúng đề · T: nhấn {{QUY_TAC_CHINH}} · S: {{THOI_GIAN_LUONG_CHINH}} | "Giờ mình **bấm thật**." |
+| 3 | Dũng | 01:10–01:50 (01:55) | 5 tính năng + luồng 3 bước | V: 5 tính năng giải đúng đề · T: nhấn {{QUY_TAC_CHINH}} · S: {{THOI_GIAN_LUONG_CHINH}} | "Giờ mình xem **bản chạy thật**." |
 | 4 | Dũng | 01:50–02:50 (02:55) | Demo: ca thường → ca sai/biên → mobile 360px | V: dùng thật · T: {{THAO_TAC_1}} → {{CA_SAI}} → thu 360px (mỗi bước ≤ 20 giây) · S: {{GIAY_PHAN_HOI}} giây | "Cách tính bên trong và giả định, mình xin nhường **Nguyên**." |
 | 5 | Nguyên | 02:50–03:45 (03:50) | **Giả định & cách tính (bắt buộc)** | V: số trong app dựa trên giả định nào · T: bảng giả định có nguồn, 3 kịch bản, hòa vốn, ưu đãi có lỗ không · S: {{SO_HOA_VON}} | — |
 | 6 | Nguyên | 03:45–04:25 (04:30) | Kỹ thuật + kiểm thử + bảo mật | V: tin được vì sao · T: nhãn `{{MOCK_NOTICE}}`, key không lộ, 1 ca bắt lỗi · S: {{SO_CA_DAT}}/{{TONG_CA}} | — |
