@@ -21,12 +21,12 @@
   var TIMEOUT_MS = 25000;
   // Danh sách model sao chép từ Xclipse (js/ai-service.js). Cập nhật theo tài khoản thật khi đi thi.
   var MODELS = [
-    { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash', note: 'Nhanh, cân bằng - khuyên dùng', tier: 'free' },
-    { id: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash', note: 'Thông minh nhất dòng Flash, chậm hơn', tier: 'slow' },
-    { id: 'gemini-4-hydrogen', label: 'Gemini 4 Hydrogen', note: 'Thế hệ 4 - thử nếu tài khoản có quyền', tier: 'slow' }
+    { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash', note: 'Nhanh (~1 giây) - khuyên dùng', tier: 'free' },
+    { id: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash', note: 'Rất chậm, có thể quá 90 giây - chỉ dùng khi rảnh', tier: 'slow' },
+    { id: 'gemini-4-hydrogen', label: 'Gemini 4 Hydrogen', note: 'Thế hệ 4, ~10 giây', tier: 'slow' }
   ];
   var DEFAULT_MODEL = 'gemini-3.6-flash';
-  var FALLBACKS = ['gemini-3.6-flash', 'gemini-3.8-flash', 'gemini-4-hydrogen'];
+  var FALLBACKS = ['gemini-3.6-flash', 'gemini-4-hydrogen', 'gemini-3.8-flash'];
   var PLATFORMS = { claude: ['Claude', 'https://claude.ai/new'], chatgpt: ['ChatGPT', 'https://chatgpt.com/'], gemini: ['Gemini', 'https://gemini.google.com/app'] };
   function modelInfo(id) { return MODELS.filter(function (m) { return m.id === id; })[0] || null; }
   function fail(msg, kind) { var e = new Error(msg); e.kind = kind; return e; }
