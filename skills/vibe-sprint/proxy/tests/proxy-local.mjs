@@ -7,7 +7,7 @@ import worker from '../worker.js';
 
 const KEY = process.env.GEMINI_API_KEY || '';
 const ORIGIN = 'http://localhost:8216';
-const env = { GEMINI_API_KEY: KEY, ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS || 'https://shizukadreemurr.github.io,' + ORIGIN, RATE_LIMIT: '1000' };
+const env = { GEMINI_API_KEY: KEY, ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS || 'https://xclipsex.github.io,' + ORIGIN, RATE_LIMIT: '1000' };
 const PORT = Number(process.env.PORT || 8787);
 
 if (process.argv.includes('--serve')) {

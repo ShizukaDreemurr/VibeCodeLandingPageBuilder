@@ -133,5 +133,5 @@ Mã `07-…` = đoạn chép-dán tương ứng trong `references/07-cookbook-co
 ## Gemini qua proxy của đội (đọc trước khi demo)
 
 - `ai.proxyUrl` trong `starter/js/config.js` đã **điền sẵn Worker của đội**: `https://vibe-gemini-proxy.xclipse.workers.dev` (không cần nhập key khi demo).
-- **`ALLOWED_ORIGINS` trên Worker phải chứa origin Pages của chung kết.** `https://shizukadreemurr.github.io` dùng được cho mọi repo dưới tài khoản đó; **tài khoản khác phải thêm origin vào Worker** (xem `proxy/README.md`), không thì trình duyệt báo CORS/403.
+- **`ALLOWED_ORIGINS` trên Worker phải chứa origin Pages của chung kết.** `https://xclipsex.github.io` dùng được cho mọi repo dưới tài khoản đó; **tài khoản khác phải thêm origin vào Worker** (xem `proxy/README.md`), không thì trình duyệt báo CORS/403.
 - Model mặc định hiện là **`gemini-4-hydrogen` (~10 giây/lượt)**. Nếu chậm khi demo: vào Cài đặt đổi sang **`gemini-3.6-flash` (~1 giây)**.

@@ -10,7 +10,7 @@ window.DECK = {
     footer: '**Xclipse** · Đề 8 · Bảng B',
     accent: '#6A57F2',            // đổi màu chủ đạo theo đề (mặc định tím Lucian)
     accent2: '#2F8FE0',
-    liveUrl: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/',
+    liveUrl: 'https://xclipsex.github.io/VibeCodeLandingPageBuilder/',
     videoUrl: 'https://youtu.be/Wjn4xhXQXnc'
   },
   slides: [
@@ -74,7 +74,7 @@ window.DECK = {
     { type: 'demo', time: '1:30',
       eyebrow: 'Demo trực tiếp',
       title: 'Landing page thật, đang chạy **ngay bây giờ**',
-      url: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/',
+      url: 'https://xclipsex.github.io/VibeCodeLandingPageBuilder/',
       image: 'example/assets/04-landing-page.png', iframe: true,
       qrLabel: 'Quét để dùng thử',
       caption: 'Kịch bản: **điền dữ liệu mẫu** → **Tạo landing page** → đăng ký thử → thấy số đăng ký tăng.',
@@ -168,7 +168,7 @@ window.DECK = {
       title: 'Cảm ơn!',
       subtitle: 'Quét mã để tạo landing page sự kiện đầu tiên của bạn.',
       cta: 'Hỏi đáp',
-      url: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/',
+      url: 'https://xclipsex.github.io/VibeCodeLandingPageBuilder/',
       videoUrl: 'https://youtu.be/Wjn4xhXQXnc',
       qrLabel: 'Quét để dùng thử ngay',
       notes: 'Mời BGK quét QR dùng thử. Chuẩn bị sẵn trả lời: vì sao AI mô phỏng, chống bịa dữ kiện thế nào, quy tắc trùng và hết chỗ.' }
