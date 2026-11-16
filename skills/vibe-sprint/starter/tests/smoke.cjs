@@ -245,7 +245,7 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
     return { res, calls, models };
   })().catch((e) => ({ err: String(e) }));
   ok('Gemini: sai định dạng được thử lại + clamp schema', gem.res && gem.res.mode === 'gemini' && gem.res.p === 5, gem);
-  ok('Gemini: header key + đổi model khi 429', gem.models && gem.models[0] === 'gemini-3.6-flash' && gem.models[1] === 'gemini-4-hydrogen', gem.models);
+  ok('Gemini: header key + đổi model khi 429', gem.models && gem.models[0] === 'gemini-4-hydrogen' && gem.models[1] === 'gemini-3.6-flash', gem.models);
   const fb = await page.evaluate(() => EP.ai.generate({ prompt: 'x', schema: { type: 'object', props: { a: { type: 'string' } } }, mock: () => ({ a: 'mock' }) }, { mode: 'gemini', key: 'SAI', instant: true }).then((r) => ({ mode: r.mode, notice: r.notice, w: r.warnings.length })));
   ok('Gemini lỗi key -> rơi về mock có notice', fb.mode === 'mock' && fb.notice.includes('mô phỏng AI') && fb.w === 1, fb);
   await page.unroute('**/generativelanguage.googleapis.com/**');
@@ -267,7 +267,7 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
     await page.unroute('http://fake-proxy.test/**');
     return { res, seen };
   })().catch((e) => ({ err: String(e) }));
-  ok('Proxy: gọi /gemini/<model> không gửi key, đổi model khi 429', px.res && px.res.mode === 'gemini' && px.res.a === 'từ proxy' && px.seen.length === 2 && px.seen[0].url === 'http://fake-proxy.test/gemini/gemini-3.6-flash' && px.seen[1].url.endsWith('/gemini/gemini-4-hydrogen') && px.seen.every((x) => !x.key && x.tok === 'tok'), px);
+  ok('Proxy: gọi /gemini/<model> không gửi key, đổi model khi 429', px.res && px.res.mode === 'gemini' && px.res.a === 'từ proxy' && px.seen.length === 2 && px.seen[0].url === 'http://fake-proxy.test/gemini/gemini-4-hydrogen' && px.seen[1].url.endsWith('/gemini/gemini-3.6-flash') && px.seen.every((x) => !x.key && x.tok === 'tok'), px);
   ok('Proxy: Cài đặt báo "không cần nhập key" và ẩn ô key', px.res && px.res.ui.notice && px.res.ui.noKeyField, px.res);
 
   if (!hasPlay) console.log('# Mô-đun: giao diện: bỏ qua (không có tab "playground")');
