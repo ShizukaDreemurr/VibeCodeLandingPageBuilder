@@ -1,7 +1,7 @@
 # <Tên sản phẩm>: <Tên cuộc thi>
 
 > Điền các mục `<…>`. Ghi đúng công nghệ đã dùng và đúng phiên bản. Xoá dòng mẫu nào không áp dụng.
-> Nếu có chế độ AI mô phỏng, giữ nguyên câu cảnh báo dưới đây (đúng nguyên văn thể lệ nếu có).
+> Nếu có chế độ AI mô phỏng, giữ nguyên câu cảnh báo dưới đây. **Câu này phải chép NGUYÊN VĂN từ đề/thể lệ chung kết** (câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ đúng cho vòng loại; đừng dùng lại nếu đề chung kết khác).
 
 > **<Câu cảnh báo mô phỏng AI, đúng nguyên văn thể lệ>**: khi dùng chế độ AI mô phỏng (offline), nội dung do công thức sinh ra, không phải kết quả từ mô hình AI thật.
 
@@ -60,10 +60,10 @@ git clone <URL repo> && cd <thư mục>
 cp .env.example .env.local
 
 # 4. Chạy
-<lệnh chạy, ví dụ: python3 -m http.server 8000>   # rồi mở http://localhost:8000
+python3 -m http.server 8211   # rồi mở http://localhost:8211/ (thêm ?demo=1 để nạp dữ liệu mẫu)
 
-# 5. Kiểm thử
-<lệnh test>
+# 5. Kiểm thử (cần Playwright)
+node tests/smoke.cjs http://localhost:8211/
 ```
 
 Cách nhanh nhất để thử: mở trực tiếp `index.html` trên trình duyệt (nếu app không cần server).

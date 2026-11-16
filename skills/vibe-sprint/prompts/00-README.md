@@ -12,11 +12,18 @@ Dành cho **coordinator** (Claude điều phối). Mỗi file `NN-*.md` = hướ
 - **Coordinator chỉ điều phối**: viết spec, spawn, merge, chạy test tổng, push. Không tự code feature (trừ sửa xung đột merge / hotfix 1-2 dòng).
 - Mỗi prompt template có dòng header: *"Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt."*
 
+## CẢNH BÁO: nhãn mô phỏng AI phải chép NGUYÊN VĂN từ đề/BTC
+
+- Câu `Bản demo vòng loại - Dữ liệu mô phỏng AI` là câu của **vòng loại**. Starter đặt sẵn câu này làm mặc định trong `js/config.js` (`mockNotice`), **chung kết có thể khác, đừng giả định**.
+- Coordinator đọc đề chung kết/thể lệ, tìm câu nhãn BTC yêu cầu và **chép nguyên văn từng chữ, từng dấu** vào biến `{{MOCK_NOTICE}}` của mọi prompt (shell, AI, feature, QA, docs, deck). Chưa tìm thấy/chưa hỏi được: dùng `Dữ liệu mô phỏng AI` và ghi chú "chưa xác nhận wording BTC" trong `docs/DECISIONS.md`.
+- Chỉ **một nơi** được đặt câu này: `mockNotice` trong `js/config.js` (do shell agent sửa). Không ai khác hardcode câu nhãn vào JS/HTML/CSS. Đổi câu thì phải sửa luôn hai dòng assert trong `tests/smoke.cjs` (tìm `Bản demo vòng loại`), README, bảng kiểm thử, slide.
+- Mọi kết quả mock phải hiển thị cạnh nhãn này (dùng `EP.ai.noticeHtml(result)`, chân trang tự hiện khi ở chế độ mock).
+
 ## Bản đồ prompt theo pha
 
 | Phút | Pha | File | Model | Ghi chú |
 |---|---|---|---|---|
-| 0-5 | Spec | `01-spec-from-de.md` | Sonnet (coordinator tự làm) | đề -> `spec-nhanh.md`, chia feature, acceptance, kế hoạch data |
+| 0-5 | Spec | `01-spec-from-de.md` | Sonnet (coordinator tự làm) | đề -> `docs/spec-nhanh.md`, chia feature, acceptance, kế hoạch data |
 | 5-8 | Spawn đợt 1 | 02, 03, 04, 05, 07, 08 | xem dưới | gửi TẤT CẢ trong một message (song song) |
 | 8-35 | Build | `02-feature-agent.md` x N | Sonnet | mỗi feature 1 agent, 1 worktree |
 | 8-25 | Shell/brand | `03-shell-brand-agent.md` | Sonnet | |
@@ -38,17 +45,19 @@ Dành cho **coordinator** (Claude điều phối). Mỗi file `NN-*.md` = hướ
 
 ## Bảng port (mỗi agent một port riêng; KHÔNG BAO GIỜ dùng 8000)
 
+Đây là bảng DUY NHẤT; `SKILL.md` và `references/02` dùng cùng số này.
+
 | Port | Dành cho |
 |---|---|
 | 8211 | coordinator / bản merge chính |
 | 8212 | 03 shell-brand |
 | 8213 | 04 AI |
 | 8214 | 05 data-demo |
-| 8215 | 07 deck |
-| 8216 | 08 docs (chụp minh chứng) |
+| 8215-8216 | 10 polish #1..#2 |
 | 8217-8224 | 02 feature F1..F8 |
-| 8225-8227 | 06 QA #1..#3 |
-| 8228-8229 | 10 polish #1..#2 |
+| 8225 | 07 deck |
+| 8226 | 08 docs (chụp minh chứng) |
+| 8227-8229 | 06 QA #1..#3 |
 | 8230 | 11 emergency / dự phòng |
 
 Agent phải tự `kill` server của mình khi xong. Test hardcode port khác -> chạy bản copy tạm, không commit.
@@ -57,12 +66,12 @@ Agent phải tự `kill` server của mình khi xong. Test hardcode port khác -
 
 - **Mặc định: `isolation: "worktree"`** cho mọi agent sửa code. Agent bắt đầu bằng `git reset --hard {{BRANCH}}` (nhánh gốc của coordinator), commit lên nhánh worktree của nó, KHÔNG push.
 - **Chế độ không-commit** (khi coordinator tự merge thủ công, hoặc repo không cho worktree): bỏ `isolation`, giao mỗi agent một **thư mục sở hữu** riêng và ghi rõ "KHÔNG commit, KHÔNG git add; chỉ sửa file trong danh sách". Coordinator commit một lần sau khi gộp.
-- Quy tắc sở hữu (ghi vào từng prompt):
-  - Feature agent: chỉ `features/{{FEATURE_NAME}}/**` + 1 dòng đăng ký (xem 02). Không sửa `js/`, `css/` chung.
-  - Shell agent: `index.html` (nav, view home), `css/app.css` phần brand, `js/app.js`.
-  - AI agent: `js/ai.js`, `features/*/ai-*.js` do mình tạo.
-  - Data agent: `js/demo.js`, `data/**`.
-  - Deck agent: `deck/**`. Docs agent: `docs/**`, `templates/**` (bản điền), `README.md`.
+- Quy tắc sở hữu (ghi vào từng prompt). Cấu trúc thật của starter: `index.html`, `css/tokens.css`, `css/app.css`, `js/*.js`, `features/<tên>/feature.js`, `tests/smoke.cjs`, `tools/bump-version.cjs`.
+  - Feature agent: chỉ `features/{{FEATURE_NAME}}/**`, `css/{{FEATURE_NAME}}.css` (nếu thật cần, trong `@layer components`), `tests/{{FEATURE_NAME}}.cjs` + MỘT dòng `<script src="features/{{FEATURE_NAME}}/feature.js">` (và một dòng `<link>` nếu có css riêng) trong `index.html`. Không sửa `js/*.js` chung, `css/app.css`, `tests/smoke.cjs`.
+  - Shell agent: `index.html` (trừ dòng của feature), `js/config.js` (appName, tagline, prefix, **mockNotice**), `css/tokens.css` (preset/brand), `css/app.css`. KHÔNG sửa `js/app.js` trừ khi thật bắt buộc (nó đã tự dựng Tổng quan/Cài đặt từ `EP.register`).
+  - AI agent: `js/ai-specs.js` (file mới: `EP.aiSpecs = { <tên>: { id, prompt, schema, mock } }`, nạp sau `js/mock.js` và trước `features/`), `docs/ai-prompts.md`, `tests/ai.cjs`. **Không sửa `js/ai.js`** (framework 3 chế độ đã đủ; gặp lỗi thì báo coordinator).
+  - Data agent: `js/demo-data.js` (file mới: các `EP.demo.register(<collection>, { version, seed })`, nạp SAU `features/`, trước `js/app.js`, nên thắng bản demo tạm trong feature), `tests/demo.cjs`. Không sửa `js/demo.js`.
+  - Deck agent: `deck/**` (chủ yếu `deck/deck.data.js`, `deck/assets/**`, `deck/out/**`). Docs agent: `docs/**`, `README.md`, `qa/**` chỉ đọc.
   - Polish/QA: chỉ file coordinator chỉ định, sửa nhỏ.
 
 ## Parallelism
@@ -78,12 +87,12 @@ Agent phải tự `kill` server của mình khi xong. Test hardcode port khác -
 
 ## Mẫu phrasing đã chứng minh hiệu quả (từ phiên điều phối thật)
 
-- Mở đầu mỗi prompt: tên repo + stack + cách chạy (`python3 -m http.server <port>`), "FIRST run `git reset --hard <branch>`".
+- Mở đầu mỗi prompt: tên repo + stack + cách chạy (`python3 -m http.server <port>`), "FIRST run `git reset --hard <branch>`". Thứ tự nạp script của starter: config, version, core, ui, form, charts, export, ai, demo, mô-đun (mock, metrics, match, calc, checklist, quiz, chat, timeslot), ai-specs, features, demo-data, app.
 - "Serve from YOUR worktree root (never port 8000; kill when done)".
 - Nêu rõ vùng cấm: "Do NOT touch X; another agent is changing Y".
-- Verify bằng Playwright: chụp 1440x900 và 390x844, **tự mở ảnh ra xem**, không tràn ngang, không lỗi console.
+- Verify: `node tests/smoke.cjs http://localhost:<port>/ --shots <thư-mục>` + Playwright chụp 1440x900 và 390x844, **tự mở ảnh ra xem**, không tràn ngang, không lỗi console.
 - Chạy test cụ thể bằng lệnh đầy đủ; "update tests only if selectors you intentionally changed break them".
-- "Check CSS brace balance."
+- "Check CSS brace balance" và `node --check` mọi JS; trước push coordinator chạy `node tools/bump-version.cjs` và `node scripts/scan-secrets.mjs .`.
 - Kết thúc: "Commit on your worktree branch, message ending with trailer lines below. Do NOT push or bump version. Report briefly: files changed, verified vs not verified, test results."
 - Trailer commit (điền theo system-reminder của phiên hiện tại):
   ```
@@ -93,7 +102,7 @@ Agent phải tự `kill` server của mình khi xong. Test hardcode port khác -
 
 ## Biến chung
 
-`{{DE_SO}}` số đề, `{{DE_TEXT}}` nguyên văn đề, `{{REPO}}` đường dẫn repo tuyệt đối, `{{BRANCH}}` nhánh gốc, `{{PORT}}`, `{{FEATURE_NAME}}`, `{{FEATURE_DESC}}`, `{{ACCEPTANCE}}`, `{{APP_NAME}}`, `{{BRAND_COLORS}}`, `{{SESSION_URL}}`, `{{OWNED_PATHS}}`, `{{COMMIT_MODE}}` (`commit-on-worktree` | `no-commit`).
+`{{DE_SO}}` số đề, `{{DE_TEXT}}` nguyên văn đề, `{{REPO}}` đường dẫn repo tuyệt đối, `{{BRANCH}}` nhánh gốc, `{{PORT}}`, `{{FEATURE_NAME}}`, `{{FEATURE_DESC}}`, `{{ACCEPTANCE}}`, `{{APP_NAME}}`, `{{BRAND_COLORS}}`, `{{SESSION_URL}}`, `{{OWNED_PATHS}}`, `{{COMMIT_MODE}}` (`commit-on-worktree` | `no-commit`), `{{MOCK_NOTICE}}` (câu nhãn mô phỏng chép NGUYÊN VĂN từ đề/BTC, xem cảnh báo ở trên), `{{FEATURE_LIST}}`, `{{DOMAIN}}`, `{{AI_USES}}`, `{{SCHEMAS}}`, `{{QA_SCOPE}}`, `{{POLISH_SCOPE}}`, `{{PITCH_MINUTES}}`, `{{SLIDE_COUNT}}`, `{{LIVE_URL}}`, `{{REPO_URL}}`, `{{TEAM}}`, `{{TRANSCRIPT_PATH}}`, `{{MINUTES}}`, `{{OLD_BRANCH}}`, `{{ACCEPTANCE_MIN}}` (chỉ ở `11-emergency.md`), `{{REPO_SLUG}}`, `{{BRANCH_LIST}}` (chỉ ở `09-merge-deploy.md`).
 
 ## Khối chuẩn chèn vào mọi prompt (đã có sẵn trong từng file)
 

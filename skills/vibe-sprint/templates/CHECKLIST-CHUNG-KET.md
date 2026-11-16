@@ -2,6 +2,8 @@
 
 > Dùng cho ngày chấm trực tiếp. In ra hoặc để trên màn hình phụ. Tick từng dòng, không dựa vào trí nhớ.
 
+> **CẢNH BÁO: câu nhãn mô phỏng AI phải chép NGUYÊN VĂN từ đề/BTC của chung kết.** `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của VÒNG LOẠI (starter đặt sẵn làm mặc định trong `js/config.js`), chung kết có thể khác. Đối chiếu từng chữ, từng dấu với đề trước khi quay video/nộp; chỗ cần khớp: `mockNotice` trong `js/config.js`, 2 assert trong `tests/smoke.cjs`, README, bảng kiểm thử, slide, ảnh minh chứng.
+
 ## Trước khi đi (trước 1 ngày)
 
 **Thiết bị**
@@ -25,6 +27,8 @@
 - [ ] Link GitHub Pages chạy đúng bản đã nộp. Đã thử ở cửa sổ ẩn danh.
 - [ ] Nhánh và tag/commit đã nộp được ghi lại trong `PROGRESS.md`.
 - [ ] Không còn `<…>` trong README, bảng kiểm thử, minh chứng AI.
+- [ ] Câu nhãn mô phỏng AI khớp **nguyên văn** đề/BTC chung kết (không phải câu vòng loại nếu đề đổi chữ): mở app ở chế độ Mô phỏng, đọc chân trang và nhãn cạnh kết quả AI, so từng chữ với đề.
+- [ ] Đã chạy `node tools/bump-version.cjs` và `node scripts/scan-secrets.mjs .` (sạch) trên bản nộp.
 
 **Dự phòng**
 - [ ] Video backup 2 phút (MP4) đã có trên máy chạy demo và trên USB.

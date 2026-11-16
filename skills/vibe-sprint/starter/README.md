@@ -5,9 +5,9 @@ Bộ khung web app thuần HTML/CSS/JS (không build, không CDN) cho cuộc thi
 ## 1. Bắt đầu (5 phút)
 
 1. Chép **nội dung thư mục `starter/`** vào gốc repo mới (có `index.html` ở gốc).
-2. Sửa `js/config.js`: `appName`, `brandMark`, `tagline`, `prefix` (khoá localStorage, đổi theo đề; nếu đổi thì đổi cả `'ep_theme'` trong `<head>` của `index.html` thành `<prefix>theme`), `mockNotice`.
+2. Sửa `js/config.js`: `appName`, `brandMark`, `tagline`, `prefix` (tiền tố khoá localStorage; riêng khoá giao diện luôn là `ep_theme` trong `js/core.js` và `<head>` của `index.html`, giữ nguyên), `mockNotice`. **`mockNotice` phải chép NGUYÊN VĂN từ đề/BTC của kỳ thi bạn đang thi.** Giá trị có sẵn `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của vòng loại; chung kết có thể khác, đừng giả định. Đổi xong sửa luôn 2 dòng assert trong `tests/smoke.cjs` (tìm `Bản demo vòng loại`).
 3. Sửa `<title>` và `<meta description>` trong `index.html`. Giao diện mặc định là preset **xclipse** (Ice `#DBF2FC` / Navy `#072D59` / Coral `#FD6E88`, có hero kính gân). Đổi sang Lucian bằng `<html data-preset="lucian">` trong `index.html`; tên token giữ nguyên nên feature không phải sửa. Thương hiệu khác: sửa khối xclipse trong `css/tokens.css` (cả 3 khối: sáng, tối theo hệ thống, tối thủ công).
-4. Chạy thử: `python3 -m http.server 8201` rồi mở `http://localhost:8201/`.
+4. Chạy thử: `python3 -m http.server 8211` rồi mở `http://localhost:8211/` (bảng cổng của skill: 8211 điều phối, 8212-8230 các agent, **không dùng 8000**).
 5. Nhân bản feature (mục 2), xoá `features/_example` và `features/_playground` (và hai dòng `<script>` của chúng) khi đã có feature thật.
 
 Thứ tự nạp script trong `index.html`: config, version, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, checklist, quiz, chat, timeslot), features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
@@ -35,7 +35,7 @@ Thêm `<script src="features/don-hang/feature.js"></script>` trước `js/app.js
 
 ### AI trong 3 chế độ
 `EP.ai.generate(spec, { mode })` với `mode` = `mock` | `gemini` | `paste` (mặc định lấy từ chọn của người dùng ở Cài đặt).
-- **mock**: chạy `spec.mock(input)` offline, tất định. Luôn hiển thị `EP.ai.MOCK_NOTICE` ("Bản demo vòng loại - Dữ liệu mô phỏng AI") bằng `EP.ai.noticeHtml(result)`; chân trang cũng hiện khi đang ở chế độ mock.
+- **mock**: chạy `spec.mock(input)` offline, tất định. Luôn hiển thị `EP.ai.MOCK_NOTICE` (= `mockNotice` trong `config.js`, mặc định là câu vòng loại "Bản demo vòng loại - Dữ liệu mô phỏng AI", nhớ thay bằng câu nguyên văn của đề chung kết) bằng `EP.ai.noticeHtml(result)`; chân trang cũng hiện khi đang ở chế độ mock.
 - **gemini**: key người dùng nhập ở Cài đặt (nằm trong bộ nhớ trang, chỉ lưu localStorage nếu tick "Nhớ key"), gửi qua header `x-goog-api-key`, tự đổi model khi 429/quá tải (danh sách trong `ai.js`), rút JSON, kiểm tra schema, sai thì thử lại 1 lần, vẫn lỗi thì rơi về mock kèm cảnh báo.
 - **paste**: hộp thoại cho copy prompt, dán câu trả lời của Claude/ChatGPT/Gemini, kiểm tra như trên.
 Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,min,max}`, `object{props}`; trường nào cũng bắt buộc trừ `optional:true`. Kết quả được cắt/ép kiểu tự động.
@@ -53,8 +53,8 @@ Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,
 
 ## 4. Kiểm thử
 ```
-python3 -m http.server 8201 &        # tại thư mục gốc app
-node tests/smoke.cjs http://localhost:8201/ [--shots thu-muc-anh]
+python3 -m http.server 8211 &        # tại thư mục gốc app
+node tests/smoke.cjs http://localhost:8211/ [--shots thu-muc-anh]
 ```
 Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không lỗi console, mọi tab (1 h1), không tràn ngang 390px sáng/tối, đổi giao diện, CRUD + kiểm tra form của feature mẫu, AI mock + MOCK_NOTICE, CSV có BOM, sao lưu/khôi phục, Gemini giả (retry, đổi model, rơi về mock), logic các mô-đun. Khi thêm feature, thêm 5-10 dòng kiểm thử vào `tests/smoke.cjs`.
 

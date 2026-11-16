@@ -15,9 +15,9 @@ Dự án thi sprint 60 phút. Tài liệu nằm trong `docs/`: `spec-nhanh.md` (
 - **Giờ hiển thị:** `Asia/Ho_Chi_Minh`.
 
 ## Mô phỏng và AI
-- AI chỉ gọi từ `<js/ai-service.js | lib/ai/client.ts>` (một chỗ duy nhất). Prompt đặt ở một file riêng.
+- AI chỉ gọi qua `EP.ai.generate({ prompt, schema, mock }, { input })` (`js/ai.js`, một chỗ duy nhất); đặc tả prompt/schema/mock để trong `js/ai-specs.js` hoặc ở đầu feature. Không tự `fetch` tới Gemini.
 - Kết quả AI luôn qua bước kiểm tra cấu trúc (đủ trường, đúng kiểu). Thiếu thì bù bằng bản mô phỏng và báo rõ cho người dùng.
-- Luôn có chế độ mô phỏng. Khi đang dùng mô phỏng, giao diện hiện nhãn: `<câu nhãn đúng nguyên văn đề>`.
+- Luôn có chế độ mô phỏng. Khi đang dùng mô phỏng, giao diện hiện nhãn: `<câu nhãn đúng nguyên văn đề>` (đặt ở `mockNotice` trong `js/config.js`, hiển thị bằng `EP.ai.noticeHtml`). **Chép từng chữ từ đề chung kết/BTC; `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của vòng loại.** Đổi câu thì sửa luôn 2 assert trong `tests/smoke.cjs`.
 - Không được ghi "AI thật" trong README, video hay bảng kiểm thử khi thực tế đang chạy mô phỏng.
 
 ## Bảo mật
@@ -30,15 +30,15 @@ Dự án thi sprint 60 phút. Tài liệu nằm trong `docs/`: `spec-nhanh.md` (
 ## Quy trình mỗi bước
 1. Kế hoạch ≤ 10 dòng, nêu rõ file sẽ sửa.
 2. Làm thay đổi nhỏ nhất đủ để tính năng chạy.
-3. Chạy `<lệnh test>` (và `<lệnh lint>` nếu có). Không commit khi test đỏ.
+3. Chạy `node tests/smoke.cjs http://localhost:8211/` (và `node --check js/*.js features/*/feature.js`). Không commit khi test đỏ.
 4. Báo 4 mục: **đã xong · còn mô phỏng · cách chạy thử · cách xem bằng mắt**.
 5. Commit và push (xem "Git và triển khai").
 
 ## Phiên bản
-- Mỗi lần push lên nhánh nộp: tăng số phiên bản trong `<js/version.js>` và chạy `<node tools/bump-version.cjs>` nếu dự án có. Nếu không có cơ chế này, ghi phiên bản vào tiêu đề README.
+- Mỗi lần push lên nhánh nộp: chạy `node tools/bump-version.cjs` (tăng số trong `js/version.js` và gắn `?v=` vào `index.html`).
 
 ## Kiểm thử
-- Kiểm thử luồng chính bằng `<lệnh test>` trước mỗi lần push.
+- Kiểm thử luồng chính bằng `node tests/smoke.cjs http://localhost:8211/` trước mỗi lần push.
 - Cập nhật `docs/BANG-KIEM-THU.md` khi kết quả thay đổi. Chỉ ghi kết quả đã chạy thật.
 
 ## Git và triển khai
@@ -49,6 +49,6 @@ Dự án thi sprint 60 phút. Tài liệu nằm trong `docs/`: `spec-nhanh.md` (
 - Không đưa gói ZIP nộp bài vào repo. Tạo gói ZIP khi đội đồng ý.
 
 ## Môi trường
-- Chạy local: `<lệnh chạy>` (cổng `<8000>`).
-- Kiểm thử: `<lệnh test>`.
+- Chạy local: `python3 -m http.server 8211` (cổng 8211, **không dùng 8000**), mở `http://localhost:8211/?demo=1`.
+- Kiểm thử: `node tests/smoke.cjs http://localhost:8211/ [--shots thư-mục-ảnh]` (cần Playwright).
 - Link Pages: `<URL>`.

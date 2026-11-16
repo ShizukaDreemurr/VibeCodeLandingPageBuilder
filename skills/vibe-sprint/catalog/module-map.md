@@ -2,7 +2,24 @@
 
 Đọc cùng `de-bai-vong-1.md`. Đề số = đề trong mục đó.
 
-**Lưu ý về nguồn module:** các đường dẫn `starter/js/form.js`, `ai.js`, `charts.js`, `export.js`, `features/_example` KHÔNG tồn tại trong repo này (đã kiểm tra nhánh hiện tại). Bảng dưới ánh xạ tới các file thật trong `js/` của repo `VibeCodeLandingPageBuilder`. Nếu team có bộ starter riêng ngoài repo, cần đối chiếu lại cột "Module hiện có".
+**Lưu ý về nguồn module:** cột "Module hiện có trong repo" bên dưới là các file của repo Xclipse/VibeCodeLandingPageBuilder (tham khảo ý tưởng, KHÔNG nằm trong skill). Bộ `starter/` của skill đã làm sẵn phần lớn cột "Module nên thêm"; dùng bảng ánh xạ này thay vì viết lại:
+
+| Năng lực (số ở bảng 1) | Có sẵn trong `starter/` |
+|---|---|
+| 1 Form + validation | `js/form.js`: `EP.form.render(SCHEMA, values)` + `EP.form.bind(form, SCHEMA, { onSubmit })`, luật required/email/phone/url/min/max/date/pattern/custom, chống bấm đôi |
+| 2 List / CRUD localStorage | `js/core.js`: `EP.collection(name)` (add/update/remove/get/list/onChange), `EP.store`; bảng `EP.ui.table` (`js/ui.js`) |
+| 3, 4 AI sinh chữ / phân loại | `js/ai.js`: `EP.ai.generate({ prompt, schema, mock }, { input })` (mock / gemini / paste, kiểm schema, rơi về mock), `js/mock.js` (hash, rng, sentiment, classify) |
+| 5 Dashboard / biểu đồ | `js/charts.js` (`EP.charts.bar/line/donut`), `js/metrics.js` (CTR/CPC/CPA/ROAS, VND, xu hướng) |
+| 6 Lịch | `js/timeslot.js` (`EP.time.slots/overlaps/freeSlots/countdown`) |
+| 7 Export | `js/export.js` (`EP.export.csv/json/text/backup/print`), `EP.ui.copy` |
+| 8 Chatbot UI | `js/chat.js` (`EP.chat.mount`, `EP.chat.faqReply`) |
+| 9 Landing / xem trước | không có; tự làm trong feature (xem `brand/` để lấy ảnh hero và màu) |
+| 10 Đăng ký + đếm | `EP.collection` + `EP.demo.register` + KPI qua `summary()`; không có Sheet/Firebase |
+| 11 Tìm kiếm / lọc | `js/match.js` (`EP.text.normalize`, `EP.match.faq`, `EP.match.search`) |
+| 12 Chấm điểm / quiz | `js/quiz.js` (`EP.quiz.create/leaderboard/mount`), `js/checklist.js` (`EP.checklist.score/mount`) |
+| 13 Ngân sách / tính toán | `js/calc.js` (`EP.calc.mount`), `js/metrics.js` |
+| 14 SEO checker | không có; ví dụ checklist ở `features/_playground` |
+| 15 Upload ảnh | không có (không đề nào cần) |
 
 Ký hiệu: ✔ = đề yêu cầu trực tiếp; ◐ = có thể dùng đến / phụ.
 

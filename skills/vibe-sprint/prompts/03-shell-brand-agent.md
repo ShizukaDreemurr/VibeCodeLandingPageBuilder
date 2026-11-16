@@ -2,7 +2,7 @@
 
 **Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.**
 
-Spawn đợt 1, port 8212. Agent này là chủ của `index.html`, nav, trang chủ/landing, màu thương hiệu. Feature agent chỉ thêm một dòng script nên merge shell trước feature. Nếu chưa biết danh sách feature cuối, đưa danh sách dự kiến từ spec (nav sẽ đọc từ registry nên thêm/bớt dễ).
+Spawn đợt 1, port 8212. Agent này là chủ của `index.html`, `js/config.js` (gồm câu nhãn mock), `css/tokens.css`, giao diện/preset. Tab tự dựng từ `EP.register` nên feature agent chỉ thêm một dòng script; merge shell trước feature. Điền `{{MOCK_NOTICE}}` bằng câu nhãn chép NGUYÊN VĂN từ đề/BTC (xem cảnh báo ở `00-README.md`).
 
 ```
 Repo: {{REPO}} (vanilla JS, window.EP, no build). FIRST run `git reset --hard {{BRANCH}}`. Serve `python3 -m http.server {{PORT}}` from YOUR worktree root (never 8000; kill when done).
@@ -10,26 +10,27 @@ Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, ch
 
 CONTEXT
 Contest Đề {{DE_SO}}: {{DE_TEXT}}
-Product: "{{APP_NAME}}" - {{FEATURE_DESC}}. Brand colors: {{BRAND_COLORS}}. Vietnamese UI.
-Planned features (nav items, in order): {{FEATURE_LIST}}.
+Product: "{{APP_NAME}}" - {{FEATURE_DESC}}. Brand/look: {{BRAND_COLORS}} (default = preset xclipse: Ice #DBF2FC / Navy #072D59 / Coral #FD6E88; alternative preset lucian). Vietnamese UI.
+Planned features (tabs, in order): {{FEATURE_LIST}}.
+MOCK NOTICE (copied VERBATIM from the organizers' brief by the coordinator; never retype, paraphrase or "improve"): "{{MOCK_NOTICE}}".
+The starter is already in the repo root (copied from skills/vibe-sprint/starter/). Brand kit for reference: skills/vibe-sprint/brand/ (01-bo-nhan-dien-xclipse.md, 02-giong-dieu-va-noi-dung.md, logo-light.jpg / logo-dark.jpg, album/ industry hero photos, xclipse-ui-ux-*.html samples).
 
-YOU OWN: index.html, css/app.css (brand/tokens/layout), js/app.js (shell, router, nav), assets/** (logo/favicon svg). Do NOT touch features/*/ (other agents), js/ai.js, js/demo.js data content, deck/, docs/.
+YOU OWN: index.html (everything except the one-line <script>/<link> additions of feature agents), js/config.js, css/tokens.css, css/app.css (brand/layout only), assets/** (logo/favicon). Do NOT touch features/*/ (other agents), js/ai.js, js/demo.js, js/core.js, js/app.js (it already builds the Tổng quan + Cài đặt views from EP.register; only if truly broken, report instead of editing), deck/, docs/.
 
 TASKS
-1. Rename the app everywhere ("{{APP_NAME}}": <title>, header, meta description, og tags, favicon, footer, localStorage key prefix if the starter derives it from the name). grep the starter's old name to make sure none remains.
-2. Design tokens: set --brand, --brand-2, --accent, surface/text/border tokens from {{BRAND_COLORS}} for light AND dark (prefers-color-scheme + a toggle button if the starter has one). Verify AA contrast for text and buttons. One font pair via system stack or a single Google Font with display=swap.
-3. Nav: top bar (desktop) and bottom/tab or hamburger (390px) listing the features from the EP feature registry (do not hard-code feature internals; read the registry so features added later appear automatically; keep a static fallback list). Active-state indicator, keyboard accessible, hash routes.
-4. Home/landing view (#home): hero with the one-sentence value proposition, 3 benefit cards, a primary CTA "Dùng thử với dữ liệu mẫu" -> `?demo=1`, a KPI strip that reads real numbers from the data layer (zero-safe), a "Cách hoạt động" 3-step strip, footer with team + contest line. Make it look designed (spacing scale, one accent, subtle motion respecting prefers-reduced-motion), not generic.
-5. Demo banner when ?demo=1: small dismissible pill "Dữ liệu mẫu - xoá để bắt đầu".
-6. Leave clear mount points `<div id="view-<feature>">` pattern as in the starter so features plug in without editing index.html further.
-7. Keep the exact script-tag block in index.html in a clearly commented, alphabetically ordered "FEATURES" section, one tag per line (reduces merge conflicts). Keep CSS balanced; end each logical block with a comment marker.
+1. js/config.js: set appName, brandMark (1 char), tagline, prefix (localStorage key prefix; the theme choice is always stored under the literal key 'ep_theme' by js/core.js and the inline script in <head>, so leave that key alone), defaultRoute, defaultAiMode ('mock'), and `mockNotice` = the VERBATIM string given above. Then update the two assertions in tests/smoke.cjs that compare against the qualifier string 'Bản demo vòng loại - Dữ liệu mô phỏng AI' (grep for it) so they compare with the new notice; this is the only smoke.cjs edit allowed. Also update <title> and <meta description> in index.html; grep the starter's old name ('Tên ứng dụng') to make sure none remains.
+2. Look: keep data-preset="xclipse" on <html> unless the spec says otherwise (lucian = alternative). A different brand: edit the xclipse block in css/tokens.css in ALL THREE places (light, dark via prefers-color-scheme, manual dark via data-theme). Token NAMES stay unchanged so features keep working. Verify AA contrast for text/buttons in light and dark. Fonts: system stack or the optional Be Vietnam Pro link already in index.html (commented; it needs network, the demo must work offline).
+3. Tabs come from EP.register in each feature (router builds nav, sections, h1, KPI on Tổng quan). Do not hard-code feature internals in index.html. Check the nav at 390px (scrolls horizontally, active pill moves) and that Tổng quan (#/home) and Cài đặt (#/settings) look designed: hero copy via cfg.tagline, KPI strip, 3-4 step stepper, shortcut cards. If you want a custom hero/landing look, do it with CSS in css/app.css (@layer components) and brand assets, not by rewriting js/app.js.
+4. Remove `features/_example` and `features/_playground` (folders AND their two <script> lines) only when the coordinator tells you real features have merged; until then keep them so smoke.cjs still has a target.
+5. Prepare stubs so other agents have a place to plug in, in this order inside index.html: after the optional modules add `<script src="js/ai-specs.js"></script>` (create js/ai-specs.js containing `window.EP = window.EP || {}; EP.aiSpecs = EP.aiSpecs || {};`); then the commented "FEATURES" block, one `<script src="features/<name>/feature.js"></script>` per line, alphabetical; then `<script src="js/demo-data.js"></script>` (create js/demo-data.js as an empty IIFE stub with a comment) ; then `<script src="js/app.js"></script>` LAST. Add `shots*/` and `qa/` to .gitignore if not present.
+6. Demo pill: when the URL has ?demo=1 the framework reseeds and removes the param itself (js/demo.js); do not re-implement. A small "Dữ liệu mẫu" hint on Tổng quan is optional.
 
 VERIFY
-Playwright screenshots at 1440x900 and 390x844, light and dark, of #home and nav on each existing route; OPEN and LOOK at them. No horizontal overflow, no console errors. Run `node tests/smoke.cjs http://localhost:{{PORT}}/` until green; update tests only if selectors you intentionally changed break them.
+`node tests/smoke.cjs http://localhost:{{PORT}}/ --shots shots-shell` until green, plus Playwright screenshots at 1440x900 and 390x844, light and dark, of #/home, #/settings and the nav on each existing route; OPEN and LOOK at them. No horizontal overflow, no console errors. Check CSS brace balance and `node --check` for JS you touched.
 
 GIT ({{COMMIT_MODE}}): commit on worktree branch ending with
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 Claude-Session: {{SESSION_URL}}
 Do NOT push or bump version.
-REPORT briefly: files changed, list of tokens/IDs other agents must know (view id pattern, nav registry API), verified vs not verified, test results.
+REPORT briefly: files changed, the final mockNotice string now in js/config.js, the script-tag order in index.html, verified vs not verified, test results.
 ```

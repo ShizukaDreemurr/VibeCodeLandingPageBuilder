@@ -1,19 +1,27 @@
 # 05 — Thuyết trình, demo trực tiếp và hỏi đáp
 
-Thời lượng tổng thường ~5–7 phút trình bày + 5 phút hỏi đáp (xác nhận lại với BTC ngay khi bốc đề). Slide dựng từ `deck/` bởi deck agent, dùng ảnh chụp **thật** từ app đã deploy.
+Thời lượng tổng thường ~5–7 phút trình bày + 5 phút hỏi đáp (xác nhận lại với BTC ngay khi bốc đề). Slide dựng từ `deck/` bởi deck agent (`node deck/tools/capture.cjs` chụp ảnh **thật** từ app, `node deck/tools/export.cjs` xuất PDF dự phòng vào `deck/out/`).
 
-## Cấu trúc 5–7 phút (8–9 slide, mỗi slide 30–50 giây)
+## Cấu trúc 5–7 phút (12 slide của `deck/`, ~6:50)
 
-| # | Slide | Nội dung | Giờ |
+Dựng bằng `deck/` (điền dữ liệu `deck/deck.data.js`, không sửa layout; chi tiết ở `deck/README.md`). Phím: `←/→` chuyển, `N` ghi chú + đồng hồ, `F` toàn màn hình, `Ctrl+P` in PDF.
+
+| # | Slide (`type`) | Nội dung | Giờ |
 |---|---|---|---|
-| 1 | Tên đội + app + khẩu hiệu 1 dòng | Đề số, bảng thi | 0:15 |
-| 2 | Vấn đề & người dùng | 1 persona, 1 nỗi đau có số/ví dụ thật | 0:45 |
-| 3 | Giải pháp trong 1 câu + 5 tính năng | Biểu tượng + 1 dòng mỗi tính năng | 0:45 |
-| 4–5 | **Demo trực tiếp** (xem kịch bản) | Chạy app thật | 2:30 |
-| 6 | AI: dùng để xây và để cải thiện | Quá trình thử → sửa prompt → kết quả tốt hơn; mock có nhãn; kiểm soát đầu ra | 0:45 |
-| 7 | Chất lượng | Test (số ca đạt), mobile, sáng/tối, validation | 0:30 |
-| 8 | Giới hạn thật + hướng phát triển | Nói thật phần mô phỏng, localStorage... | 0:30 |
-| 9 | Cảm ơn + link/QR app | | 0:10 |
+| 1 | cover | Chào, tên đội + app + khẩu hiệu 1 dòng, đề số, bảng thi | 0:15 |
+| 2 | problem | 1 persona, 1 nỗi đau có số/ví dụ thật | 0:40 |
+| 3 | solution | Giải pháp trong 1 câu, chỉ vào ảnh | 0:30 |
+| 4 | features | 5 tính năng, nhấn 1–2 quy tắc nghiệp vụ | 0:40 |
+| 5 | flow | 3–5 bước dùng | 0:30 |
+| 6 | demo | **Demo trực tiếp** (xem kịch bản); mất mạng thì video/ảnh | 1:30 |
+| 7 | ai | AI để xây vs AI trong sản phẩm; thật vs mô phỏng (nhãn nguyên văn đề/BTC); prompt → kiểm tra → dự phòng | 0:50 |
+| 8 | quality | Bảng ca kiểm thử (số thật), mobile, sáng/tối, nói thẳng lỗi còn lại | 0:40 |
+| 9 | metrics | 3–4 con số kiểm chứng được | 0:25 |
+| 10 | roadmap | Giới hạn thật + bước tiếp theo | 0:20 |
+| 11 | team | Vai trò | 0:15 |
+| 12 | thanks | QR + link, mời "Hỏi đáp" | 0:15 |
+
+Chỉ có 5 phút: bỏ slide 5 và 11, rút demo còn 1:00. Slide AI: nếu app dùng mock, ghi đúng câu nhãn mà BTC yêu cầu (chép nguyên văn, không dùng câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI` nếu đề chung kết khác).
 
 Luật slide: một ý mỗi slide, chữ ≥ 28pt, ảnh chụp app thật thay vì minh hoạ chung, tiếng Việt có dấu, không đọc nguyên slide.
 
@@ -23,7 +31,7 @@ Luật slide: một ý mỗi slide, chữ ≥ 28pt, ảnh chụp app thật thay
 2. Nói 1 câu bối cảnh người dùng ("Chị Lan là chủ quán...").
 3. Đi **đúng luồng 5 tính năng theo thứ tự đề**, mỗi cái 20–30 giây, tập trung kết quả thấy được.
 4. Chèn **1 ca đầu vào sai** (email sai → thấy cảnh báo) và **1 ca biên** (trùng/hết hạn) — để lộ nghiệp vụ.
-5. Chỉ nhãn mô phỏng AI (nếu dùng mock) hoặc gọi AI thật bằng key sẵn lưu.
+5. Chỉ nhãn mô phỏng AI (nếu dùng mock; đúng câu BTC yêu cầu) hoặc gọi AI thật bằng key nhập sẵn ở Cài đặt (tick "Nhớ key" chỉ trên máy cá nhân).
 6. Chuyển Sáng/Tối 1 lần, thu nhỏ cửa sổ/điện thoại thật để thấy mobile.
 7. Kết: quay về slide giới hạn.
 
@@ -32,10 +40,10 @@ Tập demo **ít nhất 2 lần đầy đủ** ở T+52→58 với đồng hồ.
 ## Phương án dự phòng (chuẩn bị trước T+52)
 
 - **Video quay màn hình ≤ 2 phút** (5 tính năng) lưu sẵn trên máy + USB/điện thoại; mở được offline.
-- **Bản local:** `python3 -m http.server 8080` trong thư mục app (hoặc mở `index.html` bằng `file://` nếu app không cần server).
+- **Bản local:** `python3 -m http.server 8211` trong thư mục app (rồi mở `http://localhost:8211/?demo=1`) (hoặc mở `index.html` bằng `file://` nếu app không cần server).
 - **Ảnh chụp 5 tính năng** trong slide phụ ("Dự phòng") nếu cả hai đều hỏng.
 - Quy tắc: demo hỏng >10 giây → chuyển sang dự phòng, **đừng sửa trực tiếp trên sân khấu**. Nói bình tĩnh: "Mạng đang chậm, em chuyển sang bản quay sẵn".
-- Dữ liệu demo đặt lại bằng nút "Khôi phục dữ liệu mẫu" trước khi vào phòng.
+- Dữ liệu demo đặt lại bằng nút "Nạp lại dữ liệu demo" ở Cài đặt (hoặc mở `?demo=1`) trước khi vào phòng.
 
 ## Hỏi đáp Bảng B (cách dùng, nghiệp vụ, quá trình cải thiện AI)
 

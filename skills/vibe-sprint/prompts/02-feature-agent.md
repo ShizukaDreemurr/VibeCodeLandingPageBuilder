@@ -2,30 +2,40 @@
 
 **Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.**
 
-Spawn: `Agent(subagent_type:"general-purpose", model:"sonnet", isolation:"worktree", run_in_background:true, description:"Feature {{FEATURE_NAME}}")`. Một message chứa tất cả feature agent. Điền toàn bộ `{{}}` từ `spec-nhanh.md`. Port theo bảng ở 00 (8217-8224). Muốn second opinion: spawn thêm 1 agent cùng feature với port khác và chọn bản tốt hơn.
+Spawn: `Agent(subagent_type:"general-purpose", model:"sonnet", isolation:"worktree", run_in_background:true, description:"Feature {{FEATURE_NAME}}")`. Một message chứa tất cả feature agent. Điền toàn bộ `{{}}` từ `docs/spec-nhanh.md` (`{{MOCK_NOTICE}}` = câu nhãn chép nguyên văn từ đề/BTC; xem cảnh báo ở `00-README.md`, không dùng câu vòng loại nếu đề chung kết khác). Port theo bảng ở 00 (feature F1..F8 = 8217-8224). Muốn second opinion: spawn thêm 1 agent cùng feature với port khác và chọn bản tốt hơn.
 
 ```
 Repo: {{REPO}} (vanilla JS mini-app, window.EP namespace, no build step). FIRST run `git reset --hard {{BRANCH}}`. Serve with `python3 -m http.server {{PORT}}` from YOUR worktree root (never port 8000; kill the server when done).
 Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.
 
 CONTEXT (self-contained)
-Contest: Đề {{DE_SO}}. App "{{APP_NAME}}". Brief summary: {{DE_TEXT}}. UI text is Vietnamese (with diacritics), code/comments English. Brand colors: {{BRAND_COLORS}} (use CSS variables from css/app.css, never hard-code colors; must work in light and dark).
+Contest: Đề {{DE_SO}}. App "{{APP_NAME}}". Brief summary: {{DE_TEXT}}. UI text is Vietnamese (with diacritics), code/comments English. Look: use ONLY the CSS variables from css/tokens.css (preset set by the shell agent; never hard-code colors; must work in light and dark).
+MOCK NOTICE (verbatim from the organizers, do NOT retype or paraphrase it; it lives in js/config.js `mockNotice` and is shown by EP.ai.noticeHtml(result)): "{{MOCK_NOTICE}}".
 
 YOUR FEATURE: {{FEATURE_NAME}} - {{FEATURE_DESC}}
 ACCEPTANCE (all must pass and be verified by you):
 {{ACCEPTANCE}}
 
 OWNERSHIP
-You own ONLY: features/{{FEATURE_NAME}}/** (and tests/{{FEATURE_NAME}}.cjs). Plus exactly one registration line wherever the starter registers features (see features/_example and index.html: one <script src="features/{{FEATURE_NAME}}/index.js?v=1"> tag and, if used, one entry in the feature list). Do NOT edit js/*.js shared files, css/app.css, index.html beyond that single line, or other features' folders. Other agents are changing the shell/nav (shell agent), js/ai.js (AI agent), js/demo.js (data agent). If you need a shared helper that is missing, write it privately inside your folder and mention it in the report.
+You own ONLY: features/{{FEATURE_NAME}}/** , tests/{{FEATURE_NAME}}.cjs, and (only if you truly need extra CSS) css/{{FEATURE_NAME}}.css written inside `@layer components { ... }` and scoped under `.{{FEATURE_NAME}}-root`. Plus exactly ONE added line in index.html: `<script src="features/{{FEATURE_NAME}}/feature.js"></script>` inside the FEATURES block, before js/app.js (and one `<link rel="stylesheet" href="css/{{FEATURE_NAME}}.css">` after css/app.css if you made that css file). Do NOT edit js/*.js, css/app.css, css/tokens.css, tests/smoke.cjs, or other features' folders. Other agents are changing: shell/brand (index.html, js/config.js, css), AI specs (js/ai-specs.js), demo data (js/demo-data.js). If you need a shared helper that is missing, write it privately inside your folder and mention it in the report.
+
+THE REAL STARTER API (read the sources, do not guess names)
+- Register the tab: `EP.register({ id, label, title, desc, icon, order, summary(), actions(), render(el) })` (id is also the URL hash `#/id`; one h1 per view is built by the router from `title`; `summary()` returns [{label,value,hint}] KPIs for the Tổng quan page; `actions()` returns HTML buttons next to the h1).
+- Data: `var rows = EP.collection('<name>')` -> add/update/remove/get/list/count/clear/replace/onChange (stored in localStorage under the prefix from js/config.js; never hardcode a storage key).
+- Forms: `EP.form.render(SCHEMA, values)` + `EP.form.bind(form, SCHEMA, { onSubmit })` (rules: required, email, phone, url, minLength, maxLength, min, max, integer, date, pattern, custom).
+- Tables: `EP.ui.table(el, { columns, rows, actions, onAction })`; dialogs `EP.ui.dialog / EP.ui.confirm / EP.ui.toast`; always `EP.esc()` any user/AI text put into innerHTML.
+- Charts: `EP.charts.bar / line / donut(el, [{label, value}])`. Export: `EP.export.csv(name, rows, cols)`, `EP.export.print()`.
+- AI: ONLY via `EP.ai.generate(spec, { input })` where spec = EP.aiSpecs.<name> written by the AI agent (contract: {{AI_USES}}); render the result with `EP.ai.noticeHtml(result)` next to the output and `EP.ai.mountModePicker(el)` for the mode switch. Never call fetch/Gemini yourself. Until the AI agent's spec exists, define a local `AI_SPEC` in your feature exactly like features/_example (prompt, schema, mock) and switch to EP.aiSpecs.<name> when it lands.
+- Demo data: `EP.demo.register('<collection>', { version: 1, seed: function () { return [...]; } })` with 3 rows is enough from you (the data agent registers the full set in js/demo-data.js later; its registration wins). `?demo=1` reseeds.
 
 HOW
-1. Read: features/_example/* (clone this pattern exactly: file layout, EP.register/EP.features API, render + mount + unmount), js/form.js (use EP.form validation for every form: required, Vietnamese error text under field, red state, focus first invalid), js/ai.js (call EP.ai.* only; never fetch Gemini yourself), js/charts.js, js/export.js, js/demo.js (read how ?demo=1 seeds; add your own seed function inside your folder and register it with the demo hook if the starter provides one), tests/smoke.cjs.
-2. `cp -r features/_example features/{{FEATURE_NAME}}`, rename identifiers (namespace EP.features.{{FEATURE_NAME}}, DOM ids prefixed `{{FEATURE_NAME}}-`, localStorage key `ep.{{FEATURE_NAME}}`).
-3. Implement the screens: list/table with empty state, create/edit form with validation, delete with confirm, search/filter if relevant, a chart or KPI strip if the spec says so, export button if spec says so. Include loading/empty/error states and sensible demo data when ?demo=1.
+1. Read fully: features/_example/feature.js (clone this pattern exactly; the numbered map [1]..[6] at the top tells you what to change), js/core.js (EP.register/collection/router), js/form.js, js/ui.js, js/ai.js (read only), js/charts.js, js/export.js, js/demo.js, and the head comment of any optional module you use (js/mock.js, metrics.js, match.js, calc.js, checklist.js, quiz.js, chat.js, timeslot.js), plus tests/smoke.cjs.
+2. `cp -r features/_example features/{{FEATURE_NAME}}`; in the copy change NAME ('example' -> '{{FEATURE_NAME}}'), the collection name, SCHEMA, COLUMNS, AI_SPEC/EP.aiSpecs reference, and the demo seed; remove everything of the example you do not need. Ids/classes you add are prefixed `{{FEATURE_NAME}}-`.
+3. Implement the screens: list/table with empty state, create/edit form with validation, delete with EP.ui.confirm, search/filter if relevant, a chart or KPI strip if the spec says so, export button if spec says so. Include loading/empty/error states.
 4. Responsive: works at 390x844 and 1440x900, no horizontal overflow, tap targets >= 40px, keyboard focusable, visible focus ring, labels on inputs.
-5. Verify with Playwright (preinstalled; `require('playwright')`, chromium.launch()): open http://localhost:{{PORT}}/?demo=1, navigate to your feature, walk through EVERY acceptance item, take screenshots at 1440x900 and 390x844 in light and dark, then OPEN the screenshots and LOOK at them (layout, clipping, contrast, Vietnamese diacritics). Fix what you see. Assert zero console errors / page errors.
-6. Run `node tests/smoke.cjs http://localhost:{{PORT}}/` (read the file head for args) until green. Add a small tests/{{FEATURE_NAME}}.cjs that asserts your acceptance items; run it.
-7. Check JS syntax (`node --check`) and CSS brace balance for any CSS you wrote (keep CSS inside your feature folder, scoped under `.{{FEATURE_NAME}}-root`).
+5. Verify with Playwright (`require('playwright')`, or `require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright')`, chromium.launch()): open http://localhost:{{PORT}}/?demo=1, go to `#/{{FEATURE_NAME}}`, walk through EVERY acceptance item, take screenshots at 1440x900 and 390x844 in light and dark, then OPEN the screenshots and LOOK at them (layout, clipping, contrast, Vietnamese diacritics). Fix what you see. Assert zero console errors / page errors.
+6. Run `node tests/smoke.cjs http://localhost:{{PORT}}/ --shots shots-{{FEATURE_NAME}}` until green (shots dir is gitignored; do not commit screenshots). Write tests/{{FEATURE_NAME}}.cjs (URL from argv, same Playwright loader as tests/smoke.cjs) that asserts your acceptance items; run it. If smoke.cjs fails only on the mock-notice assertion because js/config.js `mockNotice` was changed by the shell agent, report it, do not edit smoke.cjs.
+7. Check JS syntax (`node --check features/{{FEATURE_NAME}}/feature.js`) and CSS brace balance for any CSS you wrote.
 
 GIT ({{COMMIT_MODE}})
 - commit-on-worktree: commit on your worktree branch, message ending with the trailer lines:

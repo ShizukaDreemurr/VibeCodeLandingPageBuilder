@@ -23,8 +23,8 @@ Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, ch
 
 EMERGENCY. Hard deadline: {{MINUTES}} minutes from now; stop and report at that time even if unfinished. A previous agent got stuck on feature "{{FEATURE_NAME}}" ({{FEATURE_DESC}}); its branch {{OLD_BRANCH}} may contain reusable pieces (inspect with `git diff {{BRANCH}}..{{OLD_BRANCH}} --stat`; copy only what works, do not debug its internals).
 Goal: a demo-able version, not a complete one. Minimum acceptance (ONLY these): {{ACCEPTANCE_MIN}}.
-Rules: clone features/_example into features/{{FEATURE_NAME}}; own ONLY features/{{FEATURE_NAME}}/**; one registration line elsewhere. Use static/mock data seeded under ?demo=1 where real logic is hard; real form validation via EP.form is still required if the feature has a form; show EP.ai notice if AI output is mock. Skip charts/export/edge cases. Get a vertical slice working within 5 minutes first, commit it, then improve.
-Verify with Playwright at 390x844 and 1440x900 (open the screenshots and LOOK), run `node tests/smoke.cjs http://localhost:{{PORT}}/`.
+Rules: `cp -r features/_example features/{{FEATURE_NAME}}` (EP.register + EP.collection + EP.form pattern); own ONLY features/{{FEATURE_NAME}}/**; one `<script src="features/{{FEATURE_NAME}}/feature.js">` line in index.html before js/app.js. Use static/mock data via `EP.demo.register('<collection>', { version: 1, seed })` (reseeded by ?demo=1) where real logic is hard; real form validation via EP.form is still required if the feature has a form; show `EP.ai.noticeHtml(result)` if AI output is mock (the notice text is the organizers' VERBATIM wording set in js/config.js; never retype it). Skip charts/export/edge cases. Get a vertical slice working within 5 minutes first, commit it, then improve.
+Verify with Playwright at 390x844 and 1440x900 (open the screenshots and LOOK), run `node tests/smoke.cjs http://localhost:{{PORT}}/ --shots shots-emergency`.
 GIT ({{COMMIT_MODE}}): commit early and often on the worktree branch, trailer:
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 Claude-Session: {{SESSION_URL}}
@@ -35,11 +35,11 @@ REPORT in <= 8 lines: what works (verified), what is mock, what is missing.
 ## Prompt: fallback demo (khi app hỏng nặng)
 
 ```
-Repo: {{REPO}}. FIRST `git reset --hard {{BRANCH}}`. Serve on {{PORT}} (never 8000).
+Repo: {{REPO}}. FIRST `git reset --hard {{BRANCH}}`. Serve on {{PORT}} (8230 for emergency work; never 8000).
 Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.
-Deadline {{MINUTES}} minutes. Build `demo-fallback.html` (single self-contained file, inline CSS/JS, no network): a click-through walkthrough of "{{APP_NAME}}" using real screenshots from deck/shots/ or qa evidence (embed as relative files) plus mock interactive widgets for the 3 key moments from docs/kich-ban-demo.md. Vietnamese, brand colors {{BRAND_COLORS}}, works at 390 and 1440, keyboard arrows move between steps. Banner: "Bản trình diễn dự phòng - dữ liệu mô phỏng". Verify with Playwright screenshots (LOOK), commit with the standard trailer, report in <= 5 lines.
+Deadline {{MINUTES}} minutes. Build `demo-fallback.html` (single self-contained file, inline CSS/JS, no network): a click-through walkthrough of "{{APP_NAME}}" using real screenshots from deck/assets/ or the qa/ and shots-* folders (embed as relative files) plus mock interactive widgets for the 3 key moments from docs/KICH-BAN-DEMO.md. Vietnamese, brand colors {{BRAND_COLORS}}, works at 390 and 1440, keyboard arrows move between steps. Banner: "Bản trình diễn dự phòng - dữ liệu mô phỏng" (this is a generic fallback banner, NOT the mock notice for AI results: any AI output shown must carry the organizers' VERBATIM notice "{{MOCK_NOTICE}}"). Verify with Playwright screenshots (LOOK), commit with the standard trailer, report in <= 5 lines.
 ```
 
 ## Prompt: khôi phục bản xanh
 
-Coordinator làm tay: `git log --oneline -15`, tìm commit gần nhất có smoke xanh (`git stash; git checkout <sha>; node tests/smoke.cjs ...`), `git reset --hard <sha>` trên nhánh tích hợp, chạy lại 09 mục D-F.
+Coordinator làm tay: `git log --oneline -15`, tìm commit gần nhất có smoke xanh (`git stash; git checkout <sha>; node tests/smoke.cjs http://localhost:8211/`), `git reset --hard <sha>` trên nhánh tích hợp, chạy lại 09 mục D-F (gồm `node tools/bump-version.cjs` và `node scripts/scan-secrets.mjs .`).
