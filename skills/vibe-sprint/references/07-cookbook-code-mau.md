@@ -487,6 +487,8 @@ Mỗi màn đúng một `h1`; ảnh có `alt` mô tả + `width/height`; diễn 
 
 ## G. Firebase, GitHub Pages, Google Sheet
 
+> Bản dựng sẵn, TẮT mặc định: `starter/js/firebase.js` + `starter/firestore.rules` (đăng nhập Google, đồng bộ `EP.collection` -> `users/{uid}/...`, dịch lỗi tiếng Việt). Các mẫu G1-G4 dưới đây dùng cho trường hợp riêng; nếu chỉ cần lưu theo tài khoản thì bật module trong `starter/js/config.js`, xem `starter/README.md` mục "Bật Firebase trong 5 phút".
+
 Mặc định 60 phút: **localStorage**. Chỉ dùng Firebase khi đề cần dữ liệu chung nhiều máy. **Đề đã quy định nơi lưu (vd localStorage) thì đó là bản chính; Firebase/Sheet là tuỳ chọn và phải được mô tả đúng là tuỳ chọn** (Xclipse từng bị cô nhận xét "chưa đúng tính năng" vì giới thiệu Firebase như nơi lưu chính).
 
 ### G1. Dựng project Firebase (người dùng tự bấm; hướng dẫn đánh số, không bao giờ xin key/service account)

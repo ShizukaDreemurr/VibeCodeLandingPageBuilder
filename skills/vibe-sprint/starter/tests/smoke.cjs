@@ -28,6 +28,8 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
   page.on('requestfailed', (r) => errors.push('requestfailed: ' + r.url()));
+  const fbReqs = [];
+  page.on('request', (r) => { if (/^https?:\/\/[^/]*(googleapis|gstatic|firebase)/i.test(r.url()) && !/generativelanguage/.test(r.url())) fbReqs.push(r.url()); });
   page.on('response', (r) => { if (r.status() >= 400) errors.push('http ' + r.status() + ': ' + r.url()); });
 
   console.log('# Tải trang');
@@ -304,6 +306,9 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   // Các lỗi 4xx cố ý từ Gemini giả (route) ở bước trên không tính
   const real = errors.filter((e) => !/generativelanguage|status of (429|403)/.test(e));
   ok('không có lỗi console/mạng', real.length === 0, real);
+
+  ok('Firebase tắt: không có request tới googleapis/gstatic/firebase', fbReqs.length === 0, fbReqs);
+  ok('Firebase tắt: EP.auth.enabled=false, không nút đăng nhập, có nhãn lưu trên máy', await page.evaluate(() => EP.auth.enabled === false && EP.auth.user() === null && !document.getElementById('btn-auth') && /lưu trên máy này/.test(document.getElementById('ft-storage').textContent)));
 
   await browser.close();
   console.log(failed ? '\n' + failed + ' kiểm tra THẤT BẠI' : '\nTẤT CẢ ĐẠT');

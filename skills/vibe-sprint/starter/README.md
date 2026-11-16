@@ -82,6 +82,27 @@ Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không
 4. Đường dẫn trong app là tương đối nên chạy được ở thư mục con `/<repo>/`. Routing dùng `#/tab` nên không cần cấu hình 404.
 5. Trước khi nộp: chạy smoke test, mở bản deploy trên điện thoại, kiểm tra `?demo=1` nạp lại dữ liệu mẫu.
 
+## 5b. Bật Firebase trong 5 phút (tuỳ chọn, TẮT mặc định)
+Mặc định app chỉ dùng localStorage và **không gọi mạng**. Chỉ bật khi đề cần dữ liệu theo tài khoản/nhiều máy.
+1. console.firebase.google.com -> Add project (gói Spark, không bật billing) -> Build -> **Firestore Database** (Production mode) và **Authentication -> Sign-in method -> Google -> Enable**.
+2. Authentication -> Settings -> **Authorized domains** -> Add `<tài-khoản>.github.io` (chỉ tên miền, không kèm `/tên-repo`). Thiếu bước này sẽ báo "Tên miền chưa được phép".
+3. Project settings -> Your apps -> Web (`</>`) -> chép `apiKey, authDomain, projectId, appId` vào `js/config.js`: `firebase: { enabled: true, config: {...}, emulator: false }`. Các giá trị này công khai theo thiết kế; dữ liệu được bảo vệ bởi rules.
+4. Firestore -> Rules -> dán `firestore.rules` -> Publish (hoặc `npx firebase-tools deploy --only firestore:rules --project <id>`).
+5. Mở app qua https/localhost (không mở file://): có nút **Đăng nhập** trên thanh trên. Đăng nhập xong, mọi `EP.collection` tự đồng bộ vào `users/{uid}/{collection}/{id}`.
+
+Cách hoạt động: localStorage vẫn là bản chính (offline dùng bình thường); ghi xuôi lên Firestore có thử lại khi mất mạng; khi đăng nhập thì kéo về và gộp theo `updatedAt` (bản mới hơn thắng). Xoá lúc đang đăng xuất không lan lên máy chủ. Bản ghi > 900 KB (thường do ảnh) chỉ ở máy. API: `EP.auth.user() / signIn() / signOut() / onChange(cb)`; SDK compat 10.14.1 nạp từ gstatic chỉ khi bật. Lỗi được dịch ra tiếng Việt (unauthorized-domain, popup-closed, mạng...). Trên điện thoại tự dùng đăng nhập chuyển trang (redirect).
+
+Thử trên máy bằng emulator: copy `.firebaserc.example` -> `.firebaserc`, `npx firebase-tools emulators:start --only auth,firestore`, đặt `emulator: true`.
+
+Kiểm thử:
+```
+node tests/smoke.cjs http://localhost:8215/         # Firebase tắt: khẳng định 0 request tới googleapis/gstatic/firebase
+node tests/firebase-ui.cjs http://localhost:8215/   # Firebase bật + SDK giả (chặn CDN): nút, dịch lỗi, đồng bộ, retry, mobile 390px
+npm i -D @firebase/rules-unit-testing firebase
+npx firebase-tools emulators:exec --only firestore --project demo-ep "node tests/firebase-rules.test.mjs"   # cần Java; không có emulator thì tự bỏ qua
+```
+Không kiểm thử được tự động: đăng nhập Google thật (cần tài khoản + project thật) và SDK thật từ CDN; test giao diện dùng SDK giả. Máy không có emulator/Java thì `firebase-rules.test.mjs` tự bỏ qua và ghi "chưa chạy được trong sandbox" (đã chạy xanh 12/12 khi có emulator).
+
 ## 6. Cấu trúc
 ```
 index.html            vỏ app: skip link, tab, nút giao diện, chân trang, toast
@@ -91,5 +112,8 @@ js/                   config, version, core, ui, form, charts, export, ai, demo,
 features/_example     feature mẫu đầy đủ (CRUD + form + AI + biểu đồ)
 features/_playground  demo calc/checklist/quiz/chat
 tests/smoke.cjs       Playwright smoke test (+ tests/feature-template.snippet: khối mẫu cho feature thật)
+js/firebase.js        Firebase tuỳ chọn (tắt mặc định): đăng nhập Google + đồng bộ Firestore
+firestore.rules, firebase.json, .firebaserc.example   rules + cấu hình emulator
+tests/firebase-ui.cjs, tests/firebase-rules.test.mjs
 tools/bump-version.cjs
 ```

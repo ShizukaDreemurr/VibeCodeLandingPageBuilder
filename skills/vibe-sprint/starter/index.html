@@ -42,6 +42,7 @@
 <footer class="footer">
   <span>&copy; <span id="ft-app">Tên ứng dụng</span> · <span id="ft-version">v0.1.0</span></span>
   <span class="mock-badge" id="ft-notice" role="note"></span>
+  <span class="muted" id="ft-storage" role="status"></span>
 </footer>
 
 <div id="toasts" class="toasts" role="region" aria-label="Thông báo" aria-live="polite"></div>
@@ -56,6 +57,8 @@
 <script src="js/export.js"></script>
 <script src="js/ai.js"></script>
 <script src="js/demo.js"></script>
+<!-- Firebase tuỳ chọn: chỉ hoạt động khi EP.config.firebase.enabled = true (mặc định tắt, không gọi mạng). Phải nạp trước features. -->
+<script src="js/firebase.js"></script>
 <!-- Mô-đun tiện ích tuỳ chọn (xoá dòng nào không dùng) -->
 <script src="js/mock.js"></script>
 <script src="js/metrics.js"></script>

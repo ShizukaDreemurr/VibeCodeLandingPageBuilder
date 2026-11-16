@@ -15,6 +15,9 @@
     defaultAiMode: 'mock',                 // 'mock' | 'gemini' | 'paste'
     mockNotice: 'Bản demo vòng loại - Dữ liệu mô phỏng AI', // BẮT BUỘC hiển thị cạnh mọi kết quả mock
     locale: 'vi-VN',
-    currency: 'VND'
+    currency: 'VND',
+    /* Firebase TUỲ CHỌN, TẮT mặc định (enabled:false => không gọi mạng, dữ liệu chỉ ở localStorage). Xem README "Bật Firebase trong 5 phút".
+       config = firebaseConfig công khai từ Firebase console. emulator:true => dùng Auth :9099 + Firestore :8080 trên máy. */
+    firebase: { enabled: false, config: { apiKey: '', authDomain: '', projectId: '', appId: '' }, emulator: false }
   };
 })(window);
