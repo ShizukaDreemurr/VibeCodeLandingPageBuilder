@@ -29,7 +29,7 @@ SEC=$(grep -rnIE "${EXCL[@]}" -e 'AIza[0-9A-Za-z_-]{20,}' -e 'sk-[A-Za-z0-9_-]{2
   | cut -c1-140 | head -20)
 if [ -n "$SEC" ]; then
   warn "co chuoi giong khoa/bi mat (AIza = Firebase web config thi cong khai duoc, nhung PHAI co rules bao ve; sk-/ghp_/BEGIN KEY thi KHONG duoc dua len):"
-  echo "$SEC" | grep -qvE 'AIza' && err "co khoa KHONG phai Firebase (sk-/ghp_/KEY) - go ra truoc khi day"
+  echo "$SEC" | grep -qE 'sk-|ghp_|github_pat_|BEGIN' && err "co khoa KHONG phai Firebase (sk-/ghp_/KEY) - go ra truoc khi day"
   echo "$SEC" | sed -E 's/(AIza|sk-|ghp_|github_pat_)[A-Za-z0-9_-]{6}[A-Za-z0-9_-]*/\1******/g; s/^/        /'
 else ok "khong thay chuoi bi mat"; fi
 [ -f .env ] && err "co file .env - khong duoc dua len"
