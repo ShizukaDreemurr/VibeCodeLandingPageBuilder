@@ -17,7 +17,7 @@ Dự án thi sprint 60 phút. Tài liệu nằm trong `docs/`: `spec-nhanh.md` (
 ## Mô phỏng và AI
 - AI chỉ gọi qua `EP.ai.generate({ prompt, schema, mock }, { input })` (`js/ai.js`, một chỗ duy nhất); đặc tả prompt/schema/mock để trong `js/ai-specs.js` hoặc ở đầu feature. Không tự `fetch` tới Gemini.
 - Kết quả AI luôn qua bước kiểm tra cấu trúc (đủ trường, đúng kiểu). Thiếu thì bù bằng bản mô phỏng và báo rõ cho người dùng.
-- Luôn có chế độ mô phỏng. Khi đang dùng mô phỏng, giao diện hiện nhãn: `<câu nhãn đúng nguyên văn đề>` (đặt ở `mockNotice` trong `js/config.js`, hiển thị bằng `EP.ai.noticeHtml`). **Chép từng chữ từ đề chung kết/BTC; `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của vòng loại.** Đổi câu thì sửa luôn 2 assert trong `tests/smoke.cjs`.
+- Luôn có chế độ mô phỏng. Số liệu giả lập phải được nhận biết rõ là **dữ liệu mẫu hoặc mô phỏng** (thể lệ chung kết). Nhãn đặt ở `mockNotice` trong `js/config.js` (mặc định `Dữ liệu mô phỏng AI · Dữ liệu mẫu`), hiển thị bằng `EP.ai.noticeHtml`; nếu đề/BTC đưa câu nhãn thì chép nguyên văn. Test trong `tests/smoke.cjs` tự đọc `EP.config.mockNotice`, không cần sửa assert.
 - Không được ghi "AI thật" trong README, video hay bảng kiểm thử khi thực tế đang chạy mô phỏng.
 
 ## Bảo mật

@@ -78,3 +78,9 @@ Năng lực xuyên suốt (không nằm trong 15 mục trên nhưng đề nào c
 4. `quiz-engine.js`, `chatbot-ui.js`, `faq-match.js`, `score-checklist.js` (cần cho các đề đặc thù).
 
 Không cần xây trước: `preview-frame.js`, `timeslot.js`, `page-audit.js` (chỉ xây khi bốc đúng đề đó).
+
+## Mô-đun kinh doanh (mới)
+| Nhu cầu đề | Mô-đun |
+|---|---|
+| Giả định, 3 kịch bản, hòa vốn, độ nhạy, cách tính | `EP.scenario` (`js/scenario.js`), xem `references/11` |
+| Nhập file Excel/CSV của BTC (offline) | `EP.importer` (`js/import.js`, SheetJS trong `js/vendor/`) |
