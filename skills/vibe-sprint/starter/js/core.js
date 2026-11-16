@@ -113,6 +113,7 @@
     try { t = doc.startViewTransition(fn); } catch (e) { de.removeAttribute('data-vt'); fn(); return null; }
     activeVT = t;
     var done = function () { if (activeVT === t) { activeVT = null; de.removeAttribute('data-vt'); } };
+    if (t.ready) t.ready.then(function () {}, function () {});
     t.finished.then(done, done);
     return t;
   };

@@ -29,6 +29,7 @@
   main { flex: 1; width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 20px 16px 48px; outline: none; }
   .muted { color: var(--text-muted); }
   .mono { font-family: var(--font-mono); }
+  .tnum { font-variant-numeric: tabular-nums; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   @media (min-width: 720px) { main { padding: 28px 24px 64px; } }
 
@@ -55,7 +56,7 @@
     display: grid; grid-template-columns: 1fr auto; grid-template-areas: "brand actions" "tabs tabs"; gap: 8px 12px; align-items: center;
   }
   .brand { grid-area: brand; display: flex; align-items: center; gap: 10px; min-width: 0; text-decoration: none; color: inherit; }
-  .brand-mark { flex: none; width: 32px; height: 32px; border-radius: 10px; background: var(--ux-grad); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 16px; }
+  .brand-mark { flex: none; width: 32px; height: 32px; border-radius: 10px; background: var(--ux-grad); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 16px; box-shadow: inset 0 1px 1px rgba(255,255,255,.35); }
   .brand-name { font-weight: 700; font-size: 16px; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .brand-tag { display: none; }
   .topbar-actions { grid-area: actions; display: flex; gap: 8px; align-items: center; }
