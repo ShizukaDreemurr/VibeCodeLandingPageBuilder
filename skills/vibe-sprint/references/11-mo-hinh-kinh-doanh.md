@@ -167,3 +167,27 @@ Mẹo cuộc thi: (1) nhập xong **tính ngay** một đại lượng từ dữ
 - [ ] Số trong app = số trong slide (dùng Xuất CSV / Sao chép cho slide).
 - [ ] Mở ở 360-390px: bảng giả định, bảng kết quả, tornado đều đọc được, không tràn ngang.
 - [ ] Nói được 3 phút phần kinh tế theo mục 6.
+
+## 9. Liên kết khung kiến thức
+
+Tài liệu này cho công thức và cách dựng `EP.scenario`. **Khung hỏi và số liệu có nguồn** nằm ở:
+
+- `12-khung-kinh-doanh-cho-de.md`: thứ tự khung trong T+0-10 (phân khúc/STP, persona, USP + 7 bài kiểm, tam giác định vị, phễu sản phẩm, 4P/5P/7P + công thức giá bán lẻ, kênh + nội dung, cơ chế sàn TMĐT, kế hoạch/rủi ro) và checklist "Cơ chế ưu đãi thực tế" (mục 10 của file đó). Mỗi khung có mẫu điền, ô giả định tương ứng và câu nói khi pitch.
+- `kien-thuc/README.md`: mục lục các file giáo trình (đủ 10 file 01-10) kèm "dùng khi nào".
+
+Gợi ý nối với các mục trên:
+
+| Cần | Mở |
+|---|---|
+| Danh sách giả định theo loại đề (mục 2) có số mẫu từ giáo trình | `12` mục 8.1 (phí sàn 5,5-6%, thuế 1% + 0,5%, công thức ads) và 8.2 (số không có trong nguồn) |
+| Công thức lõi (mục 3) kiểm chéo | `kien-thuc/05` §4.2, §4.4, §8.3; `kien-thuc/06` Bài 8 §2 |
+| Cơ chế khuyến mãi (mục 4) | `12` mục 10; `kien-thuc/05` §7, §6.5 |
+| Dự phòng, rủi ro, kế hoạch ứng phó (mục 5) | `12` mục 9; `kien-thuc/06` Bài 11 §2 |
+| Một câu USP, vì sao chọn chúng tôi | `12` mục 3; `kien-thuc/02` §2 |
+| Viết USP thành tiêu đề/CTA/trang đích | `12` mục 3 (khối "Từ USP sang câu chữ"); `kien-thuc/03` Phần 2-3 |
+| Dòng tiền theo tháng, kịch bản, báo cáo lãi/lỗ | `12` mục 9; `kien-thuc/10` Ch.1 §1.3, Ch.3 |
+| Giá bán, hòa vốn quảng cáo, hớt váng/thâm nhập | `12` mục 6; `kien-thuc/08` Bài 8-9 |
+| Phễu web (nhận biết → mua lặp lại) | `12` mục 7; `kien-thuc/09` Phần II §4.4 |
+| Kiểm chứng giả định (phỏng vấn, khảo sát, cỡ mẫu) | `12` mục 2; `kien-thuc/07` Phần II |
+
+Quy tắc dùng: số trong giáo trình chỉ là **ví dụ/giá trị tham chiếu có nguồn**; số của đề/BTC luôn thắng; số không có trong nguồn ghi "giả định cần nêu nguồn". Prompt cho agent "Giả định & mô hình kinh doanh": `prompts/13-business-agent.md`.

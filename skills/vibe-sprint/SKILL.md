@@ -51,7 +51,7 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 | Feature 1…N (mỗi tính năng 1 agent) | Sonnet | Một tính năng (`features/<tên>/feature.js` + `EP.register`) + validation + test | `prompts/02-feature-agent.md` | 8217–8224 |
 | Deck | Sonnet | Slide từ `deck/` (điền `deck.data.js`, chụp ảnh, xuất PDF) | `prompts/07-deck-agent.md` | 8225 |
 | Docs | Haiku | README, bảng kiểm thử, minh chứng AI, kịch bản demo, hỏi đáp | `prompts/08-docs-agent.md` | 8226 |
-| **Giả định & mô hình kinh doanh** (Bảng Kinh tế, bắt buộc) | Sonnet | Danh sách giả định có nguồn, kịch bản lạc quan/cơ sở/bi quan, hòa vốn, độ nhạy, dự phòng, kiểm ưu đãi có lỗ không; dùng `EP.scenario` (`js/scenario.js`) + `EP.importer` (`js/import.js`) của starter; đọc `references/11-mo-hinh-kinh-doanh.md`; nạp file dữ liệu BTC | `prompts/02-feature-agent.md` (+ `references/11`) | 8231 |
+| **Giả định & mô hình kinh doanh** (Bảng Kinh tế, bắt buộc) | Sonnet | Danh sách giả định có nguồn, kịch bản lạc quan/cơ sở/bi quan, hòa vốn, độ nhạy, dự phòng, kiểm ưu đãi có lỗ không; dùng `EP.scenario` (`js/scenario.js`) + `EP.importer` (`js/import.js`) của starter; đọc `references/11-mo-hinh-kinh-doanh.md`; nạp file dữ liệu BTC | `prompts/13-business-agent.md` (+ `references/11`, `12`, `kien-thuc/`) | 8231 |
 | QA / second opinion #1–#3 | Sonnet + Haiku | Chụp ảnh, chạy test, thử đầu vào sai, mobile | `prompts/06-qa-agent.md` | 8227–8229 |
 | Cấp cứu / dự phòng | Sonnet | Re-spawn bản rút gọn, bản demo dự phòng | `prompts/11-emergency.md` | 8230 |
 | Điều phối (bản merge) | Claude chính | Merge, test, deploy | `prompts/09-merge-deploy.md` | 8211 |

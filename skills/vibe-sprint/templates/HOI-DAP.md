@@ -1,6 +1,6 @@
 # Chuẩn bị hỏi đáp: <Tên sản phẩm> (Bảng B)
 
-> 30 câu hỏi giám khảo hay hỏi (20 câu chung + 10 câu mô hình kinh doanh ở mục F, **Q&A chỉ có ở vòng phản biện; Bảng Kinh tế phải trình bày giả định và cách tính**), với khung trả lời. Mỗi câu gắn người trả lời: `[DA]` Diệu Anh, `[Dũng]` Vũ Trí Dũng, `[Nguyên]` Nguyên. Câu không có chủ hoặc câu bẫy: **Nguyên bắt**. Luôn nói **câu trả lời ngắn (1 câu) trước**, rồi mới bằng chứng. Thay `<…>` bằng số liệu thật của đội. Đừng học thuộc: trả lời theo cấu trúc **Trả lời ngắn 1 câu → Bằng chứng (chỗ trên app hoặc file) → Giới hạn nếu có**.
+> 40 câu hỏi giám khảo hay hỏi (20 câu chung + 10 câu mô hình kinh doanh ở mục F + 14 câu khung kiến thức ở mục G, **Q&A chỉ có ở vòng phản biện; Bảng Kinh tế phải trình bày giả định và cách tính**), với khung trả lời. Mỗi câu gắn người trả lời: `[DA]` Diệu Anh, `[Dũng]` Vũ Trí Dũng, `[Nguyên]` Nguyên. Câu không có chủ hoặc câu bẫy: **Nguyên bắt**. Luôn nói **câu trả lời ngắn (1 câu) trước**, rồi mới bằng chứng. Thay `<…>` bằng số liệu thật của đội. Đừng học thuộc: trả lời theo cấu trúc **Trả lời ngắn 1 câu → Bằng chứng (chỗ trên app hoặc file) → Giới hạn nếu có**.
 > Đừng bịa số. Chưa làm thì nói chưa làm, kèm cách đội sẽ làm.
 
 ## A. Cách dùng
@@ -161,3 +161,77 @@ Cấu trúc: **kết luận 1 câu → số trong app → giới hạn**. Chỉ 
 - Trả lời ngắn (nói trước, ≤ 10 giây): Có với <quy mô>, vì <cơ chế khuyến mãi thực tế: điều kiện, trần>; chưa kiểm với <…>.
 - Trả lời: <nhóm người bán đầu tiên>, <cách thu thập số thật để thay giả định>, <rủi ro: …>.
 - Giới hạn: giả định chưa kiểm thị trường thật, đội nói rõ khi trình bày.
+
+## G. Khung kiến thức: USP, phân khúc, định vị, kênh, phí sàn, voucher (Bảng Kinh tế, vòng phản biện)
+
+Cấu trúc như mục F. Số dẫn từ giáo trình (`references/kien-thuc/`, trích trong `references/12`) chỉ là **tham chiếu có nguồn**; số của đề/BTC và số đội đặt ghi nhãn đúng. Thay `<…>` bằng số thật trong app.
+
+**31. USP của sản phẩm là gì, vì sao khách chọn bạn mà không chọn đối thủ?** `[DA]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): <Một câu USP: dành cho <khách>, giúp <kết quả> bằng <cơ chế> thay vì <cách thông thường>>.
+- Trả lời: USP đạt vì nó quan trọng với khách, khác đối thủ và có bằng chứng ngay trong app (<số/chức năng>). Đội đã kiểm 7 tiêu chí (cụ thể, khác biệt, quan trọng, dễ hiểu, đáng tin, bền, dùng được trong marketing).
+- Giới hạn: <bằng chứng nào chưa có dữ liệu thật>. (Nguồn: kien-thuc/02 §2.2)
+
+**32. USP của bạn có phải chỉ là khẩu hiệu "chất lượng, uy tín" không?** `[DA]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Không: đội nói cụ thể <con số/cam kết> và có chỗ chứng minh trong app.
+- Trả lời: "chất lượng, chuyên nghiệp" ai cũng nói được nên không tính. Câu của đội dùng <công thức: kết quả + khác biệt + bằng chứng>; cam kết nào cũng khớp vận hành (không hứa quá năng lực).
+- Giới hạn: <lời hứa còn phải kiểm với vận hành thật>. (Nguồn: kien-thuc/02 §2.1, §2.6 Promise Gap)
+
+**33. Vì sao chọn phân khúc này, không phục vụ cả thị trường?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Vì nguồn lực nhỏ phải tập trung vào nhóm tiếp cận được, cần gấp và chi trả được.
+- Trả lời: đội chấm <các phân khúc> theo quy mô, cấp thiết, khả năng chi trả, tiếp cận, phù hợp sản phẩm; chọn <A> làm trọng tâm, <B> thử nghiệm, chưa phục vụ <C>.
+- Giới hạn: số khách của phân khúc là giả định `<tên ô>`, đội kiểm bằng <cách>. (Nguồn: kien-thuc/01 §2.1-2.3)
+
+**34. Khách hàng điển hình (persona) của bạn là ai, bằng chứng đâu?** `[DA]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): <Persona> cần <việc>, bị cản bởi <rào cản>; sản phẩm gỡ đúng rào cản đó.
+- Trả lời: persona dựng từ <dữ liệu BTC / giả thuyết>; phần chưa kiểm ghi là "Giả thuyết" trong app, đội sẽ kiểm bằng phỏng vấn/bán thử.
+- Giới hạn: chưa có phỏng vấn thật trong 60 phút. (Nguồn: kien-thuc/01 §3.2, §3.4)
+
+**35. Định vị của bạn khác đối thủ ở đâu?** `[DA]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Đối thủ nhấn <X>, đội chọn <Y> vì khách quan tâm <Y> và đội làm được.
+- Trả lời: định vị phải nhất quán với năng lực, phù hợp khách, khác đối thủ (tam giác định vị); đối thủ gồm cả cách tự làm hoặc không làm gì.
+- Giới hạn: <chưa so với đối thủ nào ngoài các đối thủ đã nêu>. (Nguồn: kien-thuc/02 §1.3, §2.3)
+
+**36. Chọn kênh bán/quảng bá nào và vì sao? Đo hiệu quả thế nào?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Kênh <A> để <vai trò>, kênh <B> để <vai trò>; đo bằng CAC và tỉ lệ chuyển đổi, không đo lượt thích.
+- Trả lời: mỗi kênh có vai trò (kéo khách, giáo dục, tạo niềm tin, chuyển đổi, giữ chân); chấm theo khách, ý định, nguồn lực, chi phí; kênh yếu sẽ dừng theo ngưỡng <…>.
+- Giới hạn: CPC/CR của kênh là giả định `<tên ô>`. (Nguồn: kien-thuc/04 §III.4-5, §III.7.3)
+
+**37. Phí sàn bao nhiêu, lấy ở đâu?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Đội dùng <x>% phí sàn, giáo trình ghi mức trung bình khoảng 5,5-6% và nói sàn đổi phí nhiều lần nên đội để khoảng <min-max>.
+- Trả lời: phí sàn, phí thanh toán, trợ giá và thuế <1% TNCN + 0,5% GTGT nếu đề dùng> đều là dòng riêng trong bảng giả định, có nhãn nguồn; chưa có số của đề thì ghi "Giả định" và yêu cầu kiểm lại biểu phí hiện hành.
+- Giới hạn: <phí hiện hành có thể khác>. (Nguồn: kien-thuc/05 §1.3, §4.1, §5.2)
+
+**38. Voucher/khuyến mãi này có lỗ không và có bị lạm dụng không?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Không lỗ khi <đơn tối thiểu/mức giảm>, vì sau ưu đãi vẫn còn lãi góp <…>; có trần ngân sách <…> và giới hạn <…> mỗi khách.
+- Trả lời: dùng công thức giá `C0 / (1 − (F+M+R))` để tìm mức giảm tối đa; không chồng nhiều chương trình; chống lạm dụng bằng giới hạn mỗi khách/lượt/thời hạn (sàn quét trùng IP/thiết bị, đơn rỗng, lạm dụng Freeship/hoàn xu).
+- Giới hạn: tỉ lệ khách vốn sẽ mua (cannibalization) là giả định `<tên ô>`, chưa kiểm thị trường thật. (Nguồn: kien-thuc/05 §3.2, §7.3, §6.5)
+
+**39. Quảng cáo trả phí có đáng không? ROAS bao nhiêu thì hòa vốn?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): ROAS hòa vốn = 1 ÷ biên gộp, tức <…>; kịch bản cơ sở đạt <…>, kịch bản xấu <…>.
+- Trả lời: CPC thực tế = chi phí ads ÷ click; chi phí mỗi đơn = CPC ÷ CR; giá thầu trần = giá bán × %chi phí ads chịu được × %CR. Ngân sách ads có trần theo ngày vì sàn có thể tiêu hết rất nhanh; tháng đầu coi là giai đoạn máy học.
+- Giới hạn: CPC và CR là giả định `<tên ô>`. (Nguồn: kien-thuc/05 §8.3-8.4; references/11 §3 công thức ROAS)
+
+**40. Mô hình có phễu sản phẩm không: món nào kéo khách, món nào ra lãi?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Có: gói <dùng thử> kéo khách, gói <chủ lực> ra doanh thu, gói <nối tiếp/VIP> tăng giá trị mỗi khách.
+- Trả lời: mỗi tầng có giá, giá vốn, tỉ trọng và chỉ số riêng trong app; AOV tính từ tỉ trọng các gói; gói dùng thử có trần lỗ = CAC chấp nhận.
+- Giới hạn: tỉ trọng gói là giả định `<tên ô>`. (Nguồn: kien-thuc/02 §3.1; kien-thuc/05 §3.2, §5.3)
+
+**41. Câu tiêu đề/lời kêu gọi của bạn dựa trên công thức nào, có hứa quá không?** `[DA]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Dùng khung <PAS/BAB/AIDA>: nêu <vấn đề> rồi <kết quả cụ thể>, không hứa số đội không chứng minh được.
+- Trả lời: tiêu đề theo "đối tượng + vấn đề/kết quả + mức cụ thể"; kiểm 4C (rõ, ngắn, thuyết phục, đáng tin) và trả lời 5 rào cản (tiền, thời gian, thích, tin, cần). CTA gắn USP thay vì "Tìm hiểu thêm".
+- Giới hạn: chưa chạy A/B với khách thật. (Nguồn: kien-thuc/03 Phần 2 mục 4, 7, 8; Phần 3 §3.2)
+
+**42. Giả định về hành vi khách (tỉ lệ mua, bỏ giỏ) đội kiểm chứng bằng cách nào?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Hiện là giả định có nhãn; đội sẽ kiểm bằng <phỏng vấn/bán thử/khảo sát nhỏ> rồi thay số.
+- Trả lời: bằng chứng mạnh dần: đoán, khách nói, hành vi, khách trả tiền, mua lại; số trong app đang ở mức <…>. Kế hoạch: phỏng vấn sâu hoặc khảo sát thí điểm 15-30 người, cỡ mẫu lớn hơn khi triển khai thật.
+- Giới hạn: chưa có mẫu thật trong 60 phút. (Nguồn: kien-thuc/01 §3.4; kien-thuc/07 Phần II Ch.4, Ch.6)
+
+**43. Tiền mặt còn đủ trả chi phí mỗi tháng không, hay chỉ lãi trên giấy?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Tháng <n> là tháng dòng tiền thấp nhất, còn <…>; đội có <hạn mức/cắt chi> dự phòng.
+- Trả lời: dòng tiền vào theo chính sách thu tiền (ví dụ trong giáo trình thu 50% tháng này, 35% tháng sau, 15% hai tháng sau; của đội: <…>), dòng tiền ra theo lịch nhập hàng và chi phí cố định; 3 kịch bản lạc quan / cơ sở / bi quan.
+- Giới hạn: tỷ lệ thu tiền là giả định `<tên ô>`. (Nguồn: kien-thuc/10 Ch.1 §1.3, Ch.3 §3.2)
+
+**44. Giá bán được tính thế nào, có vừa lãi vừa cạnh tranh không?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Giá = giá vốn ÷ (1 − (phí sàn + marketing + lãi kỳ vọng)) = <…>, đội so với giá đối thủ <…>.
+- Trả lời: chọn <hớt váng/thâm nhập> vì <cầu co giãn hay không, có hiệu ứng quy mô không>; hòa vốn quảng cáo = ngân sách ÷ lãi gộp mỗi đơn vị. Giáo trình lưu ý giá niêm yết cao không đồng nghĩa lãi ròng cao (ví dụ Nike lãi ròng 5,3% trên giá sỉ).
+- Giới hạn: giá đối thủ lấy ngày <…>. (Nguồn: kien-thuc/05 §3.2; kien-thuc/08 Bài 8-9, Case 4)
