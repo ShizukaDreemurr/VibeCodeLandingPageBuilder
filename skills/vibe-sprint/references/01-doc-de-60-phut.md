@@ -58,6 +58,8 @@ Người dùng chính: <1 câu>  |  Vấn đề: <1 câu>  |  Giá trị: <1 câ
 
 - **Nhãn mô phỏng AI: chép NGUYÊN VĂN từ đề/BTC.** Câu của vòng loại là `Bản demo vòng loại - Dữ liệu mô phỏng AI`; chung kết có thể đổi chữ, đừng giả định. Tìm câu này ngay ở phút 0-1.5, ghi vào spec, rồi đặt vào `mockNotice` trong `js/config.js` (và sửa 2 assert trong `tests/smoke.cjs`). Không tìm thấy: dùng `Dữ liệu mô phỏng AI` và ghi "chưa xác nhận" vào `docs/DECISIONS.md`.
 
+- **Nơi lưu dữ liệu do đề quy định là bản chính** (vd localStorage). Firebase/Sheet chỉ làm tuỳ chọn và mô tả đúng là tuỳ chọn; mô tả ngược sẽ bị nhận xét "chưa đúng tính năng".
+- **Bảng thi (A/B) và hạn nộp**: xác nhận ngay T+0 từ thông báo/BTC (bảng A: ≥6 ca, mock AI chỉ tối đa 4/15; bảng B: ≥3 ca, mock minh bạch vẫn đạt). Số liệu lệch giữa các nguồn (23:59 so với 00:30) thì làm theo mốc sớm nhất, ghi vào `docs/DECISIONS.md`.
 - Thêm tính năng ngoài đề → mất thời gian, không có điểm. Phạm vi hẹp, lõi chạy trọn.
 - Đề trùng lĩnh vực với đề khác → giữ đúng ranh giới đề của mình (ví dụ chỉ làm checklist, không làm công cụ chấm điểm).
 - Đề mơ hồ: chọn mặc định đơn giản nhất, ghi "Giả định" trong spec, nói ra khi thuyết trình. Hỏi BTC nếu có thể hỏi, đừng chờ.

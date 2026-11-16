@@ -8,6 +8,8 @@ Xclipse chạy GitHub Pages từ nhánh `claude/<tên>`; `scripts/new-project.sh
 2. GitHub → repo → **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*; Branch = `claude/<tên>`, thư mục `/ (root)`; Save. (Nếu repo không cho chọn nhánh này, đội tạo nhánh `main`/`gh-pages` từ nhánh làm việc và chọn nhánh đó.)
 3. Link: `https://<tài-khoản>.github.io/<tên-repo>/`. Lần đầu chờ 1–5 phút; xem tab **Actions** (pages-build-deployment) xanh là xong.
 4. Tạo `.nojekyll` ở gốc: thư mục `features/_example` và `features/_playground` của starter bắt đầu bằng `_` nên Jekyll sẽ bỏ qua (nếu còn giữ). Tốt nhất xoá hai thư mục mẫu đó khi đã có feature thật.
+4b. Chuẩn bị một lần: repo kết nối Claude GitHub App (`claude.ai/connect-github`), mở phiên **mới** có chọn repo; không push được/không thấy repo → làm lại bước này. Claude không tự tạo Pull Request nếu không được yêu cầu (Pages lấy thẳng từ nhánh). Link 404 = sai nhánh/thư mục hoặc không có `index.html` ở gốc; web trắng = app cần build (React/Vite) → làm bản HTML/JS thuần.
+4c. **Nhánh Pages là nhánh production**: mỗi push là web đổi. Ghép và test ở nhánh khác, chỉ đẩy khi xanh (chi tiết: `07` G6).
 5. Đường dẫn trong app phải **tương đối** (`css/app.css`, không `/css/app.css`) vì Pages nằm dưới `/<tên-repo>/`.
 6. Kiểm tra: mở link ở cửa sổ ẩn danh + trên điện thoại; chân trang hiện đúng phiên bản.
 
@@ -32,6 +34,10 @@ git add -A && git commit -m "..." && git push -u origin <nhánh>
 
 - 60 phút: **mặc định localStorage**, ghi rõ giới hạn. Firebase chỉ khi đề yêu cầu đồng bộ; cấu hình web Firebase công khai được nhưng phải có rules bảo vệ; tuyệt đối không đưa service account/secret.
 - Repo VibeCodeLandingPageBuilder (không nằm trong skill này) có thư mục `firebase/` (`firestore.rules`, `rules.test.mjs`) để tham khảo; starter KHÔNG có sẵn Firebase, không bắt buộc.
+- **Làm Firebase từ đầu:** `references/07-cookbook-code-mau.md` mục G (dựng project 6 bước kể cả **Authorized domains = `<tài-khoản>.github.io`**, khởi tạo compat không CDN + emulator `?emulator=1`, đăng nhập Google + dịch lỗi, rules khách-chỉ-gửi/chủ-đọc/chống trùng bằng mã bản ghi = SĐT, ghi batch + thử lại, test rules bằng emulator 33 ca, Publish rules bằng `npx firebase deploy --only firestore:rules` hoặc dán vào Console). Cấu hình web Firebase công khai được; **không** đưa service account, **không** bật billing, **không** dùng Cloud Functions (trả phí).
+- **Đề đã quy định nơi lưu (thường localStorage) thì đó là bản chính**; Firebase/Google Sheet chỉ là tuỳ chọn và phải được nói đúng như vậy trong README và khi trình bày (đã bị nhận xét "chưa đúng tính năng" vì làm ngược).
+- Rules mới phải **Publish lên dự án thật** thì tính năng mới chạy trên web; ghi vào danh sách việc người dùng phải tự làm (đánh số).
+- Môi trường agent thường không có emulator/quyền Firebase: điều phối viên chạy test Firebase ở máy có Java sau merge và báo phần chưa chạy.
 
 ## Hồ sơ nhanh (điền từ `templates/`)
 

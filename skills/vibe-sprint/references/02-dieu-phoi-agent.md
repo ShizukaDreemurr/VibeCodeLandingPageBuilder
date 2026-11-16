@@ -100,3 +100,12 @@ Trong worktree của agent trước khi làm: `git fetch 2>/dev/null; git reset 
 - T+25 merge đợt 1 để có bản chạy sớm; agent chưa xong tiếp tục.
 - T+40 hết hạn agent: chưa commit = bỏ; spawn QA/polish thay.
 - Luôn có bản chạy được trên nhánh chính sau mỗi merge; không để nhánh chính hỏng.
+
+## Mẫu giao việc hay dùng (rút từ Xclipse)
+
+- **Dữ liệu lớn chia theo phần:** mỗi agent một file `partN.json` + validator riêng (id duy nhất, enum hợp lệ, tương phản WCAG, phân bố nhãn); điều phối viên gộp bằng script sinh, không sửa tay file sinh (`07` I1).
+- **Việc lặp theo từng ảnh/trang:** 1 Haiku cho mỗi ảnh/trang (xoá watermark, kiểm tra từng landing ở 3 khổ), chạy song song.
+- **Lỗi khó tìm nguyên nhân (giật, hiệu ứng mất):** giao Sonnet, không giao Haiku; yêu cầu so với bản còn đúng trước đó và **chụp khung hình giữa lúc chạy** (`07` H4); không chấp nhận "test xanh" thay cho ảnh.
+- **Mỗi đợt sửa mobile:** một agent chạy `e2e-mobile` ở 390/360 + đo vùng chạm, một agent chỉ xem ảnh và liệt kê lỗi bố cục; sửa theo cả lớp lỗi ("áp dụng cho mọi landing tương tự").
+- **Sau khi gộp:** chạy lại toàn bộ test ở nhánh gộp; test Firebase/emulator do điều phối viên chạy (agent sandbox không có); báo cáo ghi rõ phần chưa thử trên máy thật.
+- Quy ước viết dùng chung cho mọi prompt: `references/08-quy-uoc-viet.md`; đoạn mã mẫu: `references/07-cookbook-code-mau.md`.

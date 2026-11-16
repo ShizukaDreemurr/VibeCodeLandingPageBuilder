@@ -49,6 +49,7 @@ Dán mục liên quan vào prompt mọi agent. Tick trước khi merge.
 - [ ] 390px và 360px: không tràn ngang (`scrollWidth <= innerWidth`), vùng chạm ≥ 44px, tab cuộn ngang, dialog dạng bottom sheet.
 - [ ] Lưới 3 mục: 1 cột hoặc 3 cột đều, không để lẻ 2+1. Không khoảng trắng lạ cuối trang.
 - [ ] Sticky bar không che nội dung; chữ nút không xuống dòng xấu (`white-space: nowrap` cho thương hiệu).
+- [ ] Điều khiển chỉ hiện khi rê chuột phải mở sẵn trên cảm ứng (`@media (hover: none)`); toast ở mép trên; `[hidden]` luôn ẩn thật; tiêu đề lớn `line-height` ≥ 1.25 (dấu tiếng Việt); thanh dính ẩn không kéo dài trang (đoạn mã: `07` C).
 
 ## Truy cập (a11y)
 - [ ] Một `h1` mỗi màn; thứ tự heading đúng; link "bỏ qua tới nội dung".
