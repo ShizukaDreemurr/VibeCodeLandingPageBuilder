@@ -10,7 +10,7 @@
 #
 # Làm gì:
 #   1. Chép templates/ vào dự án: CLAUDE.md và README.md ở gốc, các tài liệu còn lại vào docs/.
-#   2. Chép scripts/scan-secrets.mjs vào scripts/ của dự án.
+#   2. Chép scripts/scan-secrets.mjs, doctor.mjs, nop-bai.mjs vào scripts/ của dự án.
 #   3. Chép khung web starter/ và bộ slide deck/ (không chép deck/out, deck/example).
 #   4. Thay <Tên sản phẩm> bằng tên thật, đặt tên nhánh trong CLAUDE.md.
 #   5. git init với nhánh đã chọn (không commit, để đội tự commit sau khi kiểm tra).
@@ -65,8 +65,10 @@ for f in spec-nhanh.md PROGRESS.md DECISIONS.md BANG-KIEM-THU.md MINH-CHUNG-AI.m
   cp "$TPL/$f" "$TARGET/docs/$f"
 done
 
-# 2. Công cụ kiểm tra bí mật
-cp "$SCRIPTS/scan-secrets.mjs" "$TARGET/scripts/scan-secrets.mjs"
+# 2. Công cụ: quét bí mật, kiểm tra máy (doctor), chốt bài (nop-bai)
+for f in scan-secrets.mjs doctor.mjs nop-bai.mjs; do
+  [ -f "$SCRIPTS/$f" ] && cp "$SCRIPTS/$f" "$TARGET/scripts/$f"
+done
 
 # 3. Khung web: chép starter/ (bắt buộc), không ghi đè tệp đã có
 [ -d "$STARTER" ] || { echo "Thiếu khung web: $STARTER" >&2; exit 1; }

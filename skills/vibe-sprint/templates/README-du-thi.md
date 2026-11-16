@@ -1,4 +1,4 @@
-# <Tên sản phẩm>: <Tên cuộc thi>
+# <Tên sản phẩm>: VIBE-CODING 2026 Chung kết (đội Xclipse)
 
 > Điền các mục `<…>`. Ghi đúng công nghệ đã dùng và đúng phiên bản. Xoá dòng mẫu nào không áp dụng.
 > Thể lệ chung kết: README là 1 trong 4 món nộp (cài đặt/chạy, công nghệ, dữ liệu mẫu/tài khoản). Không còn câu nhãn cố định: **ghi rõ phần nào là dữ liệu mẫu/mô phỏng**; đề có đưa câu nhãn thì chép nguyên văn.
@@ -9,10 +9,14 @@
 
 | Hạng mục | Nội dung |
 |---|---|
-| Tên đội thi | <Tên đội> |
-| Bảng thi | <Bảng …> |
+| Tên đội thi | Xclipse |
+| Thành viên | Diệu Anh · Vũ Trí Dũng · Nguyên (nhóm trưởng) |
+| Trường | {{TRUONG}} |
+| Cuộc thi | VIBE-CODING 2026 · Chung kết |
+| Bảng thi | Bảng B – Kinh tế |
 | Đề bài | Đề số <số>: <tên đề> |
-| Demo trực tuyến | <URL GitHub Pages> |
+| Demo trực tuyến | https://xclipsex.github.io/Xclipse-ChungKet/ |
+| Mã nguồn (GitHub) | https://github.com/XclipseX/Xclipse-ChungKet |
 | Video demo (≤ 2 phút) | <URL video> |
 | Source ZIP | <tên gói hoặc URL> |
 | Minh chứng dùng AI | `docs/MINH-CHUNG-AI.md` |
@@ -20,6 +24,14 @@
 | Commit đã nộp (hash) | <git rev-parse --short HEAD, khớp bản đang chạy trên link> |
 | Minh chứng thời điểm chốt | `docs/minh-chung-chot/` |
 | Liên hệ | <email> |
+
+### Phân vai
+
+| Thành viên | Phụ trách |
+|---|---|
+| Diệu Anh | Bối cảnh, người dùng, UI/UX |
+| Vũ Trí Dũng | Tính năng, nghiệp vụ, demo |
+| Nguyên (nhóm trưởng) | Kỹ thuật, giả định và mô hình kinh doanh, tổng kết |
 
 ## 2. Tính năng chính
 
@@ -53,7 +65,7 @@
 
 ```bash
 # 1. Lấy mã nguồn
-git clone <URL repo> && cd <thư mục>
+git clone https://github.com/XclipseX/Xclipse-ChungKet.git && cd Xclipse-ChungKet
 
 # 2. Cài thư viện (nếu có)
 <lệnh cài>
@@ -130,3 +142,8 @@ Chép bảng từ `docs/BANG-KIEM-THU.md` (ít nhất các ca bắt buộc của
 ## 16. Minh chứng thời điểm chốt
 - Ảnh/video: `docs/minh-chung-chot/<tên tệp>` chụp lúc <hh:mm>, màn hình: <danh sách>, kích thước: desktop + 360px + 390px.
 - Commit đang chạy tại thời điểm chốt: `<hash>`; phiên bản hiển thị trên app: `<x.y.z>`.
+
+## 17. Công cụ AI
+- **Claude** (Opus, Sonnet, Haiku): lập kế hoạch, viết mã, kiểm thử, chụp minh chứng. **Claude Design** và **Claude in Chrome**: thiết kế giao diện và kiểm tra trên trình duyệt.
+- **Gemini Antigravity**: công cụ AI bổ trợ của đội.
+- Mọi phần AI viết đều do đội kiểm tra lại; minh chứng ở `docs/MINH-CHUNG-AI.md`.

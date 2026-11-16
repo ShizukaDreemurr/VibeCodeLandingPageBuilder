@@ -7,6 +7,7 @@
 - [ ] Laptop sạc đầy, trình duyệt cập nhật, Playwright chạy được, hotspot điện thoại thử trước.
 - [ ] Tài khoản cần dùng (GitHub, hosting, AI) đã đăng nhập sẵn; không cần nhớ mật khẩu lúc thi.
 - [ ] Khung `vibe-sprint` chung đã sẵn sàng. **Trong khung KHÔNG có mã, dữ liệu hay giao diện viết riêng cho một đề cụ thể** (thể lệ cấm chuẩn bị sẵn tính năng cho đề).
+- [ ] Chạy `node scripts/doctor.mjs`: không còn dòng [ LỖI ] (node, git, Playwright, nhánh `nop-bai`); dòng [ LƯU Ý ] về mạng thì thử lại khi có mạng.
 - [ ] Đã đọc `references/00`; cả đội biết phân vai (điều phối, agent giả định/mô hình, QA, nộp bài).
 
 ## B. T+0→5 (đọc đề)
@@ -52,6 +53,7 @@ Ca thử chi tiết: bảng M1–M5 trong `BANG-KIEM-THU.md`; agent Sonnet thử
 - [ ] **Hoặc/và** video quay luồng chính **theo chiều dọc** trên điện thoại (không quay ngang), hiển thị rõ phiên bản/ngày giờ.
 - [ ] Ghi **hash commit** đang chạy trên link vào README và `PROGRESS.md`: `git rev-parse --short HEAD`.
 - [ ] Lưu ở `docs/minh-chung-chot/` (và bản sao ngoài repo, đề phòng).
+- [ ] **Một lệnh chốt bài:** `node scripts/nop-bai.mjs --url <link demo>` kiểm tra git sạch và đã push, in hash + giờ ISO, quét bí mật, kiểm README đủ mục, chụp ảnh minh chứng có thanh chú thích vào `docs/minh-chung/<thời điểm>/`, tạo ZIP mã nguồn và in sẵn 4 món nộp (`--dry-run` để thử, `--no-shots` bỏ chụp).
 
 ## G. T+55→60: nộp 4 món
 
@@ -63,6 +65,7 @@ Ca thử chi tiết: bảng M1–M5 trong `BANG-KIEM-THU.md`; agent Sonnet thử
 | 4 | **Minh chứng chốt** | Ảnh điện thoại dọc 360 + 390 (sáng/tối) + 1 ảnh desktop, hoặc video dọc, thấy sản phẩm lúc chốt + hash commit | [ ] |
 
 - [ ] Bản nộp đã chạy `node tools/bump-version.cjs`; phiên bản trên app khớp README.
+- [ ] Đã chạy `node scripts/nop-bai.mjs` và dán 4 món nó in ra (lỗi [ LỖI ] thì sửa, chạy lại).
 - [ ] Đã nộp đủ 4 món trước 14:15. Chụp màn hình xác nhận nộp.
 
 ## H. README bắt buộc có (kiểm nhanh)

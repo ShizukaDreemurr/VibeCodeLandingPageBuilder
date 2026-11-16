@@ -14,17 +14,17 @@ window.DECK = {
   meta: {
     app: 'TÊN APP',                                    // [1] tên app
     title: 'TÊN APP · Pitch chung kết',
-    footer: '**TÊN APP** · Đề X · Bảng Y',             // chân trang mỗi slide
+    footer: '**TÊN APP** · Đề X · Bảng B – Kinh tế',             // chân trang mỗi slide
     accent: '#6A57F2', accent2: '#2F8FE0',             // màu theo đề (bỏ dòng này để dùng tím–xanh mặc định)
-    liveUrl: 'https://TEN.github.io/REPO/',            // [8] link app đang chạy (tự sinh QR)
+    liveUrl: 'https://xclipsex.github.io/Xclipse-ChungKet/',            // [8] link app đang chạy (tự sinh QR)
     videoUrl: 'https://youtu.be/XXXXXXXXXXX'           // [8] link video demo
   },
   slides: [
     { type: 'cover', time: '0:35', speaker: 'Diệu Anh',
       app: 'TÊN APP',                                  // [1]
       tagline: 'Một câu: làm gì cho ai, nhanh/tốt hơn thế nào.',  // [2] tagline ≤ 15 từ
-      de: 'Đề số X', bang: 'Bảng Y', event: 'Chung kết 60 phút',  // [3] đề + bảng
-      team: 'TÊN ĐỘI', members: ['Thành viên 1', 'Thành viên 2'], date: '2026',  // [3]
+      de: 'Đề số X', bang: 'Bảng B – Kinh tế', event: 'VIBE-CODING 2026 · Chung kết',  // [3] đề + bảng
+      team: 'Xclipse', members: ['Diệu Anh', 'Vũ Trí Dũng', 'Nguyên (nhóm trưởng)'], date: '2026',  // [3]
       image: 'assets/01-tong-quan-mobile-light.png',               // ảnh DỌC 390×844@3x
       notes: 'Người nói: Diệu Anh\nMốc giờ: 00:00–00:35 (cứng 00:40)\nV: {{NHOM_NGUOI_DUNG}} đang mất {{VIEC_TON_THOI_GIAN}}\nT: tên app + 1 câu hứa\nS: {{SO_MUC_TIEU}}\nChuyền mic: —' },
 
