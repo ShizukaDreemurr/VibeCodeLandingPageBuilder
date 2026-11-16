@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xclipse UI/UX — Vibrant FPT Palette (Blue · Green · Orange)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* Vibrant FPT-inspired Palette (High Saturation) + Lucian UX/UI tokens */
+    :root {
+      color-scheme: light;
+      --font: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+      /* High-Saturation Hierarchy: Blue (Primary) > Green (Secondary) > Orange (Accent) */
+      --blue: #006BFF;
+      --blue-deep: #0047B3;
+      --blue-hover: #0055D4;
+      --green: #00C853;
+      --green-vivid: #00E676;
+      --green-deep: #00963E;
+      --orange: #FF6B00;
+      --orange-vivid: #FF851B;
+
+      --ux-page: #FFFFFF;
+      --ux-surface: #FFFFFF;
+      --ux-surface-2: #F2F6FC;
+      --ux-surface-3: #E2EAF5;
+      --ux-ink: #0B1324;
+      --ux-ink-2: #475569;
+      --ux-ink-3: #64748B;
+      --ux-line: rgba(0, 71, 179, 0.10);
+      --ux-line-2: rgba(0, 71, 179, 0.22);
+      --ux-accent: #006BFF;
+      --ux-accent-2: #00C853;
+      --ux-accent-soft: rgba(0, 107, 255, 0.12);
+      --ux-accent-ink: #FFFFFF;
+      --ux-mint: #00C853;
+      --ux-warn: #FF6B00;
+      --ux-danger: #E11D48;
+      --ux-shadow: rgba(0, 71, 179, 0.12);
+      --ux-shadow-strong: rgba(0, 55, 140, 0.25);
+      --ux-ease: cubic-bezier(.2, .8, .2, 1);
+      --ux-spring: cubic-bezier(.34, 1.45, .64, 1);
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --ux-page: #040914;
+      --ux-surface: #0A1324;
+      --ux-surface-2: #111D33;
+      --ux-surface-3: #1B2B4A;
+      --ux-ink: #F8FAFC;
+      --ux-ink-2: #94A3B8;
+      --ux-ink-3: #64748B;
+      --ux-line: rgba(255, 255, 255, 0.09);
+      --ux-line-2: rgba(255, 255, 255, 0.22);
+      --ux-accent: #2E8BFF;
+      --ux-accent-2: #00E676;
+      --ux-accent-soft: rgba(46, 139, 255, 0.18);
+      --ux-accent-ink: #040914;
+      --ux-mint: #00E676;
+      --ux-warn: #FF7A1A;
+      --ux-danger: #FB7185;
+      --ux-shadow: rgba(0, 0, 0, 0.45);
+      --ux-shadow-strong: rgba(0, 0, 0, 0.78);
+    }
+
+    .ux, .ux *, .ux *::before, .ux *::after { box-sizing: border-box; }
+    .ux { font-family: var(--font); color: var(--ux-ink); -webkit-font-smoothing: antialiased; letter-spacing: -.01em; }
+    :where(.ux) :is(button, input, textarea, select) { font: inherit; color: inherit; }
+    :where(.ux) button { cursor: pointer; }
+    .ux :focus-visible { outline: 2px solid var(--ux-accent); outline-offset: 3px; }
+    @media (prefers-reduced-motion: reduce) {
+      .ux, .ux *, .ux *::before, .ux *::after {
+        animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important; scroll-behavior: auto !important;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: var(--font); background: var(--ux-page); color: var(--ux-ink);
+      line-height: 1.55; overflow-x: hidden;
+      transition: background .3s var(--ux-ease), color .3s var(--ux-ease);
+    }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+
+    /* Hero: Primary Vibrant Blue with subtle Green & Orange accents */
+    .hero-zone {
+      position: relative;
+      background:
+        radial-gradient(460px 260px at 82% 28%, rgba(0, 230, 118, 0.22), transparent 68%),
+        radial-gradient(360px 220px at 18% 76%, rgba(255, 107, 0, 0.20), transparent 70%),
+        radial-gradient(960px 520px at 50% 42%, #007BFF 0%, #0058D6 48%, #003E9E 85%, #00286B 100%);
+      color: #FFFFFF;
+      padding-bottom: 112px;
+      overflow: hidden;
+    }
+    .hero-zone::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+      background-size: 22px 22px;
+      mask-image: radial-gradient(circle at 50% 45%, black 35%, transparent 80%);
+    }
+
+    /* Topbar */
+    .nav { position: relative; z-index: 10; padding: 18px 0; }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; color: #FFFFFF; text-decoration: none; letter-spacing: -0.02em; }
+    .brand img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255,255,255,0.35); }
+
+    .pill-nav {
+      display: flex; align-items: center; gap: 6px; padding: 5px;
+      background: rgba(255, 255, 255, 0.14); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.24); border-radius: 999px;
+    }
+    .pill-nav a {
+      color: rgba(255, 255, 255, 0.9); text-decoration: none; font-size: 13px; font-weight: 600;
+      padding: 6px 14px; border-radius: 999px; transition: background 150ms;
+    }
+    .pill-nav a:hover, .pill-nav a.active { background: rgba(255, 255, 255, 0.24); color: #FFFFFF; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 42px; padding: 0 20px; border-radius: 999px; font-family: var(--font);
+      font-size: 14px; font-weight: 700; cursor: pointer; border: 1px solid transparent;
+      transition: all 180ms var(--ux-ease);
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-sm { height: 36px; padding: 0 14px; font-size: 13px; }
+    .btn-blue {
+      background: var(--blue); color: #FFFFFF;
+      box-shadow: 0 10px 26px rgba(0, 107, 255, 0.34);
+    }
+    .btn-blue:hover { background: var(--blue-hover); transform: translateY(-1px); }
+    .btn-green {
+      background: linear-gradient(135deg, #00E676, #00B84D); color: #042211; font-weight: 800;
+      box-shadow: 0 10px 26px rgba(0, 200, 83, 0.35);
+    }
+    .btn-green:hover { filter: brightness(1.06); transform: translateY(-1px); }
+    .btn-orange {
+      background: var(--orange); color: #FFFFFF;
+      box-shadow: 0 10px 24px rgba(255, 107, 0, 0.35);
+    }
+    .btn-orange:hover { background: #E55A00; transform: translateY(-1px); }
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.16); color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.34); backdrop-filter: blur(10px);
+    }
+    .btn-glass:hover { background: rgba(255, 255, 255, 0.26); }
+    .btn-outline { background: transparent; color: var(--ux-ink); border-color: var(--ux-line-2); }
+    .btn-outline:hover { background: var(--ux-surface-2); border-color: var(--blue); }
+
+    /* Hero Content */
+    .hero-center { position: relative; z-index: 5; text-align: center; max-width: 780px; margin: 26px auto 0; }
+    .palette-strip { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .color-chip {
+      display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px 5px 7px;
+      border-radius: 999px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28);
+      color: #FFFFFF; font-size: 12px; font-family: var(--mono); cursor: pointer;
+    }
+    .color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #FFFFFF; }
+    .mini-flow { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; font-size: 12.5px; color: rgba(255, 255, 255, 0.9); margin-bottom: 14px; font-weight: 600; }
+    .hero-title { margin: 0; font-size: clamp(32px, 5vw, 52px); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; }
+    .hero-sub { margin: 14px auto 24px; max-width: 580px; font-size: 15px; color: rgba(255, 255, 255, 0.9); }
+    .hero-cta { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+    /* 3 Overlapping Dashboard Cards */
+    .cards-overlap {
+      position: relative; z-index: 10; margin-top: -74px;
+      display: grid; grid-template-columns: 1fr 1.06fr 1fr; gap: 18px; align-items: stretch;
+    }
+    .dash-card {
+      background: var(--ux-surface); border: 1px solid var(--ux-line); border-radius: 20px; padding: 20px;
+      box-shadow: 0 20px 48px var(--ux-shadow);
+      transition: background .3s var(--ux-ease), border-color .3s var(--ux-ease);
+    }
+    /* Center card: Secondary Vibrant Green */
+    .dash-card.featured {
+      background: linear-gradient(155deg, #00E676 0%, #00C853 55%, #00963E 100%);
+      color: #FFFFFF; border-color: rgba(255,255,255,0.35);
+      box-shadow: 0 24px 54px rgba(0, 200, 83, 0.34);
+      display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center;
+    }
+    .card-lbl { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+
+    .prog-row { margin-bottom: 12px; }
+    .prog-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+    .prog-track { height: 9px; border-radius: 999px; background: var(--ux-surface-3); overflow: hidden; display: flex; }
+    .prog-blue { background: var(--blue); height: 100%; }
+    .prog-green { background: var(--green); height: 100%; }
+    .prog-orange { background: var(--orange); height: 100%; }
+
+    .gauge-wrap { position: relative; width: 200px; height: 112px; margin: 4px auto 0; }
+    .gauge-score { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 42px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+
+    /* Sections */
+    .sec { padding: 52px 0; border-bottom: 1px solid var(--ux-line); }
+    .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
+    .sec-head h2 { margin: 0 0 4px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--ux-accent); }
+    .sec-head p { margin: 0; color: var(--ux-ink-2); font-size: 14px; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .panel {
+      background: var(--ux-surface); border: 1px solid var(--ux-line); border-radius: 20px; padding: 22px;
+      box-shadow: 0 6px 20px var(--ux-shadow);
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .panel h3 { margin: 0 0 14px; font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+    .lucian-tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--ux-accent-soft); color: var(--ux-accent); }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--ux-ink-2); margin-bottom: 6px; }
+    .input {
+      width: 100%; height: 40px; padding: 0 12px; border-radius: 10px;
+      border: 1px solid var(--ux-line-2); background: var(--ux-surface-2); color: var(--ux-ink);
+      font-family: var(--font); font-size: 14px;
+    }
+    .input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0, 107, 255, 0.18); }
+    .input.is-error { border-color: var(--orange); }
+    .err-msg { font-size: 12px; color: var(--orange); font-weight: 600; margin-top: 5px; display: none; }
+    .err-msg.show { display: block; }
+
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge-blue { background: rgba(0, 107, 255, 0.14); color: var(--blue); }
+    html[data-theme="dark"] .badge-blue { color: #60A5FA; }
+    .badge-green { background: rgba(0, 200, 83, 0.15); color: var(--green-deep); }
+    html[data-theme="dark"] .badge-green { color: #00E676; }
+    .badge-orange { background: rgba(255, 107, 0, 0.15); color: #D95300; }
+    html[data-theme="dark"] .badge-orange { color: #FF851B; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ux-ink-2); padding: 10px 12px; border-bottom: 1px solid var(--ux-line); }
+    td { padding: 12px; border-bottom: 1px solid var(--ux-line); font-variant-numeric: tabular-nums; }
+    tr:hover td { background: var(--ux-surface-2); }
+
+    /* Modal */
+    .backdrop {
+      position: fixed; inset: 0; z-index: 60;
+      background: rgba(0, 35, 95, 0.55); backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .backdrop.open { display: flex; }
+    .modal {
+      width: 100%; max-width: 440px; border-radius: 20px; padding: 24px;
+      background: var(--ux-surface); border: 1px solid var(--ux-line-2);
+      box-shadow: 0 28px 64px var(--ux-shadow-strong);
+      animation: popIn 220ms var(--ux-ease);
+    }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(8px); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 880px) {
+      .pill-nav { display: none; }
+      .cards-overlap { grid-template-columns: 1fr; margin-top: -48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-zone">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="#">
+          <img src="logo-dark.jpg" alt="Xclipse" onerror="this.style.display='none'" />
+          <span>XCLIPSE</span>
+        </a>
+        <nav class="pill-nav">
+          <a class="active" href="#">Trang chủ</a>
+          <a href="#lucian-ux">Lucian UX</a>
+          <a href="#forms">Form & Dữ liệu</a>
+        </nav>
+        <div class="nav-right">
+          <button class="btn btn-glass btn-sm" id="themeBtn" type="button">Đổi Sáng / Tối</button>
+          <button class="btn btn-green btn-sm" id="openPopupTop" type="button">Dùng thử ngay</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="hero-center">
+        <div class="palette-strip">
+          <button class="color-chip" data-hex="#006BFF"><span class="color-dot" style="background:#006BFF"></span>Chính: #006BFF (Xanh dương)</button>
+          <button class="color-chip" data-hex="#00C853"><span class="color-dot" style="background:#00C853"></span>Phụ chính: #00C853 (Xanh lá)</button>
+          <button class="color-chip" data-hex="#FF6B00"><span class="color-dot" style="background:#FF6B00"></span>Phụ phụ: #FF6B00 (Cam)</button>
+        </div>
+
+        <div class="mini-flow">
+          <span>→ Xanh dương làm chủ đạo</span>
+          <span>→ Xanh lá tăng trưởng</span>
+          <span>→ Cam nhấn điểm quan trọng</span>
+        </div>
+
+        <h1 class="hero-title">
+          Vận hành doanh nghiệp<br />Sắc nét & Rực rỡ hơn
+        </h1>
+        <p class="hero-sub">
+          Phối màu chuẩn <strong>Blue (Chính) → Green (Phụ chính) → Orange (Phụ phụ)</strong> được đẩy bão hòa nổi bật, kết hợp nền trắng sạch sẽ và chuyển động mượt của <strong>Lucian UX/UI</strong>.
+        </p>
+
+        <div class="hero-cta">
+          <!-- Lucian UX/UI Prompt #002 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#002 -->
+          <style>
+          .u002{--bg:#FFFFFF;--fg:#0047B3;--blob:linear-gradient(135deg,#006BFF,#00C853 65%,#FF6B00);
+            position:relative;display:inline-grid;place-items:center}
+          .u002-mag{transition:translate .9s var(--ux-spring)}
+          .u002-btn{position:relative;display:flex;align-items:center;gap:14px;height:54px;padding:0 7px 0 24px;border:0;border-radius:999px;background:var(--bg);color:var(--fg);overflow:hidden;isolation:isolate;
+            box-shadow:0 18px 36px -14px rgba(0,40,120,.45);transition:transform .6s var(--ux-spring),box-shadow .6s var(--ux-ease)}
+          .u002-btn:active{transform:scale(.96)}
+          .u002-fill{position:absolute;inset:0;z-index:-1;background:var(--blob);clip-path:circle(20px at calc(100% - 27px) 50%);transition:clip-path .8s var(--ux-ease)}
+          .u002-btn:hover .u002-fill,.u002-btn:focus-visible .u002-fill{clip-path:circle(160% at calc(100% - 27px) 50%)}
+          .u002-txt{position:relative;overflow:hidden;padding:4px 0;font-size:15px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;transition:translate .7s var(--ux-spring),color .5s var(--ux-ease)}
+          .u002-btn:hover .u002-txt{color:#fff}
+          .u002-txt span{display:block;transition:transform .6s var(--ux-spring),opacity .35s var(--ux-ease)}
+          .u002-txt span+span{position:absolute;left:0;top:4px;transform:translateY(130%);opacity:0}
+          .u002[data-state="go"] .u002-txt span:first-child{transform:translateY(-130%);opacity:0}
+          .u002[data-state="go"] .u002-txt span+span{transform:none;opacity:1}
+          .u002-orb{position:relative;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;overflow:hidden;flex:none;transition:translate .7s var(--ux-spring)}
+          .u002-orb svg{position:absolute;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+          .u002-orb svg:last-child{transform:translateX(-40px)}
+          .u002[data-state="go"] .u002-orb svg:first-child{animation:u002-out .55s var(--ux-ease) forwards}
+          .u002[data-state="go"] .u002-orb svg:last-child{animation:u002-in .6s var(--ux-spring) .28s forwards}
+          @keyframes u002-out{to{transform:translateX(40px)}}
+          @keyframes u002-in{to{transform:none}}
+          </style>
+          <div class="ux u002" data-state="idle">
+            <div class="u002-mag">
+              <button class="u002-btn" type="button">
+                <span class="u002-fill" aria-hidden="true"></span>
+                <span class="u002-txt"><span>Bắt đầu ngay</span><span aria-hidden="true">Đã sẵn sàng!</span></span>
+                <span class="u002-orb" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <script>
+          (function () {
+            var root = document.currentScript.previousElementSibling;
+            var btn = root.querySelector('.u002-btn'), mag = root.querySelector('.u002-mag'), txt = root.querySelector('.u002-txt'), orb = root.querySelector('.u002-orb');
+            var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches, t = 0;
+            root.addEventListener('pointermove', function (e) {
+              if (rm) return;
+              var r = btn.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+              var p = Math.max(0, 1 - Math.hypot(dx, dy) / 200);
+              mag.style.translate = (dx * 0.1 * p).toFixed(1) + 'px ' + (dy * 0.18 * p).toFixed(1) + 'px';
+              txt.style.translate = (dx * 0.04 * p).toFixed(1) + 'px ' + (dy * 0.06 * p).toFixed(1) + 'px';
+              orb.style.translate = (dx * 0.08 * p).toFixed(1) + 'px ' + (dy * 0.12 * p).toFixed(1) + 'px';
+            });
+            root.addEventListener('pointerleave', function () { mag.style.translate = txt.style.translate = orb.style.translate = '0px 0px'; });
+            btn.addEventListener('click', function () {
+              clearTimeout(t); root.dataset.state = 'idle'; void btn.offsetWidth; root.dataset.state = 'go';
+              t = setTimeout(function () { if (root.isConnected) root.dataset.state = 'idle'; }, rm ? 700 : 1400);
+            });
+          })();
+          </script>
+
+          <button class="btn btn-glass" id="openPopupHero" type="button" style="height:54px;padding:0 24px;">Mở Pop-up mẫu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 Overlapping Dashboard Cards -->
+  <div class="container">
+    <div class="cards-overlap">
+      <!-- Left Card: Blue + Green + Orange bars -->
+      <div class="dash-card">
+        <div class="card-lbl">
+          <span>Phân bổ theo kênh</span>
+          <span class="badge badge-blue">3 nhóm</span>
+        </div>
+        <div class="prog-row">
+          <div class="prog-top"><span>Đơn hoàn tất (Xanh lá)</span><span>240</span></div>
+          <div class="prog-track"><div class="prog-blue" style="width:45%"></div><div class="prog-green" style="width:35%"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-top"><span>Tăng trưởng tuần</span><span>+42%</span></div>
+          <div class="prog-track"><div class="prog-green" style="width:68%"></div><div class="prog-orange" style="width:14%"></div></div>
+        </div>
+        <div class="prog-row" style="margin-bottom:0;">
+          <div class="prog-top"><span>Cảnh báo tồn kho (Cam)</span><span>18</span></div>
+          <div class="prog-track"><div class="prog-blue" style="width:60%"></div><div class="prog-orange" style="width:22%"></div></div>
+        </div>
+      </div>
+
+      <!-- Center Card: Secondary Vibrant Green -->
+      <div class="dash-card featured">
+        <div class="card-lbl" style="justify-content:center;color:#FFFFFF;">
+          <span>● Điểm sức khỏe tăng trưởng</span>
+        </div>
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 200 110" width="200" height="110">
+            <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="14" stroke-linecap="round"/>
+            <path id="gaugeArc" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="50"/>
+          </svg>
+          <div class="gauge-score" id="scoreVal">80</div>
+        </div>
+        <input id="scoreRange" type="range" min="20" max="100" value="80" style="width:85%;accent-color:#FF6B00;margin-top:8px;" aria-label="Kéo thử điểm tăng trưởng" />
+      </div>
+
+      <!-- Right Card: Blue Line + Orange Peak -->
+      <div class="dash-card">
+        <div class="card-lbl">
+          <span>Doanh thu vs. Mục tiêu</span>
+          <span class="badge badge-orange">● Đạt đỉnh</span>
+        </div>
+        <svg viewBox="0 0 280 120" width="100%" height="120">
+          <defs>
+            <linearGradient id="areaBlue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#006BFF" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#006BFF" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M10 95 Q60 80 100 55 T190 48 T270 24 L270 110 L10 110 Z" fill="url(#areaBlue)"/>
+          <path d="M10 95 Q60 80 100 55 T190 48 T270 24" fill="none" stroke="#006BFF" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="270" cy="24" r="5.5" fill="#FF6B00" stroke="#FFFFFF" stroke-width="2"/>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ux-ink-2);">
+          <span>Tháng 9</span><span>Tháng 10</span><span>Tháng 11</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- Lucian UX Section -->
+    <section class="sec" id="lucian-ux">
+      <div class="sec-head">
+        <div>
+          <h2>Hệ thống UI/UX: Chính Xanh Dương · Phụ Xanh Lá · Nhấn Cam</h2>
+          <p>Kết hợp phân cấp màu rõ ràng với các tương tác vật lý từ thư viện Lucian UX/UI.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-blue btn-sm" type="button">Chính (#006BFF)</button>
+          <button class="btn btn-green btn-sm" type="button">Phụ chính (#00C853)</button>
+          <button class="btn btn-orange btn-sm" type="button">Phụ phụ (#FF6B00)</button>
+        </div>
+      </div>
+
+      <div class="grid-2" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+        <!-- #013 Stretchy switch -->
+        <div class="panel" style="align-items:center;">
+          <h3 style="width:100%;"><span>Công tắc co giãn</span><span class="lucian-tag">Lucian #013</span></h3>
+          <!-- Lucian UX/UI Prompt #013 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#013 -->
+          <style>
+          .u013{--on:linear-gradient(135deg,#00E676,#006BFF);position:relative;width:280px;height:185px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+          .u013-sw{position:relative;width:140px;height:76px;border:0;padding:0;border-radius:999px;background:var(--ux-surface-3);touch-action:none;
+            box-shadow:inset 0 2px 6px rgba(0,0,0,.12),inset 0 0 0 1px var(--ux-line);transition:box-shadow .5s var(--ux-ease)}
+          .u013-sw::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--on);opacity:0;transition:opacity .45s var(--ux-ease)}
+          .u013.is-on .u013-sw::before{opacity:1}
+          .u013.is-on .u013-sw{box-shadow:inset 0 2px 6px rgba(0,0,0,.12),0 16px 30px -16px rgba(0,200,83,.75)}
+          .u013-knob{position:absolute;top:8px;left:8px;width:60px;height:60px;border-radius:999px;background:#fff;display:grid;place-items:center;
+            box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 6px 14px -4px rgba(0,0,0,.28);transition:left .5s var(--ux-spring),width .32s var(--ux-ease)}
+          .u013.is-on .u013-knob{left:72px}
+          .u013.is-stretch .u013-knob{width:84px;transition:left .5s var(--ux-spring),width .18s var(--ux-ease)}
+          .u013.is-on.is-stretch .u013-knob{left:48px}
+          .u013.is-drag .u013-knob{transition:width .2s var(--ux-ease)}
+          .u013-knob svg{width:24px;height:24px;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+          .u013-x{stroke:#94A3B8;stroke-dasharray:14;stroke-dashoffset:0;transition:stroke-dashoffset .3s var(--ux-ease) .1s}
+          .u013-v{stroke:#00C853;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .35s var(--ux-ease)}
+          .u013.is-on .u013-x{stroke-dashoffset:14;transition-delay:0s}
+          .u013.is-on .u013-v{stroke-dashoffset:0;transition-delay:.18s}
+          .u013-txt{width:250px;text-align:center}
+          .u013-txt b{display:block;font-size:15px;font-weight:700}
+          .u013-sub{position:relative;display:block;height:20px;margin-top:4px;overflow:hidden;font-size:12.5px;color:var(--ux-ink-3)}
+          .u013-sub span{display:block;line-height:20px;transition:transform .5s var(--ux-spring),opacity .3s var(--ux-ease)}
+          .u013-sub span+span{position:absolute;left:0;right:0;top:0;transform:translateY(100%);opacity:0;color:var(--green-deep);font-weight:700}
+          html[data-theme="dark"] .u013-sub span+span{color:#00E676}
+          .u013.is-on .u013-sub span:first-child{transform:translateY(-100%);opacity:0}
+          .u013.is-on .u013-sub span+span{transform:none;opacity:1}
+          </style>
+          <div class="ux u013">
+            <button class="u013-sw" type="button" role="switch" aria-checked="false">
+              <span class="u013-knob" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path class="u013-x" d="M7.5 7.5l9 9M16.5 7.5l-9 9"/><path class="u013-v" d="M5.5 12.5l4.5 4.5 8.5-9"/></svg>
+              </span>
+            </button>
+            <div class="u013-txt">
+              <b class="u013-lab">Tối ưu tự động bằng AI</b>
+              <span class="u013-sub" aria-live="polite"><span>Đang tắt · Chỉnh tay</span><span>Đã bật · Xanh lá kích hoạt</span></span>
+            </div>
+          </div>
+          <script>
+          (function () {
+            var root = document.currentScript.previousElementSibling;
+            var sw = root.querySelector('.u013-sw'), knob = root.querySelector('.u013-knob'), lab = root.querySelector('.u013-lab');
+            var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var id = 'u013-l-' + Math.random().toString(36).slice(2, 7); lab.id = id; sw.setAttribute('aria-labelledby', id);
+            var on = false, t = 0, drag = null;
+            function set(v) {
+              on = v; root.classList.toggle('is-on', v); sw.setAttribute('aria-checked', String(v));
+              if (!rm) { root.classList.add('is-stretch'); clearTimeout(t); t = setTimeout(function () { root.classList.remove('is-stretch'); }, 170); }
+            }
+            sw.addEventListener('pointerdown', function (e) { if (e.button !== 0) return; drag = { x: e.clientX, moved: false, start: on ? 72 : 8 }; sw.setPointerCapture(e.pointerId); });
+            sw.addEventListener('pointermove', function (e) {
+              if (!drag) return;
+              var k = sw.getBoundingClientRect().width / sw.offsetWidth || 1, dx = (e.clientX - drag.x) / k;
+              if (Math.abs(dx) > 4) drag.moved = true;
+              if (!drag.moved) return;
+              root.classList.add('is-drag');
+              var x = Math.max(8, Math.min(72, drag.start + dx));
+              knob.style.left = x + 'px'; knob.style.width = (60 + Math.min(18, Math.abs(dx) * 0.25)) + 'px';
+            });
+            function end() {
+              if (!drag) return;
+              var d = drag; drag = null; root.classList.remove('is-drag');
+              var x = parseFloat(knob.style.left || (on ? 72 : 8));
+              knob.style.left = ''; knob.style.width = '';
+              if (d.moved) { set(x > 40); sw._skip = true; }
+            }
+            sw.addEventListener('pointerup', end); sw.addEventListener('pointercancel', end);
+            sw.addEventListener('click', function () { if (sw._skip) { sw._skip = false; return; } set(!on); });
+          })();
+          </script>
+        </div>
+
+        <!-- #163 Bullet chart target -->
+        <div class="panel">
+          <h3><span>Biểu đồ KPI (Mục tiêu Cam)</span><span class="lucian-tag">Lucian #163</span></h3>
+          <!-- Lucian UX/UI Prompt #163 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#163 -->
+          <style>
+          .u163{width:100%;padding:6px 0;position:relative;font-size:13px;line-height:1.45}
+          .u163 small{color:var(--ux-ink-2);font-size:12px}
+          .u163 .status{margin-top:6px;color:var(--ux-ink-2);font-size:12.5px}
+          .u163 .status b{color:var(--ux-ink)}
+          .u163 input[type="range"]{width:100%;height:38px;accent-color:var(--orange);margin:0}
+          .u163 .bullet{height:44px;position:relative;margin-top:26px;border-radius:6px;background:linear-gradient(90deg,var(--ux-surface-3) 0 50%,color-mix(in srgb,var(--green) 22%,var(--ux-surface)) 50% 75%,color-mix(in srgb,var(--green) 42%,var(--ux-surface)) 75%)}
+          .u163 .actual{position:absolute;height:17px;top:14px;left:0;width:74%;background:var(--blue);border-radius:0 4px 4px 0}
+          .u163 .target{position:absolute;width:3.5px;top:-7px;bottom:-7px;background:var(--orange);left:70%;transition:left .4s}
+          .u163 .target::before{content:attr(data-value);position:absolute;top:-17px;left:-10px;font-size:11px;color:var(--orange);font-weight:800}
+          .u163 .ticks{display:flex;justify-content:space-between;margin:8px 0;color:var(--ux-ink-2)}
+          .u163 label{display:block;font-size:12px;color:var(--ux-ink-2)}
+          .u163 .actual-label{font-size:13px;color:var(--ux-ink-2)}
+          .u163 .actual-label b{font-size:22px;color:var(--ux-ink);margin:0 3px}
+          </style>
+          <div class="ux u163">
+            <div class="actual-label">Doanh thu thực tế <b>74 triệu</b></div>
+            <div class="bullet"><div class="actual"></div><div class="target" data-value="70"></div></div>
+            <div class="ticks"><small>0</small><small>50</small><small>75</small><small>100</small></div>
+            <label>Kéo mục tiêu (Cam #FF6B00): <input class="range" type="range" min="40" max="100" step="2" value="70" aria-label="Mục tiêu doanh thu"></label>
+            <div class="status" aria-live="polite"></div>
+          </div>
+          <script>
+          (()=>{const root=document.currentScript.previousElementSibling;const q=s=>root.querySelector(s);function draw(){const v=+q('.range').value;q('.target').style.left=v+'%';q('.target').dataset.value=v;q('.status').innerHTML=`So với mục tiêu: <b>${74-v>=0?'+':'−'}${Math.abs(74-v)} triệu</b> · Đạt ${(74/v*100).toFixed(1)}%`;root.dataset.state=String(v)}q('.range').oninput=draw;draw();})();
+          </script>
+        </div>
+
+        <!-- #070 Stacking toasts -->
+        <div class="panel">
+          <h3><span>Thông báo xếp chồng</span><span class="lucian-tag">Lucian #070</span></h3>
+          <!-- Lucian UX/UI Prompt #070 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#070 -->
+          <style>
+          .u070{position:relative;width:100%;height:260px}
+          .u070-btns{display:flex;flex-wrap:wrap;gap:6px}
+          .u070-btns button{height:34px;padding:0 11px;border:0;border-radius:999px;display:inline-flex;align-items:center;gap:6px;background:var(--ux-surface-2);box-shadow:0 0 0 1px var(--ux-line);font-size:12px;font-weight:700;color:var(--ux-ink);transition:transform .3s var(--ux-spring)}
+          .u070-btns button:active{transform:scale(.94)}
+          .u070-btns i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+          .u070-zone{position:absolute;left:0;right:0;bottom:0;height:200px;outline:none}
+          .u070-t{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;min-height:62px;padding:10px 12px;border-radius:16px;background:var(--ux-surface-2);box-shadow:0 0 0 1px var(--ux-line),0 14px 26px -14px var(--ux-shadow-strong);transform-origin:50% 100%;transform:translate(var(--dx,0px),var(--y,0px)) scale(var(--s,1));opacity:var(--o,1);transition:transform .5s var(--ux-spring),opacity .35s;touch-action:pan-y;user-select:none}
+          .u070-t.enter{transform:translateY(70px) scale(.9);opacity:0}
+          .u070-t.leave{opacity:0;pointer-events:none}
+          .u070-t.back>*{opacity:0}
+          .u070-ic{width:32px;height:32px;flex:none;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c)}
+          .u070-ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+          .u070-tx{flex:1;min-width:0}
+          .u070-tx b{display:block;font-size:13px;font-weight:700}
+          .u070-tx small{display:block;font-size:11.5px;color:var(--ux-ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+          .u070-x{width:26px;height:26px;flex:none;border:0;border-radius:50%;display:grid;place-items:center;background:none;color:var(--ux-ink-3)}
+          .u070-x svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+          .u070-empty{position:absolute;left:0;right:0;bottom:20px;text-align:center;font-size:12.5px;color:var(--ux-ink-3)}
+          </style>
+          <div class="ux u070">
+            <div class="u070-btns">
+              <button type="button" data-k="ok" style="--c:var(--green)"><i aria-hidden="true"></i>Hoàn tất</button>
+              <button type="button" data-k="info" style="--c:var(--blue)"><i aria-hidden="true"></i>Cập nhật</button>
+              <button type="button" data-k="warn" style="--c:var(--orange)"><i aria-hidden="true"></i>Lưu ý</button>
+            </div>
+            <div class="u070-zone" role="region" aria-label="Thông báo" tabindex="-1">
+              <p class="u070-empty">Bấm nút phía trên để thử thông báo</p>
+            </div>
+          </div>
+          <script>
+          (function () {
+            var root = document.currentScript.previousElementSibling;
+            var zone = root.querySelector('.u070-zone'), empty = root.querySelector('.u070-empty');
+            var ICON = { ok: '<svg viewBox="0 0 18 18"><path d="M4 9.4l3.2 3.2L14 5.6"/></svg>', info: '<svg viewBox="0 0 18 18"><path d="M3.5 4.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg>', warn: '<svg viewBox="0 0 18 18"><path d="M9 5v5M9 13h.01"/></svg>' };
+            var K = {
+              ok: ['var(--green)', 'Đã lưu thành công', 'Dữ liệu đồng bộ · vừa xong'],
+              info: ['var(--blue)', 'Cập nhật hệ thống', 'Xanh dương chính đã kích hoạt'],
+              warn: ['var(--orange)', 'Cảnh báo tồn kho', 'Có 2 sản phẩm sắp hết hàng']
+            };
+            var list = [], open = false;
+            function layout() {
+              var acc = 0;
+              list.forEach(function (t, i) {
+                var el = t.el; el.classList.toggle('back', !open && i > 0);
+                if (open) { el.style.setProperty('--y', -acc + 'px'); el.style.setProperty('--s', 1); el.style.setProperty('--o', 1); acc += el.offsetHeight + 8; }
+                else { el.style.setProperty('--y', -(i * 12) + 'px'); el.style.setProperty('--s', (1 - i * 0.06).toFixed(2)); el.style.setProperty('--o', i > 2 ? 0 : 1); }
+                el.style.zIndex = 50 - i;
+              });
+              empty.style.opacity = list.length ? '0' : '1';
+            }
+            function remove(t) {
+              var i = list.indexOf(t); if (i < 0) return;
+              list.splice(i, 1); t.el.classList.add('leave');
+              setTimeout(function () { t.el.remove(); }, 350); layout();
+            }
+            function push(k) {
+              var d = K[k], el = document.createElement('div');
+              el.className = 'u070-t enter'; el.style.setProperty('--c', d[0]);
+              el.innerHTML = '<span class="u070-ic">' + ICON[k] + '</span><span class="u070-tx"><b></b><small></small></span><button class="u070-x" type="button" aria-label="Đóng"><svg viewBox="0 0 14 14"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7"/></svg></button>';
+              el.querySelector('b').textContent = d[1]; el.querySelector('small').textContent = d[2];
+              var t = { el: el }; zone.appendChild(el); list.unshift(t);
+              void el.offsetWidth; el.classList.remove('enter'); layout();
+              el.querySelector('.u070-x').addEventListener('click', function () { remove(t); });
+            }
+            zone.addEventListener('pointerenter', function () { open = true; layout(); });
+            zone.addEventListener('pointerleave', function () { open = false; layout(); });
+            root.querySelectorAll('.u070-btns button').forEach(function (b) { b.addEventListener('click', function () { push(b.getAttribute('data-k')); }); });
+            push('warn'); push('ok');
+          })();
+          </script>
+        </div>
+      </div>
+    </section>
+
+    <!-- Forms & Data Table -->
+    <section class="sec" id="forms" style="border-bottom:none;">
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Biểu mẫu kiểm tra lỗi</h3>
+          <div class="field">
+            <label for="fName">Tên chiến dịch</label>
+            <input class="input" id="fName" type="text" placeholder="Ví dụ: Chiến dịch Tháng 11" />
+            <div class="err-msg" id="eName">Vui lòng nhập tên chiến dịch.</div>
+          </div>
+          <div class="field">
+            <label for="fEmail">Email quản trị</label>
+            <input class="input" id="fEmail" type="email" placeholder="admin@xclipse.vn" />
+            <div class="err-msg" id="eEmail">Email chưa đúng định dạng.</div>
+          </div>
+          <button class="btn btn-blue" id="validateBtn" type="button">Kiểm tra & Gửi</button>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;">
+            <h3 style="margin:0;">Danh sách chiến dịch</h3>
+            <input class="input" id="searchInput" type="search" placeholder="Lọc nhanh..." style="max-width:170px;height:34px;" />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tên</th><th>Số lượng</th><th>Trạng thái</th></tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div class="backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 style="margin:0;font-size:18px;font-weight:800;color:var(--ux-accent);">Yêu cầu Demo Xclipse</h3>
+        <button class="btn btn-outline btn-sm" id="closeModal" type="button">Đóng</button>
+      </div>
+      <p style="margin:0 0 16px;font-size:14px;color:var(--ux-ink-2);">
+        Bảng màu rực rỡ: Xanh dương #006BFF (chính) · Xanh lá #00C853 (phụ chính) · Cam #FF6B00 (phụ phụ).
+      </p>
+      <div class="field">
+        <label>Tên đội thi / Doanh nghiệp</label>
+        <input class="input" type="text" value="Xclipse — FPT Polytechnic Hà Nội" />
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+        <button class="btn btn-outline" id="cancelModal" type="button">Hủy</button>
+        <button class="btn btn-green" id="confirmModal" type="button">Xác nhận ngay</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.color-chip').forEach(b => {
+      b.onclick = () => { navigator.clipboard?.writeText(b.dataset.hex); };
+    });
+
+    document.getElementById('themeBtn').onclick = () => {
+      const root = document.documentElement;
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+    };
+
+    const scoreRange = document.getElementById('scoreRange');
+    const scoreVal = document.getElementById('scoreVal');
+    const gaugeArc = document.getElementById('gaugeArc');
+    scoreRange.oninput = () => {
+      const v = Number(scoreRange.value);
+      scoreVal.textContent = v;
+      gaugeArc.setAttribute('stroke-dashoffset', (251.2 * (1 - v / 100)).toFixed(1));
+    };
+
+    document.getElementById('validateBtn').onclick = () => {
+      const name = document.getElementById('fName'), email = document.getElementById('fEmail');
+      const eName = document.getElementById('eName'), eEmail = document.getElementById('eEmail');
+      let ok = true;
+      if (!name.value.trim()) { name.classList.add('is-error'); eName.classList.add('show'); ok = false; }
+      else { name.classList.remove('is-error'); eName.classList.remove('show'); }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email.classList.add('is-error'); eEmail.classList.add('show'); ok = false; }
+      else { email.classList.remove('is-error'); eEmail.classList.remove('show'); }
+      if (ok) alert('✓ Dữ liệu hợp lệ! Đã lưu thành công.');
+    };
+
+    const rows = [
+      { name: 'Chiến dịch B2B SaaS', qty: 420, badge: ['badge-blue', '● Đang chạy'] },
+      { name: 'Chăm sóc Khách hàng', qty: 510, badge: ['badge-green', '✓ Đạt KPI'] },
+      { name: 'Cảnh báo Tồn kho thấp', qty: 18, badge: ['badge-orange', '! Cần nhập'] }
+    ];
+    const tbody = document.getElementById('tableBody');
+    function renderTable(q = '') {
+      tbody.innerHTML = '';
+      rows.filter(r => r.name.toLowerCase().includes(q.toLowerCase())).forEach(r => {
+        tbody.innerHTML += `<tr><td><strong>${r.name}</strong></td><td>${r.qty}</td><td><span class="badge ${r.badge[0]}">${r.badge[1]}</span></td></tr>`;
+      });
+    }
+    renderTable();
+    document.getElementById('searchInput').oninput = (e) => renderTable(e.target.value);
+
+    const backdrop = document.getElementById('modalBackdrop');
+    const openModal = () => backdrop.classList.add('open');
+    const closeModal = () => backdrop.classList.remove('open');
+    document.getElementById('openPopupTop').onclick = openModal;
+    document.getElementById('openPopupHero').onclick = openModal;
+    document.getElementById('closeModal').onclick = closeModal;
+    document.getElementById('cancelModal').onclick = closeModal;
+    document.getElementById('confirmModal').onclick = closeModal;
+    backdrop.onclick = (e) => { if (e.target === backdrop) closeModal(); };
+  </script>
+</body>
+</html>
