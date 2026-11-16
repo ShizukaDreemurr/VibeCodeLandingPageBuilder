@@ -188,5 +188,9 @@
     };
   }
 
-  EP.form = { render: render, bind: bind, validate: validate, validateValue: validateValue, normalizePhone: normalizePhone, isPhone: isPhone, isEmail: isEmail, isUrl: isUrl };
+  /** Đọc giá trị từ form đã render (không cần bind): EP.form.values(formEl, SCHEMA) -> { name:'...', qty: 3 }
+      Số được ép về Number (rỗng -> null), checkbox -> boolean. Dùng cho xem trước realtime / máy tính. */
+  function values(form, schema) { var o = {}; Object.keys(schema).forEach(function (k) { o[k] = readValue(form, k, schema[k]); }); return o; }
+
+  EP.form = { values: values, render: render, bind: bind, validate: validate, validateValue: validateValue, normalizePhone: normalizePhone, isPhone: isPhone, isEmail: isEmail, isUrl: isUrl };
 })(window);

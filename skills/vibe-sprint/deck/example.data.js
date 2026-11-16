@@ -19,7 +19,7 @@ window.DECK = {
       tagline: 'Tạo landing page sự kiện trong **5 phút** bằng AI, đủ đăng ký, đếm ngược và QR.',
       de: 'Đề số 8', bang: 'Bảng B · Kinh tế', event: 'Chung kết 60 phút',
       team: 'Xclipse', members: ['Thành viên 1', 'Thành viên 2', 'Thành viên 3'], date: '2026',
-      image: 'assets/03-thiet-ke-trang.png',
+      image: 'example/assets/03-thiet-ke-trang.png',
       notes: 'Chào BGK. Bọn em là đội Xclipse, đề 8 bảng B. Trong 60 phút bọn em làm ra công cụ giúp marketer có landing page sự kiện sau đúng 5 phút. Phần trình bày khoảng 6 phút, có demo trực tiếp.' },
 
     { type: 'problem', time: '0:40',
@@ -44,7 +44,7 @@ window.DECK = {
         { icon: 'clock', text: 'Đếm ngược tới giờ G, số đăng ký tức thì' },
         { icon: 'qr', text: 'Chia sẻ bằng link hoặc mã QR' }
       ],
-      image: 'assets/03-thiet-ke-trang.png', title: 'Màn hình thiết kế trang',
+      image: 'example/assets/03-thiet-ke-trang.png', title: 'Màn hình thiết kế trang',
       notes: 'Một câu: nhập thông tin sự kiện, AI chỉ viết phần chữ, còn ngày giờ địa điểm luôn lấy đúng từ form. Ảnh bên phải là trình thiết kế sau khi bấm Tạo landing page.' },
 
     { type: 'features', time: '0:40',
@@ -75,7 +75,7 @@ window.DECK = {
       eyebrow: 'Demo trực tiếp',
       title: 'Landing page thật, đang chạy **ngay bây giờ**',
       url: 'https://shizukadreemurr.github.io/VibeCodeLandingPageBuilder/',
-      image: 'assets/04-landing-page.png', iframe: true,
+      image: 'example/assets/04-landing-page.png', iframe: true,
       qrLabel: 'Quét để dùng thử',
       caption: 'Kịch bản: **điền dữ liệu mẫu** → **Tạo landing page** → đăng ký thử → thấy số đăng ký tăng.',
       notes: 'DEMO (1 phút 30): 1) Tab Thông tin, bấm Điền dữ liệu mẫu. 2) Bấm Tạo landing page, chỉ AI mô phỏng và dòng cảnh báo. 3) Mở trang công khai, đăng ký bằng số điện thoại, số đếm tăng. 4) Đăng ký lại cùng số để cho thấy báo trùng. Nếu mạng lỗi: dùng ảnh trên slide hoặc video youtu.be/Wjn4xhXQXnc.' },

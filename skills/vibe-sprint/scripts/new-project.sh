@@ -11,7 +11,7 @@
 # Làm gì:
 #   1. Chép templates/ vào dự án: CLAUDE.md và README.md ở gốc, các tài liệu còn lại vào docs/.
 #   2. Chép scripts/scan-secrets.mjs vào scripts/ của dự án.
-#   3. Tạo khung web tối thiểu (index.html, css/, js/) nếu chưa có thư mục starter/.
+#   3. Chép khung web starter/ và bộ slide deck/ (không chép deck/out, deck/example).
 #   4. Thay <Tên sản phẩm> bằng tên thật, đặt tên nhánh trong CLAUDE.md.
 #   5. git init với nhánh đã chọn (không commit, để đội tự commit sau khi kiểm tra).
 
@@ -68,73 +68,37 @@ done
 # 2. Công cụ kiểm tra bí mật
 cp "$SCRIPTS/scan-secrets.mjs" "$TARGET/scripts/scan-secrets.mjs"
 
-# 3. Khung web: chép starter/ (không ghi đè), rồi bổ sung các tệp nền còn thiếu
-if [ -d "$STARTER" ]; then
+# 3. Khung web: chép starter/ (bắt buộc), không ghi đè tệp đã có
+[ -d "$STARTER" ] || { echo "Thiếu khung web: $STARTER" >&2; exit 1; }
+while IFS= read -r -d '' rel; do
+  rel="${rel#./}"
+  if [ ! -e "$TARGET/$rel" ]; then
+    mkdir -p "$(dirname "$TARGET/$rel")"
+    cp "$STARTER/$rel" "$TARGET/$rel"
+  fi
+done < <(cd "$STARTER" && find . -type f -print0)
+
+# 3b. Bộ slide: chép deck/ (bỏ out/ là sản phẩm xuất, example/ là bản Xclipse mẫu, node_modules/)
+DECK="$SKILL_DIR/deck"
+if [ -d "$DECK" ]; then
   while IFS= read -r -d '' rel; do
     rel="${rel#./}"
-    if [ ! -e "$TARGET/$rel" ]; then
-      mkdir -p "$(dirname "$TARGET/$rel")"
-      cp "$STARTER/$rel" "$TARGET/$rel"
-    fi
-  done < <(cd "$STARTER" && find . -type f -print0)
+    mkdir -p "$(dirname "$TARGET/deck/$rel")"
+    cp "$DECK/$rel" "$TARGET/deck/$rel"
+  done < <(cd "$DECK" && find . \( -path ./out -o -path ./example -o -path ./node_modules \) -prune -o -type f -print0)
 fi
 
-# ensure_file <đường-dẫn-tương-đối>: đọc nội dung từ stdin, chỉ ghi nếu tệp chưa có
-ensure_file() {
-  local path="$TARGET/$1"
-  if [ -e "$path" ]; then
-    return 0
-  fi
-  mkdir -p "$(dirname "$path")"
-  cat > "$path"
-}
-
-ensure_file index.html <<'HTML'
-<!doctype html>
-<html lang="vi">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>__PRODUCT__</title>
-  <link rel="stylesheet" href="css/app.css">
-</head>
-<body>
-  <main class="wrap">
-    <h1>__PRODUCT__</h1>
-    <p>Khung ứng dụng sprint. Thay nội dung này bằng tính năng T1.</p>
-  </main>
-  <script src="js/app.js"></script>
-</body>
-</html>
-HTML
-ensure_file css/app.css <<'CSS'
-:root { --bg: #ffffff; --fg: #1b1b1f; --accent: #2563eb; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #0f1115; --fg: #e8e8ec; --accent: #60a5fa; }
-}
-:root[data-theme="dark"] { --bg: #0f1115; --fg: #e8e8ec; --accent: #60a5fa; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: system-ui, "Be Vietnam Pro", sans-serif;
-}
-.wrap { max-width: 640px; margin: 0 auto; padding: 16px; }
-CSS
-ensure_file js/app.js <<'JS'
-// Tính năng T1 đến T5 viết ở đây, theo docs/spec-nhanh.md.
-JS
-ensure_file .env.example <<'ENV'
+# 3c. Tệp nền: chỉ ghi nếu starter chưa có
+[ -e "$TARGET/.env.example" ] || cat > "$TARGET/.env.example" <<'ENV'
 # Chỉ ghi TÊN biến, không ghi giá trị.
 # Giá trị điền vào .env.local (file này đã nằm trong .gitignore).
 # GEMINI_API_KEY=
 ENV
-ensure_file .gitignore <<'GI'
+[ -e "$TARGET/.gitignore" ] || cat > "$TARGET/.gitignore" <<'GI'
 .env
 .env.local
 node_modules/
 .DS_Store
-undefined/
 GI
 
 # 4. Thay tên sản phẩm và nhánh
@@ -154,8 +118,13 @@ else
   GIT_NOTE="KHÔNG có git: cài git rồi chạy 'git init' trong thư mục dự án"
 fi
 
-# Đếm chỗ còn <…> cần điền (bỏ qua ví dụ dạng code)
-LEFT="$(grep -ohE '<[^<>[:space:]][^<>]*>' "$TARGET/CLAUDE.md" "$TARGET/README.md" "$TARGET"/docs/*.md 2>/dev/null | wc -l | tr -d ' ')"
+# Đếm chỗ còn <…> cần điền (bỏ qua ví dụ dạng code): "ngay" = CLAUDE.md + spec, "sau" = README + docs còn lại
+count_ph() { grep -ohE '<[^<>[:space:]][^<>]*>' "$@" 2>/dev/null | wc -l | tr -d ' '; }
+NOW_FILES=("$TARGET/CLAUDE.md" "$TARGET/docs/spec-nhanh.md")
+LATER_FILES=("$TARGET/README.md")
+for f in "$TARGET"/docs/*.md; do [ "$f" = "$TARGET/docs/spec-nhanh.md" ] || LATER_FILES+=("$f"); done
+LEFT_NOW="$(count_ph "${NOW_FILES[@]}")"
+LEFT_LATER="$(count_ph "${LATER_FILES[@]}")"
 
 cat <<EOF
 
@@ -163,7 +132,7 @@ cat <<EOF
   Tên sản phẩm: $PRODUCT
   Nhánh nộp:    $BRANCH
   Git:          $GIT_NOTE
-  Chỗ còn <…> cần điền: khoảng $LEFT
+  Chỗ còn <…>: $LEFT_NOW điền ngay (CLAUDE.md, docs/spec-nhanh.md), $LEFT_LATER để sau (README.md, docs/ còn lại)
 
 Các bước tiếp theo:
   1. cd "$TARGET"
@@ -175,5 +144,6 @@ Các bước tiếp theo:
        git remote add origin <URL repo>
        git push -u origin $BRANCH
   6. Bật GitHub Pages: Settings → Pages → Deploy from a branch → $BRANCH, thư mục /(root).
-  7. Điền các mục <…> còn lại trong README.md và docs/ (lệnh tìm: grep -rn '<' README.md docs).
+  7. Điền các mục <…> còn lại trong README.md và docs/ khi có thông tin (lệnh tìm: grep -rn '<' README.md docs).
+  8. Bộ slide nằm ở deck/ (xem deck/README.md): cp deck/template.data.js deck/deck.data.js rồi điền.
 EOF

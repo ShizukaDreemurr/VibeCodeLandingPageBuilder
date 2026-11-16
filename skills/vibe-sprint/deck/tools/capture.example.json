@@ -1,19 +1,18 @@
 {
-  "base": "http://localhost:8202/",
+  "base": "http://localhost:8225/",
   "out": "../assets",
   "desktop": [1600, 1000],
   "mobile": [390, 844],
   "views": [
-    { "name": "01-thu-vien-mau", "url": "index.html?demo=1",
-      "steps": [ { "optionalClick": "text=Đã hiểu" }, { "hide": "#toast" }, { "wait": 500 } ] },
-    { "name": "02-form-ai", "url": "index.html",
-      "steps": [ { "click": "[data-tab=\"builder\"]" }, { "click": "#btn-sample" }, { "wait": 400 } ] },
-    { "name": "03-thiet-ke-trang", "url": "index.html",
-      "steps": [ { "click": "[data-tab=\"builder\"]" }, { "click": "#btn-sample" }, { "click": "#btn-generate" }, { "wait": 2500 } ] },
-    { "name": "04-landing-page", "url": "index.html?demo=1&e=demo_evt_coffee", "settle": 2200, "devices": ["desktop", "mobile"] },
-    { "name": "05-danh-sach-dang-ky", "url": "index.html?demo=1",
-      "steps": [ { "optionalClick": "text=Đã hiểu" }, { "hide": "#toast" }, { "click": "[data-tab=\"admin\"]" }, { "wait": 1200 } ] },
-    { "name": "06-su-kien-cua-toi", "url": "index.html?demo=1",
-      "steps": [ { "optionalClick": "text=Đã hiểu" }, { "hide": "#toast" }, { "click": "[data-tab=\"events\"]" }, { "wait": 1000 } ] }
+    { "name": "01-tong-quan", "url": "index.html?demo=1#/home", "settle": 1200,
+      "steps": [ { "hide": "#toasts" }, { "wait": 400 } ], "devices": ["desktop", "mobile"] },
+    { "name": "02-danh-sach", "url": "index.html?demo=1#/example", "settle": 1200,
+      "steps": [ { "hide": "#toasts" }, { "waitFor": ".table tbody tr" }, { "wait": 400 } ] },
+    { "name": "03-form", "url": "index.html?demo=1#/example",
+      "steps": [ { "waitFor": "[data-act=\"add\"]" }, { "click": "[data-act=\"add\"]" }, { "waitFor": "dialog[open]" },
+                 { "fill": ["dialog [name=\"name\"]", "Mục demo cho slide"] }, { "select": ["dialog [name=\"status\"]", "doing"] }, { "wait": 400 } ] },
+    { "name": "04-ket-qua-ai", "url": "index.html?demo=1#/example",
+      "steps": [ { "waitFor": "#ex-ai-go" }, { "fill": ["#ex-ai-form textarea", "Chuẩn bị tài liệu và đặt phòng họp cho buổi gặp đối tác tuần sau"] },
+                 { "click": "#ex-ai-go" }, { "waitFor": ".ai-result" }, { "wait": 600 } ], "devices": ["desktop", "mobile"] }
   ]
 }

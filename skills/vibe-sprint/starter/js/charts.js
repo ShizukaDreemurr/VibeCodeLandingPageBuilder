@@ -47,36 +47,48 @@
   function frame(w, h, label, inner) {
     return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" role="img" aria-label="' + esc(label) + '">' + inner + '</svg>';
   }
-  function axes(w, h, m, max, f) {
-    var s = '', i, steps = 4, ch = h - m.t - m.b;
+  function axes(w, h, m, max, f, min) {
+    var s = '', i, steps = 4, ch = h - m.t - m.b; min = min || 0;
     for (i = 0; i <= steps; i++) {
       var y = m.t + ch - ch * i / steps;
-      s += '<line class="grid-line" x1="' + m.l + '" x2="' + (w - m.r) + '" y1="' + y + '" y2="' + y + '"/><text x="' + (m.l - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + esc(f(max * i / steps)) + '</text>';
+      s += '<line class="grid-line" x1="' + m.l + '" x2="' + (w - m.r) + '" y1="' + y + '" y2="' + y + '"/><text x="' + (m.l - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + esc(f(min + (max - min) * i / steps)) + '</text>';
     }
     return s;
   }
 
+  /* Khoảng trục: luôn gồm số 0, chia đúng 4 khoảng bằng nhau, số 0 nằm trên một vạch, bước "đẹp" (1, 2, 2.5, 5 x 10^k).
+     Chỉ dương: 0..4 bước (vd 0..8 bước 2, không còn nhãn lẻ 3,8). Có âm: vd -20k..60k bước 20k. */
+  function range(data) {
+    var v = data.map(function (d) { return Number(d.value) || 0; }), mx = Math.max.apply(null, v.concat(0)), mn = Math.min.apply(null, v.concat(0));
+    if (mx === 0 && mn === 0) return { max: 1, min: 0 };
+    var span = mx - mn, p = Math.pow(10, Math.floor(Math.log10(span / 4))), steps = [], a, b, i, st, k;
+    for (i = 0; i < 3; i++) [1, 2, 2.5, 5].forEach(function (m) { if (m !== 2.5 || p >= 10 || p < 1) steps.push(m * p * Math.pow(10, i)); });
+    for (i = 0; i < steps.length; i++) { st = steps[i]; a = Math.ceil(mx / st - 1e-9); b = Math.ceil(-mn / st - 1e-9); if (a + b <= 4) break; }
+    while (a + b < 4) { k = mn < 0 && (mx <= 0 || -mn / (b * st) > mx / (a * st)) ? 'b' : 'a'; if (k === 'a') a++; else b++; }
+    return { max: a * st, min: -b * st };
+  }
+
   function bar(data, o, w) {
-    var h = o.height || 220, f = o.format || fmtDefault, max = nice(Math.max.apply(null, data.map(function (d) { return Number(d.value) || 0; })));
+    var h = o.height || 220, f = o.format || fmtDefault, R = range(data), max = R.max, min = R.min, span = (max - min) || 1;
     var m = { l: 40, r: 8, t: 22, b: 30 }, cw = w - m.l - m.r, ch = h - m.t - m.b, band = cw / data.length, bw = Math.min(56, band * .62);
-    var s = axes(w, h, m, max, f);
+    var s = axes(w, h, m, max, f, min), y0 = m.t + ch * max / span;
     data.forEach(function (d, i) {
-      var v = Number(d.value) || 0, bh = ch * v / max, x = m.l + band * i + (band - bw) / 2, y = m.t + ch - bh;
+      var v = Number(d.value) || 0, bh = Math.abs(ch * v / span), x = m.l + band * i + (band - bw) / 2, y = v >= 0 ? y0 - bh : y0;
       s += '<rect class="ch-bar" x="' + x + '" y="' + y + '" width="' + bw + '" height="' + Math.max(bh, 0) + '" rx="6" style="fill:' + col(d, i) + ';animation-delay:' + i * 60 + 'ms"><title>' + esc(d.label + ': ' + f(v) + (o.unit ? ' ' + o.unit : '')) + '</title></rect>';
-      s += '<text class="val" x="' + (x + bw / 2) + '" y="' + (y - 6) + '" text-anchor="middle">' + esc(f(v)) + '</text>';
+      s += '<text class="val" x="' + (x + bw / 2) + '" y="' + (v >= 0 ? y - 6 : y + bh + 14) + '" text-anchor="middle">' + esc(f(v)) + '</text>';
       s += '<text x="' + (x + bw / 2) + '" y="' + (h - 10) + '" text-anchor="middle">' + esc(cut(d.label, Math.floor(band / 6.5))) + '</text>';
     });
     return frame(w, h, summary('Biểu đồ cột', data, o), s) + table(data, o);
   }
 
   function line(data, o, w) {
-    var h = o.height || 220, f = o.format || fmtDefault, max = nice(Math.max.apply(null, data.map(function (d) { return Number(d.value) || 0; })));
+    var h = o.height || 220, f = o.format || fmtDefault, R = range(data), max = R.max, min = R.min, span = (max - min) || 1;
     var m = { l: 40, r: 14, t: 18, b: 30 }, cw = w - m.l - m.r, ch = h - m.t - m.b, n = data.length;
     function X(i) { return m.l + (n === 1 ? cw / 2 : cw * i / (n - 1)); }
-    function Y(v) { return m.t + ch - ch * (Number(v) || 0) / max; }
-    var s = axes(w, h, m, max, f), pts = data.map(function (d, i) { return X(i) + ',' + Y(d.value); });
+    function Y(v) { return m.t + ch - ch * ((Number(v) || 0) - min) / span; }
+    var s = axes(w, h, m, max, f, min), pts = data.map(function (d, i) { return X(i) + ',' + Y(d.value); });
     var color = o.color || 'var(--chart-1)';
-    if (o.area !== false && n > 1) s += '<path d="M' + X(0) + ',' + (m.t + ch) + ' L' + pts.join(' L') + ' L' + X(n - 1) + ',' + (m.t + ch) + 'Z" style="fill:' + color + ';opacity:.12"/>';
+    if (o.area !== false && n > 1) s += '<path d="M' + X(0) + ',' + Y(0) + ' L' + pts.join(' L') + ' L' + X(n - 1) + ',' + Y(0) + 'Z" style="fill:' + color + ';opacity:.12"/>';
     s += '<polyline class="ch-line" points="' + pts.join(' ') + '" style="stroke:' + color + '"/>';
     var every = Math.ceil(n / Math.max(2, Math.floor(cw / 56)));
     data.forEach(function (d, i) {

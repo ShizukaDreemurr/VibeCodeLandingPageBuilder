@@ -17,7 +17,7 @@
       }).join('');
       var first = feats[0];
       el.innerHTML =
-        '<section class="hero" aria-label="Giới thiệu"><div class="hero-copy"><span class="hero-eyebrow">' + esc(cfg.appName) + '</span><p class="hero-title" role="presentation">Giải pháp <em>thông minh</em></p><p>' + esc(cfg.tagline) + '</p>' +
+        '<section class="hero" aria-label="Giới thiệu"><div class="hero-copy"><span class="hero-eyebrow">' + esc(cfg.appName) + '</span><p class="hero-title" role="presentation">' + esc(cfg.heroLead || 'Giải pháp') + ' <em>' + esc(cfg.heroEm || 'thông minh') + '</em></p><p>' + esc(cfg.tagline) + '</p>' +
         (first ? '<a class="btn btn-cta" href="#/' + esc(first.id) + '">Bắt đầu ngay ' + EP.ui.icon('send') + '</a>' : '') + '</div><div class="hero-visual" aria-hidden="true"></div></section>' +
         (kpis.length ? '<div class="grid kpis">' + kpis.slice(0, 8).map(EP.ui.kpi).join('') + '</div>' : '') +
         '<div class="card"><div class="card-head"><h2 class="section-title">Bắt đầu nhanh</h2></div>' + EP.ui.stepper(['Nhập dữ liệu', 'Tạo bằng AI', 'Xem biểu đồ', 'Xuất báo cáo'], 0) + '</div>' +

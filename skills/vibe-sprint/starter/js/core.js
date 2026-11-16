@@ -4,7 +4,7 @@
 (function (root) {
   'use strict';
   var EP = root.EP = root.EP || {};
-  var cfg = EP.config = Object.assign({ appName: 'App', brandMark: 'X', prefix: 'ep_', defaultRoute: 'home', locale: 'vi-VN', currency: 'VND', mockNotice: 'Bản demo vòng loại - Dữ liệu mô phỏng AI' }, EP.config);
+  var cfg = EP.config = Object.assign({ appName: 'App', brandMark: 'X', prefix: 'ep_', defaultRoute: 'home', locale: 'vi-VN', currency: 'VND', heroLead: 'Giải pháp', heroEm: 'thông minh', mockNotice: 'Bản demo vòng loại - Dữ liệu mô phỏng AI' }, EP.config);
   var doc = root.document;
 
   /* ---------- DOM & tiện ích ---------- */
@@ -131,7 +131,7 @@
   }
   function themeSet(mode, origin) {
     if (mode !== 'light' && mode !== 'dark') mode = 'system';
-    try { if (mode === 'system') localStorage.removeItem('ep_theme'); else localStorage.setItem('ep_theme', mode); } catch (e) { /* bỏ qua */ }
+    try { if (mode === 'system') localStorage.removeItem(cfg.prefix + 'theme'); else localStorage.setItem(cfg.prefix + 'theme', mode); } catch (e) { /* bỏ qua */ }
     var de = doc.documentElement;
     if (!doc.startViewTransition || EP.reduced()) { themeApply(mode); return; }
     if (activeVT) { try { activeVT.skipTransition(); } catch (e) { /* bỏ qua */ } activeVT = null; }

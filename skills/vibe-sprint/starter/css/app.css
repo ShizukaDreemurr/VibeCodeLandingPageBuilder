@@ -127,7 +127,7 @@
   .btn-danger:hover { background: var(--pill-negative-bg); }
   .btn-danger.solid { background: var(--danger); border-color: var(--danger); color: #fff; }
   .btn-ai { border: 0; color: #fff; background: var(--ux-grad); background-size: 140% 100%; background-position: 0 0; transition: background-position var(--dur-3) var(--ease-out), transform var(--dur-1) var(--ux-spring); text-shadow: 0 1px 2px rgba(0, 0, 0, .25); }
-  .btn-ai:hover { background-position: 100% 0; background-color: transparent; }
+  .btn-ai:hover { background-image: var(--ux-grad); background-position: 100% 0; background-color: transparent; }
   :root[data-theme="dark"] .btn-ai { color: #0B0C12; text-shadow: none; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn-ai { color: #0B0C12; text-shadow: none; } }
   .btn-sm { min-height: 32px; padding: 0 12px; font-size: 13px; border-radius: 10px; }
@@ -190,7 +190,7 @@
   /* ---------- KPI ---------- */
   .kpi { display: flex; flex-direction: column; gap: 4px; padding: 16px; }
   .kpi-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-  .kpi-value { font-size: clamp(24px, 6vw, 32px); font-weight: 750; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .kpi-value { font-size: clamp(24px, 6vw, 32px); font-weight: 750; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
   .kpi-foot { font-size: 12.5px; color: var(--text-muted); display: flex; gap: 6px; align-items: center; min-height: 20px; }
   .delta { font-weight: 650; } .delta.up { color: var(--success); } .delta.down { color: var(--danger); }
 
@@ -211,6 +211,8 @@
   .table tbody tr:hover { background: var(--raised); }
   .table tbody tr:last-child td { border-bottom: 0; }
   .table .num { text-align: right; font-variant-numeric: tabular-nums; } .table th.num button { justify-content: flex-end; }
+  /* Mobile: bảng rộng hơn khung thì cuộn ngang TRONG .table-wrap, không cắt cột, không làm tràn trang */
+  @media (max-width: 719px) { .table { width: max-content; min-width: 100%; } .table td, .table th { white-space: nowrap; } .table td .cell-main { white-space: normal; min-width: 120px; max-width: 220px; } }
   .table .actions { text-align: right; white-space: nowrap; width: 1%; }
   .cell-main { font-weight: 600; } .cell-sub { font-size: 12.5px; color: var(--text-muted); }
 
@@ -323,7 +325,7 @@
   .list-plain li { display: flex; gap: 10px; align-items: flex-start; }
   .list-plain .ok { color: var(--success); } .list-plain .no { color: var(--danger); }
   .list-plain svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
-  .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; } .kv dt { color: var(--text-muted); } .kv dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; } .kv dt { color: var(--text-muted); } .kv dd { margin: 0; font-weight: 600; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 }
 
 @layer utilities {

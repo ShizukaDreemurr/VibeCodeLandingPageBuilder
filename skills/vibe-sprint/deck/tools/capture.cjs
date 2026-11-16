@@ -16,7 +16,7 @@
  *   "reduceMotion": true,                    // tắt animation cho ảnh sạch (mặc định true)
  *   "views": [
  *     { "name": "home", "url": "index.html?demo=1",
- *       "steps": [ {"click":"#btn"}, {"fill":["#f-name","Tên"]}, {"press":"Enter"}, {"wait":800},
+ *       "steps": [ {"click":"#btn"}, {"fill":["#f-name","Tên"]}, {"select":["select[name=status]","done"]}, {"press":"Enter"}, {"wait":800},
  *                  {"waitFor":".card"}, {"hide":".popup"}, {"scroll":"#section"}, {"eval":"document.title='x'"},
  *                  {"storage":{"key":"value"}} ],       // storage: đặt localStorage TRƯỚC khi mở trang
  *       "selector": "#view-editor",            // (tuỳ chọn) chỉ chụp phần tử này
@@ -50,6 +50,7 @@ async function runSteps(page, steps) {
   for (const s of steps || []) {
     if (s.click) await page.click(s.click, { timeout: 8000 });
     else if (s.fill) await page.fill(s.fill[0], s.fill[1]);
+    else if (s.select) await page.selectOption(s.select[0], s.select[1]);
     else if (s.press) await page.keyboard.press(s.press);
     else if (s.wait) await page.waitForTimeout(s.wait);
     else if (s.waitFor) await page.waitForSelector(s.waitFor, { timeout: 10000 });

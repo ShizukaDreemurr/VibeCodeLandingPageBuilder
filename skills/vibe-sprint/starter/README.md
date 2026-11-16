@@ -5,10 +5,10 @@ Bộ khung web app thuần HTML/CSS/JS (không build, không CDN) cho cuộc thi
 ## 1. Bắt đầu (5 phút)
 
 1. Chép **nội dung thư mục `starter/`** vào gốc repo mới (có `index.html` ở gốc).
-2. Sửa `js/config.js`: `appName`, `brandMark`, `tagline`, `prefix` (tiền tố khoá localStorage; riêng khoá giao diện luôn là `ep_theme` trong `js/core.js` và `<head>` của `index.html`, giữ nguyên), `mockNotice`. **`mockNotice` phải chép NGUYÊN VĂN từ đề/BTC của kỳ thi bạn đang thi.** Giá trị có sẵn `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của vòng loại; chung kết có thể khác, đừng giả định. Đổi xong sửa luôn 2 dòng assert trong `tests/smoke.cjs` (tìm `Bản demo vòng loại`).
+2. Sửa `js/config.js`: `appName`, `brandMark`, `tagline`, `heroLead` + `heroEm` (tiêu đề hero ở Tổng quan, vd `'Mỗi đơn hàng,'` + `'lãi hay lỗ?'`; chữ nhấn gradient là `heroEm`), `prefix` (tiền tố khoá localStorage; khoá giao diện là `<prefix>theme`, nên **đổi `prefix` thì sửa luôn `'ep_theme'` trong đoạn script ở `<head>` của `index.html` thành `'<prefix>theme'`**, nếu không giao diện đã chọn bị nháy sáng/tối khi tải lại), `mockNotice`. **`mockNotice` phải chép NGUYÊN VĂN từ đề/BTC của kỳ thi bạn đang thi.** Giá trị có sẵn `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của vòng loại; chung kết có thể khác, đừng giả định. `tests/smoke.cjs` đọc `EP.config.mockNotice` và `EP.config.prefix` nên không cần sửa test khi đổi hai giá trị này.
 3. Sửa `<title>` và `<meta description>` trong `index.html`. Giao diện mặc định là preset **xclipse** (Ice `#DBF2FC` / Navy `#072D59` / Coral `#FD6E88`, có hero kính gân). Đổi sang Lucian bằng `<html data-preset="lucian">` trong `index.html`; tên token giữ nguyên nên feature không phải sửa. Thương hiệu khác: sửa khối xclipse trong `css/tokens.css` (cả 3 khối: sáng, tối theo hệ thống, tối thủ công).
 4. Chạy thử: `python3 -m http.server 8211` rồi mở `http://localhost:8211/` (bảng cổng của skill: 8211 điều phối, 8212-8230 các agent, **không dùng 8000**).
-5. Nhân bản feature (mục 2), xoá `features/_example` và `features/_playground` (và hai dòng `<script>` của chúng) khi đã có feature thật.
+5. Nhân bản feature (mục 2). Khi đã có feature thật, xoá `features/_example` và `features/_playground` **cùng với hai dòng `<script src="features/_example/feature.js">` và `<script src="features/_playground/feature.js">` trong `index.html`** (xoá thư mục mà quên dòng script thì trình duyệt báo 404 và smoke test đỏ). Smoke test tự bỏ qua các khối của hai feature này khi tab của chúng không còn.
 
 Thứ tự nạp script trong `index.html`: config, version, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, checklist, quiz, chat, timeslot), features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
 
@@ -17,21 +17,38 @@ Thứ tự nạp script trong `index.html`: config, version, core, ui, form, cha
 ```
 cp -r features/_example features/don-hang      # đổi NAME 'example' -> 'orders', collection 'items' -> 'orders'
 ```
-Thêm `<script src="features/don-hang/feature.js"></script>` trước `js/app.js`. Mỗi feature là một file IIFE gọi:
+Thêm `<script src="features/don-hang/feature.js"></script>` trước `js/app.js` (và sau `js/domain.js` nếu có, xem dưới). Mỗi feature là một file IIFE gọi:
 
 | Việc | API |
 |---|---|
 | Đăng ký tab + h1 + KPI tổng quan | `EP.register({ id, label, title, desc, icon, order, summary(), actions(), render(el) })` |
 | Dữ liệu CRUD lưu localStorage | `var rows = EP.collection('orders')` -> `add/update/remove/get/list/onChange` |
-| Form khai báo | `EP.form.render(SCHEMA, values)` + `EP.form.bind(form, SCHEMA, { onSubmit })` |
+| Form khai báo | `EP.form.render(SCHEMA, values)` + `EP.form.bind(form, SCHEMA, { onSubmit })`; đọc giá trị không cần bind: `EP.form.values(formEl, SCHEMA)` (số -> Number, rỗng -> null, checkbox -> boolean) |
 | Bảng sắp xếp | `EP.ui.table(el, { columns, rows, actions, onAction })` |
 | Hộp thoại / xác nhận / toast | `EP.ui.dialog`, `EP.ui.confirm`, `EP.ui.toast` |
-| Biểu đồ | `EP.charts.bar / line / donut(el, [{label, value}])` |
+| Biểu đồ | `EP.charts.bar / line / donut(el, [{label, value}])`; bar/line hỗ trợ giá trị âm (đường 0 làm gốc, cột âm đi xuống, vạch chia đẹp) |
 | AI | `EP.ai.generate({ prompt, schema, mock }, { input })` |
 | Dữ liệu demo | `EP.demo.register('orders', { version: 1, rows: [...] })` |
 | Xuất | `EP.export.csv(name, rows, cols)`, `EP.export.backup()`, `EP.export.print()` |
 
+Icon có sẵn: xem `EP.ui.icons` (có `file`, `print`, `chart`, `calc`, `chat`...); tên không có sẽ rơi về `info` và in `console.warn` liệt kê tên hợp lệ.
+
 `features/_example/feature.js` có chú thích đánh số [1]..[6] cho từng bước. Router tự dựng tab, section, đúng một `<h1>` mỗi view, chuyển cảnh, và KPI ở Tổng quan (qua `summary()`).
+
+### Logic nghiệp vụ dùng chung giữa các feature (`js/domain.js`)
+Khi hai feature trở lên cùng tính một công thức (lãi/lỗ, điểm, giá tối thiểu...), **đừng chép công thức vào từng feature**: viết một lần trong `js/domain.js` rồi để mọi feature và test gọi chung.
+```js
+/* js/domain.js: hàm thuần, không đụng DOM, không đọc localStorage */
+(function (root) {
+  'use strict';
+  var EP = root.EP;
+  EP.domain = {
+    /** Lãi một đơn = giá bán - giá vốn - phí sàn - ship - quảng cáo. Luôn trả số hữu hạn (chia an toàn). */
+    profitPerOrder: function (p) { return p.price - p.cost - p.price * p.feePct / 100 - p.shipping - p.ads; }
+  };
+})(window);
+```
+Nạp **sau `js/config.js`/`core.js`/`metrics.js` và TRƯỚC mọi `features/*`** trong `index.html`: `<script src="js/domain.js"></script>`. Feature dùng `EP.domain.profitPerOrder(...)`; `tests/smoke.cjs` thêm vài dòng `EP.domain.*` trong khối `page.evaluate` (ca thường, ca biên 0 và âm) để công thức sai bị bắt ngay. Dữ liệu demo cũng nên chọn để có cả ca lãi lẫn ca lỗ.
 
 ### AI trong 3 chế độ
 `EP.ai.generate(spec, { mode })` với `mode` = `mock` | `gemini` | `paste` (mặc định lấy từ chọn của người dùng ở Cài đặt).
@@ -56,7 +73,7 @@ Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,
 python3 -m http.server 8211 &        # tại thư mục gốc app
 node tests/smoke.cjs http://localhost:8211/ [--shots thu-muc-anh]
 ```
-Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không lỗi console, mọi tab (1 h1), không tràn ngang 390px sáng/tối, đổi giao diện, CRUD + kiểm tra form của feature mẫu, AI mock + MOCK_NOTICE, CSV có BOM, sao lưu/khôi phục, Gemini giả (retry, đổi model, rơi về mock), logic các mô-đun. Khi thêm feature, thêm 5-10 dòng kiểm thử vào `tests/smoke.cjs`.
+Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không lỗi console, mọi tab (1 h1), không tràn ngang 390px sáng/tối, đổi giao diện, CRUD + kiểm tra form của feature mẫu, AI mock + MOCK_NOTICE, CSV có BOM, sao lưu/khôi phục, Gemini giả (retry, đổi model, rơi về mock), logic các mô-đun. Khi thêm feature, chép `tests/feature-template.snippet` (CRUD + form + biên + khoá theo `prefix` + mock notice) vào chỗ `FEATURE TESTS` của `tests/smoke.cjs` rồi đổi tên tab/collection/selector. Smoke test chạy đúng cả khi đã xoá `_example`/`_playground` và các mô-đun tuỳ chọn.
 
 ## 5. Phiên bản và deploy GitHub Pages
 1. `node tools/bump-version.cjs` (tăng patch; hoặc `minor`, `major`, `1.2.3`, `--stamp`): cập nhật `js/version.js` và gắn `?v=` vào mọi js/css trong `index.html` để không dính cache cũ.
@@ -73,6 +90,6 @@ css/app.css           toàn bộ thành phần
 js/                   config, version, core, ui, form, charts, export, ai, demo, app + mô-đun
 features/_example     feature mẫu đầy đủ (CRUD + form + AI + biểu đồ)
 features/_playground  demo calc/checklist/quiz/chat
-tests/smoke.cjs       Playwright smoke test
+tests/smoke.cjs       Playwright smoke test (+ tests/feature-template.snippet: khối mẫu cho feature thật)
 tools/bump-version.cjs
 ```

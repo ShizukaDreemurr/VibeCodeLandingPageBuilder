@@ -17,6 +17,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Lưu danh sách sản phẩm (localStorage), xuất báo cáo text để copy.
 - **AI làm gì:** đề xuất giá và giải thích; công thức tính do code làm, AI không tự tính số.
 - **Dữ liệu:** `products[]`, công thức phí ghi trong app.
+- **Dữ liệu demo gợi ý:** 5 sản phẩm: 2 lỗ, 3 lãi (ví dụ 1 sản phẩm lỗ nặng vì phí sàn + ship, 1 lãi mỏng sát hòa vốn), tên và giá có thật (áo thun 89.000 đ, tai nghe 159.000 đ). Có đủ ca để demo cảnh báo lỗ, biểu đồ có cả cột âm, và AI đề xuất giá tối thiểu cho sản phẩm lỗ.
 - **Bẫy:** đơn vị phần trăm và VND; chia cho 0 khi giá bán = 0; AI đề xuất giá dưới giá vốn.
 
 ## 2. Quản lý tồn kho và cảnh báo hết hàng
@@ -30,6 +31,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Xuất danh sách cần nhập hàng dạng text hoặc CSV.
 - **AI làm gì:** diễn giải dự báo và đề xuất; tốc độ bán do code tính.
 - **Dữ liệu:** `skus[]`, `movements[]` (ngày, loại nhập/bán, số lượng).
+- **Dữ liệu demo gợi ý:** 6 SKU: 2 sắp hết (dưới ngưỡng), 1 tồn lâu không bán, 3 bình thường; 14 ngày lịch sử nhập/bán, trong đó 1 SKU mới chỉ có 3 ngày dữ liệu (để demo ca chưa đủ 7 ngày) và 1 SKU suýt âm tồn.
 - **Bẫy:** tồn âm khi nhập bán nhiều hơn tồn; đơn vị ngày khi chưa đủ 7 ngày dữ liệu; trùng SKU.
 
 ## 3. Phân loại và phản hồi đánh giá khách hàng
@@ -43,6 +45,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Lọc danh sách theo nhóm và lưu lịch sử phân loại (localStorage).
 - **AI làm gì:** phân loại và soạn trả lời; thống kê do code làm; phải trả JSON đúng nhãn cho phép.
 - **Dữ liệu:** `reviews[]` (nội dung, sao, nhãn AI, nhãn người sửa).
+- **Dữ liệu demo gợi ý:** 12 đánh giá: 5 tích cực, 4 tiêu cực (giao chậm, chất lượng, giá), 3 trung tính; có 1 đánh giá không dấu, 1 đánh giá mâu thuẫn (5 sao nhưng chê), 1 đánh giá rất ngắn ("ok").
 - **Bẫy:** AI trả nhãn ngoài danh sách; đánh giá tiếng Việt không dấu; câu trả lời hứa hẹn quá mức (hoàn tiền, đổi hàng không có chính sách thật).
 
 ## 4. Chatbot tra cứu đơn hàng và chính sách
@@ -56,6 +59,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Trang quản trị xem và đánh dấu các yêu cầu đã xử lý.
 - **AI làm gì:** diễn đạt lại; không được bịa thông tin đơn hàng.
 - **Dữ liệu:** `orders[]` mẫu, `faq[]`, `tickets[]`.
+- **Dữ liệu demo gợi ý:** 5 đơn mẫu: 2 đã giao, 1 đang giao, 1 chờ xác nhận, 1 đã hủy; 6 câu FAQ (đổi trả, ship, giờ làm việc, thanh toán, bảo hành, hủy đơn); 2 câu hỏi demo biết trước là chatbot không trả lời được để bật luồng để lại lời nhắn.
 - **Bẫy:** chatbot tự "biết" đơn mà không khớp mã; số điện thoại trong tra cứu phải che bớt khi hiển thị; khớp từ khóa không bỏ dấu.
 
 ## 5. Viết mô tả sản phẩm cho sàn thương mại điện tử
@@ -69,6 +73,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Lịch sử mô tả đã tạo, xem lại và xóa (localStorage).
 - **AI làm gì:** viết nội dung; không bịa thông số sản phẩm (phải đánh dấu chỗ cần xác nhận).
 - **Dữ liệu:** `drafts[]`, bảng giới hạn ký tự theo sàn (ghi trong app).
+- **Dữ liệu demo gợi ý:** 4 sản phẩm thuộc 2 nhóm (thời trang, đồ gia dụng) và 2 sàn đích có giới hạn ký tự khác nhau; 1 sản phẩm cố tình thiếu thông số để demo chỗ AI đánh dấu "cần xác nhận", 1 sản phẩm có tên rất dài để demo cảnh báo vượt giới hạn.
 - **Bẫy:** AI thêm thông số không có trong đầu vào; vượt giới hạn sau khi copy; từ khóa lặp.
 
 ## 6. Phân khúc khách hàng và soạn tin khuyến mãi
@@ -82,6 +87,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Xuất danh sách nhóm dạng CSV và lưu chiến dịch đã soạn.
 - **AI làm gì:** soạn tin; phân nhóm do rule.
 - **Dữ liệu:** `customers[]`, `segments` (ngưỡng), `campaigns[]`.
+- **Dữ liệu demo gợi ý:** 15 khách: 5 mới (1 lần mua), 5 trung thành (từ 4 lần, chi tiêu cao), 5 lâu không quay lại (trên 90 ngày); 1 cặp khách trùng SĐT và 1 khách thiếu ngày mua để demo kiểm tra dữ liệu.
 - **Bẫy:** ngày mua không đúng định dạng; khách có SĐT trùng; tin vượt giới hạn SMS (70 ký tự có dấu) — cần đếm đúng.
 
 ## 7. Chấm điểm lead và kịch bản chốt sales
@@ -95,6 +101,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Danh sách lead sắp xếp theo điểm, đánh dấu đã liên hệ, xuất CSV.
 - **AI làm gì:** kịch bản và giải thích điểm; điểm do công thức.
 - **Dữ liệu:** `leads[]`, `weights`, `status`.
+- **Dữ liệu demo gợi ý:** 8 lead: 2 nóng (điểm từ 80), 3 ấm, 2 lạnh, 1 thiếu trường (điểm chưa đủ dữ liệu); 1 cặp lead trùng số điện thoại; trọng số mặc định cộng đúng 100.
 - **Bẫy:** điểm không cộng đúng 100 khi thiếu trường; lead trùng số điện thoại; kịch bản có lời hứa không đúng sản phẩm.
 
 ## 8. Landing page flash sale với mã giảm giá và đếm ngược
@@ -108,6 +115,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Danh sách đơn đặt (localStorage) và nút xuất CSV.
 - **AI làm gì:** viết headline và mô tả từ thông tin nhập; không tạo số lượng hay mức giảm giả.
 - **Dữ liệu:** `sale`, `coupons[]`, `orders[]`.
+- **Dữ liệu demo gợi ý:** 1 đợt sale 48 giờ, 3 mã giảm (1 còn hạn, 1 hết lượt dùng, 1 hết hạn), tồn kho 5 sản phẩm trong đó 1 chỉ còn 2 suất để demo ca hết chỗ khi hai người đặt cùng lúc; đồng hồ đếm ngược theo giờ Việt Nam.
 - **Bẫy:** "số lượng còn lại" phải phản ánh thật (không đếm ngược giả, theo quy tắc BTC ở đề 8 vòng 1); đặt hai lần làm âm tồn; múi giờ đếm ngược.
 
 ## 9. Giỏ hàng và checkout tính phí ship và voucher
@@ -121,6 +129,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Đặt hàng: lưu đơn (localStorage), hiện mã đơn và tóm tắt có nút copy.
 - **AI làm gì:** gợi ý thêm sản phẩm để đủ ngưỡng miễn phí ship; tổng tiền do code tính.
 - **Dữ liệu:** `products[]`, `vouchers[]`, `shippingZones`, `orders[]`.
+- **Dữ liệu demo gợi ý:** 6 sản phẩm, 3 voucher (1 phần trăm, 1 trừ thẳng, 1 vượt tổng đơn để demo chặn âm tiền), 3 vùng ship (nội thành, ngoại thành, tỉnh); 1 giỏ mẫu có tổng lẻ để kiểm tra làm tròn VND.
 - **Bẫy:** làm tròn VND; voucher cộng dồn; giảm giá vượt tổng đơn (âm tiền); làm mới trang mất giỏ.
 
 ## 10. Lịch nội dung và kế hoạch chiến dịch đa kênh
@@ -134,6 +143,7 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
   5. Xuất lịch dạng CSV hoặc file ICS để thêm vào lịch điện thoại.
 - **AI làm gì:** đề xuất lịch và chủ đề; không hứa về hiệu quả.
 - **Dữ liệu:** `campaigns[]`, `posts[]` (ngày, kênh, trạng thái).
+- **Dữ liệu demo gợi ý:** 3 chiến dịch trên 4 kênh, 12 bài trải 4 tuần: 3 đã đăng, 2 quá hạn (tô màu), 7 chờ duyệt; 1 cặp bài trùng ngày cùng kênh và 1 chiến dịch bắt đầu 28/2 để demo ngày cuối tháng.
 - **Bẫy:** ngày không tồn tại (30/2); múi giờ khi xuất ICS; bài trùng ngày trên cùng kênh; lịch không đủ 4 tuần.
 
 ---

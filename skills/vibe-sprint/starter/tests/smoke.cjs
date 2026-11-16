@@ -1,6 +1,9 @@
 // Smoke test Playwright. Chạy:  node tests/smoke.cjs http://localhost:8201/   [--shots thu-muc-anh]
 // Kiểm tra: tải không lỗi console, mọi tab hiển thị đúng 1 h1, không tràn ngang ở 390px, đổi giao diện,
 // feature mẫu (CRUD + kiểm tra form + AI mock + biểu đồ + CSV), các mô-đun (calc, checklist, quiz, chat, match, metrics, schema AI).
+// Các khối của feature mẫu (_example) và sân chơi (_playground) CHỈ chạy khi tab 'example' / 'playground' còn tồn tại,
+// nên xoá hai feature đó vẫn xanh. Test feature thật: sao chép tests/feature-template.snippet vào chỗ đánh dấu
+// "FEATURE TESTS" bên dưới. Tiền tố khoá và câu mock notice đọc từ EP.config, không hardcode.
 const path = require('path');
 const fs = require('fs');
 let chromium;
@@ -33,11 +36,15 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   ok('có skip link', await page.$('.skip-link') !== null);
   ok('lang=vi', (await page.getAttribute('html', 'lang')) === 'vi');
   ok('chân trang có phiên bản', /^v\d/.test(await page.textContent('#ft-version')));
-  ok('chân trang có MOCK_NOTICE', (await page.textContent('#ft-notice')).includes('Bản demo vòng loại - Dữ liệu mô phỏng AI'));
+  const CFG = await page.evaluate(() => ({ prefix: EP.config.prefix, notice: EP.config.mockNotice }));
+  ok('config có prefix + mockNotice', !!CFG.prefix && !!CFG.notice, CFG);
+  ok('chân trang có MOCK_NOTICE (= EP.config.mockNotice)', (await page.textContent('#ft-notice')).includes(CFG.notice), CFG.notice);
 
   console.log('# Mọi tab hiển thị');
   const tabs = await page.$$eval('.tab', (a) => a.map((x) => x.dataset.tab));
-  ok('có >= 4 tab', tabs.length >= 4, tabs);
+  ok('có >= 3 tab (Tổng quan, >= 1 feature, Cài đặt)', tabs.length >= 3, tabs);
+  const hasExample = tabs.includes('example'), hasPlay = tabs.includes('playground');
+  const firstFeature = tabs.find((t) => t !== 'home' && t !== 'settings') || 'home';
   for (const t of tabs) {
     await page.click('.tab[data-tab="' + t + '"]');
     await page.waitForFunction((id) => !document.getElementById('view-' + id).hidden && document.getElementById('view-' + id).querySelector('.view-body').children.length > 0, t);
@@ -77,7 +84,7 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   ok('lần 2 -> dark', (await page.getAttribute('html', 'data-theme')) === 'dark');
   const bgDark = await bg();
   ok('nền đổi sang tối', bgDark !== bg0, [bg0, bgDark]);
-  if (SHOTS) { await page.goto(URL + '#/example'); await page.waitForTimeout(500); await page.screenshot({ path: path.join(SHOTS, 'desktop-dark-example.png'), fullPage: true }); }
+  if (SHOTS) { await page.goto(URL + '#/' + firstFeature); await page.waitForTimeout(500); await page.screenshot({ path: path.join(SHOTS, 'desktop-dark-' + firstFeature + '.png'), fullPage: true }); }
   await page.click('#btn-theme'); await settle();
   ok('lần 3 -> theo hệ thống', (await page.getAttribute('html', 'data-theme')) === null);
   await page.click('#btn-theme'); await settle();
@@ -85,6 +92,8 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   ok('giao diện được nhớ sau khi tải lại', (await page.getAttribute('html', 'data-theme')) === 'light');
   await page.click('#btn-theme'); await settle(); await page.click('#btn-theme'); await settle(); // về system
 
+  if (!hasExample) console.log('# Feature mẫu: bỏ qua (không có tab "example")');
+  if (hasExample) {
   console.log('# Feature mẫu: CRUD');
   await page.goto(URL + '#/example'); await page.waitForSelector('html[data-ready="1"]');
   await page.waitForSelector('.table tbody tr');
@@ -164,16 +173,21 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   await page.click('#ex-ai-go');
   await page.waitForSelector('.ai-result');
   const notice = await page.textContent('.ai-result [data-ai-notice]');
-  ok('kết quả mock kèm MOCK_NOTICE', notice.includes('Bản demo vòng loại - Dữ liệu mô phỏng AI'), notice);
+  ok('kết quả mock kèm MOCK_NOTICE (= EP.config.mockNotice)', notice.includes(CFG.notice), notice);
   ok('AI trả đúng 3 nhãn', (await page.$$('.ai-result .chip')).length === 3);
   ok('stepper ở bước 3', (await page.textContent('[data-slot="stepper"] li.current')).includes('Duyệt'));
   await page.click('[data-act="ai-save"]');
   ok('lưu gợi ý AI thành mục: +1 dòng', (await rowCount()) === n0 + 1);
   ok('biểu đồ cập nhật không lỗi', (await page.$$('#view-example .chart svg')).length >= 2);
+  }
+
+  /* ===== FEATURE TESTS: dán khối kiểm thử của feature thật ở đây (mẫu: tests/feature-template.snippet) ===== */
 
   console.log('# Mô-đun: logic thuần (EP.*)');
   const logic = await page.evaluate(() => {
     const F = EP.form, r = {};
+    // Mô-đun tuỳ chọn có thể đã bị xoá khỏi index.html: nhóm kiểm thử tương ứng được bỏ qua (trả true)
+    const T = (mod, fn) => { try { return EP[mod] ? fn() : true; } catch (e) { return String(e); } };
     r.phoneOk = ['0912345678', '+84912345678', '0912 345 678', '02838221110'].every(F.isPhone);
     r.phoneBad = ['12345', '0112345678', '09123456789', 'abc'].every((x) => !F.isPhone(x));
     r.req = F.validateValue('', { label: 'Họ tên', rules: { required: true } }) === 'Vui lòng nhập họ tên.';
@@ -185,26 +199,29 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
     const v = EP.ai.validate({ t: 'x'.repeat(100), n: '7.4', tags: ['a', 'b', 'c', 'd'] }, { type: 'object', props: { t: { type: 'string', max: 10 }, n: { type: 'number', integer: true, max: 5 }, tags: { type: 'array', max: 3 } } });
     r.schemaCoerce = v.ok && v.value.t.length === 10 && v.value.n === 5 && v.value.tags.length === 3 && v.warnings.length === 3;
     r.schemaFail = !EP.ai.validate({ tags: ['a'] }, { type: 'object', props: { tags: { type: 'array', min: 3 } } }).ok;
-    r.mockDeterministic = JSON.stringify(EP.mock.sentiment('Sản phẩm rất tốt, giao nhanh')) === JSON.stringify(EP.mock.sentiment('Sản phẩm rất tốt, giao nhanh')) && EP.mock.sentiment('Sản phẩm rất tốt, giao nhanh').label === 'positive' && EP.mock.sentiment('Giao chậm, thái độ tệ').label === 'negative';
-    r.classify = EP.mock.classify('Cho mình hỏi giá và phí ship', { gia: ['giá'], ship: ['ship', 'vận chuyển'] }).label === 'gia' || true;
-    r.safeDiv = EP.metrics.div(5, 0) === 0 && EP.metrics.ctr(5, 0) === 0 && EP.metrics.ctr(5, 200) === 2.5 && EP.metrics.vnd(1250000).startsWith('1.250.000');
-    r.trend = EP.metrics.trend([10, 12, 15]).dir === 'up';
-    r.norm = EP.text.normalize('Đơn hàng Ở Hà Nội?') === 'don hang o ha noi';
-    r.faqHit = EP.match.faq([{ q: 'Giá', keywords: ['giá', 'bao nhiêu'], a: 'x' }, { q: 'Giờ mở cửa', keywords: ['mở cửa'], a: 'y' }], 'Cho mình hỏi gia bao nhieu vay?').entry.a === 'x';
-    r.faqMiss = EP.match.faq([{ q: 'Giá', keywords: ['giá'], a: 'x' }], 'thời tiết hôm nay thế nào') === null;
-    r.search = EP.match.search([{ n: 'Áo thun nam' }, { n: 'Quần jean nữ' }], 'ao nam', ['n']).length === 1;
-    const sc = EP.checklist.score([{ id: 'a', weight: 60 }, { id: 'b', weight: 40 }], { a: true, b: 0.5 });
-    r.checklist = sc.score === 80 && sc.failed.length === 1;
-    const g = EP.quiz.create({ questions: [{ q: '?', options: ['a', 'b'], answer: 1 }, { q: '?', options: ['a', 'b'], answer: 0 }], timePerQ: 10 });
-    const a1 = g.answer(1, 0); g.next(); const a2 = g.answer(1, 0);
-    r.quizScore = a1.points === 200 && a2.points === 0 && g.result().score === 200 && g.answer(0, 0) === null;
-    const lb = EP.quiz.leaderboard('smoketest'); lb.clear();
-    lb.add({ name: 'A', score: 100, correct: 1, total: 1, totalMs: 5000 }); lb.add({ name: 'B', score: 100, correct: 1, total: 1, totalMs: 5000 }); lb.add({ name: 'C', score: 100, correct: 1, total: 1, totalMs: 3000 }); lb.add({ name: 'D', score: 50, correct: 1, total: 1, totalMs: 1000 });
-    const top = lb.top(); lb.clear();
-    r.leaderboardTies = top[0].name === 'C' && top[0].rank === 1 && top[1].rank === 2 && top[2].rank === 2 && top[3].rank === 4;
-    r.slots = EP.time.slots('2026-01-01', '08:00', '10:00', 30).length === 4 && EP.time.overlaps({ start: '09:00', end: '10:00' }, { start: '09:30', end: '11:00' }) && !EP.time.overlaps({ start: '09:00', end: '10:00' }, { start: '10:00', end: '11:00' });
-    r.free = EP.time.freeSlots('d', ['09:00', '09:30', '10:00'], [{ date: 'd', time: '09:00', duration: 30 }], 30).join() === '09:30,10:00';
-    r.countdown = EP.time.countdown('2030-01-01T00:00:00', new Date('2029-12-30T21:00:00').getTime()).text === '1 ngày 03:00:00';
+    r.mockDeterministic = T('mock', () => JSON.stringify(EP.mock.sentiment('Sản phẩm rất tốt, giao nhanh')) === JSON.stringify(EP.mock.sentiment('Sản phẩm rất tốt, giao nhanh')) && EP.mock.sentiment('Sản phẩm rất tốt, giao nhanh').label === 'positive' && EP.mock.sentiment('Giao chậm, thái độ tệ').label === 'negative');
+    r.classify = T('mock', () => EP.mock.classify('Cho mình hỏi giá và phí ship', { gia: ['giá'], ship: ['ship', 'vận chuyển'] }).label === 'gia' || true);
+    r.safeDiv = T('metrics', () => EP.metrics.div(5, 0) === 0 && EP.metrics.ctr(5, 0) === 0 && EP.metrics.ctr(5, 200) === 2.5 && EP.metrics.vnd(1250000).startsWith('1.250.000'));
+    r.trend = T('metrics', () => EP.metrics.trend([10, 12, 15]).dir === 'up');
+    r.norm = T('match', () => EP.text.normalize('Đơn hàng Ở Hà Nội?') === 'don hang o ha noi');
+    r.faqHit = T('match', () => EP.match.faq([{ q: 'Giá', keywords: ['giá', 'bao nhiêu'], a: 'x' }, { q: 'Giờ mở cửa', keywords: ['mở cửa'], a: 'y' }], 'Cho mình hỏi gia bao nhieu vay?').entry.a === 'x');
+    r.faqMiss = T('match', () => EP.match.faq([{ q: 'Giá', keywords: ['giá'], a: 'x' }], 'thời tiết hôm nay thế nào') === null);
+    r.search = T('match', () => EP.match.search([{ n: 'Áo thun nam' }, { n: 'Quần jean nữ' }], 'ao nam', ['n']).length === 1);
+    r.checklist = T('checklist', () => { const sc = EP.checklist.score([{ id: 'a', weight: 60 }, { id: 'b', weight: 40 }], { a: true, b: 0.5 }); return sc.score === 80 && sc.failed.length === 1; });
+    r.quizScore = T('quiz', () => {
+      const g = EP.quiz.create({ questions: [{ q: '?', options: ['a', 'b'], answer: 1 }, { q: '?', options: ['a', 'b'], answer: 0 }], timePerQ: 10 });
+      const a1 = g.answer(1, 0); g.next(); const a2 = g.answer(1, 0);
+      return a1.points === 200 && a2.points === 0 && g.result().score === 200 && g.answer(0, 0) === null;
+    });
+    r.leaderboardTies = T('quiz', () => {
+      const lb = EP.quiz.leaderboard('smoketest'); lb.clear();
+      lb.add({ name: 'A', score: 100, correct: 1, total: 1, totalMs: 5000 }); lb.add({ name: 'B', score: 100, correct: 1, total: 1, totalMs: 5000 }); lb.add({ name: 'C', score: 100, correct: 1, total: 1, totalMs: 3000 }); lb.add({ name: 'D', score: 50, correct: 1, total: 1, totalMs: 1000 });
+      const top = lb.top(); lb.clear();
+      return top[0].name === 'C' && top[0].rank === 1 && top[1].rank === 2 && top[2].rank === 2 && top[3].rank === 4;
+    });
+    r.slots = T('time', () => EP.time.slots('2026-01-01', '08:00', '10:00', 30).length === 4 && EP.time.overlaps({ start: '09:00', end: '10:00' }, { start: '09:30', end: '11:00' }) && !EP.time.overlaps({ start: '09:00', end: '10:00' }, { start: '10:00', end: '11:00' }));
+    r.free = T('time', () => EP.time.freeSlots('d', ['09:00', '09:30', '10:00'], [{ date: 'd', time: '09:00', duration: 30 }], 30).join() === '09:30,10:00');
+    r.countdown = T('time', () => EP.time.countdown('2030-01-01T00:00:00', new Date('2029-12-30T21:00:00').getTime()).text === '1 ngày 03:00:00');
     r.csvGuard = EP.export.toCsv([{ a: '=1+1', b: 'x,"y"', c: '+84912345678' }]).split('\r\n')[1] === "'=1+1,\"x,\"\"y\"\"\",+84912345678";
     r.store = (EP.store.write('smoke', { a: 1 }), EP.store.read('smoke').a === 1) && (EP.store.remove('smoke'), EP.store.read('smoke', 'fb') === 'fb');
     return r;
@@ -231,6 +248,8 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   ok('Gemini lỗi key -> rơi về mock có notice', fb.mode === 'mock' && fb.notice.includes('mô phỏng AI') && fb.w === 1, fb);
   await page.unroute('**/generativelanguage.googleapis.com/**');
 
+  if (!hasPlay) console.log('# Mô-đun: giao diện: bỏ qua (không có tab "playground")');
+  if (hasPlay) {
   console.log('# Mô-đun: giao diện (calc, checklist, quiz, chat)');
   await page.goto(URL + '#/playground'); await page.waitForSelector('[data-calc-out] .kpi');
   ok('calc: có KPI lợi nhuận', (await page.textContent('[data-calc-out]')).includes('Lợi nhuận'));
@@ -256,23 +275,28 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   await page.waitForSelector('.chat-log button.btn-primary');
   ok('chatbot: không biết -> nút chuyển sang để lại thông tin', true);
   if (SHOTS) { await page.screenshot({ path: path.join(SHOTS, 'desktop-light-playground-chat.png') }); }
+  }
 
   console.log('# Cài đặt: AI + dữ liệu');
   await page.goto(URL + '#/settings'); await page.waitForSelector('#ai-key');
   await page.fill('#ai-key', 'abc');
-  ok('key không lưu localStorage khi chưa tick nhớ', await page.evaluate(() => localStorage.getItem('ep_ai_key') === null));
+  ok('key không lưu localStorage khi chưa tick nhớ', await page.evaluate((p) => localStorage.getItem(p + 'ai_key') === null, CFG.prefix));
   await page.check('#ai-remember');
-  ok('tick nhớ -> lưu key', await page.evaluate(() => localStorage.getItem('ep_ai_key') === '"abc"'));
+  ok('tick nhớ -> lưu key', await page.evaluate((p) => localStorage.getItem(p + 'ai_key') === '"abc"', CFG.prefix));
   await page.uncheck('#ai-remember');
-  ok('bỏ tick -> xóa key', await page.evaluate(() => localStorage.getItem('ep_ai_key') === null));
+  ok('bỏ tick -> xóa key', await page.evaluate((p) => localStorage.getItem(p + 'ai_key') === null, CFG.prefix));
   const [bk] = await Promise.all([page.waitForEvent('download'), page.click('[data-act="backup"]')]);
   const bj = JSON.parse(fs.readFileSync(await bk.path(), 'utf8'));
-  ok('sao lưu JSON có dữ liệu items, không có key', bj.data.c_items && bj.data.c_items.length > 0 && !('ai_key' in bj.data));
-  await page.evaluate(() => EP.collection('items').clear());
-  const tmp = path.join(require('os').tmpdir(), 'smoke-backup.json'); fs.writeFileSync(tmp, JSON.stringify(bj));
-  const [fc] = await Promise.all([page.waitForEvent('filechooser'), page.click('[data-act="restore"]')]);
-  await fc.setFiles(tmp); await page.waitForFunction(() => EP.collection('items').count() > 0);
-  ok('khôi phục từ file sao lưu', true);
+  const colKey = Object.keys(bj.data).find((k) => /^c_/.test(k) && Array.isArray(bj.data[k]) && bj.data[k].length > 0);
+  ok('sao lưu JSON không chứa key AI', !('ai_key' in bj.data));
+  if (colKey) {
+    const col = colKey.slice(2);
+    await page.evaluate((c) => EP.collection(c).clear(), col);
+    const tmp = path.join(require('os').tmpdir(), 'smoke-backup.json'); fs.writeFileSync(tmp, JSON.stringify(bj));
+    const [fc] = await Promise.all([page.waitForEvent('filechooser'), page.click('[data-act="restore"]')]);
+    await fc.setFiles(tmp); await page.waitForFunction((c) => EP.collection(c).count() > 0, col);
+    ok('sao lưu có dữ liệu + khôi phục từ file (' + colKey + ')', true);
+  } else console.log('  (bỏ qua khôi phục: chưa có collection nào có dữ liệu demo)');
   const bad = await page.evaluate(() => EP.export.restore(new File(['{"x":1}'], 'b.json')).then(() => 'ok', (e) => e.message));
   ok('file khôi phục sai bị từ chối bằng tiếng Việt', /định dạng/.test(bad), bad);
 

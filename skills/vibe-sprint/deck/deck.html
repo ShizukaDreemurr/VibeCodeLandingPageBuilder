@@ -90,7 +90,8 @@ h2.title strong,.s-solution .one strong{font-weight:800;background:var(--grad);-
 .s-cover .tag{display:flex;gap:14px;flex-wrap:wrap}
 .s-cover h1{font-size:196px;line-height:.98;font-weight:800;letter-spacing:-.045em;margin:34px 0 26px;padding-bottom:10px;white-space:nowrap}
 .s-cover .tagline{font-size:48px;line-height:1.28;font-weight:500;color:var(--ink);max-width:880px;text-wrap:balance}
-.s-cover .team{margin-top:52px;display:flex;align-items:center;gap:20px;font-size:27px;color:var(--muted)}
+.s-cover .team{margin-top:52px;display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px;font-size:27px;line-height:1.35;color:var(--muted)}
+.s-cover .team .ml{flex:0 0 100%;font-size:25px}.s-cover .team .ml i{font-style:normal;white-space:nowrap;margin-right:1.3em}
 .s-cover .team b{color:var(--ink)}
 .s-cover .team .dot{width:6px;height:6px;border-radius:50%;background:var(--faint)}
 .s-cover .frame{width:100%;height:570px;transform:rotate(1deg)}
@@ -463,7 +464,7 @@ cover:function(s,c){var m=c.meta;
   +'<div class="tag rv" style="--i:0">'+(s.de?'<span class="chip grad">'+esc(s.de)+'</span>':'')+(s.bang?'<span class="chip">'+esc(s.bang)+'</span>':'')+(s.event?'<span class="chip">'+esc(s.event)+'</span>':'')+'</div>'
   +'<h1 '+rvc('hl',1)+'>'+esc(s.app||m.app||'Tên ứng dụng')+'</h1>'
   +'<p '+rvc('tagline',2)+'>'+md(s.tagline||'')+'</p>'
-  +'<div '+rvc('team',3)+'>'+(s.team?'<span>Đội <b>'+esc(s.team)+'</b></span>':'')+(s.members&&s.members.length?'<i class="dot"></i><span>'+esc(arr(s.members).join(' · '))+'</span>':'')+(s.date?'<i class="dot"></i><span>'+esc(s.date)+'</span>':'')+'</div>'
+  +'<div '+rvc('team',3)+'>'+(s.team?'<span>Đội <b>'+esc(String(s.team).replace(/^\s*đội\s+/i,''))+'</b></span>':'')+(s.date?'<i class="dot"></i><span>'+esc(s.date)+'</span>':'')+(s.members&&s.members.length?'<span class="ml">'+arr(s.members).map(function(x){return '<i>'+esc(x)+'</i>'}).join(' ')+'</span>':'')+'</div>'
   +'</div><div class="right rv" style="--i:2">'+(s.image?frame(s.image,s.url||m.liveUrl,'',s.app):'<div class="orb"></div>')+'</div></div>'},
 
 problem:function(s){var p=s.persona||{};
@@ -547,6 +548,21 @@ thanks:function(s,c){var url=s.url||c.meta.liveUrl||'',vid=s.videoUrl||c.meta.vi
 ICONS.mic='M12 14a3 3 0 003-3V6a3 3 0 00-6 0v5a3 3 0 003 3z M6 11a6 6 0 0012 0 M12 17v4 M9 21h6';
 
 var NOFOOT={cover:1,thanks:1};
+/* Tên app dài: thu nhỏ chữ h1 trang bìa cho vừa cột trái (tối thiểu 72px, rồi mới cho xuống dòng) */
+function fitCovers(){
+  [].forEach.call(document.querySelectorAll('.s-cover h1'),function(h){
+    h.style.fontSize='';h.style.whiteSpace='';
+    var box=h.parentNode.clientWidth,need=h.scrollWidth;
+    if(!box||need<=box)return;
+    var base=parseFloat(getComputedStyle(h).fontSize),fs=Math.floor(base*box/need*0.98);
+    if(fs<110&&/\s/.test(h.textContent.trim())){
+      /* quá dài cho một dòng: cho xuống tối đa 2 dòng, chữ lớn nhất còn vừa */
+      h.style.whiteSpace='normal';
+      for(fs=Math.min(base,150);fs>56;fs-=4){h.style.fontSize=fs+'px';if(h.scrollWidth<=box&&h.offsetHeight<=fs*2.2)return}
+    }
+    h.style.fontSize=Math.max(fs,40)+'px';
+  });
+}
 function build(deck){
   var meta=deck.meta||{},slides=arr(deck.slides),stage=document.getElementById('stage');
   var root=document.documentElement.style;
@@ -561,6 +577,8 @@ function build(deck){
     html+='<section class="slide s-'+t+(NOFOOT[t]?' nofoot':'')+'" data-i="'+i+'" aria-label="Slide '+(i+1)+'">'+body+foot+'</section>';
   });
   stage.innerHTML=html;
+  fitCovers();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitCovers);
   return slides;
 }
 
