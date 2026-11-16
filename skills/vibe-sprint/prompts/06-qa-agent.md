@@ -2,11 +2,18 @@
 
 **Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.**
 
+> **Schema Contract bắt buộc.** Dán NGUYÊN VĂN khối **Schema Contract** (`{{SCHEMA_CONTRACT}}`, lấy từ `docs/spec-nhanh.md` mục 0) vào prompt này. Tên trường, tên hàm, tên collection, id `EP.*` phải đúng từng chữ như contract; **không tự đặt tên mới**. Thiếu tên thì dừng và hỏi điều phối, không đoán.
+
 Chạy trên **nhánh đã merge** (sau bước merge đầu tiên). Spawn 2-3 agent song song, chia theo `{{QA_SCOPE}}`: (a) nhóm feature A + viewport 390, (b) nhóm feature B + viewport 1440, (c) second-opinion toàn app light/dark + a11y. Port 8227-8229 (QA #1..#3). Haiku cho checklist + sửa lỗi nhỏ; Sonnet khi bug cần hiểu logic.
 
 ```
 Repo: {{REPO}} (vanilla JS mini-app, window.EP). FIRST `git reset --hard {{BRANCH}}` (the merged integration branch). Serve `python3 -m http.server {{PORT}}` from YOUR worktree root (never 8000; kill when done).
 Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.
+
+SCHEMA CONTRACT (verbatim from docs/spec-nhanh.md section 0; do NOT invent or rename any field, function, collection or EP.* id; if something is missing, stop and report instead of guessing)
+{{SCHEMA_CONTRACT}}
+
+RULE: also grep the code for names that differ from the contract (e.g. two spellings of one field) and report each mismatch with file:line; check every ratio with denominator 0 shows "Không đủ dữ liệu".
 
 CONTEXT
 App "{{APP_NAME}}" for contest Đề {{DE_SO}}. Spec: read `docs/spec-nhanh.md` (acceptance per feature). Your scope: {{QA_SCOPE}}.

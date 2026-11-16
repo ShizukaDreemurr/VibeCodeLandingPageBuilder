@@ -55,6 +55,8 @@ Nạp **sau `js/config.js`/`core.js`/`metrics.js` và TRƯỚC mọi `features/*
 - **mock**: chạy `spec.mock(input)` offline, tất định. Luôn hiển thị `EP.ai.MOCK_NOTICE` (= `mockNotice` trong `config.js`, mặc định là câu vòng loại "Bản demo vòng loại - Dữ liệu mô phỏng AI", nhớ thay bằng câu nguyên văn của đề chung kết) bằng `EP.ai.noticeHtml(result)`; chân trang cũng hiện khi đang ở chế độ mock.
 - **gemini**: key người dùng nhập ở Cài đặt (nằm trong bộ nhớ trang, chỉ lưu localStorage nếu tick "Nhớ key"), gửi qua header `x-goog-api-key`, tự đổi model khi 429/quá tải (danh sách trong `ai.js`), rút JSON, kiểm tra schema, sai thì thử lại 1 lần, vẫn lỗi thì rơi về mock kèm cảnh báo.
   - Tuỳ chọn: đặt `ai.proxyUrl` trong `js/config.js` (URL Cloudflare Worker, xem `../proxy/README.md`) thì chế độ gemini gọi qua máy chủ trung gian, không cần nhập key.
+  - **`proxyUrl` đã điền sẵn Worker của đội** (`https://vibe-gemini-proxy.xclipse.workers.dev`). `ALLOWED_ORIGINS` trên Worker phải chứa origin Pages của chung kết: `https://shizukadreemurr.github.io` dùng được cho mọi repo dưới tài khoản đó; tài khoản khác phải được thêm vào Worker.
+  - Model mặc định là `gemini-4-hydrogen` (~10 giây). Nếu chậm khi demo, vào Cài đặt đổi sang `gemini-3.6-flash` (~1 giây).
 - **paste**: hộp thoại cho copy prompt, dán câu trả lời của Claude/ChatGPT/Gemini, kiểm tra như trên.
 Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,min,max}`, `object{props}`; trường nào cũng bắt buộc trừ `optional:true`. Kết quả được cắt/ép kiểu tự động.
 
@@ -74,7 +76,7 @@ Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,
 python3 -m http.server 8211 &        # tại thư mục gốc app
 node tests/smoke.cjs http://localhost:8211/ [--shots thu-muc-anh]
 ```
-Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không lỗi console, mọi tab (1 h1), không tràn ngang 390px sáng/tối, đổi giao diện, CRUD + kiểm tra form của feature mẫu, AI mock + MOCK_NOTICE, CSV có BOM, sao lưu/khôi phục, Gemini giả (retry, đổi model, rơi về mock), logic các mô-đun. Khi thêm feature, chép `tests/feature-template.snippet` (CRUD + form + biên + khoá theo `prefix` + mock notice) vào chỗ `FEATURE TESTS` của `tests/smoke.cjs` rồi đổi tên tab/collection/selector. Smoke test chạy đúng cả khi đã xoá `_example`/`_playground` và các mô-đun tuỳ chọn.
+Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không lỗi console, mọi tab (1 h1), không tràn ngang 390px sáng/tối, đổi giao diện, CRUD + kiểm tra form của feature mẫu, AI mock + MOCK_NOTICE, CSV có BOM, sao lưu/khôi phục, Gemini giả (retry, đổi model, rơi về mock), logic các mô-đun. Test logic nhanh không cần trình duyệt: chép `tests/unit-template.cjs` thành `tests/<feature>.cjs` (node `vm`, ~1 giây, `node tests/<feature>.cjs`). Khi thêm feature, chép `tests/feature-template.snippet` (CRUD + form + biên + khoá theo `prefix` + mock notice) vào chỗ `FEATURE TESTS` của `tests/smoke.cjs` rồi đổi tên tab/collection/selector. Smoke test chạy đúng cả khi đã xoá `_example`/`_playground` và các mô-đun tuỳ chọn.
 
 ## 5. Phiên bản và deploy GitHub Pages
 1. `node tools/bump-version.cjs` (tăng patch; hoặc `minor`, `major`, `1.2.3`, `--stamp`): cập nhật `js/version.js` và gắn `?v=` vào mọi js/css trong `index.html` để không dính cache cũ.

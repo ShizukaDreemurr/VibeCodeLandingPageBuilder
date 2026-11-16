@@ -19,6 +19,12 @@ Dành cho **coordinator** (Claude điều phối). Mỗi file `NN-*.md` = hướ
 - Chỉ **một nơi** được đặt câu này: `mockNotice` trong `js/config.js` (do shell agent sửa). Không ai khác hardcode câu nhãn vào JS/HTML/CSS. Đổi câu thì phải sửa luôn hai dòng assert trong `tests/smoke.cjs` (tìm `Bản demo vòng loại`), README, bảng kiểm thử, slide.
 - Mọi kết quả mock phải hiển thị cạnh nhãn này (dùng `EP.ai.noticeHtml(result)`, chân trang tự hiện khi ở chế độ mock).
 
+## Schema Contract (bắt buộc, T+5, trước khi spawn)
+
+Đợt đầu chạy thật (`references/09`) hỏng vì hai agent đặt hai tên cho cùng một trường (`promoCost` vs `adSpend`, `clickToOrderPct` vs `cr`). Vì vậy **trước khi spawn bất kỳ agent nào**, điều phối viên viết khối **Schema Contract** 10-15 dòng vào `docs/spec-nhanh.md` mục 0 (mẫu ở `templates/spec-nhanh.md`): tên entity + trường + kiểu, tên hàm + hình dạng giá trị trả về, tên collection, id `EP.*` (`EP.register` id, `EP.aiSpecs.<tên>`, `EP.demo` collection). **Mọi prompt agent (feature, shell, AI, data, QA, polish) dán khối này nguyên văn vào `{{SCHEMA_CONTRACT}}` và cấm tự đặt tên.** Đổi contract giữa chừng: điều phối sửa một chỗ rồi gửi bản mới cho mọi agent đang chạy.
+
+Quy tắc đi kèm: **Code tính số, AI diễn giải** (mọi con số do hàm thuần tính; mẫu số = 0 thì trả `Không đủ dữ liệu`, không bao giờ 0%/NaN); app **mở trống**, có nút **Điền dữ liệu mẫu**; test logic nhanh bằng node `vm` (`starter/tests/unit-template.cjs` → `tests/<feature>.cjs`); chạy theo **3 đợt** (1 lõi, 2 nâng cấp, 3 micro-features) và luôn có agent đang chạy, xem `references/02`.
+
 ## Bản đồ prompt theo pha
 
 | Phút | Pha | File | Model | Ghi chú |
@@ -102,7 +108,7 @@ Agent phải tự `kill` server của mình khi xong. Test hardcode port khác -
 
 ## Biến chung
 
-`{{DE_SO}}` số đề, `{{DE_TEXT}}` nguyên văn đề, `{{REPO}}` đường dẫn repo tuyệt đối, `{{BRANCH}}` nhánh gốc, `{{PORT}}`, `{{FEATURE_NAME}}`, `{{FEATURE_DESC}}`, `{{ACCEPTANCE}}`, `{{APP_NAME}}`, `{{BRAND_COLORS}}`, `{{SESSION_URL}}`, `{{OWNED_PATHS}}`, `{{COMMIT_MODE}}` (`commit-on-worktree` | `no-commit`), `{{MOCK_NOTICE}}` (câu nhãn mô phỏng chép NGUYÊN VĂN từ đề/BTC, xem cảnh báo ở trên), `{{FEATURE_LIST}}`, `{{DOMAIN}}`, `{{AI_USES}}`, `{{SCHEMAS}}`, `{{QA_SCOPE}}`, `{{POLISH_SCOPE}}`, `{{PITCH_MINUTES}}`, `{{SLIDE_COUNT}}`, `{{LIVE_URL}}`, `{{REPO_URL}}`, `{{TEAM}}`, `{{TRANSCRIPT_PATH}}`, `{{MINUTES}}`, `{{OLD_BRANCH}}`, `{{ACCEPTANCE_MIN}}` (chỉ ở `11-emergency.md`), `{{REPO_SLUG}}`, `{{BRANCH_LIST}}` (chỉ ở `09-merge-deploy.md`).
+`{{DE_SO}}` số đề, `{{DE_TEXT}}` nguyên văn đề, `{{REPO}}` đường dẫn repo tuyệt đối, `{{BRANCH}}` nhánh gốc, `{{PORT}}`, `{{FEATURE_NAME}}`, `{{FEATURE_DESC}}`, `{{ACCEPTANCE}}`, `{{APP_NAME}}`, `{{BRAND_COLORS}}`, `{{SESSION_URL}}`, `{{SCHEMA_CONTRACT}}` (khối Schema Contract dán nguyên văn từ `docs/spec-nhanh.md` mục 0), `{{OWNED_PATHS}}`, `{{COMMIT_MODE}}` (`commit-on-worktree` | `no-commit`), `{{MOCK_NOTICE}}` (câu nhãn mô phỏng chép NGUYÊN VĂN từ đề/BTC, xem cảnh báo ở trên), `{{FEATURE_LIST}}`, `{{DOMAIN}}`, `{{AI_USES}}`, `{{SCHEMAS}}`, `{{QA_SCOPE}}`, `{{POLISH_SCOPE}}`, `{{PITCH_MINUTES}}`, `{{SLIDE_COUNT}}`, `{{LIVE_URL}}`, `{{REPO_URL}}`, `{{TEAM}}`, `{{TRANSCRIPT_PATH}}`, `{{MINUTES}}`, `{{OLD_BRANCH}}`, `{{ACCEPTANCE_MIN}}` (chỉ ở `11-emergency.md`), `{{REPO_SLUG}}`, `{{BRANCH_LIST}}` (chỉ ở `09-merge-deploy.md`).
 
 ## Khối chuẩn chèn vào mọi prompt (đã có sẵn trong từng file)
 

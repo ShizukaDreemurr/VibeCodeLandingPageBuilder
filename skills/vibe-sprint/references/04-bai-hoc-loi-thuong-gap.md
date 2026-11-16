@@ -129,3 +129,9 @@ Mã `07-…` = đoạn chép-dán tương ứng trong `references/07-cookbook-co
 | Người dùng dán API key (EverAI, Gemini...) vào chat | Quên quy tắc | Không ghi key vào file/commit/ảnh/README; chỉ dùng trong lệnh tạm nếu bắt buộc, nhắc thu hồi/đổi key sau đó; `scan-secrets` trước push |
 | Bản ghi minh chứng AI không còn đoạn chat gốc | Lịch sử bị nén | Chụp và ghi `docs/MINH-CHUNG-AI.md` ngay lúc làm (`07` H6) |
 | Bảng A hay B? Hạn nộp 23:59 hay 00:30? | Thông tin lệch giữa thông báo, cô và README | Hỏi/đối chiếu ngay ở T+0; làm theo mốc sớm nhất; ghi quyết định vào `DECISIONS.md` |
+
+## Gemini qua proxy của đội (đọc trước khi demo)
+
+- `ai.proxyUrl` trong `starter/js/config.js` đã **điền sẵn Worker của đội**: `https://vibe-gemini-proxy.xclipse.workers.dev` (không cần nhập key khi demo).
+- **`ALLOWED_ORIGINS` trên Worker phải chứa origin Pages của chung kết.** `https://shizukadreemurr.github.io` dùng được cho mọi repo dưới tài khoản đó; **tài khoản khác phải thêm origin vào Worker** (xem `proxy/README.md`), không thì trình duyệt báo CORS/403.
+- Model mặc định hiện là **`gemini-4-hydrogen` (~10 giây/lượt)**. Nếu chậm khi demo: vào Cài đặt đổi sang **`gemini-3.6-flash` (~1 giây)**.

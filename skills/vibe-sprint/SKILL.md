@@ -26,6 +26,7 @@ Khi skill này chạy, **usage/token KHÔNG phải ràng buộc. Thời gian là
 | Phút | Việc | Ai làm | Đầu ra |
 |---|---|---|---|
 | T+0→5 | Đọc đề, viết spec 1 trang, 5 tính năng + tiêu chí nghiệm thu (`references/01`) | Điều phối + 1 agent research (Haiku) song song | `docs/spec-nhanh.md` |
+| **T+5 (bắt buộc)** | **Schema Contract**: khối 10-15 dòng ở mục 0 của spec (trường + kiểu, tên hàm + hình dạng trả về, collection, id `EP.*`). **Chưa có thì chưa spawn.** | Điều phối | Contract dán nguyên văn vào mọi prompt |
 | T+5→8 | Chọn starter + UI tokens; kiểm tra UI 2 phút (bảng màu, font, bố cục 3 màn) | Điều phối | `docs/PROGRESS.md` (ghi 5 dòng kiểm UI) |
 | T+8→40 | **Song song** (xem bảng agent dưới) | N agent tính năng + deck + docs + data/demo + QA | Mỗi agent commit trên worktree/thư mục riêng |
 | T+25 | Merge đợt 1 (khung + dữ liệu), chạy test nhanh, chụp ảnh | Điều phối | App chạy được dù tính năng chưa đủ |
@@ -63,6 +64,12 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 Mỗi agent chỉ dùng cổng của mình, kill server khi xong. Xung đột chi tiết xem `prompts/00-README.md` và `references/02`.
 
 Haiku cho việc ngắn, rõ, ít suy luận (dữ liệu, docs, QA lặp). Sonnet cho mọi thứ có logic hoặc giao diện. Chi tiết quy trình: `references/02-dieu-phoi-agent.md`. Prompt thật nằm trong `prompts/` (đọc `prompts/00-README.md` trước): copy khối prompt, điền các biến `{{DE_TEXT}}`, `{{FEATURE_NAME}}`, `{{PORT}}`, `{{REPO}}`... rồi gửi.
+
+## Schema Contract, tính số, đợt
+
+- **Schema Contract (T+5):** mọi prompt agent dán nguyên văn, cấm tự đặt tên (lỗi thật: `promoCost` vs `adSpend`, `clickToOrderPct` vs `cr`; xem `references/09`).
+- **Code tính số, AI diễn giải;** mẫu số = 0 → `Không đủ dữ liệu`. App **mở trống**, có nút `Điền dữ liệu mẫu`.
+- **3 đợt** (1 lõi, 2 nâng cấp, 3 micro-features), **zero-idle** (xong đợt N là spawn ngay đợt N+1). Test logic nhanh bằng node `vm`: `starter/tests/unit-template.cjs`. Chi tiết `references/02`.
 
 ## Cổng duyệt (tối thiểu)
 
@@ -102,7 +109,7 @@ Mọi thứ nằm trong `skills/vibe-sprint/` (gọi tắt `<SKILL>`). Đường
 - `prompts/` — prompt tự đủ ngữ cảnh cho từng loại agent (`00-README.md` là mục lục + bảng cổng).
 - `catalog/` — gợi ý theo loại đề (`de-bai-vong-1.md`, `de-moi-du-doan.md`, `module-map.md`).
 - `scripts/` — `new-project.sh`, `scan-secrets.mjs`.
-- `references/` — đọc theo nhu cầu: `01` đọc đề → spec · `02` điều phối agent · `03` chuẩn chất lượng Xclipse · `04` bài học lỗi (đã bổ sung đợt 2: quy trình agent, mobile/animation, dữ liệu/AI/chia sẻ) · `05` thuyết trình + hỏi đáp · `06` hồ sơ + triển khai (có Firebase + GitHub Pages) · **`07` cookbook đoạn mã mẫu ≤15 dòng** (cache `?v=`, chống nháy theme, vòng tròn đổi theme, CSS mobile, form/SĐT, nén ảnh, AI schema + mock + nhãn, Gemini, OG/trang chia sẻ tĩnh, Firebase init + rules + deploy, Pages, Sheet, Playwright, ảnh minh chứng, giải merge) · **`08` quy ước viết** (đặt tên, câu chữ tiếng Việt cho UI/lỗi/nút, comment, commit + trailer, thư mục, báo cáo agent). Prompt giao việc nên dán thêm đoạn liên quan của `07`/`08`.
+- `references/` — đọc theo nhu cầu: `01` đọc đề → spec · `02` điều phối agent · `03` chuẩn chất lượng Xclipse · `04` bài học lỗi (đã bổ sung đợt 2: quy trình agent, mobile/animation, dữ liệu/AI/chia sẻ) · `05` thuyết trình + hỏi đáp · `06` hồ sơ + triển khai (có Firebase + GitHub Pages) · **`07` cookbook đoạn mã mẫu ≤15 dòng** (cache `?v=`, chống nháy theme, vòng tròn đổi theme, CSS mobile, form/SĐT, nén ảnh, AI schema + mock + nhãn, Gemini, OG/trang chia sẻ tĩnh, Firebase init + rules + deploy, Pages, Sheet, Playwright, ảnh minh chứng, giải merge) · **`08` quy ước viết** (đặt tên, câu chữ tiếng Việt cho UI/lỗi/nút, comment, commit + trailer, thư mục, báo cáo agent). Prompt giao việc nên dán thêm đoạn liên quan của `07`/`08`. **`09` tư liệu chạy thử thật của đội** (50 phút, 16 subagent, 3 đợt, 60/60 test; lỗi tên trường và bài học điều phối): `references/09-case-study-de7-livetrack.md`.
 
 ### Lệnh thật (không có tên giữ chỗ)
 

@@ -4,6 +4,7 @@
 // Cách dùng:
 //   node scan-secrets.mjs <thư-mục>                    quét theo mẫu (AIza…, AQ., sk-…, token dài 30+ ký tự…)
 //   node scan-secrets.mjs <thư-mục> <file .env.local>  thêm: tìm đúng GIÁ TRỊ các biến bí mật trong file env
+//   --include-vendor                                   quét cả js/vendor/ và *.min.js (mặc định BỎ QUA vì thư viện nén hay báo giả)
 //
 // Chỉ in TÊN mẫu hoặc TÊN biến, vị trí file và số dòng. Không bao giờ in giá trị bí mật.
 // Mã thoát: 0 = sạch · 1 = có chỗ lộ · 2 = sai cách dùng.
@@ -11,7 +12,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const args = process.argv.slice(2);
+const argv = process.argv.slice(2);
+const includeVendor = argv.includes("--include-vendor");
+const args = argv.filter((a) => a !== "--include-vendor");
 if (args.length < 1 || args.length > 2) {
   console.error("Cách dùng: node scan-secrets.mjs <thư-mục> [<.env.local>]");
   process.exit(2);
@@ -57,6 +60,9 @@ const looksRandom = (v) => /\d/.test(v);
 const PUBLIC_ENV = /^(NEXT_PUBLIC_.*URL|APP_URL|.*MODEL.*|.*PROVIDER.*|EMAIL_FROM|ADMIN_EMAILS|PRIVACY_CONTACT_EMAIL|NODE_ENV|PORT)$/;
 
 const SKIP_DIRS = new Set(["node_modules", ".git"]);
+// Thư viện bên thứ ba đóng gói sẵn: bỏ qua mặc định (từng báo giả ở js/vendor/xlsx.mini.min.js).
+const isVendor = (rel) => /(^|\/)js\/vendor\//.test(rel) || /\.min\.js$/i.test(rel);
+const skippedVendor = [];
 const MAX_BYTES = 2 * 1024 * 1024;
 
 function* walk(folder) {
@@ -64,6 +70,11 @@ function* walk(folder) {
     if (SKIP_DIRS.has(entry.name)) continue;
     const full = path.join(folder, entry.name);
     if (entry.isSymbolicLink()) continue;
+    if (!includeVendor && isVendor(path.relative(root, full).split(path.sep).join("/") + (entry.isDirectory() ? "/" : ""))) {
+      if (entry.isFile()) skippedVendor.push(path.relative(root, full).split(path.sep).join("/"));
+      else if (entry.isDirectory()) skippedVendor.push(path.relative(root, full).split(path.sep).join("/") + "/");
+      continue;
+    }
     if (entry.isDirectory()) yield* walk(full);
     else if (entry.isFile()) yield full;
   }
@@ -171,5 +182,9 @@ function fileInside(child, parent) {
   return rel !== "" && !rel.startsWith("..") && !path.isAbsolute(rel);
 }
 
+if (skippedVendor.length) {
+  const uniq = [...new Set(skippedVendor)];
+  console.log(`[BỎ QUA] thư viện bên thứ ba (dùng --include-vendor để quét): ${uniq.join(", ")}`);
+}
 console.log(`Đã quét ${files} tệp văn bản (bỏ qua ${skipped} tệp nhị phân hoặc quá lớn). Lộ: ${flagged} · Cho phép: ${allowedCount}.`);
 process.exit(flagged > 0 ? 1 : 0);

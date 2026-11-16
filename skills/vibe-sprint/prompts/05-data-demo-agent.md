@@ -2,11 +2,18 @@
 
 **Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.**
 
+> **Schema Contract bắt buộc.** Dán NGUYÊN VĂN khối **Schema Contract** (`{{SCHEMA_CONTRACT}}`, lấy từ `docs/spec-nhanh.md` mục 0) vào prompt này. Tên trường, tên hàm, tên collection, id `EP.*` phải đúng từng chữ như contract; **không tự đặt tên mới**. Thiếu tên thì dừng và hỏi điều phối, không đoán.
+
 Port 8214. Starter đã có `js/demo.js` (`EP.demo.register(collection, { version, rows | seed })`, tự nạp ở lần mở đầu, `?demo=1` nạp lại từ đầu, nút "Nạp lại dữ liệu demo" ở Cài đặt gọi `EP.demo.reset()`). Agent này viết dữ liệu demo đầy đủ trong file mới `js/demo-data.js` (nạp SAU các feature, TRƯỚC `js/app.js`, nên bản đăng ký của nó thắng bản 3 dòng tạm của feature agent). Cần schema từng feature (tên collection `EP.collection('<tên>')`, trường) -> lấy từ bảng feature trong `docs/spec-nhanh.md` và dán vào `{{SCHEMAS}}`. Nếu feature agent đổi schema, báo coordinator sửa lại ở bước merge (hoặc spawn lại agent này sau merge).
 
 ```
 Repo: {{REPO}} (vanilla JS, window.EP). FIRST `git reset --hard {{BRANCH}}`. Serve `python3 -m http.server {{PORT}}` from YOUR worktree root (never 8000; kill when done).
 Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.
+
+SCHEMA CONTRACT (verbatim from docs/spec-nhanh.md section 0; do NOT invent or rename any field, function, collection or EP.* id; if something is missing, stop and report instead of guessing)
+{{SCHEMA_CONTRACT}}
+
+RULE: the app opens EMPTY by default; ship demo rows behind a visible button "Điền dữ liệu mẫu" (calls EP.demo.reset/seed) unless the spec says to preload. Field names exactly as in the contract.
 
 CONTEXT
 Contest Đề {{DE_SO}}: {{DE_TEXT}}. App "{{APP_NAME}}", domain {{DOMAIN}}. Opening the app must show realistic Vietnamese demo data on the first visit, and `?demo=1` reseeds it, so judges see a living product in 1 click.

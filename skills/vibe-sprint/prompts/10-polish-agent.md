@@ -2,11 +2,16 @@
 
 **Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.**
 
+> **Schema Contract bắt buộc.** Dán NGUYÊN VĂN khối **Schema Contract** (`{{SCHEMA_CONTRACT}}`, lấy từ `docs/spec-nhanh.md` mục 0) vào prompt này. Tên trường, tên hàm, tên collection, id `EP.*` phải đúng từng chữ như contract; **không tự đặt tên mới**. Thiếu tên thì dừng và hỏi điều phối, không đoán.
+
 Spawn 2-3 agent song song, mỗi agent một view/nhóm file riêng ({{POLISH_SCOPE}}) để không đè nhau. Port 8215-8216 (polish #1..#2). Chỉ chạy khi nhánh tích hợp xanh test. Thời hạn cứng: 8 phút, rồi coordinator merge.
 
 ```
 Repo: {{REPO}} (vanilla JS mini-app "{{APP_NAME}}", window.EP; look = preset in css/tokens.css, edit only via existing tokens, CSS inside `@layer components`). FIRST `git reset --hard {{BRANCH}}`. Serve `python3 -m http.server {{PORT}}` from YOUR worktree root (never 8000; kill when done).
 Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.
+
+SCHEMA CONTRACT (verbatim from docs/spec-nhanh.md section 0; do NOT invent or rename any field, function, collection or EP.* id; if something is missing, stop and report instead of guessing)
+{{SCHEMA_CONTRACT}}
 
 TIME BOX: 8 minutes. Only low-risk, high-visibility changes. Scope (you may edit only these): {{POLISH_SCOPE}}.
 

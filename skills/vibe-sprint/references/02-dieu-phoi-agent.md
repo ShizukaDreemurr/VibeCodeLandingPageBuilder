@@ -26,8 +26,36 @@ Usage/token **không phải** ràng buộc, chỉ **thời gian** là ràng bu�
 
 Mặc định cho sprint: **worktree + chia file theo feature** (mỗi tính năng 1 thư mục `features/<tên>/feature.js` đăng ký bằng `EP.register`, tùy chọn 1 file `css/<tên>.css` trong `@layer components`).
 
-## Prompt agent — bắt buộc đủ 9 mục
+## Schema Contract (bắt buộc, T+5, trước khi spawn)
 
+Lỗi thật từ lần chạy thử (`09-case-study-de7-livetrack.md`): hai agent đặt hai tên cho một trường (`promoCost` vs `adSpend`; `clickToOrderPct` vs `cr`), test đỏ ở phút cuối. Cách chặn:
+
+1. Ở T+5, ngay sau spec, điều phối viên viết khối **Schema Contract** 10-15 dòng ở đầu `docs/spec-nhanh.md` (mục 0, mẫu trong `templates/spec-nhanh.md`): entity + tên trường + kiểu; tên hàm + hình dạng giá trị trả về; tên collection; id `EP.*`.
+2. **Chưa có contract thì chưa spawn.** Prompt mỗi agent (feature, shell, AI, data, QA, polish) dán contract nguyên văn vào `{{SCHEMA_CONTRACT}}`; agent không được tự đặt tên, thiếu thì dừng và hỏi.
+3. Đổi tên giữa chừng = sửa contract một chỗ + gửi bản mới cho mọi agent đang chạy (`SendMessage`). Sau merge, QA grep tên lệch contract.
+
+## Quy tắc tính toán và dữ liệu
+
+- **Code tính số, AI diễn giải.** Mọi con số/tỷ lệ do hàm thuần trong code tính; AI chỉ nhận số đã tính để viết nhận xét. Không để AI tự cộng/chia.
+- **Mẫu số = 0 → `Không đủ dữ liệu`.** Mọi tỷ lệ/phần trăm/trung bình đều có guard này; không bao giờ hiện `0%`, `NaN`, `Infinity`.
+- **Mở trống, có nút `Điền dữ liệu mẫu`.** Mặc định app trống (thấy trạng thái rỗng đẹp); dữ liệu demo nạp bằng nút (`EP.demo.reset()`), trừ khi đề yêu cầu có sẵn.
+- **Test logic nhanh bằng node `vm`:** `tests/<feature>.cjs` (chép `starter/tests/unit-template.cjs`): nạp `js/*.js` vào sandbox với `EP` giả, assert hàm thuần, chạy khoảng 1 giây, không cần trình duyệt. Playwright chỉ dùng cho giao diện.
+
+## Mẫu 3 đợt và pipeline không rảnh
+
+Chạy thật: 50 phút, 16 agent, 3 đợt, 60/60 test.
+
+| Đợt | Nội dung | Ghi chú |
+|---|---|---|
+| 1 Lõi | khung + dữ liệu + 3-5 tính năng lõi + AI mock | merge sớm (T+25), luôn có bản chạy được |
+| 2 Nâng cấp | sâu hơn tính năng lõi, AI thật/paste, polish, test, deck | mỗi agent nhận contract bản mới nhất |
+| 3 Micro-features | các tính năng nhỏ 5-8 phút (xuất, lọc, gợi ý, mẹo) | mỗi cái 1 agent, bỏ được nếu trễ |
+
+**Zero-idle:** không để agent nào ngồi chờ và không để điều phối viên chờ. Khi agent đợt N xong, **spawn ngay** việc đợt N+1 (không đợi cả đợt xong); trong lúc chờ thì điều phối merge, chạy test, chụp ảnh. Agent QA/second-opinion chạy ngay sau mỗi merge. Cổng giờ vẫn là T+40.
+
+## Prompt agent — bắt buộc đủ 9 mục + contract
+
+0. **Khối Schema Contract dán nguyên văn** (cấm đặt tên mới).
 1. Bối cảnh 3 dòng: app gì, đề gì, vanilla HTML/CSS/JS không build, UI tiếng Việt.
 2. Dòng đầu: `git reset --hard <nhánh>` (nếu worktree) hoặc "làm việc trong thư mục X".
 3. Việc cần làm: trích đoạn spec của tính năng (Input/Quy tắc/Output/Lưu trữ) + nghiệm thu.

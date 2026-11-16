@@ -4,6 +4,19 @@
 
 **Đề số:** <số> · **Bảng:** <A / B> · **Đề bài gốc (dán nguyên văn):** <…>
 
+## 0. Schema Contract (điều phối viết ở T+5, TRƯỚC khi spawn; dán nguyên văn vào mọi prompt agent)
+
+> 10-15 dòng. Agent không được đổi hoặc tự đặt tên; thiếu thì hỏi. Đổi tên = sửa ở đây và báo mọi agent.
+
+```
+ENTITY  <entity>: { id:string, <field>:<number|string|ISO date|bool>, ... }        (mỗi entity 1 dòng)
+COLL    EP.collection('<tên>')  -> <entity>                                        (tên collection)
+FN      <tên hàm>(<tham số>) -> { <khóa>:<kiểu>, ... } | "Không đủ dữ liệu"        (hình dạng trả về)
+EP      EP.register id: '<id>' · EP.aiSpecs.<tên> · EP.demo.register('<tên>')       (id dùng chung)
+RULE    Code tính số, AI chỉ diễn giải; mẫu số = 0 -> "Không đủ dữ liệu" (không 0%/NaN)
+RULE    App mở trống; nút "Điền dữ liệu mẫu" nạp demo
+```
+
 ## 1. Bài toán và persona
 
 - **Persona:** <vai trò cụ thể, ví dụ: marketer tổ chức workshop>

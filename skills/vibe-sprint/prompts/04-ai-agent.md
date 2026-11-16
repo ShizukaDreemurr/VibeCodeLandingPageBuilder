@@ -2,11 +2,18 @@
 
 **Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.**
 
+> **Schema Contract bắt buộc.** Dán NGUYÊN VĂN khối **Schema Contract** (`{{SCHEMA_CONTRACT}}`, lấy từ `docs/spec-nhanh.md` mục 0) vào prompt này. Tên trường, tên hàm, tên collection, id `EP.*` phải đúng từng chữ như contract; **không tự đặt tên mới**. Thiếu tên thì dừng và hỏi điều phối, không đoán.
+
 Port 8213. Starter đã có sẵn lớp AI hoàn chỉnh `js/ai.js` (`EP.ai.generate`, 3 chế độ mock / gemini / paste, kiểm tra schema, đổi model, rơi về mock). Việc của agent này là viết **đặc tả AI cho từng tương tác** (prompt + schema + mock chất lượng cao) trong file mới `js/ai-specs.js`, KHÔNG viết lại `ai.js`. Điền `{{AI_USES}}` = danh sách 1-3 tương tác AI từ spec (tên spec, input, output JSON). Feature agent chỉ gọi `EP.ai.generate(EP.aiSpecs.<tên>, { input })` nên **chốt tên + input + schema trong spec trước** và dán vào prompt feature. Mock phải đủ tốt để demo thắng điểm; Gemini là tuỳ chọn khi có key.
 
 ```
 Repo: {{REPO}} (vanilla JS, window.EP). FIRST `git reset --hard {{BRANCH}}`. Serve `python3 -m http.server {{PORT}}` from YOUR worktree root (never 8000; kill when done).
 Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.
+
+SCHEMA CONTRACT (verbatim from docs/spec-nhanh.md section 0; do NOT invent or rename any field, function, collection or EP.* id; if something is missing, stop and report instead of guessing)
+{{SCHEMA_CONTRACT}}
+
+RULE: code computes numbers, AI only narrates. Put every figure in the prompt as an already-computed input; the AI never calculates. If a denominator is 0, the code returns the string "Không đủ dữ liệu" and the AI/mock must repeat it, never output 0%, NaN or Infinity.
 
 CONTEXT
 Contest Đề {{DE_SO}}: {{DE_TEXT}}. App "{{APP_NAME}}" ({{FEATURE_DESC}}). Domain: {{DOMAIN}}. Judges must SEE AI value in the demo, with no network and no API key, and also be able to switch to real Gemini or copy-paste mode (both already implemented in js/ai.js).

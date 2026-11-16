@@ -2,11 +2,16 @@
 
 **Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.**
 
+> **Schema Contract bắt buộc.** Dán NGUYÊN VĂN khối **Schema Contract** (`{{SCHEMA_CONTRACT}}`, lấy từ `docs/spec-nhanh.md` mục 0) vào prompt này. Tên trường, tên hàm, tên collection, id `EP.*` phải đúng từng chữ như contract; **không tự đặt tên mới**. Thiếu tên thì dừng và hỏi điều phối, không đoán.
+
 Spawn đợt 1, port 8212. Agent này là chủ của `index.html`, `js/config.js` (gồm câu nhãn mock), `css/tokens.css`, giao diện/preset. Tab tự dựng từ `EP.register` nên feature agent chỉ thêm một dòng script; merge shell trước feature. Điền `{{MOCK_NOTICE}}` bằng câu nhãn chép NGUYÊN VĂN từ đề/BTC (xem cảnh báo ở `00-README.md`).
 
 ```
 Repo: {{REPO}} (vanilla JS, window.EP, no build). FIRST run `git reset --hard {{BRANCH}}`. Serve `python3 -m http.server {{PORT}}` from YOUR worktree root (never 8000; kill when done).
 Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt.
+
+SCHEMA CONTRACT (verbatim from docs/spec-nhanh.md section 0; do NOT invent or rename any field, function, collection or EP.* id; if something is missing, stop and report instead of guessing)
+{{SCHEMA_CONTRACT}}
 
 CONTEXT
 Contest Đề {{DE_SO}}: {{DE_TEXT}}
