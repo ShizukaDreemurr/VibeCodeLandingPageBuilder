@@ -45,7 +45,7 @@ SCRIPTS="$SKILL_DIR/scripts"
 STARTER="$SKILL_DIR/starter"
 
 for f in CLAUDE.md README-du-thi.md spec-nhanh.md PROGRESS.md DECISIONS.md BANG-KIEM-THU.md \
-         MINH-CHUNG-AI.md KICH-BAN-DEMO.md HOI-DAP.md CHECKLIST-CHUNG-KET.md; do
+         MINH-CHUNG-AI.md KICH-BAN-DEMO.md HOI-DAP.md CUE-CARDS.md CHECKLIST-CHUNG-KET.md; do
   [ -f "$TPL/$f" ] || { echo "Thiếu mẫu: $TPL/$f" >&2; exit 1; }
 done
 
@@ -61,7 +61,7 @@ mkdir -p "$TARGET/docs/minh-chung-ai" "$TARGET/scripts"
 cp "$TPL/CLAUDE.md" "$TARGET/CLAUDE.md"
 cp "$TPL/README-du-thi.md" "$TARGET/README.md"
 for f in spec-nhanh.md PROGRESS.md DECISIONS.md BANG-KIEM-THU.md MINH-CHUNG-AI.md \
-         KICH-BAN-DEMO.md HOI-DAP.md CHECKLIST-CHUNG-KET.md; do
+         KICH-BAN-DEMO.md HOI-DAP.md CUE-CARDS.md CHECKLIST-CHUNG-KET.md; do
   cp "$TPL/$f" "$TARGET/docs/$f"
 done
 
