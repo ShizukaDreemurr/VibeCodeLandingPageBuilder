@@ -17,7 +17,7 @@
   'use strict';
   var EP = root.EP, cfg = EP.config, esc = EP.esc, doc = root.document;
 
-  var MOCK_NOTICE = cfg.mockNotice || 'Bản demo vòng loại - Dữ liệu mô phỏng AI';
+  var MOCK_NOTICE = cfg.mockNotice || 'Dữ liệu mô phỏng AI · Dữ liệu mẫu';
   var GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent';
   var TIMEOUT_MS = 25000;
   // Danh sách model sao chép từ Xclipse (js/ai-service.js). Cập nhật theo tài khoản thật khi đi thi.

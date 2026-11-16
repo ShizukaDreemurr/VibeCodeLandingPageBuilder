@@ -1,0 +1,58 @@
+/* biz.css - giao diện cho EP.scenario (js/scenario.js) và EP.importer (js/import.js). Chỉ dùng token sẵn có. */
+.sc > .card { margin-bottom: 16px; }
+.sc-sub { font-size: 14px; font-weight: 650; color: var(--text-muted); }
+.sc-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+@media (min-width: 720px) { .sc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; } }
+.sc-row { min-width: 0; }
+.sc-row .field-msg { min-height: 0; margin-top: 2px; }
+.sc-row .field-msg:empty { display: none; }
+.sc-range { display: block; width: 100%; margin: 8px 0 2px; accent-color: var(--accent); height: 24px; }
+.sc-why { display: flex; gap: 8px; align-items: flex-start; margin-top: 4px; font-size: 12.5px; line-height: 1.45; }
+.sc-why > span:first-child { flex: none; }
+.sc-spread { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.sc-spread-in { width: 64px; min-height: 36px; padding: 0 8px; border: 1px solid var(--control); border-radius: 10px; background: var(--surface); color: var(--text); font-size: 16px; text-align: right; }
+.sc-ctl { gap: 10px 16px; }
+.sc-ctl > div { min-width: 0; max-width: 100%; }
+.sc-tablewrap { min-width: 0; }
+.sc-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 14px; }
+.sc-table th, .sc-table td { padding: 10px 8px; border-bottom: 1px solid var(--rule); vertical-align: middle; overflow-wrap: anywhere; }
+.sc-table thead th { font-size: 12.5px; color: var(--text-muted); background: var(--raised); text-align: left; }
+.sc-table thead th.num, .sc-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.sc-table tbody th { font-weight: 500; text-align: left; width: 34%; }
+.sc-table tbody tr:last-child > * { border-bottom: 0; }
+.sc-table td.is-cur, .sc-table tbody th.is-cur { background: var(--raised); font-weight: 650; } .sc-table thead th.is-cur { color: var(--text); }
+.sc-table td.neg { color: var(--danger); font-weight: 650; }
+.sc-table td.nodata { color: var(--text-muted); font-size: 12px; }
+@media (max-width: 560px) { .sc-table { font-size: 12.5px; } .sc-table th, .sc-table td { padding: 8px 4px; } .sc-table tbody th { width: 31%; } }
+.sc-explain > summary { cursor: pointer; list-style: none; min-height: 44px; display: flex; align-items: center; }
+.sc-explain > summary::-webkit-details-marker { display: none; }
+.sc-explain > summary::after { content: "▾"; margin-left: auto; color: var(--text-muted); transition: transform var(--dur-1); }
+.sc-explain:not([open]) > summary::after { transform: rotate(-90deg); }
+.sc-dl { display: grid; gap: 12px; margin: 8px 0 0; }
+.sc-ex dt { font-weight: 650; font-size: 14px; }
+.sc-ex dd { margin: 2px 0 0; min-width: 0; }
+.sc-ex code { display: block; font-family: var(--mono, ui-monospace, monospace); font-size: 12.5px; color: var(--text-muted); white-space: normal; overflow-wrap: anywhere; }
+.sc-live { display: block; margin-top: 2px; font-weight: 600; font-size: 13.5px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+
+/* Importer */
+.im-drop { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 24px 16px; text-align: center; border: 2px dashed var(--control); border-radius: 16px; cursor: pointer; background: var(--raised); transition: border-color var(--dur-1), background var(--dur-1); min-height: 120px; justify-content: center; }
+.im-drop:hover, .im-drop:focus-within, .im-drop.is-over { border-color: var(--accent); background: var(--accent-soft); }
+.im-drop input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+.im-drop svg { width: 28px; height: 28px; color: var(--accent-ink); }
+.im-step { margin-top: 18px; min-width: 0; }
+.im-map { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 720px) { .im-map { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.im-prev { max-height: 360px; overflow: auto; border: 1px solid var(--rule); border-radius: 12px; }
+.im-prev table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 13px; }
+.im-prev th, .im-prev td { padding: 6px 10px; border-bottom: 1px solid var(--rule); white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+.im-prev th { position: sticky; top: 0; background: var(--raised); color: var(--text-muted); }
+.im-errs { margin: 8px 0 0; padding-left: 18px; font-size: 13px; color: var(--danger); }
+.im-sum { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+/* Thanh trượt giả định: rãnh mảnh theo token, nút tròn màu nhấn */
+.sc-range { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+.sc-range::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: var(--rule); border: 1px solid var(--border); }
+.sc-range::-moz-range-track { height: 6px; border-radius: 999px; background: var(--rule); border: 1px solid var(--border); }
+.sc-range::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -9px; border-radius: 50%; background: var(--accent); border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--control); }
+.sc-range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--control); }
+.sc-range:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }

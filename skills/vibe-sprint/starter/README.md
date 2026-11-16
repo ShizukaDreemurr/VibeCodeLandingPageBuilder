@@ -10,7 +10,7 @@ Bộ khung web app thuần HTML/CSS/JS (không build, không CDN) cho cuộc thi
 4. Chạy thử: `python3 -m http.server 8211` rồi mở `http://localhost:8211/` (bảng cổng của skill: 8211 điều phối, 8212-8230 các agent, **không dùng 8000**).
 5. Nhân bản feature (mục 2). Khi đã có feature thật, xoá `features/_example` và `features/_playground` **cùng với hai dòng `<script src="features/_example/feature.js">` và `<script src="features/_playground/feature.js">` trong `index.html`** (xoá thư mục mà quên dòng script thì trình duyệt báo 404 và smoke test đỏ). Smoke test tự bỏ qua các khối của hai feature này khi tab của chúng không còn.
 
-Thứ tự nạp script trong `index.html`: config, version, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, checklist, quiz, chat, timeslot), **lucian**, features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
+Thứ tự nạp script trong `index.html`: config, version, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, scenario, import, checklist, quiz, chat, timeslot), **lucian**, features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
 
 ## 2. Thêm một feature (5 phút)
 
@@ -52,7 +52,7 @@ Nạp **sau `js/config.js`/`core.js`/`metrics.js` và TRƯỚC mọi `features/*
 
 ### AI trong 3 chế độ
 `EP.ai.generate(spec, { mode })` với `mode` = `mock` | `gemini` | `paste` (mặc định lấy từ chọn của người dùng ở Cài đặt).
-- **mock**: chạy `spec.mock(input)` offline, tất định. Luôn hiển thị `EP.ai.MOCK_NOTICE` (= `mockNotice` trong `config.js`, mặc định là câu vòng loại "Bản demo vòng loại - Dữ liệu mô phỏng AI", nhớ thay bằng câu nguyên văn của đề chung kết) bằng `EP.ai.noticeHtml(result)`; chân trang cũng hiện khi đang ở chế độ mock.
+- **mock**: chạy `spec.mock(input)` offline, tất định. Luôn hiển thị `EP.ai.MOCK_NOTICE` (= `mockNotice` trong `config.js`, mặc định "Dữ liệu mô phỏng AI · Dữ liệu mẫu"; nếu đề hoặc BTC đưa câu nhãn thì chép nguyên văn) bằng `EP.ai.noticeHtml(result)`; chân trang cũng hiện khi đang ở chế độ mock.
 - **gemini**: key người dùng nhập ở Cài đặt (nằm trong bộ nhớ trang, chỉ lưu localStorage nếu tick "Nhớ key"), gửi qua header `x-goog-api-key`, tự đổi model khi 429/quá tải (danh sách trong `ai.js`), rút JSON, kiểm tra schema, sai thì thử lại 1 lần, vẫn lỗi thì rơi về mock kèm cảnh báo.
   - Tuỳ chọn: đặt `ai.proxyUrl` trong `js/config.js` (URL Cloudflare Worker, xem `../proxy/README.md`) thì chế độ gemini gọi qua máy chủ trung gian, không cần nhập key.
   - **`proxyUrl` đã điền sẵn Worker của đội** (`https://vibe-gemini-proxy.xclipse.workers.dev`). `ALLOWED_ORIGINS` trên Worker phải chứa origin Pages của chung kết: `https://xclipsex.github.io` dùng được cho mọi repo dưới tài khoản đó; tài khoản khác phải được thêm vào Worker.
@@ -62,6 +62,11 @@ Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,
 
 ### Mô-đun tiện ích (đều nhỏ, có chú thích đầu file, demo ở tab "Mô-đun")
 `mock.js` (hash/rng/sentiment/classify tất định), `metrics.js` (chia an toàn, CTR/CPC/CPA/ROAS, VND, xu hướng), `match.js` (bỏ dấu tiếng Việt, FAQ matcher, tìm kiếm), `calc.js` (form -> kết quả trực tiếp), `checklist.js` (chấm điểm có trọng số /100), `quiz.js` (đồng hồ, điểm theo tốc độ, Top 10 đồng hạng), `chat.js` (bong bóng chat + quick reply + FAQ bot), `timeslot.js` (khung giờ, trùng lịch, đếm ngược).
+
+### Kinh doanh: `EP.scenario` và `EP.importer` (bảng Kinh tế, đọc kỹ `../references/11-mo-hinh-kinh-doanh.md`)
+- `js/scenario.js` (`EP.scenario.mount(el, { assumptions, compute, outputs, explain })`): bảng giả định sửa được (ô tiền vi-VN, thanh trượt, lý do, nhãn Giả định / Dữ liệu mẫu / Mô phỏng), 3 kịch bản Xấu/Cơ sở/Tốt tự sinh từ `better` (hoặc tự khai báo), hòa vốn (chặn chia 0: "Không đủ dữ liệu"), hoàn vốn, độ nhạy tornado ±10%/±20% (`EP.charts.tornado`), panel "Cách tính" kèm số thật, xuất CSV (BOM) và sao chép cho slide, lưu bằng `EP.store`. Hàm thuần `EP.scenario.breakEven/evaluate/sensitivity/spread` dùng được không cần giao diện.
+- `js/import.js` (`EP.importer.mount(el, { collection, tag, fields })`): nhập .xlsx/.xls/.csv offline (SheetJS 0.18.5 Apache-2.0 trong `js/vendor/`, nạp lười): chọn sheet, xem trước 20 dòng, ghép cột tự đoán theo tên Việt/Anh không dấu, kiểm tra (số `1.234.567,5`, ngày `dd/mm/yyyy`, dòng trống), nạp vào collection kèm nhãn "Dữ liệu mẫu từ BTC". File thử đa-sheet: `tests/fixtures/mau-btc.xlsx|csv` (sinh lại bằng `node tests/fixtures/make-fixtures.cjs`).
+- Ví dụ chạy được: tab Mô-đun > **Kinh doanh** (`#/playground/biz`) và **Nhập file** (`#/playground/import`). Đây là mô-đun chung, không gắn đề nào: logic của đề viết trong giờ thi.
 
 ## 2b. Lớp Lucian (vi tương tác cho mọi thành phần)
 
@@ -100,7 +105,7 @@ Quy tắc đã tuân thủ: sáng/tối, `prefers-reduced-motion` (hoạt ảnh 
 python3 -m http.server 8211 &        # tại thư mục gốc app
 node tests/smoke.cjs http://localhost:8211/ [--shots thu-muc-anh]
 ```
-Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không lỗi console, mọi tab (1 h1), không tràn ngang 390px sáng/tối, đổi giao diện, CRUD + kiểm tra form của feature mẫu, AI mock + MOCK_NOTICE, CSV có BOM, sao lưu/khôi phục, Gemini giả (retry, đổi model, rơi về mock), logic các mô-đun. Test logic nhanh không cần trình duyệt: chép `tests/unit-template.cjs` thành `tests/<feature>.cjs` (node `vm`, ~1 giây, `node tests/<feature>.cjs`). Khi thêm feature, chép `tests/feature-template.snippet` (CRUD + form + biên + khoá theo `prefix` + mock notice) vào chỗ `FEATURE TESTS` của `tests/smoke.cjs` rồi đổi tên tab/collection/selector. Smoke test chạy đúng cả khi đã xoá `_example`/`_playground` và các mô-đun tuỳ chọn.
+Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không lỗi console, mọi tab (1 h1), không tràn ngang 390px sáng/tối, đổi giao diện, CRUD + kiểm tra form của feature mẫu, AI mock + MOCK_NOTICE, CSV có BOM, sao lưu/khôi phục, kịch bản + hòa vốn + độ nhạy + nhập xlsx/csv (360/390px), Gemini giả (retry, đổi model, rơi về mock), logic các mô-đun. Test logic nhanh không cần trình duyệt: chép `tests/unit-template.cjs` thành `tests/<feature>.cjs` (node `vm`, ~1 giây, `node tests/<feature>.cjs`). Khi thêm feature, chép `tests/feature-template.snippet` (CRUD + form + biên + khoá theo `prefix` + mock notice) vào chỗ `FEATURE TESTS` của `tests/smoke.cjs` rồi đổi tên tab/collection/selector. Smoke test chạy đúng cả khi đã xoá `_example`/`_playground` và các mô-đun tuỳ chọn.
 
 ## 5. Phiên bản và deploy GitHub Pages
 1. `node tools/bump-version.cjs` (tăng patch; hoặc `minor`, `major`, `1.2.3`, `--stamp`): cập nhật `js/version.js` và gắn `?v=` vào mọi js/css trong `index.html` để không dính cache cũ.
@@ -139,7 +144,9 @@ css/lucian.css        lớp Lucian: vi tương tác (mục 2b)
 js/                   config, version, core, ui, form, charts, export, ai, demo, app + mô-đun
 features/_example     feature mẫu đầy đủ (CRUD + form + AI + biểu đồ)
 js/lucian.js          lớp Lucian (bọc EP.ui/EP.ai, quét DOM)
-features/_playground  demo calc/checklist/quiz/chat + Thư viện UI
+js/scenario.js        EP.scenario: giả định, 3 kịch bản, hòa vốn, tornado, Cách tính (+ css/biz.css)
+js/import.js          EP.importer: nhập xlsx/xls/csv (+ js/vendor/xlsx.full.min.js, tests/fixtures/)
+features/_playground  demo calc/kinh doanh/nhập file/checklist/quiz/chat + Thư viện UI
 tests/smoke.cjs       Playwright smoke test (+ tests/feature-template.snippet: khối mẫu cho feature thật)
 js/firebase.js        Firebase tuỳ chọn (tắt mặc định): đăng nhập Google + đồng bộ Firestore
 firestore.rules, firebase.json, .firebaserc.example   rules + cấu hình emulator

@@ -3,6 +3,7 @@
      EP.charts.bar(el,   [{ label, value, color? }], { unit:'', format:fn, height:220 })
      EP.charts.line(el,  [{ label, value }],          { unit:'', format:fn, height:220, area:true })
      EP.charts.donut(el, [{ label, value, color? }],  { unit:'', format:fn, centerLabel:'Tổng' })
+     EP.charts.tornado(el, [{ label, low, high }],    { format:fn, lowLabel:'Giảm 10%', highLabel:'Tăng 10%' })   // độ nhạy: low/high = mức thay đổi KPI khi giảm/tăng giả định
    Dữ liệu rỗng -> trạng thái trống. Gọi lại hàm trên cùng el để cập nhật. */
 (function (root) {
   'use strict';
@@ -41,7 +42,7 @@
     c.w = el.clientWidth || 320;
     var total = data.reduce(function (s, d) { return s + (Number(d.value) || 0); }, 0);
     if (!data.length || (c.kind === 'donut' && total <= 0)) { el.innerHTML = EP.ui.empty({ icon: 'chart', title: 'Chưa có dữ liệu để vẽ biểu đồ' }); return; }
-    el.innerHTML = c.kind === 'bar' ? bar(data, o, c.w) : c.kind === 'line' ? line(data, o, c.w) : donut(data, o, c.w);
+    el.innerHTML = c.kind === 'bar' ? bar(data, o, c.w) : c.kind === 'line' ? line(data, o, c.w) : c.kind === 'tornado' ? tornado(data, o, c.w) : donut(data, o, c.w);
   }
 
   function frame(w, h, label, inner) {
@@ -113,7 +114,37 @@
     return '<div class="donut-wrap">' + frame(size, size, summary('Biểu đồ tròn', data, o), s) + legend + '</div>' + table(data, o);
   }
 
+  /* Tornado (độ nhạy): mỗi giả định một làn ngang; thanh "giảm" và "tăng" toả ra hai phía vạch 0 (phải = KPI tăng, trái = KPI giảm).
+     Màu theo hướng đổi của GIẢ ĐỊNH (chú giải), vị trí theo tác động lên KPI; giá trị in ngay đầu thanh nên không phụ thuộc màu. */
+  function tornado(data, o, w) {
+    var f = o.format || fmtDefault, pad = 56, lane = 50, top = 8, h = top + lane * data.length + 6;
+    var lo = 0, hi = 0;
+    data.forEach(function (d) { lo = Math.min(lo, d.low, d.high); hi = Math.max(hi, d.low, d.high); });
+    var span = (hi - lo) || 1, pw = Math.max(40, w - pad * 2);
+    function X(v) { return pad + (v - lo) / span * pw; }
+    var zero = X(0), s = '<line class="grid-line" x1="' + zero + '" x2="' + zero + '" y1="' + top + '" y2="' + (h - 6) + '" style="stroke-width:1.5"/>';
+    data.forEach(function (d, i) {
+      var y = top + lane * i, by = y + 22, bh = 18;
+      s += '<text x="' + Math.max(4, Math.min(zero, w - 4)) + '" y="' + (y + 13) + '" text-anchor="' + (zero > w * .72 ? 'end' : zero < w * .28 ? 'start' : 'middle') + '" style="font-weight:600;fill:var(--text)">' + esc(cut(d.label, Math.floor(w / 6.4))) + '</text>';
+      [{ v: d.low, c: 'var(--chart-2)', t: o.lowLabel || 'Giảm' }, { v: d.high, c: 'var(--chart-1)', t: o.highLabel || 'Tăng' }]
+        .sort(function (a, b) { return Math.abs(b.v) - Math.abs(a.v); })
+        .forEach(function (b) {
+          var x = Math.min(zero, X(b.v)), bw = Math.max(Math.abs(X(b.v) - zero), 1.5);
+          s += '<rect class="ch-bar" x="' + x + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="4" style="fill:' + b.c + '"><title>' + esc(d.label + ' (' + b.t + '): ' + f(b.v)) + '</title></rect>';
+        });
+      [d.low, d.high].forEach(function (v) {
+        var right = v >= 0;
+        s += '<text class="val" x="' + (X(v) + (right ? 5 : -5)) + '" y="' + (by + 13) + '" text-anchor="' + (right ? 'start' : 'end') + '">' + esc(f(v)) + '</text>';
+      });
+    });
+    var legend = '<ul class="chart-legend"><li><i style="background:var(--chart-2)"></i>' + esc(o.lowLabel || 'Giảm') + '</li><li><i style="background:var(--chart-1)"></i>' + esc(o.highLabel || 'Tăng') + '</li></ul>';
+    var tbl = '<div class="sr-only"><p>' + esc(o.title || 'Độ nhạy') + '</p><ul>' + data.map(function (d) { return '<li>' + esc(d.label + ' - ' + (o.lowLabel || 'Giảm') + ': ' + f(d.low) + '; ' + (o.highLabel || 'Tăng') + ': ' + f(d.high)) + '</li>'; }).join('') + '</ul></div>';
+    var sum = 'Biểu đồ tornado: ' + data.map(function (d) { return d.label + ' (' + f(d.low) + ' / ' + f(d.high) + ')'; }).join(', ');
+    return frame(w, h, sum, s) + legend + tbl;
+  }
+
   EP.charts = {
+    tornado: function (el, data, o) { mount(el, 'tornado', data, o); },
     bar: function (el, data, o) { mount(el, 'bar', data, o); },
     line: function (el, data, o) { mount(el, 'line', data, o); },
     donut: function (el, data, o) { mount(el, 'donut', data, o); },

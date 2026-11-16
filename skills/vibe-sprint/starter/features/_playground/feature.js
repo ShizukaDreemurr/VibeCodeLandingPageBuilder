@@ -161,6 +161,92 @@
     });
   }
 
+  /* ---------- Kinh doanh: EP.scenario (giả định -> 3 kịch bản -> hòa vốn -> độ nhạy -> cách tính) ---------- */
+  var SHOP = {
+    id: 'shop-demo', title: 'Shop online: lãi hay lỗ mỗi tháng?', tag: 'assumption', unitLabel: 'đơn', kpi: 'profit',
+    note: 'Ví dụ GENERIC (shop online / quán cà phê), không phải số liệu thật. Mọi con số là giả định có lý do đi kèm; đổi số bên dưới và xem kết quả đổi theo.',
+    assumptions: [
+      { key: 'traffic', label: 'Lượt truy cập mỗi tháng', unit: 'lượt', value: 20000, min: 2000, max: 100000, step: 500, better: 'up', why: 'Giả định: từ kênh tự nhiên + quảng cáo, thay bằng số đo thật của đề.' },
+      { key: 'paid', label: 'Tỉ lệ truy cập từ quảng cáo', unit: '%', value: 50, min: 0, max: 100, step: 5, why: 'Giả định: một nửa lượt truy cập phải mua bằng quảng cáo.' },
+      { key: 'cpc', label: 'Chi phí mỗi lượt nhấp (CPC)', unit: '₫', value: 2000, min: 500, max: 8000, step: 100, better: 'down', why: 'Giả định: mức giữa của quảng cáo mạng xã hội cho ngành hàng tiêu dùng.' },
+      { key: 'cr', label: 'Tỉ lệ chuyển đổi (CR)', unit: '%', value: 3, min: 0.5, max: 8, step: 0.1, better: 'up', why: 'Giả định: 2-4% là khoảng thường gặp của shop online nhỏ.' },
+      { key: 'price', label: 'Giá bán trung bình mỗi đơn (AOV)', unit: '₫', value: 180000, min: 50000, max: 600000, step: 5000, better: 'up', why: 'Giả định: mỗi đơn 1 sản phẩm; có thể thay bằng giá trung bình từ dữ liệu BTC.' },
+      { key: 'cogs', label: 'Giá vốn mỗi đơn', unit: '₫', value: 90000, min: 20000, max: 400000, step: 5000, better: 'down', why: 'Giả định: giá vốn bằng một nửa giá bán (biên gộp 50%).' },
+      { key: 'fee', label: 'Phí sàn + thanh toán', unit: '%', value: 6, min: 0, max: 20, step: 0.5, better: 'down', why: 'Giả định: tổng phí cổng thanh toán và sàn tính trên doanh thu.' },
+      { key: 'fixed', label: 'Chi phí cố định mỗi tháng', unit: '₫', value: 25000000, min: 5000000, max: 80000000, step: 500000, better: 'down', why: 'Giả định: thuê chỗ, nhân sự cơ bản, phần mềm.' },
+      { key: 'reserve', label: 'Quỹ dự phòng trên tổng chi phí', unit: '%', value: 10, min: 0, max: 30, step: 1, sens: false, why: 'Quy tắc: trích 10-15% tổng chi phí cho rủi ro (hàng lỗi, đổi trả, tăng giá quảng cáo).' },
+      { key: 'invest', label: 'Vốn ban đầu', unit: '₫', value: 60000000, min: 10000000, max: 300000000, step: 5000000, sens: false, why: 'Giả định: thiết lập kho, website, hàng tồn đầu kỳ.' }
+    ],
+    compute: function (a) {
+      var m = EP.metrics, orders = a.traffic * a.cr / 100, revenue = orders * a.price, cogs = orders * a.cogs, fee = revenue * a.fee / 100;
+      var ads = a.traffic * a.paid / 100 * a.cpc, cost = cogs + fee + ads + a.fixed, profit = revenue - cost;
+      var adsPerOrder = orders > 0 ? ads / orders : null, contrib = adsPerOrder == null ? null : a.price * (1 - a.fee / 100) - a.cogs - adsPerOrder;   /* không đơn -> không có CPA, KHÔNG dùng m.div(.., null): div coi null là 0 */
+      return {
+        orders: orders, revenue: revenue, cogs: cogs, fee: fee, ads: ads, gross: revenue - cogs, cost: cost, profit: profit,
+        margin: m.div(profit, revenue) * 100, cpa: adsPerOrder, roas: ads > 0 ? revenue / ads : null, reserve: cost * a.reserve / 100, profitAfterReserve: profit - cost * a.reserve / 100,
+        fixed: a.fixed, unitContribution: contrib, unitPrice: a.price, investment: a.invest
+      };
+    },
+    outputs: [
+      { key: 'orders', label: 'Số đơn mỗi tháng', format: 'number' },
+      { key: 'revenue', label: 'Doanh thu', format: 'money', card: true },
+      { key: 'gross', label: 'Lợi nhuận gộp', format: 'money' },
+      { key: 'ads', label: 'Chi phí quảng cáo', format: 'money' },
+      { key: 'cost', label: 'Tổng chi phí', format: 'money' },
+      { key: 'profit', label: 'Lợi nhuận ròng', format: 'money', kpi: true, card: true },
+      { key: 'margin', label: 'Biên lợi nhuận ròng', format: 'percent', kpi: true },
+      { key: 'cpa', label: 'Chi phí quảng cáo mỗi đơn (CPA)', format: 'money' },
+      { key: 'roas', label: 'ROAS', format: 'ratio' },
+      { key: 'reserve', label: 'Quỹ dự phòng', format: 'money' },
+      { key: 'profitAfterReserve', label: 'Lợi nhuận sau dự phòng', format: 'money' }
+    ],
+    explain: [
+      { label: 'Số đơn', formula: 'Đơn = Lượt truy cập × Tỉ lệ chuyển đổi', live: function (a, r, F) { return F.number(a.traffic) + ' × ' + F.percent(a.cr) + ' = ' + F.number(r.orders) + ' đơn'; } },
+      { label: 'Doanh thu', formula: 'Doanh thu = Đơn × Giá bán', live: function (a, r, F) { return F.number(r.orders) + ' × ' + F.money(a.price) + ' = ' + F.money(r.revenue); } },
+      { label: 'Quảng cáo và CPA', formula: 'Quảng cáo = Lượt truy cập × % quảng cáo × CPC;  CPA = Quảng cáo ÷ Đơn', live: function (a, r, F) { return F.money(r.ads) + ' (CPA ' + (r.cpa == null ? 'Không đủ dữ liệu' : F.money(r.cpa)) + ', ROAS ' + (r.roas == null ? 'Không đủ dữ liệu' : F.number(r.roas) + 'x') + ')'; } },
+      { label: 'Lãi góp mỗi đơn', formula: 'Lãi góp = Giá bán × (1 - phí sàn %) - Giá vốn - CPA', live: function (a, r, F) { return r.unitContribution == null ? 'Không đủ dữ liệu' : F.money(a.price) + ' × ' + F.percent(100 - a.fee) + ' - ' + F.money(a.cogs) + ' - ' + F.money(r.cpa) + ' = ' + F.money(r.unitContribution); } },
+      { label: 'Lợi nhuận ròng', formula: 'Lợi nhuận = Doanh thu - Giá vốn - Phí sàn - Quảng cáo - Chi phí cố định', live: function (a, r, F) { return F.money(r.revenue) + ' - ' + F.money(r.cogs) + ' - ' + F.money(r.fee) + ' - ' + F.money(r.ads) + ' - ' + F.money(a.fixed) + ' = ' + F.money(r.profit); } },
+      { label: 'Dự phòng', formula: 'Quỹ dự phòng = Tổng chi phí × % dự phòng;  Lợi nhuận sau dự phòng = Lợi nhuận - Quỹ', live: function (a, r, F) { return F.money(r.cost) + ' × ' + F.percent(a.reserve) + ' = ' + F.money(r.reserve) + ' → còn ' + F.money(r.profitAfterReserve); } }
+    ]
+  };
+
+  function mountBiz(el) {
+    el.innerHTML = '<div data-slot="link"></div><div data-slot="sc"></div>';
+    var sc = EP.scenario.mount(el.querySelector('[data-slot="sc"]'), SHOP), rows = EP.collection('btc_sample').list();
+    if (rows.length) {
+      var avg = EP.metrics.avg(rows.filter(function (r) { return r.price != null; }), 'price');
+      el.querySelector('[data-slot="link"]').innerHTML = '<div class="card"><p>Có <b>' + rows.length + '</b> dòng dữ liệu BTC đã nhập, đơn giá trung bình <b>' + esc(EP.metrics.vnd(avg)) + '</b>.</p><div class="row mt-2"><button type="button" class="btn btn-sm" data-act="use-sample">Dùng làm giá bán (nhãn "Dữ liệu mẫu")</button></div></div>';
+      el.querySelector('[data-act="use-sample"]').addEventListener('click', function () { sc.setValue('price', Math.round(avg), { source: 'sample' }); EP.ui.toast('Đã cập nhật giá bán từ dữ liệu mẫu.', { type: 'success' }); });
+    }
+  }
+
+  /* ---------- Nhập file: EP.importer (xlsx/xls/csv -> ghép cột -> kiểm tra -> collection) ---------- */
+  function mountImport(el) {
+    var coll = EP.collection('btc_sample');
+    el.innerHTML = '<div data-slot="im"></div><div data-slot="res"></div>';
+    function showRes() {
+      var rows = coll.list(), host = el.querySelector('[data-slot="res"]');
+      if (!rows.length) { host.innerHTML = ''; return; }
+      var by = EP.metrics.groupSum(rows.map(function (r) { return { name: r.name, rev: (r.qty || 0) * (r.price || 0) }; }), 'name', 'rev');
+      host.innerHTML = '<div class="card mt-3"><div class="card-head"><h2 class="section-title">Dữ liệu đã nhập</h2>' + EP.ui.badge(rows[0].tag || 'Dữ liệu mẫu', 'accent') + '</div>' +
+        '<div class="grid kpis"><div data-slot="k"></div></div><div class="mt-3" data-slot="ch"></div>' +
+        '<div class="row mt-3"><button type="button" class="btn btn-sm btn-danger" data-act="clear-import">' + EP.ui.icon('trash') + 'Xóa dữ liệu đã nhập</button></div></div>';
+      host.querySelector('[data-slot="k"]').outerHTML = [{ label: 'Số dòng', value: EP.fmt.number(rows.length) }, { label: 'Doanh thu (SL × giá)', value: EP.metrics.vndShort(EP.metrics.sum(by, 'value')) }].map(EP.ui.kpi).join('');
+      EP.charts.bar(host.querySelector('[data-slot="ch"]'), by, { height: 200, format: EP.metrics.vndShort, title: 'Doanh thu theo sản phẩm' });
+      host.querySelector('[data-act="clear-import"]').addEventListener('click', function () { coll.clear(); showRes(); });
+    }
+    EP.importer.mount(el.querySelector('[data-slot="im"]'), {
+      title: 'Nhập file dữ liệu mẫu (Excel / CSV)', collection: coll, tag: 'Dữ liệu mẫu từ BTC', sampleUrl: 'tests/fixtures/mau-btc.xlsx', onImport: showRes,
+      fields: [
+        { key: 'day', label: 'Ngày', type: 'date', required: true, aliases: ['ngay ban', 'date', 'ngay chi'] },
+        { key: 'name', label: 'Sản phẩm', type: 'text', required: true, aliases: ['ten hang', 'san pham', 'mon', 'product', 'khoan muc'] },
+        { key: 'qty', label: 'Số lượng', type: 'number', aliases: ['sl', 'quantity', 'so luong ban'] },
+        { key: 'price', label: 'Đơn giá', type: 'money', aliases: ['gia', 'don gia', 'price', 'so tien'] }
+      ]
+    });
+    showRes();
+  }
+
   var DEMOS = [
     { value: 'calc', label: 'Máy tính', mount: function (el) {
       EP.calc.mount(el, {
@@ -183,6 +269,8 @@
         }
       });
     } },
+    { value: 'biz', label: 'Kinh doanh', mount: mountBiz },
+    { value: 'import', label: 'Nhập file', mount: mountImport },
     { value: 'checklist', label: 'Chấm điểm', mount: function (el) { EP.checklist.mount(el, { title: 'Kiểm tra trang web', items: CHECK }); } },
     { value: 'quiz', label: 'Đố vui', mount: function (el) { EP.quiz.mount(el, { title: 'Đố vui nhanh', questions: QUESTIONS, timePerQ: 20, boardName: 'demo' }); } },
     { value: 'ui', label: 'Thư viện UI', mount: mountUi },
@@ -197,11 +285,11 @@
 
   EP.register({
     id: 'playground', label: 'Mô-đun', icon: 'calc', order: 30,
-    title: 'Mô-đun tiện ích', desc: 'Máy tính, chấm điểm, đố vui, chatbot và Thư viện UI (lớp Lucian) dựng sẵn để chép vào đề.',
+    title: 'Mô-đun tiện ích', desc: 'Máy tính, mô hình kinh doanh, nhập Excel/CSV, chấm điểm, đố vui, chatbot và Thư viện UI (lớp Lucian) dựng sẵn để chép vào đề.',
     render: function (el) {
       el.innerHTML = '<div data-slot="pick"></div><div data-slot="demo" id="pg-demo"></div>';
       function show(v) { var d = DEMOS.filter(function (x) { return x.value === v; })[0], host = el.querySelector('[data-slot="demo"]'); host.innerHTML = ''; d.mount(host); }
-      var start = /\/ui\b/.test(root.location.hash) ? 'ui' : 'calc';   /* #/playground/ui mở thẳng Thư viện UI */
+      var start = /\/ui\b/.test(root.location.hash) ? 'ui' : /\/biz\b/.test(root.location.hash) ? 'biz' : /\/import\b/.test(root.location.hash) ? 'import' : 'calc';   /* #/playground/ui | /biz | /import mở thẳng mô-đun đó */
       EP.ui.segmented(el.querySelector('[data-slot="pick"]'), { label: 'Chọn mô-đun', name: 'pg-pick', options: DEMOS, value: start, onChange: show });
       show(start);
     }

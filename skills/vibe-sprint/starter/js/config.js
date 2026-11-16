@@ -16,7 +16,7 @@
     /* Proxy Gemini TUỲ CHỌN (xem proxy/README.md). Điền URL worker (vd 'https://vibe-gemini-proxy.ten.workers.dev') => chế độ Gemini không cần nhập key,
        key nằm ở máy chủ. appToken (tuỳ chọn) chỉ là làm rào, ai xem mã nguồn cũng thấy. Để '' = dùng key của người dùng như cũ. */
     ai: { proxyUrl: 'https://vibe-gemini-proxy.xclipse.workers.dev', appToken: '' },
-    mockNotice: 'Bản demo vòng loại - Dữ liệu mô phỏng AI', // BẮT BUỘC hiển thị cạnh mọi kết quả mock
+    mockNotice: 'Dữ liệu mô phỏng AI · Dữ liệu mẫu', // BẮT BUỘC hiển thị cạnh mọi kết quả mock; nếu đề đưa câu nhãn thì chép nguyên văn
     locale: 'vi-VN',
     currency: 'VND',
     /* Firebase TUỲ CHỌN, TẮT mặc định (enabled:false => không gọi mạng, dữ liệu chỉ ở localStorage). Xem README "Bật Firebase trong 5 phút".

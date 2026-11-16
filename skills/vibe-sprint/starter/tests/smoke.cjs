@@ -340,6 +340,115 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   ok('390px: nút/tab/icon-btn cao >= 44px', small.length === 0, small);
   await page.setViewportSize({ width: 1440, height: 900 });
   if (SHOTS) { await page.screenshot({ path: path.join(SHOTS, 'desktop-light-playground-ui.png') }); }
+
+  console.log('# Mô-đun: kinh doanh (EP.scenario)');
+  const pick = (label) => page.click('#view-playground [data-slot="pick"] .seg label:has-text("' + label + '")');
+  await pick('Kinh doanh'); await page.waitForSelector('#view-playground .sc-table');
+  const be = await page.evaluate(() => { const B = EP.scenario.breakEven; return { a: B(100, 10, 50), b: B(100, 0, 50), c: B(100, -5, 50), d: B(0, 10, 50), e: B(NaN, 10, 50), f: B(100, 10, 0) }; });
+  ok('hòa vốn: 100 ÷ 10 = 10 đơn, doanh thu 500', be.a.ok && be.a.units === 10 && be.a.revenue === 500, be.a);
+  ok('hòa vốn: lãi góp = 0 -> không chia (ok=false)', !be.b.ok && be.b.units === null, be.b);
+  ok('hòa vốn: lãi góp âm / thiếu số -> ok=false', !be.c.ok && !be.e.ok);
+  ok('hòa vốn: chi phí cố định 0 -> 0 đơn; giá 0 -> doanh thu null', be.d.ok && be.d.units === 0 && be.f.ok && be.f.revenue === null);
+  const base = await page.evaluate(() => { EP.scenario.get('shop-demo').reset(); const sc = EP.scenario.get('shop-demo'), r = sc.results(); return { base: r.base, bad: r.bad.profit, good: r.good.profit, badBe: r.bad.beUnits, goodBe: r.good.beUnits }; });
+  ok('compute cơ sở: 600 đơn, doanh thu 108 tr, lợi nhuận 2,52 tr', Math.abs(base.base.orders - 600) < 1e-6 && Math.abs(base.base.revenue - 108e6) < 1 && Math.abs(base.base.profit - 2.52e6) < 1, base.base);
+  ok('hòa vốn cơ sở = 25 tr ÷ 45.866,67 ≈ 545,06 đơn', Math.abs(base.base.beUnits - 25e6 / (180000 * 0.94 - 90000 - 33333.3333333)) < 0.01 && Math.abs(base.base.beRevenue - base.base.beUnits * 180000) < 1, [base.base.beUnits, base.base.beRevenue]);
+  ok('3 kịch bản: Xấu < Cơ sở < Tốt (lợi nhuận)', base.bad < base.base.profit && base.base.profit < base.good, [base.bad, base.base.profit, base.good]);
+  ok('kịch bản Xấu: lãi góp <= 0 -> hòa vốn null, kịch bản Tốt có số', base.badBe === null && base.goodBe > 0, [base.badBe, base.goodBe]);
+  ok('bảng kết quả có "Không đủ dữ liệu" cho hòa vốn kịch bản Xấu', (await page.textContent('#view-playground .sc-table')).includes('Không đủ dữ liệu'));
+  const div0 = await page.evaluate(() => { const sc = EP.scenario.get('shop-demo'), v = sc.values(); v.cr = 0; const r = sc.compute(v); return { be: r.be, ok: [r.cpa, r.beUnits, r.beRevenue], finite: Object.keys(r).every((k) => typeof r[k] !== 'number' || isFinite(r[k])) }; });
+  ok('chia cho 0 (CR = 0): không NaN/Infinity, hòa vốn ok=false', div0.be.ok === false && div0.finite && div0.ok[1] === null, div0);
+  const sens = await page.evaluate(() => EP.scenario.get('shop-demo').sensitivity('profit', 10));
+  const g = (k) => sens.find((r) => r.key === k);
+  ok('độ nhạy: giá bán +10% -> lợi nhuận tăng, -10% -> giảm', g('price').high > 0 && g('price').low < 0, g('price'));
+  ok('độ nhạy: giá vốn/CPC/phí sàn tăng -> lợi nhuận giảm', g('cogs').high < 0 && g('cogs').low > 0 && g('cpc').high < 0 && g('fee').high < 0 && g('fixed').high < 0);
+  ok('độ nhạy: sắp giảm dần theo biên độ, giá bán đứng đầu, bỏ giả định sens:false', sens[0].key === 'price' && sens.every((r, i) => i === 0 || sens[i - 1].swing >= r.swing) && !g('reserve'), sens.map((r) => r.key));
+  ok('độ nhạy ±20% gấp đôi ±10% (lợi nhuận tuyến tính theo giá)', await page.evaluate(() => { const sc = EP.scenario.get('shop-demo'); return Math.abs(sc.sensitivity('profit', 20).find((r) => r.key === 'price').high / sc.sensitivity('profit', 10).find((r) => r.key === 'price').high - 2) < 1e-6; }));
+  ok('tornado vẽ bằng EP.charts (svg có thanh) + chú giải', await page.evaluate(() => document.querySelectorAll('#view-playground [data-slot="tornado"] svg .ch-bar').length >= 8 && !!document.querySelector('#view-playground [data-slot="tornado"] .chart-legend')));
+  ok('có nhãn Giả định trên từng dòng + đầu trang', await page.evaluate(() => document.querySelectorAll('#view-playground .sc-row .badge').length === 10 && /Giả định/.test(document.querySelector('#view-playground .sc-head').textContent)));
+  const exTxt = await page.textContent('#view-playground [data-slot="explain"]');
+  ok('"Cách tính" liệt kê công thức + số thật (600 đơn, 545, 25.000.000)', /20\.000 × 3% = 600 đơn/.test(exTxt) && /545/.test(exTxt) && /25\.000\.000/.test(exTxt) && /Lãi góp/.test(exTxt), exTxt.slice(0, 200));
+  await page.fill('#sc-shop-demo-fixed', '30000000'); await page.waitForTimeout(200);
+  ok('ô tiền: gõ 30000000 -> 30.000.000', (await page.inputValue('#sc-shop-demo-fixed')) === '30.000.000');
+  ok('đổi chi phí cố định -> lợi nhuận tính lại (-2,48 tr)', await page.evaluate(() => Math.abs(EP.scenario.get('shop-demo').results().base.profit - (-2.48e6)) < 1) && /-2,5 tr/.test(await page.textContent('#view-playground [data-slot="cards"]')));
+  ok('giả định lưu vào localStorage (EP.store)', await page.evaluate((p) => { const j = JSON.parse(localStorage.getItem(p + 'scn_shop-demo') || 'null'); return !!j && j.values.fixed === 30000000; }, CFG.prefix));
+  ok('setValue nguồn sample -> nhãn Dữ liệu mẫu; ô sửa tay vẫn Giả định', await page.evaluate(() => { const sc = EP.scenario.get('shop-demo'); sc.setValue('price', 200000, { source: 'sample' }); return /Dữ liệu mẫu/.test(document.querySelector('[data-row="price"] [data-tag]').textContent) && /Giả định/.test(document.querySelector('[data-row="fixed"] [data-tag]').textContent); }));
+  await page.fill('#sc-shop-demo-cr', ''); await page.waitForTimeout(150);
+  ok('ô trống -> cảnh báo, giữ giá trị cũ (không NaN)', /Nhập một con số/.test(await page.textContent('[data-row="cr"] [data-msg]')) && !/NaN/.test(await page.textContent('#view-playground .sc')));
+  const [csvDl] = await Promise.all([page.waitForEvent('download'), page.click('#view-playground [data-act="csv"]')]);
+  const csvBuf = fs.readFileSync(await csvDl.path());
+  const csvTxt = csvBuf.toString('utf8');
+  ok('CSV: có BOM UTF-8, tiêu đề Xấu/Cơ sở/Tốt, đủ nhóm Giả định + Kết quả', csvBuf[0] === 0xEF && csvBuf[1] === 0xBB && csvBuf[2] === 0xBF && /Nhóm,Chỉ tiêu,Đơn vị,Xấu,Cơ sở,Tốt,Nhãn/.test(csvTxt) && /Giả định,/.test(csvTxt) && /Kết quả,Lợi nhuận ròng/.test(csvTxt), csvTxt.slice(0, 200));
+  ok('CSV: số thô, nhãn Dữ liệu mẫu cho giá bán, "Không đủ dữ liệu" cho hòa vốn Xấu', /Giá bán trung bình mỗi đơn \(AOV\),₫,\d+(\.\d+)?,200000,\d+(\.\d+)?,Dữ liệu mẫu/.test(csvTxt) && /Không đủ dữ liệu/.test(csvTxt), csvTxt.split('\r\n').filter((l) => /AOV|hòa vốn/.test(l)));
+  const txt = await page.evaluate(() => EP.scenario.get('shop-demo').toText());
+  ok('sao chép cho slide: cảnh báo giả định, giả định + nhãn, kết quả 3 kịch bản', /không phải số liệu thật/.test(txt) && /\[Dữ liệu mẫu\]/.test(txt) && /\[Giả định\]/.test(txt) && /Lợi nhuận ròng: .* \| .* \| /.test(txt), txt.slice(0, 300));
+  await page.evaluate(() => EP.scenario.get('shop-demo').reset());
+  ok('đặt lại: về mặc định (lợi nhuận 2,52 tr, nhãn Giả định)', await page.evaluate(() => Math.abs(EP.scenario.get('shop-demo').results().base.profit - 2.52e6) < 1 && /Giả định/.test(document.querySelector('[data-row="price"] [data-tag]').textContent)));
+  if (SHOTS) { await page.screenshot({ path: path.join(SHOTS, 'desktop-light-playground-biz.png'), fullPage: true }); }
+
+  console.log('# Mô-đun: nhập file (EP.importer)');
+  const P = await page.evaluate(() => { const I = EP.importer; return {
+    n: ['1.234.567,5', '1.250.000 ₫', '12,5%', '1,234.5', '12.5', '1.250', '(1.234)', '-3,5', '', 'abc', '1.2.3'].map((x) => { const v = I.parseNumber(x); return isNaN(v) ? 'NaN' : v; }),
+    d: ['31/12/2026', '1/2/26', '2026-11-05', '31/02/2026', '2026-13-01', '', 'hôm nay'].map(I.parseDate), serial: I.parseDate(46327),
+    norm: [I.normalize('Đơn giá (₫)'), I.normalize('SỐ LƯỢNG'), I.normalize('  Ngày-bán ')],
+    csv: I.parseCsv('﻿a;b;c\r\n1;"x;y";"he said ""hi"""\r\n\r\n4;5;6'),
+    guess: I.guess(['STT', 'Tên hàng', 'SL', 'Giá bán', 'Ngày'], [{ key: 'name', label: 'Sản phẩm', aliases: ['ten hang'] }, { key: 'qty', label: 'Số lượng', aliases: ['sl'] }, { key: 'price', label: 'Đơn giá', aliases: ['gia ban'] }, { key: 'day', label: 'Ngày' }]) }; });
+  ok('parseNumber vi-VN/en: 1.234.567,5 · 1.250.000 ₫ · 12,5% · 1,234.5 · 12.5 · 1.250 · (1.234) · -3,5 · rỗng/abc', JSON.stringify(P.n.slice(0, 10)) === JSON.stringify([1234567.5, 1250000, 12.5, 1234.5, 12.5, 1250, -1234, -3.5, 'NaN', 'NaN']), P.n);
+  ok('parseDate: dd/mm/yyyy, d/m/yy, ISO, serial Excel; ngày không tồn tại -> null', JSON.stringify(P.d) === JSON.stringify(['2026-12-31', '2026-02-01', '2026-11-05', null, null, null, null]) && P.serial === '2026-11-01', [P.d, P.serial]);
+  ok('normalize bỏ dấu (đ -> d), hạ chữ thường', JSON.stringify(P.norm) === JSON.stringify(['don gia', 'so luong', 'ngay ban']), P.norm);
+  ok('parseCsv: BOM, dấu ;, ngoặc kép, "" thoát, dòng trống', JSON.stringify(P.csv) === JSON.stringify([['a', 'b', 'c'], ['1', 'x;y', 'he said "hi"'], [''], ['4', '5', '6']]), P.csv);
+  ok('guess cột theo tên Việt/Anh không dấu', JSON.stringify(P.guess) === JSON.stringify({ name: 1, qty: 2, price: 3, day: 4 }), P.guess);
+  await page.evaluate(() => EP.collection('btc_sample').clear());
+  await pick('Nhập file'); await page.waitForSelector('#view-playground [data-file]');
+  ok('SheetJS nạp lười: chưa có XLSX khi chưa chọn file Excel', await page.evaluate(() => typeof window.XLSX === 'undefined'));
+  const fx = (n) => path.join(__dirname, 'fixtures', n);
+  await page.setInputFiles('#view-playground [data-file]', fx('mau-btc.xlsx'));
+  await page.waitForSelector('#view-playground .im-prev table');
+  ok('SheetJS chỉ nạp sau khi chọn file Excel', await page.evaluate(() => typeof window.XLSX === 'object'));
+  ok('liệt kê 3 sheet (Bán hàng, Chi phí, Ghi chú)', JSON.stringify(await page.$$eval('#view-playground [data-slot="sheetpick"] .seg label', (l) => l.map((x) => x.textContent.trim()))) === JSON.stringify(['Bán hàng', 'Chi phí', 'Ghi chú']));
+  ok('xem trước tối đa 20 dòng, ngày Excel hiện dạng ngày (không phải số serial)', await page.evaluate(() => { const t = document.querySelector('#view-playground .im-prev'); return document.querySelectorAll('#view-playground .im-prev tr').length <= 21 && /2026-11-01/.test(t.textContent); }));
+  ok('tự đoán cột: Ngày/Sản phẩm/Số lượng/Đơn giá -> cột 0/1/2/3', JSON.stringify(await page.$$eval('#view-playground select[data-map]', (s) => s.map((x) => x.value))) === JSON.stringify(['0', '1', '2', '3']));
+  const sum1 = await page.textContent('#view-playground [data-slot="check"]');
+  ok('kiểm tra: 6 hợp lệ, 1 lỗi (số lượng "abc", dòng 6), 1 dòng trống bỏ qua', /6 dòng hợp lệ/.test(sum1) && /1 lỗi/.test(sum1) && /1 dòng trống/.test(sum1) && /Dòng 6: "Số lượng" = "abc"/.test(sum1), sum1);
+  await page.click('#view-playground [data-act="import"]');
+  const imp1 = await page.evaluate(() => EP.collection('btc_sample').list());
+  ok('nhập: 6 dòng vào collection, gắn "Dữ liệu mẫu từ BTC", số/ngày đã chuyển kiểu', imp1.length === 6 && imp1.every((r) => r.tag === 'Dữ liệu mẫu từ BTC' && typeof r.qty === 'number' && /^\d{4}-\d\d-\d\d$/.test(r.day)) && imp1.some((r) => r.name === 'Cà phê muối' && r.qty === 12 && r.price === 35000 && r.day === '2026-11-01'), imp1[0]);
+  ok('sau nhập: có thẻ KPI + biểu đồ + nhãn', await page.evaluate(() => !!document.querySelector('#view-playground [data-slot="res"] .kpi') && !!document.querySelector('#view-playground [data-slot="res"] .chart svg') && /Dữ liệu mẫu từ BTC/.test(document.querySelector('#view-playground [data-slot="res"]').textContent)));
+  for (const w of [360, 390]) {
+    await page.setViewportSize({ width: w, height: 844 }); await page.waitForTimeout(350);
+    const o = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+    ok(w + 'px: Nhập file không tràn ngang (' + o.sw + '/' + o.cw + ')', o.sw <= o.cw);
+    if (SHOTS) await page.screenshot({ path: path.join(SHOTS, 'mobile-' + w + '-playground-import.png'), fullPage: true });
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.click('#view-playground [data-slot="sheetpick"] .seg label:has-text("Chi phí")'); await page.waitForTimeout(300);
+  ok('sheet Chi phí: tự ghép Ngày chi/Khoản mục/Số tiền, bỏ qua Số lượng', JSON.stringify(await page.$$eval('#view-playground select[data-map]', (s) => s.map((x) => x.value))) === JSON.stringify(['2', '0', '-1', '1']));
+  const sum2 = await page.textContent('#view-playground [data-slot="check"]');
+  ok('số/ngày dạng chữ vi-VN: 3 hợp lệ, 1 lỗi (31/02/2026 không tồn tại)', /3 dòng hợp lệ/.test(sum2) && /1 lỗi/.test(sum2) && /31\/02\/2026/.test(sum2), sum2);
+  await page.click('#view-playground [data-act="import"]');
+  const imp2 = await page.evaluate(() => EP.collection('btc_sample').list());
+  ok('nhập sheet Chi phí (thay dữ liệu cũ): 1.234.567,5 -> 1234567.5; 12.000.000 -> 12000000', imp2.length === 3 && imp2.some((r) => r.price === 1234567.5) && imp2.some((r) => r.price === 12000000 && r.day === '2026-11-05'), imp2);
+  await page.setInputFiles('#view-playground [data-file]', fx('mau-btc.csv'));
+  await page.waitForSelector('#view-playground [data-slot="check"] .badge');
+  const sum3 = await page.textContent('#view-playground [data-slot="check"]');
+  ok('CSV (BOM, dấu ;, "a, b" trong ngoặc kép): 3 hợp lệ, 1 lỗi, 1 trống', /3 dòng hợp lệ/.test(sum3) && /1 lỗi/.test(sum3) && /1 dòng trống/.test(sum3), sum3);
+  await page.click('#view-playground [data-act="import"]');
+  const imp3 = await page.evaluate(() => EP.collection('btc_sample').list());
+  ok('CSV: "Trà đào, cam sả" giữ nguyên, 42.000,5 -> 42000.5, ngày dd/mm/yyyy', imp3.length === 3 && imp3.some((r) => r.name === 'Trà đào, cam sả' && r.price === 42000.5 && r.day === '2026-11-02'), imp3);
+  await page.setInputFiles('#view-playground [data-file]', { name: 'x.pdf', mimeType: 'application/pdf', buffer: Buffer.from('x') });
+  await page.waitForSelector('#view-playground [role="alert"]');
+  ok('file sai định dạng -> báo lỗi tiếng Việt', /Chỉ nhận \.xlsx/.test(await page.textContent('#view-playground [role="alert"]')));
+  await pick('Kinh doanh'); await page.waitForSelector('#view-playground [data-act="use-sample"]');
+  await page.click('#view-playground [data-act="use-sample"]');
+  ok('dùng giá TB từ dữ liệu BTC (43.000) -> giả định giá bán mang nhãn Dữ liệu mẫu', await page.evaluate(() => /Dữ liệu mẫu/.test(document.querySelector('[data-row="price"] [data-tag]').textContent) && EP.scenario.get('shop-demo').values().price === 43000));
+  for (const w of [360, 390]) {
+    await page.setViewportSize({ width: w, height: 844 }); await page.waitForTimeout(400);
+    const o = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+    ok(w + 'px: Kinh doanh không tràn ngang (' + o.sw + '/' + o.cw + ')', o.sw <= o.cw);
+    ok(w + 'px: bảng kết quả 3 kịch bản vừa khung', await page.evaluate(() => document.querySelector('#view-playground .sc-table').getBoundingClientRect().right <= document.documentElement.clientWidth));
+    if (SHOTS) await page.screenshot({ path: path.join(SHOTS, 'mobile-' + w + '-playground-biz.png'), fullPage: true });
+  }
+  await page.evaluate(() => { EP.scenario.get('shop-demo').reset(); EP.collection('btc_sample').clear(); });
+  await page.setViewportSize({ width: 1440, height: 900 });
   }
 
   console.log('# Cài đặt: AI + dữ liệu');
