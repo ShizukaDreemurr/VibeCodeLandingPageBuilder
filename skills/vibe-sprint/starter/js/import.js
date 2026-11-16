@@ -217,14 +217,14 @@
       st.map = guess(hd, fields);
       $('flow').innerHTML =
         '<div class="im-step"><div class="row between"><h3 class="sc-sub">1. Chọn sheet</h3></div><div class="mt-2" data-slot="sheetpick"></div>' +
-        '<label class="row mt-2"><input type="checkbox" data-header ' + (st.header ? 'checked' : '') + '> Dòng đầu tiên là tiêu đề cột</label></div>' +
+        '<label class="check mt-2"><input type="checkbox" data-header ' + (st.header ? 'checked' : '') + '> Dòng đầu tiên là tiêu đề cột</label></div>' +
         '<div class="im-step"><h3 class="sc-sub">2. Xem trước ' + Math.min(prev, sh.rows.length) + '/' + sh.rows.length + ' dòng</h3><div class="mt-2">' + table(sh.rows.slice(0, prev)) + '</div></div>' +
         '<div class="im-step"><h3 class="sc-sub">3. Ghép cột (đã tự đoán, sửa nếu sai)</h3><div class="im-map mt-2">' + fields.map(function (f) {
           var id = 'im-' + f.key + '-' + EP.uid();
           return '<div class="field"><select class="input" id="' + id + '" data-map="' + esc(f.key) + '"><option value="-1">(Bỏ qua)</option>' + hd.map(function (h, i) { return '<option value="' + i + '"' + (st.map[f.key] === i ? ' selected' : '') + '>' + esc(h) + '</option>'; }).join('') + '</select><label class="label" for="' + id + '">' + esc(f.label + (f.required ? ' *' : '')) + '</label></div>';
         }).join('') + '</div></div>' +
         '<div class="im-step"><h3 class="sc-sub">4. Kiểm tra và nhập</h3><div data-slot="check" class="mt-2" aria-live="polite"></div><div class="row mt-3"><button class="btn btn-primary" type="button" data-act="import">' + EP.ui.icon('check') + 'Nhập dữ liệu</button>' +
-        '<label class="row"><input type="checkbox" data-replace checked> Thay dữ liệu đã nhập trước đó</label></div></div>';
+        '<label class="check"><input type="checkbox" data-replace checked> Thay dữ liệu đã nhập trước đó</label></div></div>';
       EP.ui.segmented($('flow').querySelector('[data-slot="sheetpick"]'), { label: 'Sheet', name: 'im-sheet-' + EP.uid(), value: String(st.sheet), options: st.sheets.map(function (s, i) { return { value: String(i), label: s.name }; }), onChange: function (v) { st.sheet = Number(v); drawFlow(); } });
       runCheck();
     }

@@ -10,7 +10,7 @@ Bộ khung web app thuần HTML/CSS/JS (không build, không CDN) cho cuộc thi
 4. Chạy thử: `python3 -m http.server 8211` rồi mở `http://localhost:8211/` (bảng cổng của skill: 8211 điều phối, 8212-8230 các agent, **không dùng 8000**).
 5. Nhân bản feature (mục 2). Khi đã có feature thật, xoá `features/_example` và `features/_playground` **cùng với hai dòng `<script src="features/_example/feature.js">` và `<script src="features/_playground/feature.js">` trong `index.html`** (xoá thư mục mà quên dòng script thì trình duyệt báo 404 và smoke test đỏ). Smoke test tự bỏ qua các khối của hai feature này khi tab của chúng không còn.
 
-Thứ tự nạp script trong `index.html`: config, version, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, scenario, import, checklist, quiz, chat, timeslot), **lucian**, features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
+Thứ tự nạp script trong `index.html`: config, version, **icons**, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, scenario, import, checklist, quiz, chat, timeslot), **lucian, mobile**, features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
 
 ## 2. Thêm một feature (5 phút)
 
@@ -92,6 +92,30 @@ Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,
 
 Quy tắc đã tuân thủ: sáng/tối, `prefers-reduced-motion` (hoạt ảnh về ~0, không có phần tử bị ẩn chờ), `:focus-visible`, vùng chạm >= 44px khi màn <= 720px hoặc cảm ứng, không tràn ngang ở 390px, không CDN. Gỡ lớp này: xoá `css/lucian.css` + `js/lucian.js` và hai dòng trong `index.html` (form.js vẫn chạy, chỉ mất hiệu ứng). Kiểm thử: khối "Lớp Lucian" trong `tests/smoke.cjs` chạy khi còn tab `playground`.
 
+## 2c. Chuẩn điện thoại (360-390px dọc; đọc `../references/13-chuan-mobile.md`)
+
+Chung kết chấm trên điện thoại, nên starter **viết cho điện thoại trước** (`css/mobile.css` nạp cuối; từ 768px mới mở rộng cho máy tính):
+
+| Việc | Có sẵn |
+|---|---|
+| Điều hướng | **Thanh tab dưới** (`#bnav`) tự dựng từ `EP.register` (icon Xclipse + nhãn, `aria-current`, viên nền trượt, spring khi nhấn); > 5 tab thì ô "Thêm" mở sheet. Thanh trên mỏng (logo + nút giao diện). Chuyển tab trượt/mờ ≤ 220ms, nhớ vị trí cuộn từng tab, chạm lại tab = lên đầu |
+| Nút chính | `EP.ui.actionBar(el, [{ label, icon, variant:'primary', act, onClick }, { label, icon, iconOnly:true, ... }])`: thanh dính trên thanh tab, tối đa 3 nút, nội dung cuối trang tự chừa chỗ |
+| Hộp thoại | `EP.ui.dialog` / `EP.ui.confirm` = **bottom sheet** có tay nắm, **kéo xuống để đóng**; từ 768px là hộp giữa màn hình |
+| Form | một cột; `EP.form` tự thêm `inputmode`/`enterkeyhint`/`autocomplete` theo `type` (`tel`, `email`, `number`, `money` → bàn phím số) |
+| Bảng, biểu đồ | bảng tự thành thẻ (ô đầu là tiêu đề thẻ; nhớ truyền `label` cho cột); biểu đồ vẽ theo bề rộng, chữ trục ≥ 12px |
+| Vùng chạm, chữ | mọi nút/ô nhập ≥ 48px, cách nhau ≥ 8px, thân 16px, ô nhập ≥ 16px (iOS không phóng to) |
+| Hiệu năng | không `backdrop-filter`/`background-attachment: fixed` trên điện thoại, tôn trọng `prefers-reduced-motion` |
+| Icon | `js/icons.js` (bộ Xclipse 54 icon); tên cũ của `EP.ui.icon` được ánh xạ, tên Xclipse dùng trực tiếp (`XcIcons.names`) |
+
+Bộ kiểm thử điện thoại `tests/mobile-suite.cjs` chạy trong `tests/smoke.cjs` (hoặc riêng: `node tests/mobile-suite.cjs http://localhost:8211/`) ở 360×780 và 390×844 (dọc, 3x, chạm): không tràn ngang ở mọi view và mô-đun, nút/ô nhập ≥ 48px và không chồng nhau, chữ ≥ 14px (chú thích ≥ 12px), ô nhập ≥ 16px, thanh tab dưới có `aria-current`, luồng chính (thêm bằng sheet, AI mô phỏng, lưu, kịch bản, nhập file) chỉ bằng chạm.
+
+### Ảnh điện thoại dọc cho slide
+
+```
+node tools/shots-mobile.cjs http://localhost:8211/ shots-mobile
+```
+Ra `shots-mobile/NN-<tab>-light.png` và `NN-<tab>-dark.png` (390×844 @3x = 1170×2532, đúng khung điện thoại dọc, có thanh tab dưới), dữ liệu demo tự nạp. Tuỳ chọn: `--width 360 --height 780` (cỡ khác), `--full` (cả trang dài), `--all` (thêm từng mục con của tab Mô-đun), `--sheet` (thêm ảnh bottom sheet của nút `[data-act="add"]`). Dán ảnh vào slide theo khung dọc, đừng kéo giãn; ảnh có số liệu mô phỏng thì giữ nguyên nhãn mô phỏng trong khung.
+
 ## 3. Quy ước
 - Chữ hiện cho người dùng: **tiếng Việt có dấu**; tên biến, hàm, file, comment code: tiếng Anh hoặc tiếng Việt ngắn gọn, nhưng API công khai dùng tiếng Anh.
 - Mọi kết quả mô phỏng AI phải kèm `MOCK_NOTICE` (cấu hình ở `js/config.js`).
@@ -141,6 +165,11 @@ index.html            vỏ app: skip link, tab, nút giao diện, chân trang, t
 css/tokens.css        biến thiết kế sáng/tối + khai báo @layer
 css/app.css           toàn bộ thành phần
 css/lucian.css        lớp Lucian: vi tương tác (mục 2b)
+css/mobile.css        chuẩn điện thoại: tab dưới, sheet, thanh hành động, cỡ chạm (mục 2c); nạp cuối
+js/mobile.js          mờ mép thanh cuộn ngang (.seg), cuộn mục chọn vào giữa
+js/icons.js           bộ icon Xclipse (XcIcons)
+tools/shots-mobile.cjs  chụp ảnh điện thoại dọc cho slide
+tests/mobile-suite.cjs  kiểm thử điện thoại 360/390 (chạy trong smoke.cjs)
 js/                   config, version, core, ui, form, charts, export, ai, demo, app + mô-đun
 features/_example     feature mẫu đầy đủ (CRUD + form + AI + biểu đồ)
 js/lucian.js          lớp Lucian (bọc EP.ui/EP.ai, quét DOM)

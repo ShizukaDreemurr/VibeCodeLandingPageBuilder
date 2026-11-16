@@ -17,10 +17,13 @@
   --radius-sheet: 22px;
   --radius: 14px;
   --radius-small: 10px;
-  --control-h: 40px;
-  --field-h: 52px;
-  --gap: 20px;
-  --pad: 20px;
+  /* Điện thoại trước: vùng chạm >= 48px, lề 16px. Từ 768px trở lên thu gọn (xem cuối khối). */
+  --control-h: 48px;
+  --field-h: 56px;
+  --touch: 48px;
+  --gap: 16px;
+  --pad: 16px;
+  --nav-h: 64px;
   --max-w: 1120px;
 
   /* Bóng chỉ cho thứ đang nổi (menu, hộp thoại, toast) */
@@ -76,6 +79,7 @@
 
   --shadow-float: 0 12px 32px rgba(7, 45, 89, .16), 0 2px 6px rgba(7, 45, 89, .08);
 }
+@media (min-width: 768px) { :root { --control-h: 44px; --field-h: 52px; --gap: 20px; --pad: 20px; } }
 
 /* ============ Preset XCLIPSE - tối (theo hệ thống, trừ khi chọn sáng thủ công) ============ */
 @media (prefers-color-scheme: dark) {

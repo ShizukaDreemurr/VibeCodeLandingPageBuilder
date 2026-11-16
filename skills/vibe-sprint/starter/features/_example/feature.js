@@ -90,10 +90,6 @@
     id: NAME, label: 'Mục', icon: 'list', order: 20,
     title: 'Quản lý mục', desc: 'Thêm, sửa, xóa, lọc, xuất file và nhờ AI gợi ý. Đây là feature mẫu để nhân bản.',
     summary: function () { var s = stats(); return [{ label: 'Tổng số mục', value: String(s.total), hint: s.doing + ' đang làm' }, { label: 'Tỉ lệ hoàn thành', value: EP.fmt.percent(s.doneRate, 0) }]; },
-    actions: function () {
-      return '<button type="button" class="btn" data-act="export">' + EP.ui.icon('download') + 'Xuất CSV</button><button type="button" class="btn" data-act="print">' + EP.ui.icon('print') + 'In / PDF</button>' +
-        '<button type="button" class="btn btn-primary" data-act="add">' + EP.ui.icon('plus') + 'Thêm mục</button>';
-    },
     render: function (el) { build(el); }
   });
 
@@ -168,21 +164,19 @@
       });
     }
 
-    /* Nút ở đầu view (h1) */
-    var actionHost = el.closest('.view').querySelector('.view-actions');
-    actionHost.onclick = function (e) {
-      var b = e.target.closest('[data-act]'); if (!b) return;
-      var a = b.getAttribute('data-act');
-      if (a === 'add') openForm();
-      else if (a === 'print') EP.export.print();
-      else if (a === 'export') {
-        var rows = visible();
-        if (!rows.length) { EP.ui.toast('Không có dòng nào để xuất.', { type: 'warn' }); return; }
-        EP.export.csv('muc-' + EP.fmt.today() + '.csv', rows, [
-          { key: 'name', label: 'Tên mục' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Điện thoại' }, { key: 'qty', label: 'Số lượng' },
-          { key: 'due', label: 'Hạn' }, { label: 'Nhóm', key: 'category', value: function (r) { return CATEGORY[r.category]; } }, { label: 'Trạng thái', key: 'status', value: function (r) { return STATUS[r.status]; } }, { key: 'note', label: 'Ghi chú' }]);
-      }
-    };
+    /* Thanh hành động dính đáy (điện thoại): nút chính "Thêm mục" ở vùng ngón cái, Xuất CSV / In là nút icon */
+    function exportCsv() {
+      var rows = visible();
+      if (!rows.length) { EP.ui.toast('Không có dòng nào để xuất.', { type: 'warn' }); return; }
+      EP.export.csv('muc-' + EP.fmt.today() + '.csv', rows, [
+        { key: 'name', label: 'Tên mục' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Điện thoại' }, { key: 'qty', label: 'Số lượng' },
+        { key: 'due', label: 'Hạn' }, { label: 'Nhóm', key: 'category', value: function (r) { return CATEGORY[r.category]; } }, { label: 'Trạng thái', key: 'status', value: function (r) { return STATUS[r.status]; } }, { key: 'note', label: 'Ghi chú' }]);
+    }
+    EP.ui.actionBar(el, [
+      { label: 'Xuất CSV', icon: 'download', iconOnly: true, act: 'export', onClick: exportCsv },
+      { label: 'In / PDF', icon: 'print', iconOnly: true, act: 'print', onClick: function () { EP.export.print(); } },
+      { label: 'Thêm mục', icon: 'plus', variant: 'primary', act: 'add', onClick: function () { openForm(); } }
+    ]);
 
     /* AI: form nhỏ -> EP.ai.generate -> hiện kết quả + ghi chú mock -> lưu thành mục */
     function drawAi() {

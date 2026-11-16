@@ -1,0 +1,195 @@
+/* mobile.css - CHUẨN ĐIỆN THOẠI (xem skills/vibe-sprint/references/13-chuan-mobile.md). Nạp cuối cùng.
+   Viết cho 360-390px DỌC trước; từ 768px trở lên (@media min-width) mới mở rộng cho máy tính.
+   Gồm: thanh tab dưới, thanh trên mỏng, thanh hành động dính đáy, bottom sheet, cỡ chạm 48px, chữ 16px, hero gọn, chuyển cảnh trượt. */
+
+@layer components {
+  :root { --safe-b: env(safe-area-inset-bottom, 0px); --abar-h: 0px; --lx-touch: 48px; }
+  html.has-abar { --abar-h: 70px; }
+  html { scroll-padding-top: 72px; }
+
+  /* ---------- Nền: không dùng background-attachment: fixed (giật trên điện thoại) ---------- */
+  body { background-attachment: scroll; overflow-wrap: break-word; }
+
+  /* ---------- Thanh trên mỏng: thương hiệu + nút giao diện. Tab ngang chỉ có từ 768px ---------- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; min-height: 56px; padding: 4px 8px 4px 16px; gap: 8px; background: var(--ground); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .tabs { display: none; }
+  .brand { min-height: var(--touch); }
+  .brand-name { font-size: 17px; max-width: 60vw; }
+  .topbar-actions .icon-btn { width: var(--touch); height: var(--touch); }
+
+  /* ---------- Thanh tab dưới (thumb zone) ---------- */
+  .bnav { position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; display: flex; align-items: stretch; height: calc(var(--nav-h) + var(--safe-b)); padding: 0 4px var(--safe-b); background: var(--surface); border-top: 1px solid var(--border); box-shadow: 0 -6px 20px -14px var(--ux-shadow-strong, rgba(7, 45, 89, .35)); }
+  .bnav-item { flex: 1 1 0; min-width: 0; min-height: var(--touch); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 6px 2px 4px; border: 0; background: transparent; color: var(--text-muted); text-decoration: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .bnav-ic { position: relative; width: 60px; height: 32px; display: grid; place-items: center; border-radius: 999px; transition: transform .38s var(--ux-spring); }
+  .bnav-ic::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--active); opacity: 0; transform: scaleX(.35); transition: transform .42s var(--ux-spring), opacity .2s; }
+  .bnav-ic svg { position: relative; width: 24px; height: 24px; }
+  .bnav-ic .ic-on { display: none; }
+  .bnav-lb { font-size: 12px; line-height: 1.1; font-weight: 600; letter-spacing: .005em; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bnav-item:active .bnav-ic { transform: scale(.86); transition-duration: 90ms; }
+  .bnav-item[aria-current="page"] { color: var(--text); }
+  .bnav-item[aria-current="page"] .bnav-lb { font-weight: 750; }
+  .bnav-item[aria-current="page"] .bnav-ic::before { opacity: 1; transform: none; }
+  .bnav-item[aria-current="page"] .ic-on { display: block; }
+  .bnav-item[aria-current="page"] .ic-off { display: none; }
+  .bnav-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; border-radius: 12px; }
+  @media (max-height: 440px) { :root { --nav-h: 52px; } .bnav-ic { height: 26px; } }
+
+  /* "Thêm" (khi > 5 tab): danh sách trong bottom sheet */
+  .more-list { display: grid; gap: 8px; padding-bottom: 8px; }
+  .more-row { display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--raised); color: var(--text); text-decoration: none; font-weight: 600; font-size: 16px; }
+  .more-row[aria-current="page"] { background: var(--accent-soft); border-color: var(--accent); }
+  .more-row svg { width: 24px; height: 24px; flex: none; }
+
+  /* ---------- Chừa chỗ cuối trang cho thanh tab dưới + thanh hành động ---------- */
+  .footer { padding: 20px 16px calc(var(--nav-h) + var(--safe-b) + var(--abar-h) + 20px); font-size: 13px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .toasts { bottom: calc(var(--nav-h) + var(--safe-b) + var(--abar-h) + 12px); }
+
+  /* ---------- Thanh hành động chính, dính ngay trên thanh tab ---------- */
+  .abars { position: fixed; z-index: 55; left: 0; right: 0; bottom: calc(var(--nav-h) + var(--safe-b)); pointer-events: none; }
+  .abar { pointer-events: auto; display: flex; gap: 8px; align-items: center; padding: 10px 16px; background: var(--surface); border-top: 1px solid var(--border); }
+  .abar .btn { flex: 1 1 0; min-width: var(--touch); min-height: var(--touch); }
+  .abar .btn-primary, .abar .btn-cta { flex: 2 1 0; }
+  .abar .abar-icon { flex: 0 0 var(--touch); padding: 0; }
+  .abar .btn span { overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---------- Chữ & tiêu đề ---------- */
+  .view-head { margin-bottom: 16px; gap: 8px 16px; }
+  .view-title { font-size: 26px; font-weight: 750; }
+  .view-sub { font-size: 15px; margin-top: 4px; }
+  .section-title { font-size: 18px; }
+  .muted, .cell-sub, .field-msg, .kpi-foot, .sc-why { font-size: 13.5px; }
+  .kpi-label { font-size: 14px; }
+  .kpi-value { white-space: normal; text-wrap: balance; overflow-wrap: anywhere; font-size: clamp(22px, 6.4vw, 30px); }
+  .badge { font-size: 12.5px; }
+  .chip { font-size: 14px; }
+  .table th, .table th button { font-size: 13.5px; }
+  .stepper li { font-size: 13px; }
+  .chart text { font-size: 12px; }
+  .ai-notice { font-size: 13.5px; }
+  .prompt-box { font-size: 13px; }
+
+  /* ---------- Thẻ, lưới ---------- */
+  .card { border-radius: 16px; }
+  .kpi { padding: 14px; }
+  .grid.kpis { gap: 10px; }
+  .view-body > * + * { margin-top: 14px; }
+  @media (hover: none) { .card::before, .card::after { display: none; } }
+
+  /* ---------- Nút, ô nhập, chip: vùng chạm >= 48px, cách nhau >= 8px ---------- */
+  .btn, .btn-sm, .icon-btn, button.chip, .seg span, .table th button, .more-row { min-height: var(--touch); }
+  .btn { font-size: 16px; padding: 0 18px; }
+  .btn-sm { min-width: var(--touch); font-size: 15px; padding: 0 14px; }
+  .icon-btn { width: var(--touch); height: var(--touch); }
+  button.chip { padding: 0 16px; }
+  .chips { gap: 8px; }
+  .row { gap: 8px; }
+  .row > * { min-width: 0; max-width: 100%; }
+  .seg { max-width: 100%; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
+  .seg label { scroll-snap-align: center; }
+  .seg[data-fade="end"] { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); }
+  .seg[data-fade="start"] { -webkit-mask-image: linear-gradient(270deg, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(270deg, #000 calc(100% - 36px), transparent); }
+  .seg[data-fade="both"] { -webkit-mask-image: linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent); }
+  .view-title:focus, .view-title:focus-visible { outline: none; }
+  main:focus { outline: none; }
+  .input { min-height: var(--field-h); font-size: 16px; }
+  .input-inline { min-height: var(--touch); }
+  .check { min-height: var(--touch); }
+  .seg { padding: 4px; }
+  .seg span { font-size: 15px; padding: 0 16px; }
+  .sc-range { height: var(--touch); margin: 0; }
+  .sc-spread-in { min-height: var(--touch); width: 84px; }
+  .sc-explain > summary { min-height: var(--touch); }
+  @media (max-width: 767px) {
+    .table td.actions { display: flex; justify-content: flex-end; gap: 8px; }
+    /* Thẻ (bảng -> thẻ): ô đầu là tiêu đề thẻ, không có nhãn bên trái */
+    .card.pad-0 .lx-cards .table thead tr { padding: 12px 12px 4px; }
+    .card.pad-0 .lx-cards .table tbody { padding: 8px 12px 12px; }
+    .lx-cards .table td:first-child { display: block; text-align: left; }
+    .lx-cards .table td:first-child::before { content: none; }
+    .lx-cards .table td:first-child .cell-main { font-size: 17px; line-height: 1.3; }
+    .lx-cards .table td:first-child .cell-sub { margin-top: 2px; overflow-wrap: anywhere; }
+  }
+  .table td.actions .btn { margin-left: 4px; }
+
+  /* ---------- Hero gọn trên điện thoại: giữ gradient thương hiệu, không kính mờ ---------- */
+  html:not([data-hero="fluted"]) .hero { min-height: 0; border: 0; border-radius: 22px; background: linear-gradient(140deg, var(--hero-navy, #072D59) 0%, #0E4A8A 72%, #1C5FAE 100%); color: #fff; }
+  html:not([data-hero="fluted"]) .hero-copy { padding: 22px 20px 22px; gap: 8px; }
+  html:not([data-hero="fluted"]) .hero-eyebrow { color: #FFB8C6; }
+  html:not([data-hero="fluted"]) .hero-title { font-size: 30px; color: #fff; }
+  html:not([data-hero="fluted"]) .hero-title em { color: #FFB8C6; }
+  html:not([data-hero="fluted"]) .hero-copy p:not(.hero-title) { color: rgba(255, 255, 255, .86); font-size: 15px; }
+  html:not([data-hero="fluted"]) .btn-cta { margin-top: 6px; }
+  html[data-hero="fluted"] .hero { min-height: 0; }
+
+  /* ---------- Bảng -> thẻ: mặc định trên điện thoại (lucian.js gắn .lx-cards khi có data-label) ---------- */
+  .im-prev th, .im-prev td { font-size: 13.5px; }
+  .sc-table { font-size: 14px; } .sc-table thead th { font-size: 13px; } .sc-table td.nodata { font-size: 12.5px; }
+
+  /* ---------- Hộp thoại -> bottom sheet có tay nắm kéo xuống ---------- */
+  dialog.dlg, dialog.dlg.wide { margin: auto 0 0; width: 100%; max-width: 100%; max-height: min(92dvh, 100%); border-width: 1px 0 0; border-radius: 24px 24px 0 0; }
+  .dlg-grip { display: block; flex: none; width: 44px; height: 5px; margin: 10px auto 0; border-radius: 3px; background: var(--control); opacity: .45; touch-action: none; }
+  .dlg-head { padding: 8px 8px 0 20px; touch-action: none; }
+  .dlg-title { font-size: 20px; }
+  .dlg-body { padding: 8px 20px 12px; overscroll-behavior: contain; min-height: 0; -webkit-overflow-scrolling: touch; }
+  .dlg-foot { flex-wrap: nowrap; justify-content: stretch; gap: 8px; padding: 12px 16px calc(12px + var(--safe-b)); border-top: 1px solid var(--rule); background: var(--surface); }
+  .dlg-foot .btn { flex: 1 1 0; }
+  .dlg-foot .btn-primary, .dlg-foot .btn-danger.solid { flex: 1.6 1 0; }
+  .form { gap: 12px; }
+
+  /* ---------- Chuyển cảnh giữa tab: trượt + mờ <= 220ms; bỏ hiệu ứng riêng của .view khi đã có VT ---------- */
+  @supports (view-transition-name: none) { .view { animation: none; } }
+  html[data-dir="fwd"] { --vt-x: 28px; } html[data-dir="back"] { --vt-x: -28px; }
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-vt="route"] main { view-transition-name: page; }
+    html[data-vt="route"] .topbar { view-transition-name: topbar; }
+    html[data-vt="route"] .bnav { view-transition-name: bnav; }
+    html[data-vt="route"] .abars { view-transition-name: abars; }
+    html[data-vt="route"]::view-transition-old(root), html[data-vt="route"]::view-transition-new(root) { animation-duration: 1ms; }
+    html[data-vt="route"]::view-transition-old(page) { animation: vt-out 110ms var(--ease-in-out) both; }
+    html[data-vt="route"]::view-transition-new(page) { animation: vt-in 220ms var(--ease-out) both; }
+    @keyframes vt-out { to { opacity: 0; transform: translateX(calc(var(--vt-x, 24px) * -.5)); } }
+    @keyframes vt-in { from { opacity: 0; transform: translateX(var(--vt-x, 24px)); } }
+  }
+
+  /* ---------- Từ 768px: máy tính bảng / máy tính, mở rộng vừa phải ---------- */
+  @media (min-width: 768px) {
+    html { scroll-padding-top: 120px; }
+    body { background-attachment: fixed; }
+    .bnav { display: none; }
+    .topbar { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "brand actions" "tabs tabs"; padding: 8px 16px 10px; background: var(--glass); -webkit-backdrop-filter: saturate(1.6) blur(14px); backdrop-filter: saturate(1.6) blur(14px); }
+    .tabs { display: flex; }
+    .topbar-actions .icon-btn { width: 40px; height: 40px; }
+    .brand { min-height: 0; }
+    .footer { padding: 20px 16px 28px; flex-direction: row; align-items: center; gap: 8px 16px; }
+    .toasts { bottom: 16px; }
+    html.has-abar .toasts { bottom: 84px; }
+    html.has-abar { --abar-h: 0px; }
+    .abars { left: auto; right: 24px; bottom: 20px; width: auto; }
+    .abar { border: 1px solid var(--border); border-radius: 18px; padding: 8px; box-shadow: var(--shadow-float); }
+    .abar .btn, .abar .btn-primary { flex: 0 0 auto; min-height: 44px; min-width: 44px; padding: 0 18px; }
+    .abar .abar-icon { flex: 0 0 44px; padding: 0; }
+    .view-title { font-size: clamp(26px, 3vw, 34px); }
+    .card { border-radius: var(--radius); }
+    .grid.kpis { gap: 16px; }
+    .view-body > * + * { margin-top: var(--gap); }
+    .btn, .btn-sm, .icon-btn, button.chip, .seg span, .table th button, .more-row { min-height: var(--control-h); }
+    .btn-sm { min-height: 36px; min-width: 0; font-size: 14px; }
+    .btn { font-size: 14px; padding: 0 16px; }
+    .input, .input-inline { min-height: var(--field-h); }
+    .input-inline { min-height: var(--control-h); }
+    .dlg-grip { display: none; }
+    dialog.dlg { margin: auto; width: min(560px, calc(100vw - 24px)); max-width: none; border-width: 1px; border-radius: var(--radius-sheet); max-height: calc(100dvh - 24px); }
+    dialog.dlg.wide { width: min(760px, calc(100vw - 24px)); }
+    .dlg-head { padding: 18px 20px 4px; touch-action: auto; }
+    .dlg-body { padding: 12px 20px 8px; }
+    .dlg-foot { flex-wrap: wrap; justify-content: flex-end; padding: 14px 20px 18px; border-top: 0; background: transparent; }
+    .dlg-foot .btn, .dlg-foot .btn-primary { flex: 0 0 auto; }
+    html:not([data-hero="fluted"]) .hero { min-height: 240px; border: 1px solid var(--border); background: linear-gradient(125deg, var(--surface) 0%, var(--raised) 52%, var(--active) 100%); color: inherit; }
+    html:not([data-hero="fluted"]) .hero-copy { padding: 36px; gap: 14px; }
+    html:not([data-hero="fluted"]) .hero-eyebrow { color: var(--accent-ink); }
+    html:not([data-hero="fluted"]) .hero-title { font-size: clamp(34px, 4vw, 52px); color: inherit; }
+    html:not([data-hero="fluted"]) .hero-title em { color: inherit; }
+    html:not([data-hero="fluted"]) .hero-copy p:not(.hero-title) { color: var(--text-muted); font-size: inherit; }
+  }
+  @media print { .bnav, .abars { display: none !important; } }
+}

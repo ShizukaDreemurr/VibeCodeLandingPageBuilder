@@ -103,7 +103,10 @@
       var t = money ? 'text' : type === 'tel' ? 'tel' : type === 'email' ? 'email' : type === 'number' ? 'number' : type === 'date' ? 'date' : type === 'url' ? 'url' : type === 'time' ? 'time' : 'text';
       var ex = '';
       if (type === 'number') { if (r.min != null) ex += ' min="' + r.min + '"'; if (r.max != null) ex += ' max="' + r.max + '"'; ex += ' step="' + (r.integer ? 1 : 'any') + '" inputmode="' + (r.integer ? 'numeric' : 'decimal') + '"'; }
-      if (type === 'tel') ex += ' inputmode="tel"';
+      if (type === 'tel') ex += ' inputmode="tel"' + (spec.autocomplete ? '' : ' autocomplete="tel"');
+      if (type === 'email') ex += ' inputmode="email" autocapitalize="off" spellcheck="false"' + (spec.autocomplete ? '' : ' autocomplete="email"');
+      if (type === 'url') ex += ' inputmode="url" autocapitalize="off" spellcheck="false"';
+      if (t !== 'date' && t !== 'time') ex += ' enterkeyhint="next"';
       if (money) ex += ' inputmode="numeric" data-lx-money';
       if (r.maxLength && type !== 'number' && !money) ex += ' data-max="' + r.maxLength + '"';
       if (r.maxLength && type !== 'number') ex += ' maxlength="' + (r.maxLength + 40) + '"'; // cho gõ lố để thấy báo lỗi thay vì bị cắt âm thầm
@@ -150,6 +153,7 @@
   function bind(form, schema, opts) {
     opts = opts || {};
     form.setAttribute('novalidate', '');
+    (function () { var ins = form.querySelectorAll('input[enterkeyhint], textarea'); var last = ins[ins.length - 1]; if (last && last.tagName !== 'TEXTAREA') last.setAttribute('enterkeyhint', 'done'); })();
     function values() { var o = {}; Object.keys(schema).forEach(function (k) { o[k] = readValue(form, k, schema[k]); }); return o; }
     function checkOne(name, show) {
       var all = values(), msg = validateValue(all[name], schema[name], all);

@@ -34,13 +34,17 @@
     refresh: '<path d="M21 12a9 9 0 01-15.5 6.2M3 12A9 9 0 0118.5 5.8M21 4v5h-5M3 20v-5h5"/>',
     file: '<path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8zM14 3v5h5M9 13h6M9 17h6"/>'
   };
+  /* Icon: ưu tiên bộ Xclipse (js/icons.js, nét 1.75); tên cũ được ánh xạ sang tên Xclipse; không có thì rơi về bộ P ở trên. */
+  var XC = { sparkles: 'ai-sparkle', x: 'close', chart: 'chart-bar', quiz: 'help', calc: 'grid' };
   var warned = {};
-  function icon(name, cls) {
-    if (!P[name] && name && !warned[name]) { warned[name] = 1; console.warn('[EP.ui.icon] Không có icon "' + name + '" (dùng "info" thay thế). Icon có sẵn: ' + Object.keys(P).join(', ')); }
+  function icon(name, cls, size, duo) {
+    var xn = XC[name] || name, XI = root.XcIcons;
+    if (XI && XI.has(xn)) return XI.svg(xn, { size: size || 20, duo: !!duo, cls: 'icon ' + (cls || '') });
+    if (!P[name] && name && !warned[name]) { warned[name] = 1; console.warn('[EP.ui.icon] Không có icon "' + name + '" (dùng "info" thay thế). Icon có sẵn: ' + (XI ? XI.names.join(', ') + ', ' : '') + Object.keys(P).join(', ')); }
     return '<svg class="icon ' + (cls || '') + '" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + (P[name] || P.info) + '</svg>';
   }
 
-  var ui = EP.ui = { icons: P, icon: icon };
+  var ui = EP.ui = { icons: P, icon: icon, iconDuo: function (name, cls, size) { return icon(name, cls, size, true); } };
 
   /* ---------- Toast ---------- */
   /** EP.ui.toast('Đã lưu', { type: 'success'|'error'|'warn'|'info', duration: 4000, action: { label, onClick } }) -> hàm đóng */
@@ -78,7 +82,7 @@
     dlg.className = 'dlg' + (o.size === 'wide' ? ' wide' : '');
     var tid = EP.uid();
     dlg.setAttribute('aria-labelledby', tid);
-    dlg.innerHTML = '<div class="dlg-head"><h2 class="dlg-title" id="' + tid + '">' + esc(o.title || '') + '</h2><button type="button" class="icon-btn" data-close aria-label="Đóng">' + icon('x') + '</button></div><div class="dlg-body"></div><div class="dlg-foot"></div>';
+    dlg.innerHTML = '<span class="dlg-grip" aria-hidden="true"></span><div class="dlg-head"><h2 class="dlg-title" id="' + tid + '">' + esc(o.title || '') + '</h2><button type="button" class="icon-btn" data-close aria-label="Đóng">' + icon('x') + '</button></div><div class="dlg-body"></div><div class="dlg-foot"></div>';
     var body = dlg.querySelector('.dlg-body'), foot = dlg.querySelector('.dlg-foot');
     if (typeof o.body === 'string') body.innerHTML = o.body; else if (o.body) body.appendChild(o.body);
     (o.actions || []).forEach(function (a) {
@@ -99,6 +103,21 @@
     var resolve, closed = new Promise(function (r) { resolve = r; }), val;
     var api = { el: dlg, body: body, closed: closed, close: function (v) { val = v; if (dlg.open) dlg.close(); else finish(); } };
     function finish() { dlg.remove(); resolve(val); if (o.onClose) o.onClose(val); }
+    /* Bottom sheet trên điện thoại: kéo tay nắm / tiêu đề xuống để đóng */
+    (function () {
+      var sy = null, dy = 0, t0 = 0;
+      function phone() { return root.matchMedia && root.matchMedia('(max-width: 767px)').matches; }
+      function down(e) { if (!phone() || (e.target.closest && e.target.closest('button'))) return; sy = e.clientY; dy = 0; t0 = Date.now(); dlg.style.animation = 'none'; dlg.style.transition = 'none'; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) { /* bỏ qua */ } }
+      function move(e) { if (sy == null) return; dy = Math.max(0, e.clientY - sy); dlg.style.transform = 'translateY(' + dy + 'px)'; }
+      function up() {
+        if (sy == null) return; var v = dy / Math.max(1, Date.now() - t0); sy = null;
+        dlg.style.transition = 'transform .22s var(--ease-out)';
+        if (dy > 110 || v > .6) { dlg.style.transform = 'translateY(100%)'; api.close(undefined); } else { dlg.style.transform = ''; }
+      }
+      [dlg.querySelector('.dlg-grip'), dlg.querySelector('.dlg-head')].forEach(function (h) {
+        h.addEventListener('pointerdown', down); h.addEventListener('pointermove', move); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+      });
+    })();
     dlg.addEventListener('close', finish);
     dlg.addEventListener('click', function (e) { if (e.target === dlg || (e.target.closest && e.target.closest('[data-close]'))) api.close(undefined); });
     doc.body.appendChild(dlg);
@@ -115,6 +134,32 @@
       actions: [{ label: o.cancelLabel || 'Hủy', value: false }, { label: o.confirmLabel || 'Đồng ý', variant: o.danger ? 'danger-solid' : 'primary', value: true, id: 'confirm-ok' }]
     });
     return d.closed.then(function (v) { return v === true; });
+  };
+
+  /* ---------- Thanh hành động chính (dính đáy màn hình điện thoại, ngay trên thanh tab) ----------
+     EP.ui.actionBar('example', [
+       { label: 'Xuất CSV', icon: 'download', iconOnly: true, act: 'export', onClick: fn },
+       { label: 'Thêm mục', icon: 'plus', variant: 'primary', act: 'add', onClick: fn } ])
+     view = id của view hoặc phần tử nằm trong view. Truyền [] để gỡ. Tối đa 3 nút; nút primary rộng nhất.
+     Thanh chỉ hiện khi view đó đang mở; <html> có class has-abar khi có thanh để CSS chừa chỗ cuối trang. */
+  function abarSync() {
+    var cur = EP.router && EP.router.current(), any = false;
+    EP.$$('#abars .abar').forEach(function (b) { var on = b.getAttribute('data-view') === cur; b.hidden = !on; if (on) any = true; });
+    doc.documentElement.classList.toggle('has-abar', any);
+  }
+  EP.bus.on('route', abarSync);
+  ui.actionBar = function (view, items) {
+    var id = typeof view === 'string' ? view : ((view.closest && view.closest('.view')) || view).id.replace(/^view-/, '');
+    var host = doc.getElementById('abars');
+    if (!host) { host = doc.createElement('div'); host.id = 'abars'; host.className = 'abars no-print'; doc.body.appendChild(host); }
+    var bar = host.querySelector('[data-view="' + id + '"]');
+    if (!items || !items.length) { if (bar) bar.remove(); abarSync(); return; }
+    if (!bar) { bar = doc.createElement('div'); bar.className = 'abar'; bar.setAttribute('data-view', id); bar.setAttribute('role', 'toolbar'); bar.setAttribute('aria-label', 'Thao tác chính'); host.appendChild(bar); }
+    bar.innerHTML = items.slice(0, 3).map(function (it, i) {
+      return '<button type="button" class="btn' + (it.variant ? ' btn-' + esc(it.variant) : '') + (it.iconOnly ? ' abar-icon' : '') + '" data-i="' + i + '"' + (it.act ? ' data-act="' + esc(it.act) + '"' : '') + (it.id ? ' id="' + esc(it.id) + '"' : '') + (it.iconOnly ? ' aria-label="' + esc(it.label) + '" title="' + esc(it.label) + '"' : '') + '>' + (it.icon ? icon(it.icon) : '') + (it.iconOnly ? '' : '<span>' + esc(it.label) + '</span>') + '</button>';
+    }).join('');
+    bar.onclick = function (e) { var b = e.target.closest('button[data-i]'); if (!b || b.getAttribute('aria-disabled') === 'true') return; var it = items[+b.getAttribute('data-i')]; if (it && it.onClick) it.onClick(e, b); };
+    abarSync();
   };
 
   /* ---------- Copy ---------- */

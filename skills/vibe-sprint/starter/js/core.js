@@ -193,7 +193,8 @@
        actions: function(){ return html }, // nút ở góc phải h1 (tuỳ chọn)
        render: function(el, ctx){ ... }    // vẽ vào el; có thể trả Promise (hiện skeleton khi chờ)
      }); */
-  var views = [], current = null, mounted = false, navEl, hostEl, pillEl;
+  var views = [], current = null, mounted = false, navEl, hostEl, pillEl, bnavEl, scrollPos = {};
+  var BNAV_MAX = 5; /* thanh tab dưới: tối đa 5 ô; nhiều hơn thì ô thứ 5 là "Thêm" mở bottom sheet */
   function findView(id) { return views.filter(function (v) { return v.id === id; })[0]; }
   EP.register = function (def) {
     if (!def || !def.id) throw new Error('EP.register cần id');
@@ -233,9 +234,27 @@
     var b = body.querySelector('[data-act="view-retry"]');
     if (b) b.addEventListener('click', function () { renderView(v, true); });
   }
+  function syncBnav(id) {
+    if (!bnavEl) return;
+    var inMore = false;
+    EP.$$('.bnav-item[data-nav]', bnavEl).forEach(function (a) { if (a.getAttribute('data-nav') === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    var more = doc.getElementById('bnav-more');
+    if (more) { inMore = bnavOverflow().some(function (v) { return v.id === id; }); if (inMore) more.setAttribute('aria-current', 'page'); else more.removeAttribute('aria-current'); }
+  }
+  function bnavOverflow() { return views.length > BNAV_MAX ? views.slice(BNAV_MAX - 1) : []; }
+  function openMore() {
+    var cur = current, rows = bnavOverflow().map(function (v) {
+      return '<a class="more-row" href="#/' + v.id + '" data-more="' + v.id + '"' + (v.id === cur ? ' aria-current="page"' : '') + '>' + (v.icon && EP.ui ? EP.ui.icon(v.icon, '', 24) : '') + '<span>' + EP.esc(v.label) + '</span></a>';
+    }).join('');
+    var d = EP.ui.dialog({ title: 'Thêm', body: '<nav class="more-list" aria-label="Các mục khác">' + rows + '</nav>', autofocus: false });
+    d.body.addEventListener('click', function (e) { if (e.target.closest('[data-more]')) d.close(); });
+  }
   function show(id, first) {
     var v = findView(id);
     if (!v || (id === current && !first)) return;
+    var prev = current, de = doc.documentElement;
+    if (prev) scrollPos[prev] = root.pageYOffset || 0;
+    if (prev) { var pi = views.indexOf(findView(prev)), ni = views.indexOf(v); de.setAttribute('data-dir', ni >= pi ? 'fwd' : 'back'); }
     current = id;
     var update = function () {
       views.forEach(function (x) {
@@ -243,10 +262,11 @@
         sec.hidden = x.id !== id;
         if (x.id === id) tab.setAttribute('aria-current', 'page'); else tab.removeAttribute('aria-current');
       });
+      syncBnav(id);
       renderView(v);
       movePill();
       doc.title = v.title + ' - ' + cfg.appName;
-      if (!first) { root.scrollTo(0, 0); var h = doc.getElementById('h-' + id); if (h) h.focus({ preventScroll: true }); }
+      if (!first) { root.scrollTo(0, scrollPos[id] || 0); var h = doc.getElementById('h-' + id); if (h) h.focus({ preventScroll: true }); }
       EP.bus.emit('route', id);
     };
     if (first) update(); else EP.transition('route', update);
@@ -259,6 +279,19 @@
     mount: function () {
       if (mounted) return; mounted = true;
       navEl = EP.$('#tabs'); hostEl = EP.$('#views');
+      try { if ('scrollRestoration' in root.history) root.history.scrollRestoration = 'manual'; } catch (e) { /* bỏ qua */ }
+      bnavEl = EP.$('#bnav');
+      if (bnavEl) {
+        var main = views.length > BNAV_MAX ? views.slice(0, BNAV_MAX - 1) : views;
+        bnavEl.innerHTML = main.map(function (v) {
+          return '<a class="bnav-item" id="bt-' + v.id + '" href="#/' + v.id + '" data-nav="' + v.id + '"><span class="bnav-ic">' + (EP.ui ? EP.ui.icon(v.icon || 'list', 'ic-off', 24) + EP.ui.iconDuo(v.icon || 'list', 'ic-on', 24) : '') + '</span><span class="bnav-lb">' + EP.esc(v.label) + '</span></a>';
+        }).join('') + (views.length > BNAV_MAX ? '<button type="button" class="bnav-item" id="bnav-more" aria-haspopup="dialog"><span class="bnav-ic">' + EP.ui.icon('menu', 'ic-off', 24) + EP.ui.iconDuo('menu', 'ic-on', 24) + '</span><span class="bnav-lb">Thêm</span></button>' : '');
+        bnavEl.addEventListener('click', function (e) {
+          var more = e.target.closest('#bnav-more'); if (more) { openMore(); return; }
+          var a = e.target.closest('.bnav-item[data-nav]');
+          if (a && a.getAttribute('aria-current') === 'page') { e.preventDefault(); scrollPos[a.getAttribute('data-nav')] = 0; root.scrollTo({ top: 0, behavior: EP.reduced() ? 'auto' : 'smooth' }); }
+        });
+      }
       pillEl = doc.createElement('span'); pillEl.className = 'tabs-pill'; pillEl.setAttribute('aria-hidden', 'true'); navEl.appendChild(pillEl);
       views.forEach(function (v) {
         var a = doc.createElement('a');

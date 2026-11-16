@@ -34,7 +34,7 @@
   /* ---------- Chung: số tabular, tap highlight, vùng chạm 44px ---------- */
   .badge, .delta, .chart text, .kv dd, .stepper li, .chip, .lx-counter, td.num { font-variant-numeric: tabular-nums; }
   html { -webkit-tap-highlight-color: transparent; }
-  @media (max-width: 719px), (pointer: coarse) {
+  @media (max-width: 767px), (pointer: coarse) {
     .btn, .btn-sm, .icon-btn, button.chip, .tab, .seg span { min-height: var(--lx-touch); }
     .icon-btn { width: var(--lx-touch); height: var(--lx-touch); }
     .chip { min-height: 36px; }
@@ -172,7 +172,7 @@
   .table th button::after { transition: transform .3s var(--ux-spring), opacity .2s; }
   [data-lx-sticky] .table-wrap { max-height: min(70vh, 560px); overflow: auto; }
   [data-lx-sticky] .table th { position: sticky; top: 0; z-index: 2; box-shadow: 0 1px 0 var(--border); }
-  @media (max-width: 719px) {
+  @media (max-width: 767px) {
     .table-wrap.lx-cards, [data-lx-sticky] .table-wrap.lx-cards { overflow: visible; max-height: none; }
     [data-lx-sticky] .lx-cards .table th { position: static; box-shadow: none; }
     .lx-cards .table { display: block; width: 100%; min-width: 0; }
@@ -235,7 +235,7 @@
   @keyframes lx-dlg-in { from { opacity: 0; transform: translateY(26px) scale(.94); } to { opacity: 1; transform: none; } }
   @keyframes lx-dlg-out { to { opacity: 0; transform: translateY(14px) scale(.96); } }
   @keyframes lx-fade-out { to { opacity: 0; } }
-  @media (max-width: 559px) {
+  @media (max-width: 767px) {
     dialog.dlg[open] { animation-name: lx-sheet-in; }
     dialog.dlg.lx-out { animation-name: lx-sheet-out; }
     @keyframes lx-sheet-in { from { transform: translateY(100%); } to { transform: none; } }

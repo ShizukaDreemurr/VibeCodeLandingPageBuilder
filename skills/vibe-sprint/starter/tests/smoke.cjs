@@ -1,5 +1,5 @@
 // Smoke test Playwright. Chạy:  node tests/smoke.cjs http://localhost:8201/   [--shots thu-muc-anh]
-// Kiểm tra: tải không lỗi console, mọi tab hiển thị đúng 1 h1, không tràn ngang ở 390px, đổi giao diện,
+// Kiểm tra: (cuối file gọi tests/mobile-suite.cjs: bộ kiểm thử điện thoại 360x780 + 390x844) tải không lỗi console, mọi tab hiển thị đúng 1 h1, không tràn ngang ở 390px, đổi giao diện,
 // feature mẫu (CRUD + kiểm tra form + AI mock + biểu đồ + CSV), các mô-đun (calc, checklist, quiz, chat, match, metrics, schema AI).
 // Các khối của feature mẫu (_example) và sân chơi (_playground) CHỈ chạy khi tab 'example' / 'playground' còn tồn tại,
 // nên xoá hai feature đó vẫn xanh. Test feature thật: sao chép tests/feature-template.snippet vào chỗ đánh dấu
@@ -476,6 +476,8 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   } else console.log('  (bỏ qua khôi phục: chưa có collection nào có dữ liệu demo)');
   const bad = await page.evaluate(() => EP.export.restore(new File(['{"x":1}'], 'b.json')).then(() => 'ok', (e) => e.message));
   ok('file khôi phục sai bị từ chối bằng tiếng Việt', /định dạng/.test(bad), bad);
+
+  await require('./mobile-suite.cjs')({ browser, URL, ok, SHOTS, errors, fixtures: path.join(__dirname, 'fixtures') }); // điện thoại 360x780 + 390x844 (tests/mobile-suite.cjs)
 
   console.log('# Lỗi console');
   // Các lỗi 4xx cố ý từ Gemini giả (route) ở bước trên không tính
