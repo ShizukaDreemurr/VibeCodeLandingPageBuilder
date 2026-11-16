@@ -4,7 +4,7 @@
 (function (root) {
   'use strict';
   var EP = root.EP = root.EP || {};
-  var cfg = EP.config = Object.assign({ appName: 'App', brandMark: 'X', prefix: 'ep_', defaultRoute: 'home', locale: 'vi-VN', currency: 'VND', heroLead: 'Giải pháp', heroEm: 'thông minh', mockNotice: 'Dữ liệu mô phỏng AI · Dữ liệu mẫu' }, EP.config);
+  var cfg = EP.config = Object.assign({ appName: 'App', brandMark: 'X', prefix: 'ep_', defaultRoute: 'home', locale: 'vi-VN', currency: 'VND', heroLead: 'Giải pháp', heroEm: 'thông minh', heroToolsLabel: 'Công cụ công nghệ', heroTools: ['Gemini', 'Firebase', 'Chart.js'], mockNotice: 'Dữ liệu mô phỏng AI · Dữ liệu mẫu' }, EP.config);
   var doc = root.document;
 
   /* ---------- DOM & tiện ích ---------- */

@@ -4,6 +4,16 @@
   'use strict';
   var EP = root.EP, cfg = EP.config, esc = EP.esc, doc = root.document;
 
+  /* ---------- Hero "Tầm nhìn Thông minh": dải hình (quả cầu 3D + vệt hồng + 8 thanh kính sọc) dựng sẵn trong HTML để không nhảy bố cục ---------- */
+  function heroVisual() {
+    var bars = ''; for (var i = 0; i < 8; i++) bars += '<i class="hero-flute"></i>';
+    return '<div class="hero-visual" aria-hidden="true"><div class="hero-streak"></div><div class="hero-orb-wrap"><div class="hero-orb"></div></div><div class="hero-flutes">' + bars + '</div></div>';
+  }
+  function heroTools() {
+    var t = cfg.heroTools; if (!t || !t.length) return '';
+    return '<div class="hero-tools"><p class="hero-tools-label">' + esc(cfg.heroToolsLabel || '') + '</p><ul class="hero-tools-row">' + t.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+  }
+
   /* ---------- Tổng quan: KPI gộp từ summary() của các feature + thẻ lối tắt + hướng dẫn 3 bước ---------- */
   EP.register({
     id: 'home', label: 'Tổng quan', icon: 'home', order: 0, always: true,
@@ -17,8 +27,8 @@
       }).join('');
       var first = feats[0];
       el.innerHTML =
-        '<section class="hero" aria-label="Giới thiệu"><div class="hero-copy"><span class="hero-eyebrow">' + esc(cfg.appName) + '</span><p class="hero-title" role="presentation">' + esc(cfg.heroLead || 'Giải pháp') + ' <em>' + esc(cfg.heroEm || 'thông minh') + '</em></p><p>' + esc(cfg.tagline) + '</p>' +
-        (first ? '<a class="btn btn-cta" href="#/' + esc(first.id) + '">Bắt đầu ngay ' + EP.ui.icon('send') + '</a>' : '') + '</div><div class="hero-visual" aria-hidden="true"></div></section>' +
+        '<section class="hero" aria-label="Giới thiệu">' + heroVisual() + '<div class="hero-copy"><span class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>' + esc(cfg.appName) + '</span><p class="hero-title" role="presentation">' + esc(cfg.heroLead || 'Giải pháp') + ' <em>' + esc(cfg.heroEm || 'thông minh') + '</em></p><p class="hero-desc">' + esc(cfg.tagline) + '</p>' +
+        (first ? '<a class="btn btn-cta" href="#/' + esc(first.id) + '">Bắt đầu ngay ' + EP.ui.icon('arrow-right') + '</a>' : '') + '</div>' + heroTools() + '</section>' +
         (kpis.length ? '<div class="grid kpis">' + kpis.slice(0, 8).map(EP.ui.kpi).join('') + '</div>' : '') +
         '<div class="card"><div class="card-head"><h2 class="section-title">Bắt đầu nhanh</h2></div>' + EP.ui.stepper(['Nhập dữ liệu', 'Tạo bằng AI', 'Xem biểu đồ', 'Xuất báo cáo'], 0) + '</div>' +
         (links ? '<div class="grid cols-2">' + links + '</div>' : EP.ui.empty({ title: 'Chưa có tính năng nào', text: 'Thêm file vào features/ và nạp trong index.html.' }));

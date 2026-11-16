@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- data-preset chọn bộ giao diện: "xclipse" (mặc định: Ice/Navy/Coral) hoặc "lucian". Thêm data-hero="fluted" để bật hero kính sọc dọc (mặc định tắt). -->
+<!-- data-preset chọn bộ giao diện: "xclipse" (mặc định: Ice/Navy/Coral) hoặc "lucian". Hero "Tầm nhìn Thông minh" (kính sọc dọc + quả cầu 3D) bật mặc định; thêm data-hero="plain" để dùng hero gọn. -->
 <html lang="vi" data-preset="xclipse">
 <head>
 <meta charset="utf-8">
@@ -11,15 +11,15 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23072D59'/%3E%3Cpath d='M9 9l14 14' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M23 9L9 23' stroke='%23FD6E88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <!-- Áp giao diện đã chọn TRƯỚC khi vẽ để không bị nháy sáng/tối. Khoá 'ep_theme' = prefix trong js/config.js + 'theme'. -->
 <script>(function(d){try{var t=localStorage.getItem('ep_theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t);}catch(e){}})(document.documentElement);</script>
-<!-- Phông tuỳ chọn (cần mạng; không có thì tự dùng phông hệ thống). Bỏ chú thích nếu muốn dùng:
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"> -->
+<!-- Phông chữ nhấn của hero (Playfair Display nghiêng đậm) tự host trong fonts/, không gọi mạng ngoài. Be Vietnam Pro: dùng nếu máy có, không thì phông hệ thống. -->
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/hero.css">
 <!-- Lớp Lucian: vi tương tác cho mọi thành phần (xoá 2 dòng lucian.css + lucian.js nếu không muốn) -->
 <link rel="stylesheet" href="css/lucian.css">
 <link rel="stylesheet" href="css/biz.css">
+<link rel="stylesheet" href="css/brand.css">
 <!-- Chuẩn điện thoại (references/13-chuan-mobile.md): thanh tab dưới, bottom sheet, thanh hành động, cỡ chạm 48px. Nạp CUỐI để thắng các lớp trước. -->
 <link rel="stylesheet" href="css/mobile.css">
 </head>

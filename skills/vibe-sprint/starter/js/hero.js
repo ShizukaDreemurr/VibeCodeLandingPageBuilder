@@ -1,63 +1,35 @@
-/* hero.js — Khởi tạo hiệu ứng kính sọc dọc (Fluted Glass) & quả cầu 3D cho Hero.
-   MẶC ĐỊNH TẮT: chỉ chạy khi <html data-hero="fluted"> được bật.
-   Tự tắt chuyển động khi người dùng bật prefers-reduced-motion: reduce. */
+/* hero.js - Chuyển động nhẹ cho quả cầu 3D của hero "Tầm nhìn Thông minh" (MẶC ĐỊNH BẬT; tắt bằng <html data-hero="plain">).
+   Máy tính: quả cầu lệch nhẹ theo con trỏ. Điện thoại: tự trôi nhẹ (CSS) + nghiêng máy (deviceorientation, nếu trình duyệt không đòi xin quyền).
+   Chỉ ghi transform vào .hero-orb-wrap qua requestAnimationFrame; tôn trọng prefers-reduced-motion (không gắn gì cả). */
 (function () {
   'use strict';
+  var de = document.documentElement;
+  if (de.getAttribute('data-hero') === 'plain') return;
+  var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq && mq.matches) return;
 
-  if (document.documentElement.getAttribute('data-hero') !== 'fluted') return;
-
-  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function enhanceHero() {
-    var visuals = document.querySelectorAll('.hero-visual');
-    if (!visuals.length) return;
-
-    visuals.forEach(function (vis) {
-      if (vis.dataset.flutedInit === '1') return;
-      vis.dataset.flutedInit = '1';
-
-      var orb = document.createElement('div');
-      orb.className = 'hero-orb';
-
-      var flutes = document.createElement('div');
-      flutes.className = 'hero-flutes';
-      for (var i = 0; i < 8; i++) {
-        var bar = document.createElement('div');
-        bar.className = 'hero-flute';
-        flutes.appendChild(bar);
-      }
-
-      vis.appendChild(orb);
-      vis.appendChild(flutes);
-
-      var hero = vis.closest('.hero');
-      if (hero && !reduceMotion) {
-        hero.addEventListener('pointermove', function (e) {
-          if (window.innerWidth < 760) return;
-          var r = hero.getBoundingClientRect();
-          if (!r.width || !r.height) return;
-          var rx = ((e.clientX - r.left) / r.width - 0.5) * 16;
-          var ry = ((e.clientY - r.top) / r.height - 0.5) * 12;
-          orb.style.transform = 'translate3d(' + rx.toFixed(1) + 'px, calc(-50% + ' + ry.toFixed(1) + 'px), 0)';
-        });
-        hero.addEventListener('pointerleave', function () {
-          orb.style.transform = 'translate3d(0, -50%, 0)';
-        });
-      }
-    });
+  var tx = 0, ty = 0, raf = 0;
+  function paint() {
+    raf = 0;
+    var w = document.querySelector('.hero-orb-wrap');
+    if (w) w.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0)';
   }
+  function set(x, y) { tx = x; ty = y; if (!raf) raf = requestAnimationFrame(paint); }
 
-  function init() {
-    enhanceHero();
-    var views = document.getElementById('views');
-    if (views && window.MutationObserver) {
-      new MutationObserver(enhanceHero).observe(views, { childList: true, subtree: true });
-    }
-  }
+  document.addEventListener('pointermove', function (e) {
+    if (e.pointerType === 'touch' || window.innerWidth < 900) return;
+    var hero = document.querySelector('.hero'); if (!hero) return;
+    var r = hero.getBoundingClientRect(); if (!r.width || !r.height || e.clientY < r.top - 80 || e.clientY > r.bottom + 80) return;
+    set(((e.clientX - r.left) / r.width - .5) * 18, ((e.clientY - r.top) / r.height - .5) * 14);
+  }, { passive: true });
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  // Nghiêng máy (Android/Chrome không cần xin quyền; iOS đòi quyền thì bỏ qua, vẫn có chuyển động trôi bằng CSS)
+  var DO = window.DeviceOrientationEvent;
+  if (DO && typeof DO.requestPermission !== 'function' && 'ontouchstart' in window) {
+    window.addEventListener('deviceorientation', function (e) {
+      if (e.gamma == null || e.beta == null || document.hidden) return;
+      var g = Math.max(-25, Math.min(25, e.gamma)) / 25, b = Math.max(-25, Math.min(25, e.beta - 45)) / 25;
+      set(g * 10, b * 8);
+    }, { passive: true });
   }
 })();

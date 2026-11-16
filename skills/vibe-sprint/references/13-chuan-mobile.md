@@ -116,3 +116,12 @@ Test đỏ ở dòng nào, sửa đúng chỗ đó; **không nới ngưỡng** �
 4. Số liệu mô phỏng → `EP.ai.noticeHtml(result)`; số lớn → `EP.ui.kpi`.
 5. Icon → `EP.ui.icon('tên')` (bộ Xclipse `js/icons.js`, tên trong `XcIcons.names`); tab → `icon:` trong `EP.register`.
 6. Chạy `node tests/smoke.cjs ...` và xem ảnh `tools/shots-mobile.cjs` ở cả sáng và tối trước khi commit.
+
+## 13. Hero "Tầm nhìn Thông minh" trên điện thoại (mặc định bật)
+
+- `css/hero.css` + `js/hero.js` + `css/brand.css`; tắt bằng `<html data-hero="plain">`. Nguồn thiết kế: `brand/xclipse-ui-ux-tam-nhin.html`.
+- Bố cục điện thoại: chữ + CTA viên thuốc ở vùng băng giá phía trên (tầm ngón cái), dải hình (quả cầu 3D + vệt hồng + 8 thanh kính sọc) ở đáy hero, mép trên mờ dần bằng `mask-image`, hàng công cụ chữ trắng nằm TRÊN dải xanh (bản gốc để chữ trắng trên nền băng nên không đọc được).
+- Hiệu năng: không `backdrop-filter` trên 8 thanh (giả lập kính bằng gradient xếp lớp), vệt hồng là `radial-gradient` thay `filter: blur`, chỉ animate `transform`/`opacity`, HTML dựng sẵn nên không nhảy bố cục; đo CPU 4x: 60fps, CLS 0. Máy tính có chuột mới có đúng một lớp `backdrop-filter`. `prefers-reduced-motion`: đứng yên.
+- CTA dùng chữ navy trên gradient san hô nhạt (4.8:1) thay vì chữ trắng (~2.7:1, trượt AA). Test `tests/mobile-suite.cjs` kiểm phần tử hero, không backdrop-filter, không tràn ngang, tương phản tiêu đề/CTA ở sáng và tối.
+- Phông Playfair Display nghiêng tự host trong `fonts/` (smoke cấm gọi `googleapis/gstatic`).
+

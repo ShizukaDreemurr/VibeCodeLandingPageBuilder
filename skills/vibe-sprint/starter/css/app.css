@@ -40,7 +40,7 @@
   html[data-vt="theme"]::view-transition-new(root) { z-index: 2; will-change: clip-path; }
   /* Đang đổi giao diện: tắt transition từng phần tử (tránh đấu với snapshot) và làm phẳng backdrop-filter (chụp snapshot rẻ hơn nhiều) */
   html[data-vt="theme"] *, html[data-vt="theme"] *::before, html[data-vt="theme"] *::after { transition: none !important; }
-  html[data-vt="theme"] .topbar, html[data-vt="theme"] .hero-flute, html[data-vt="theme"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  html[data-vt="theme"] .topbar, html[data-vt="theme"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   /* Trình duyệt không có View Transition: mờ chéo màu 200ms */
   html[data-vt="fade"] *, html[data-vt="fade"] *::before, html[data-vt="fade"] *::after { transition: background-color .2s linear, color .2s linear, border-color .2s linear, fill .2s linear, stroke .2s linear !important; }
   @media (prefers-reduced-motion: reduce) {
@@ -271,7 +271,7 @@
   .stepper li span b { font-weight: inherit; line-height: 1.25; }
   .stepper li span { align-items: flex-start; }
 
-  /* ---------- Hero mặc định (gọn nhẹ; bật kính sọc dọc bằng <html data-hero="fluted"> trong css/hero.css) ---------- */
+  /* ---------- Hero nền (hero "Tầm nhìn Thông minh" trong css/hero.css ghi đè; <html data-hero="plain"> dùng hero gọn này) ---------- */
   .hero { position: relative; overflow: hidden; border-radius: var(--radius-sheet); border: 1px solid var(--border); min-height: 240px; display: grid; grid-template-columns: minmax(0, 1fr); isolation: isolate;
     background: linear-gradient(125deg, var(--surface) 0%, var(--raised) 52%, var(--active) 100%); }
   .hero-copy { position: relative; z-index: 2; padding: 28px 22px 30px; display: flex; flex-direction: column; justify-content: center; gap: 14px; max-width: 540px; }

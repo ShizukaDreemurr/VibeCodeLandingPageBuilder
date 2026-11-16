@@ -73,6 +73,31 @@ function collect() {
   return { targets: uniq, texts, inputs, sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth };
 }
 
+
+/* Chạy trong trang: kiểm tra hero "Tầm nhìn Thông minh" (phần tử, hiệu năng, tương phản AA). */
+function heroCheck() {
+  const q = (s) => document.querySelector(s);
+  const parse = (c) => (c.match(/rgba?\(([^)]+)\)/g) || []).map((x) => x.replace(/rgba?\(|\)/g, '').split(',').map((n) => parseFloat(n)));
+  const lum = (c) => { const f = (v) => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }; return .2126 * f(c[0]) + .7152 * f(c[1]) + .0722 * f(c[2]); };
+  const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+  const hero = q('.hero'); if (!hero) return { missing: true };
+  const title = q('.hero-title'), cta = q('.btn-cta'), flutes = document.querySelectorAll('.hero-flute');
+  const dark = getComputedStyle(document.documentElement).colorScheme.indexOf('dark') === 0;
+  // nền chữ = gradient băng/navy của hero (sóng xanh ở đáy nằm dưới chữ nên không tính)
+  const bgImg = getComputedStyle(hero).backgroundImage; const bgStops = parse(bgImg.slice(bgImg.lastIndexOf('linear-gradient'))).filter((c) => c.length < 4 || c[3] > .9);
+  const bgWorst = bgStops.reduce((w, c) => { const r = ratio(parse(getComputedStyle(title).color)[0], c); return r < w ? r : w; }, 99);
+  const ctaStops = parse(getComputedStyle(cta).backgroundImage).filter((c) => c.length < 4 || c[3] > .9);
+  const ctaTxt = parse(getComputedStyle(cta).color)[0];
+  const ctaWorst = ctaStops.reduce((w, c) => Math.min(w, ratio(ctaTxt, c)), 99);
+  const fl = flutes[0] ? getComputedStyle(flutes[0]) : null, wrap = q('.hero-flutes') ? getComputedStyle(q('.hero-flutes')) : null;
+  const orb = q('.hero-orb') ? getComputedStyle(q('.hero-orb')) : null;
+  const r = hero.getBoundingClientRect(), cr = cta.getBoundingClientRect(), tools = q('.hero-tools');
+  return { dark, orb: !!q('.hero-orb'), streak: !!q('.hero-streak'), flutes: flutes.length, tools: !!tools && tools.querySelectorAll('li').length, title: !!title && !!title.querySelector('em'),
+    titleEmFont: title ? getComputedStyle(title.querySelector('em')).fontFamily : '', ctaH: Math.round(cr.height), ctaPill: parseFloat(getComputedStyle(cta).borderRadius) >= 24,
+    ctaThumb: cr.bottom < window.innerHeight, bd: (fl && (fl.backdropFilter || fl.webkitBackdropFilter) || 'none') + '|' + (wrap && (wrap.backdropFilter || 'none')),
+    orbAnim: orb ? orb.animationName : '', headRatio: bgWorst, ctaRatio: ctaWorst, hw: Math.round(r.width), vw: document.documentElement.clientWidth };
+}
+
 function overlaps(list) {
   const bad = [];
   for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
@@ -138,6 +163,21 @@ module.exports = async function mobileSuite({ browser, URL, ok, SHOTS, errors, f
         await page.tap('#view-playground [data-slot="pick"] label:has(input[value="' + s + '"])'); await settle(500);
         await audit('mô-đun ' + s);
       }
+    }
+    // ---- hero "Tầm nhìn Thông minh": đủ phần tử, nhẹ, không tràn, tương phản AA (sáng + tối) ----
+    if (tabs.includes('home')) {
+      await page.goto(URL + '#/home'); await settle(350);
+      for (const scheme of ['light', 'dark']) {
+        await page.emulateMedia({ colorScheme: scheme }); await settle(200);
+        const h = await page.evaluate(heroCheck);
+        const hn = tag + ' hero ' + scheme + ': ';
+        ok(hn + 'có quả cầu, vệt hồng, 8 thanh kính sọc, hàng công cụ, tiêu đề + chữ nghiêng', !h.missing && h.orb && h.streak && h.flutes === 8 && h.tools >= 1 && h.title, h);
+        ok(hn + 'không backdrop-filter trên điện thoại, chỉ animate transform/opacity', h.bd.split('|').every((x) => x === 'none' || x === '') && /hero-float|none/.test(h.orbAnim), h.bd + ' ' + h.orbAnim);
+        ok(hn + 'không tràn ngang, hero vừa khung (' + h.hw + '/' + h.vw + ')', h.hw <= h.vw);
+        ok(hn + 'nút CTA viên thuốc >= 48px, nằm trong tầm ngón cái (màn hình đầu)', h.ctaH >= 48 && h.ctaPill && h.ctaThumb, h);
+        ok(hn + 'tiêu đề tương phản >= 4.5:1 (' + h.headRatio.toFixed(1) + ') và CTA >= 4.5:1 (' + h.ctaRatio.toFixed(1) + ')', h.headRatio >= 4.5 && h.ctaRatio >= 4.5, h);
+      }
+      await page.emulateMedia({ colorScheme: 'light' });
     }
     // chế độ tối: tràn ngang + chữ
     await page.emulateMedia({ colorScheme: 'dark' });
