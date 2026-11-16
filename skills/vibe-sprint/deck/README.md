@@ -40,7 +40,7 @@ Yêu cầu: Node + Playwright (`npm i -g playwright && npx playwright install ch
 | team | members[{name,role,did,photo}], stack[] |
 | thanks | title, subtitle, cta, url, videoUrl, qrLabel |
 
-Mọi slide: `eyebrow`, `title`, `notes` (bấm N), `time`, và `speaker` (người nói, chỉ hiện trong ghi chú, không lên slide). Khuôn `notes` cho pitch 3 người: dòng `Người nói`, dòng `Mốc giờ`, ba dòng neo `V` (vấn đề) / `T` (thao tác, điểm nhấn) / `S` (con số), dòng `Chuyền mic`; xem `template.data.js` và `templates/KICH-BAN-DEMO.md`. Chữ: `**đậm**`, `{{nhấn gradient}}`. Đổi màu theo đề: `meta.accent` / `meta.accent2`. Dữ liệu cũng có thể dán JSON vào thẻ `<script id="deck-data">` trong `deck.html`. Thứ tự nạp: JSON inline > `?data=` > `deck.data.js` > `example.data.js`.
+Mọi slide: `eyebrow`, `title`, `notes` (bấm N), `time`, và `speaker` (người nói, chỉ hiện trong ghi chú, không lên slide). Khuôn `notes` cho pitch 3 người: dòng `Người nói`, dòng `Mốc giờ`, ba dòng neo `V` (vấn đề) / `T` (thao tác, điểm nhấn) / `S` (con số), dòng `Chuyền mic`; xem `template.data.js` và `templates/KICH-BAN-DEMO.md`. Chữ: `**đậm**`, `{{nhấn gradient}}`. Giao diện mặc định là Xclipse (Ice `#DBF2FC` · Navy `#072D59` · Coral `#FD6E88`, bìa kính sọc + quả cầu 3D); `meta.theme: 'classic'` (hoặc `?theme=classic`) quay về bảng màu tím cũ; đổi màu riêng: `meta.accent` / `meta.accent2`. Từ nhấn Playfair italic: `*từ*`. Dữ liệu cũng có thể dán JSON vào thẻ `<script id="deck-data">` trong `deck.html`. Thứ tự nạp: JSON inline > `?data=` > `deck.data.js` > `example.data.js`.
 
 Demo trực tiếp: `iframe:true` thêm nút "Chạy trực tiếp"; nếu app chặn iframe hoặc mất mạng, ảnh `image` vẫn hiện. Trung thực: không ghi "thật" cho tình huống dựng sẵn, nêu rõ AI mô phỏng.
 

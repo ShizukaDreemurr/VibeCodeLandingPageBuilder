@@ -8,8 +8,7 @@ window.DECK = {
     app: 'Xclipse',
     title: 'Xclipse · Pitch chung kết',
     footer: '**Xclipse** · Đề 8 · Bảng B',
-    accent: '#6A57F2',            // đổi màu chủ đạo theo đề (mặc định tím Lucian)
-    accent2: '#2F8FE0',
+    // Mặc định: giao diện Xclipse. Muốn bảng màu tím cũ: theme: 'classic'; đổi màu riêng: accent / accent2.
     liveUrl: 'https://xclipsex.github.io/VibeCodeLandingPageBuilder/',
     videoUrl: 'https://youtu.be/Wjn4xhXQXnc'
   },

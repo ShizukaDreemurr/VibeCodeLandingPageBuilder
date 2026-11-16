@@ -15,7 +15,7 @@ window.DECK = {
     app: 'TÊN APP',                                    // [1] tên app
     title: 'TÊN APP · Pitch chung kết',
     footer: '**TÊN APP** · Đề X · Bảng B – Kinh tế',             // chân trang mỗi slide
-    accent: '#6A57F2', accent2: '#2F8FE0',             // màu theo đề (bỏ dòng này để dùng tím–xanh mặc định)
+    // Mặc định: giao diện Xclipse (Ice/Navy/Coral). Bảng màu tím cũ: theme: 'classic'. Đổi màu riêng: accent / accent2.
     liveUrl: 'https://xclipsex.github.io/Xclipse-ChungKet/',            // [8] link app đang chạy (tự sinh QR)
     videoUrl: 'https://youtu.be/XXXXXXXXXXX'           // [8] link video demo
   },
