@@ -1,0 +1,218 @@
+/* tokens.css - mọi màu, chữ, khoảng cách, bo góc, chuyển động của app. Hai bộ giao diện (preset), mỗi bộ có sáng + tối:
+     xclipse (MẶC ĐỊNH): Ice #DBF2FC / Navy #072D59 / Coral #FD6E88 - nút chính navy (tối: coral), nhấn hồng san hô, nền băng giá.
+     lucian: Lucian Lab (tím/xanh, nền xám ấm, nút gần đen).
+   Chọn bộ bằng MỘT thuộc tính trên thẻ <html> trong index.html:  data-preset="xclipse" | "lucian".
+   Tên token giữ nguyên giữa các bộ nên feature không cần sửa. Đổi thương hiệu khác: sửa khối xclipse ở 3 chỗ (sáng, tối theo hệ thống, tối thủ công).
+   Thứ tự layer được khai báo ở đây và dùng ở app.css. */
+@layer reset, tokens, base, components, utilities;
+
+@layer tokens {
+/* ============ Dùng chung: phông, hình khối, chuyển động ============ */
+:root {
+  /* Phông: dùng Be Vietnam Pro nếu đã nạp (xem README), không thì phông hệ thống */
+  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Hình khối */
+  --radius-sheet: 22px;
+  --radius: 14px;
+  --radius-small: 10px;
+  --control-h: 40px;
+  --field-h: 52px;
+  --gap: 20px;
+  --pad: 20px;
+  --max-w: 1120px;
+
+  /* Bóng chỉ cho thứ đang nổi (menu, hộp thoại, toast) */
+  --shadow-float: 0 12px 32px rgba(40, 30, 80, .14), 0 2px 6px rgba(40, 30, 80, .08);
+
+  /* Chuyển động: một bộ duy nhất */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;  /* phản hồi bấm, rê */
+  --dur-2: 200ms;  /* chuyển trạng thái, mở khung */
+  --dur-3: 320ms;  /* đổi bố cục, chuyển trang */
+
+  /* ============ Preset XCLIPSE - sáng (mặc định) ============ */
+  color-scheme: light;
+  --ux-ease: cubic-bezier(.2, .8, .2, 1);
+  --ux-spring: cubic-bezier(.34, 1.45, .64, 1);
+  --ux-grad: linear-gradient(120deg, #072D59, #0E4A8A 48%, #D93656);
+
+  --ground: #F5FBFF;
+  --ground-img: radial-gradient(70% 46% at 8% 0%, #DBF2FC 0%, rgba(219, 242, 252, 0) 72%), radial-gradient(40% 30% at 100% 0%, rgba(253, 110, 136, .10), rgba(253, 110, 136, 0) 70%);
+  --surface: #FFFFFF;
+  --raised: #EAF6FD;
+  --active: #DBF2FC;
+  --border: rgba(7, 45, 89, .10);
+  --rule: rgba(7, 45, 89, .07);
+  --control: rgba(7, 45, 89, .50);       /* viền ô nhập, >= 3:1 */
+  --text: #072D59;
+  --text-muted: #36567A;
+  --primary: #072D59;
+  --primary-hover: #0E4A8A;
+  --primary-contrast: #FFFFFF;
+  --accent: #FD6E88;
+  --accent-ink: #C42A4B;                 /* chữ hồng, >= 4.5:1 trên trắng */
+  --accent-soft: rgba(253, 110, 136, .14);
+  --accent-contrast: #072D59;
+  --success: #0B7A70;
+  --warn: #A35208;
+  --danger: #C71F45;
+  --danger-line: rgba(199, 31, 69, .42);
+  --disabled-bg: #E1ECF4;
+  --disabled-ink: #6B829C;
+  --overlay: rgba(4, 26, 54, .60);
+  --glass: rgba(245, 251, 255, .78);
+  --pill-positive-bg: #D6F4EE; --pill-positive-ink: #065C54;
+  --pill-negative-bg: #FDE3E8; --pill-negative-ink: #8F1A35;
+  --pill-warning-bg: #FDEBD3; --pill-warning-ink: #7A3E08;
+  --pill-neutral-bg: #DBF2FC; --pill-neutral-ink: #072D59;
+
+  --chart-1: #0E4A8A; --chart-2: #FD6E88; --chart-3: #0D9488; --chart-4: #E8A317; --chart-5: #2C8DF5; --chart-6: #8A9BB0;
+  --chart-grid: rgba(7, 45, 89, .10);
+  --chart-text: #36567A;
+  --hero-navy: #072D59;
+
+  --shadow-float: 0 12px 32px rgba(7, 45, 89, .16), 0 2px 6px rgba(7, 45, 89, .08);
+}
+
+/* ============ Preset XCLIPSE - tối (theo hệ thống, trừ khi chọn sáng thủ công) ============ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --ux-grad: linear-gradient(120deg, #5BA8FF, #9CC9FF 45%, #FD6E88);
+  --ground: #041226; --ground-img: radial-gradient(60% 40% at 100% 0%, rgba(253, 110, 136, .16), rgba(253, 110, 136, 0) 70%), radial-gradient(70% 45% at 0% 0%, rgba(14, 74, 138, .45), rgba(14, 74, 138, 0) 72%);
+  --surface: #0A2342; --raised: #0F2D52; --active: #173A66;
+  --border: rgba(219, 242, 252, .13); --rule: rgba(219, 242, 252, .08); --control: rgba(219, 242, 252, .50);
+  --text: #EAF6FD; --text-muted: rgba(219, 242, 252, .74);
+  --primary: #FD6E88; --primary-hover: #FF8CA1; --primary-contrast: #072D59;
+  --accent: #FD6E88; --accent-ink: #FF9DB0; --accent-soft: rgba(253, 110, 136, .16); --accent-contrast: #072D59;
+  --success: #5EEAD4; --warn: #FFB86B; --danger: #FF8CA1; --danger-line: rgba(255, 140, 161, .45);
+  --disabled-bg: #173A66; --disabled-ink: rgba(219, 242, 252, .45);
+  --overlay: rgba(2, 10, 22, .70);
+  --glass: rgba(4, 18, 38, .72);
+  --pill-positive-bg: rgba(94, 234, 212, .15); --pill-positive-ink: #8FF0DE;
+  --pill-negative-bg: rgba(255, 140, 161, .16); --pill-negative-ink: #FFA9B8;
+  --pill-warning-bg: rgba(255, 184, 107, .16); --pill-warning-ink: #FFC992;
+  --pill-neutral-bg: #173A66; --pill-neutral-ink: #DBF2FC;
+  --chart-1: #5BA8FF; --chart-2: #FD6E88; --chart-3: #5EEAD4; --chart-4: #FFC857; --chart-5: #9CC9FF; --chart-6: #8FA3BD;
+  --chart-grid: rgba(219, 242, 252, .12); --chart-text: rgba(219, 242, 252, .74);
+  --hero-navy: #0A2342;
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .4);
+  }
+}
+/* ============ Preset XCLIPSE - tối (chọn thủ công) ============ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ux-grad: linear-gradient(120deg, #5BA8FF, #9CC9FF 45%, #FD6E88);
+  --ground: #041226; --ground-img: radial-gradient(60% 40% at 100% 0%, rgba(253, 110, 136, .16), rgba(253, 110, 136, 0) 70%), radial-gradient(70% 45% at 0% 0%, rgba(14, 74, 138, .45), rgba(14, 74, 138, 0) 72%);
+  --surface: #0A2342; --raised: #0F2D52; --active: #173A66;
+  --border: rgba(219, 242, 252, .13); --rule: rgba(219, 242, 252, .08); --control: rgba(219, 242, 252, .50);
+  --text: #EAF6FD; --text-muted: rgba(219, 242, 252, .74);
+  --primary: #FD6E88; --primary-hover: #FF8CA1; --primary-contrast: #072D59;
+  --accent: #FD6E88; --accent-ink: #FF9DB0; --accent-soft: rgba(253, 110, 136, .16); --accent-contrast: #072D59;
+  --success: #5EEAD4; --warn: #FFB86B; --danger: #FF8CA1; --danger-line: rgba(255, 140, 161, .45);
+  --disabled-bg: #173A66; --disabled-ink: rgba(219, 242, 252, .45);
+  --overlay: rgba(2, 10, 22, .70);
+  --glass: rgba(4, 18, 38, .72);
+  --pill-positive-bg: rgba(94, 234, 212, .15); --pill-positive-ink: #8FF0DE;
+  --pill-negative-bg: rgba(255, 140, 161, .16); --pill-negative-ink: #FFA9B8;
+  --pill-warning-bg: rgba(255, 184, 107, .16); --pill-warning-ink: #FFC992;
+  --pill-neutral-bg: #173A66; --pill-neutral-ink: #DBF2FC;
+  --chart-1: #5BA8FF; --chart-2: #FD6E88; --chart-3: #5EEAD4; --chart-4: #FFC857; --chart-5: #9CC9FF; --chart-6: #8FA3BD;
+  --chart-grid: rgba(219, 242, 252, .12); --chart-text: rgba(219, 242, 252, .74);
+  --hero-navy: #0A2342;
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .4);
+}
+
+/* ============ Preset LUCIAN (bật bằng <html data-preset="lucian">) ============ */
+:root[data-preset="lucian"] {
+  color-scheme: light;
+  --ux-grad: linear-gradient(120deg, #7B61FF, #3D8BFF 55%, #1FB89A);
+
+  /* Nền & chữ */
+  --ground: #F4F2EE;
+  --surface: #FFFFFF;
+  --raised: #F5F3EF;
+  --active: #EAE7E1;
+  --border: rgba(22, 21, 27, .09);
+  --rule: rgba(22, 21, 27, .06);
+  --control: rgba(22, 21, 27, .26);     /* viền ô nhập, >= 3:1 */
+  --text: #16151B;
+  --text-muted: #57535F;
+  --primary: #16151B;
+  --primary-hover: #34323d;
+  --primary-contrast: #FFFFFF;
+  --accent: #6A57F2;
+  --accent-ink: #5442DC;                /* chữ accent, 5.6:1 trên trắng */
+  --accent-soft: rgba(106, 87, 242, .12);
+  --accent-contrast: #FFFFFF;
+  --success: #0C7A58;
+  --warn: #A3560F;
+  --danger: #C42E49;
+  --danger-line: rgba(196, 46, 73, .4);
+  --disabled-bg: #E4E1DB;
+  --disabled-ink: #6f6b78;
+  --overlay: rgba(22, 21, 27, .55);
+  --glass: rgba(244, 242, 238, .72);
+  --pill-positive-bg: #DDF5EC; --pill-positive-ink: #07503a;
+  --pill-negative-bg: #FCE6EA; --pill-negative-ink: #8a1f33;
+  --pill-warning-bg: #FDEEDC; --pill-warning-ink: #7d410a;
+  --pill-neutral-bg: #EAE7E1; --pill-neutral-ink: #3b3944;
+
+  /* Biểu đồ (js/charts.js đọc các biến này nên tự đổi theo giao diện) */
+  --chart-1: #6A57F2; --chart-2: #1FA37F; --chart-3: #E08A1E; --chart-4: #D6336C; --chart-5: #2E86DE; --chart-6: #8A8794;
+  --chart-grid: rgba(22, 21, 27, .10);
+  --chart-text: #57535F;
+  --ground-img: none;
+  --hero-navy: #16151B;
+  --shadow-float: 0 12px 32px rgba(40, 30, 80, .14), 0 2px 6px rgba(40, 30, 80, .08);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-preset="lucian"]:not([data-theme="light"]) {
+  color-scheme: dark;
+  --ux-grad: linear-gradient(120deg, #B7A4FF, #7DB4FF 55%, #A5F2D3);
+  --ground: #07080D; --surface: #13141C; --raised: #1A1B25; --active: #252632;
+  --border: rgba(255, 255, 255, .08); --rule: rgba(255, 255, 255, .06); --control: rgba(255, 255, 255, .34);
+  --text: #F4F0E8; --text-muted: rgba(244, 240, 232, .68);
+  --primary: #F4F0E8; --primary-hover: #FFFFFF; --primary-contrast: #0B0C12;
+  --accent: #B7A4FF; --accent-ink: #C9BBFF; --accent-soft: rgba(183, 164, 255, .15); --accent-contrast: #0B0C12;
+  --success: #7EE8C0; --warn: #FFB26B; --danger: #FF7D8C; --danger-line: rgba(255, 125, 140, .45);
+  --disabled-bg: #252632; --disabled-ink: rgba(244, 240, 232, .45);
+  --overlay: rgba(0, 0, 0, .65);
+  --glass: rgba(7, 8, 13, .72);
+  --pill-positive-bg: rgba(126, 232, 192, .16); --pill-positive-ink: #9CF0D0;
+  --pill-negative-bg: rgba(255, 125, 140, .16); --pill-negative-ink: #FFA3AE;
+  --pill-warning-bg: rgba(255, 178, 107, .16); --pill-warning-ink: #FFC48D;
+  --pill-neutral-bg: #252632; --pill-neutral-ink: #D8D4CC;
+  --chart-1: #B7A4FF; --chart-2: #7EE8C0; --chart-3: #FFB26B; --chart-4: #FF8FB1; --chart-5: #7DB4FF; --chart-6: #9B98A6;
+  --chart-grid: rgba(255, 255, 255, .10); --chart-text: rgba(244, 240, 232, .68);
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .4);
+  --ground-img: none;
+  --hero-navy: #1A1B25;
+  }
+}
+:root[data-preset="lucian"][data-theme="dark"] {
+  color-scheme: dark;
+  --ux-grad: linear-gradient(120deg, #B7A4FF, #7DB4FF 55%, #A5F2D3);
+  --ground: #07080D; --surface: #13141C; --raised: #1A1B25; --active: #252632;
+  --border: rgba(255, 255, 255, .08); --rule: rgba(255, 255, 255, .06); --control: rgba(255, 255, 255, .34);
+  --text: #F4F0E8; --text-muted: rgba(244, 240, 232, .68);
+  --primary: #F4F0E8; --primary-hover: #FFFFFF; --primary-contrast: #0B0C12;
+  --accent: #B7A4FF; --accent-ink: #C9BBFF; --accent-soft: rgba(183, 164, 255, .15); --accent-contrast: #0B0C12;
+  --success: #7EE8C0; --warn: #FFB26B; --danger: #FF7D8C; --danger-line: rgba(255, 125, 140, .45);
+  --disabled-bg: #252632; --disabled-ink: rgba(244, 240, 232, .45);
+  --overlay: rgba(0, 0, 0, .65);
+  --glass: rgba(7, 8, 13, .72);
+  --pill-positive-bg: rgba(126, 232, 192, .16); --pill-positive-ink: #9CF0D0;
+  --pill-negative-bg: rgba(255, 125, 140, .16); --pill-negative-ink: #FFA3AE;
+  --pill-warning-bg: rgba(255, 178, 107, .16); --pill-warning-ink: #FFC48D;
+  --pill-neutral-bg: #252632; --pill-neutral-ink: #D8D4CC;
+  --chart-1: #B7A4FF; --chart-2: #7EE8C0; --chart-3: #FFB26B; --chart-4: #FF8FB1; --chart-5: #7DB4FF; --chart-6: #9B98A6;
+  --chart-grid: rgba(255, 255, 255, .10); --chart-text: rgba(244, 240, 232, .68);
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .4);
+  --ground-img: none;
+  --hero-navy: #1A1B25;
+}
+}
