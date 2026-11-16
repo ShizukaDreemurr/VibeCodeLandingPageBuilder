@@ -77,3 +77,7 @@ Kết quả phải rỗng (trừ `js/firebase-config.js` công khai có chủ ý
 - [ ] Nhãn mô phỏng đúng **nguyên văn đề/BTC** (từng chữ, từng dấu; không mặc định câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI`), khớp ở `js/config.js`, README, bảng kiểm thử, slide và `tests/smoke.cjs`.
 - [ ] README + bảng kiểm thử + minh chứng đủ; không key.
 - [ ] Video/bản local/ảnh dự phòng sẵn sàng.
+
+## Gemini mà không để key trong trình duyệt (proxy)
+
+Trang tĩnh trên GitHub Pages không giấu được key. Nếu cần AI thật mà không muốn mỗi người dùng tự nhập key, dùng proxy Cloudflare Worker ở `skills/vibe-sprint/proxy/` (miễn phí, 5 bước, key chỉ là secret trên Cloudflare). Sau khi deploy, điền `ai.proxyUrl` trong `js/config.js`; `js/ai.js` tự gọi qua proxy và Cài đặt ghi "Đang dùng máy chủ trung gian của đội — không cần nhập key". Xem `proxy/README.md`. Nhớ: `ALLOWED_ORIGINS` phải có đúng origin trang nộp bài; `APP_TOKEN` chỉ là làm rào; Firebase Functions cần gói Blaze nên không dùng.

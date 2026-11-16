@@ -249,6 +249,26 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   const fb = await page.evaluate(() => EP.ai.generate({ prompt: 'x', schema: { type: 'object', props: { a: { type: 'string' } } }, mock: () => ({ a: 'mock' }) }, { mode: 'gemini', key: 'SAI', instant: true }).then((r) => ({ mode: r.mode, notice: r.notice, w: r.warnings.length })));
   ok('Gemini lỗi key -> rơi về mock có notice', fb.mode === 'mock' && fb.notice.includes('mô phỏng AI') && fb.w === 1, fb);
   await page.unroute('**/generativelanguage.googleapis.com/**');
+  // Proxy giả: chế độ Gemini qua EP.config.ai.proxyUrl, không gửi key, vẫn đổi model khi 429
+  const px = await (async () => {
+    const seen = [];
+    await page.route('http://fake-proxy.test/**', (route) => {
+      const rq = route.request(); seen.push({ url: rq.url(), key: rq.headers()['x-goog-api-key'], tok: rq.headers()['x-app-token'] });
+      if (seen.length === 1) return route.fulfill({ status: 429, headers: { 'access-control-allow-origin': '*' }, body: '{}' });
+      route.fulfill({ status: 200, headers: { 'access-control-allow-origin': '*' }, contentType: 'application/json', body: JSON.stringify({ candidates: [{ content: { parts: [{ text: '{"a":"từ proxy"}' }] } }] }) });
+    });
+    const res = await page.evaluate(() => {
+      EP.config.ai = { proxyUrl: 'http://fake-proxy.test/', appToken: 'tok' };
+      const box = document.createElement('div'); document.body.appendChild(box); EP.ai.mountSettings(box);
+      const ui = { notice: /không cần nhập key/.test(box.textContent), noKeyField: !box.querySelector('#ai-key') }; box.remove();
+      return EP.ai.generate({ prompt: 'x', schema: { type: 'object', props: { a: { type: 'string' } } }, mock: () => ({ a: 'mock' }) }, { mode: 'gemini', key: '', instant: true }).then((r) => ({ mode: r.mode, a: r.data.a, model: r.model, ui }));
+    });
+    await page.evaluate(() => { EP.config.ai = { proxyUrl: '', appToken: '' }; });
+    await page.unroute('http://fake-proxy.test/**');
+    return { res, seen };
+  })().catch((e) => ({ err: String(e) }));
+  ok('Proxy: gọi /gemini/<model> không gửi key, đổi model khi 429', px.res && px.res.mode === 'gemini' && px.res.a === 'từ proxy' && px.seen.length === 2 && px.seen[0].url === 'http://fake-proxy.test/gemini/gemini-3.6-flash' && px.seen[1].url.endsWith('/gemini/gemini-4-hydrogen') && px.seen.every((x) => !x.key && x.tok === 'tok'), px);
+  ok('Proxy: Cài đặt báo "không cần nhập key" và ẩn ô key', px.res && px.res.ui.notice && px.res.ui.noKeyField, px.res);
 
   if (!hasPlay) console.log('# Mô-đun: giao diện: bỏ qua (không có tab "playground")');
   if (hasPlay) {
@@ -304,7 +324,7 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
 
   console.log('# Lỗi console');
   // Các lỗi 4xx cố ý từ Gemini giả (route) ở bước trên không tính
-  const real = errors.filter((e) => !/generativelanguage|status of (429|403)/.test(e));
+  const real = errors.filter((e) => !/generativelanguage|fake-proxy\.test|status of (429|403)/.test(e));
   ok('không có lỗi console/mạng', real.length === 0, real);
 
   ok('Firebase tắt: không có request tới googleapis/gstatic/firebase', fbReqs.length === 0, fbReqs);

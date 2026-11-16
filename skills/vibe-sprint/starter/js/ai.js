@@ -3,6 +3,7 @@
      mock   : chạy spec.mock(input) offline (tất định), luôn kèm MOCK_NOTICE.
      gemini : gọi Gemini generateContent bằng key của người dùng (header x-goog-api-key), tự đổi model khi hết lượt/quá tải,
               rút JSON từ câu trả lời, kiểm tra theo schema, sai thì thử lại 1 lần, vẫn sai/lỗi thì rơi về mock (có cảnh báo).
+     (nếu EP.config.ai.proxyUrl có giá trị: gọi qua máy chủ trung gian, không cần key ở trình duyệt, xem proxy/README.md)
      paste  : mở hộp thoại cho copy prompt -> dán trả lời của Claude/ChatGPT/Gemini -> kiểm tra như trên.
    spec = {
      id: 'tom-tat',
@@ -25,6 +26,7 @@
     { id: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash', note: 'Rất chậm, có thể quá 90 giây - chỉ dùng khi rảnh', tier: 'slow' },
     { id: 'gemini-4-hydrogen', label: 'Gemini 4 Hydrogen', note: 'Thế hệ 4, ~10 giây', tier: 'slow' }
   ];
+  function proxyUrl() { var u = cfg.ai && cfg.ai.proxyUrl; return u ? String(u).replace(/\/+$/, '') : ''; }
   var DEFAULT_MODEL = 'gemini-3.6-flash';
   var FALLBACKS = ['gemini-3.6-flash', 'gemini-4-hydrogen', 'gemini-3.8-flash'];
   var PLATFORMS = { claude: ['Claude', 'https://claude.ai/new'], chatgpt: ['ChatGPT', 'https://chatgpt.com/'], gemini: ['Gemini', 'https://gemini.google.com/app'] };
@@ -138,9 +140,11 @@
     var info = modelInfo(model), limit = opts.timeout || (info && info.tier === 'slow' ? 180000 : TIMEOUT_MS);
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = controller && setTimeout(function () { controller.abort(); }, limit);
-    return fetch(GEMINI_URL.replace('{model}', encodeURIComponent(model)), {
+    var px = proxyUrl(), headers = { 'Content-Type': 'application/json' };
+    if (px) { if (cfg.ai.appToken) headers['X-App-Token'] = cfg.ai.appToken; } else headers['x-goog-api-key'] = apiKey;
+    return fetch(px ? px + '/gemini/' + encodeURIComponent(model) : GEMINI_URL.replace('{model}', encodeURIComponent(model)), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+      headers: headers,
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: { temperature: opts.temperature == null ? 0.8 : opts.temperature, responseMimeType: 'application/json' }
@@ -148,7 +152,7 @@
       signal: controller ? controller.signal : undefined
     }).then(function (res) {
       if (timer) clearTimeout(timer);
-      if (res.status === 400 || res.status === 401 || res.status === 403) throw fail('API key không hợp lệ hoặc chưa được cấp quyền.', 'key');
+      if (res.status === 400 || res.status === 401 || res.status === 403) throw fail(proxyUrl() ? 'Máy chủ trung gian từ chối yêu cầu (kiểm tra ALLOWED_ORIGINS / token).' : 'API key không hợp lệ hoặc chưa được cấp quyền.', 'key');
       if (res.status === 404) throw fail('Model "' + model + '" không còn mở cho tài khoản này.', 'model');
       if (res.status === 429) throw fail(info && info.tier === 'paid' ? 'Model "' + model + '" cần bật thanh toán trên Google AI Studio.' : 'Model "' + model + '" đã hết lượt miễn phí, thử lại sau ít phút.', 'quota');
       if (res.status === 503 || res.status === 500) throw fail('Model "' + model + '" của Google đang quá tải.', 'server');
@@ -238,7 +242,7 @@
       if (opts.fallbackToMock === false || typeof spec.mock !== 'function') throw e;
       return mockRun(spec, input, ['AI thật lỗi (' + (e && e.message || 'không rõ') + '), đã dùng dữ liệu mô phỏng.'], opts.instant);
     }
-    if (!key) return degrade(fail('Chưa có API key Gemini. Nhập key ở tab Cài đặt hoặc chuyển sang chế độ Mô phỏng.', 'key'));
+    if (!key && !proxyUrl()) return degrade(fail('Chưa có API key Gemini. Nhập key ở tab Cài đặt hoặc chuyển sang chế độ Mô phỏng.', 'key'));
     var gopts = { temperature: spec.temperature };
     function once(p) {
       return callWithFallback(key, model, p, opts.onSwitch, gopts).then(function (r) {
@@ -281,17 +285,23 @@
       '<div class="field"><input class="input" id="ai-key" type="password" autocomplete="off" spellcheck="false" placeholder=" " value="' + esc(state.key) + '"><label class="label" for="ai-key">API key Gemini</label><p class="field-msg" id="ai-key-msg">Key chỉ nằm trong bộ nhớ trang, mất khi tải lại.</p></div></div>' +
       '<label class="check"><input type="checkbox" id="ai-remember"' + (state.remember ? ' checked' : '') + '><span>Nhớ key trên trình duyệt này (lưu localStorage, chỉ bật trên máy cá nhân)</span></label>' +
       '<div class="row"><button type="button" class="btn btn-sm" id="ai-test">' + EP.ui.icon('sparkles') + 'Thử kết nối</button><a class="btn btn-sm btn-ghost" target="_blank" rel="noopener" href="https://aistudio.google.com/apikey">Lấy key miễn phí</a></div></div>';
+    var viaProxy = !!proxyUrl();
+    if (viaProxy) {
+      el.querySelector('#ai-key').closest('.field').remove(); el.querySelector('#ai-remember').closest('.check').remove();
+      el.querySelector('.row').insertAdjacentHTML('beforebegin', '<p class="ai-notice live" role="note" data-ai-proxy="1">' + EP.ui.icon('sparkles') + '<span>Đang dùng máy chủ trung gian của đội — không cần nhập key.</span></p>');
+      el.querySelector('.row .btn-ghost').remove();
+    }
     mountModePicker(el.querySelector('[data-slot="mode"]'));
-    var model = el.querySelector('#ai-model'), key = el.querySelector('#ai-key'), rem = el.querySelector('#ai-remember'), note = el.querySelector('#ai-model-note');
+    var model = el.querySelector('#ai-model'), key = el.querySelector('#ai-key') || { value: '' }, rem = el.querySelector('#ai-remember') || { checked: false }, note = el.querySelector('#ai-model-note');
     function noteUpd() { var i = modelInfo(model.value); note.textContent = i ? i.note : ''; }
     noteUpd();
     model.addEventListener('change', function () { state.model = model.value; EP.store.write('ai_model', state.model); noteUpd(); });
     function saveKey() { setKey(key.value, rem.checked); }
-    key.addEventListener('input', saveKey);
-    rem.addEventListener('change', function () { saveKey(); EP.ui.toast(rem.checked ? 'Đã lưu key trên trình duyệt này.' : 'Đã xóa key khỏi trình duyệt.', { type: 'info' }); });
+    if (!viaProxy) key.addEventListener('input', saveKey);
+    if (!viaProxy) rem.addEventListener('change', function () { saveKey(); EP.ui.toast(rem.checked ? 'Đã lưu key trên trình duyệt này.' : 'Đã xóa key khỏi trình duyệt.', { type: 'info' }); });
     el.querySelector('#ai-test').addEventListener('click', function (e) {
-      var b = e.currentTarget; saveKey();
-      if (!state.key) { EP.ui.toast('Hãy nhập API key trước.', { type: 'warn' }); key.focus(); return; }
+      var b = e.currentTarget; if (!viaProxy) saveKey();
+      if (!viaProxy && !state.key) { EP.ui.toast('Hãy nhập API key trước.', { type: 'warn' }); key.focus(); return; }
       EP.ui.busy(b, true);
       callWithFallback(state.key, state.model, 'Trả về JSON {"ok": true}', null, { temperature: 0 }).then(function (r) { EP.ui.toast('Kết nối tốt (' + r.model + ').', { type: 'success' }); },
         function (err) { EP.ui.toast(err.message, { type: 'error' }); }).then(function () { EP.ui.busy(b, false); });

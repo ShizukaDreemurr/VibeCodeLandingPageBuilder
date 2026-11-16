@@ -33,3 +33,7 @@ gh run list --workflow pages-build-deployment -L 3
 curl -sI https://OWNER.github.io/REPO/ | head -5
 ```
 Nếu vẫn không ra: chụp màn hình Settings -> Pages và log Actions, gửi cho giảng viên/đội hỗ trợ (đừng gửi token).
+
+## App tĩnh cần gọi AI (Gemini) mà không lộ key
+
+GitHub Pages không giữ được bí mật: mọi key trong JS/repo đều công khai. Dùng proxy Cloudflare Worker trong `skills/vibe-sprint/proxy/` (xem `proxy/README.md`): key là secret trên Cloudflare, trang chỉ biết URL `https://vibe-gemini-proxy.<subdomain>.workers.dev`. Lỗi thường gặp: trình duyệt báo CORS/403 = `ALLOWED_ORIGINS` thiếu origin của trang (chỉ tên miền, không có tên repo, không có `/` cuối); sau khi sửa `wrangler.toml` phải `npx wrangler deploy` lại.
