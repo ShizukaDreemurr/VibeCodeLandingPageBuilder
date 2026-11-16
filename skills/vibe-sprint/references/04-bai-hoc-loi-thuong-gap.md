@@ -64,7 +64,7 @@ Rút từ lịch sử Xclipse. Đọc nhanh trước T+8, dán các dòng liên 
 | Điểm kiểm thử thấp | Ghi "Đạt" cho ca chưa chạy | Chỉ ghi ca đã chạy thật |
 | Thư mục rác trong repo (`undefined/`, ảnh chụp) | Test ghi ảnh vào đường dẫn undefined | Test nhận thư mục ảnh qua `--shots <thư-mục>`, `.gitignore` thư mục ảnh (`shots*/`) |
 | Quá nhiều hiệu ứng làm chậm bản trình diễn | Quá đà | 1–2 hiệu ứng nhấn, còn lại tinh tế; test trên máy yếu |
-| Mobile bị bỏ quên | Chỉ test desktop | QA 390px bắt buộc ở T+48 |
+| Mobile bị bỏ quên | Chỉ test desktop | QA **360 và 390px** (5 tiêu chí của thể lệ) bắt buộc ở T+48 |
 
 ---
 
@@ -137,3 +137,16 @@ Mã `07-…` = đoạn chép-dán tương ứng trong `references/07-cookbook-co
 - `ai.proxyUrl` trong `starter/js/config.js` đã **điền sẵn Worker của đội**: `https://vibe-gemini-proxy.xclipse.workers.dev` (không cần nhập key khi demo).
 - **`ALLOWED_ORIGINS` trên Worker phải chứa origin Pages của chung kết.** `https://xclipsex.github.io` dùng được cho mọi repo dưới tài khoản đó; **tài khoản khác phải thêm origin vào Worker** (xem `proxy/README.md`), không thì trình duyệt báo CORS/403.
 - Model mặc định hiện là **`gemini-4-hydrogen` (~10 giây/lượt)**. Nếu chậm khi demo: vào Cài đặt đổi sang **`gemini-3.6-flash` (~1 giây)**.
+
+## Bài học theo thể lệ Chung kết 2026 (xem `references/00-the-le-chung-ket.md`)
+
+| Triệu chứng / rủi ro | Nguyên nhân | Cách sửa / phòng |
+|---|---|---|
+| Bị BTC hỏi "tính năng này có làm sẵn không" | Chép code/dữ liệu từ bài luyện (`catalog/`) vào bài thi; thể lệ **cấm** chuẩn bị sẵn tính năng cho đề | Chỉ dùng khung chung `starter/`; README khai báo khung chuẩn bị trước; giữ lịch sử commit theo giờ + `MINH-CHUNG-AI.md` |
+| Nộp mà thiếu 1 trong 4 món (thường là minh chứng chốt) | Dồn hết vào phút 58 | Chụp minh chứng ở **T+50–55**, nộp T+55–60; checklist 4 món (`templates/CHECKLIST-CHUNG-KET.md`) |
+| Mã nguồn nộp không khớp bản demo | Push thêm sau khi chụp minh chứng | Ghi hash commit; không push sau T+50; kiểm phiên bản hiện trên app = hash trong README |
+| Chấm Kinh tế thấp dù app đẹp | Chỉ làm tính năng, thiếu giả định/kịch bản/hòa vốn (49 điểm nằm ở đó) | Agent riêng "Giả định & mô hình kinh doanh"; danh sách giả định có nguồn; 3 kịch bản; hòa vốn; độ nhạy; dự phòng |
+| Số liệu mô phỏng bị coi là số thật | Không ghi rõ nguồn | Ba loại nhãn: "Dữ liệu BTC", "Giả định của đội", "Mô phỏng"; đề đưa câu nhãn thì chép nguyên văn |
+| Không dùng được file dữ liệu BTC phát đầu giờ | Đọc muộn, cột lệch Schema Contract | T+0 mở file, đưa tên sheet/cột vào Contract; nhập bằng `EP.importer`; "Điền dữ liệu mẫu" lấy từ chính file đó |
+| Bài thuyết trình vỡ vì thời lượng thay đổi | Chỉ tập 1 bản 10 phút | Có 3 bản 10/5/3 phút, mỗi bản có phần "Giả định & cách tính" |
+| Không trả lời được "ưu đãi này có lỗ không" ở vòng phản biện | Chưa tính điểm hòa vốn/biên sau ưu đãi | Mỗi cơ chế ưu đãi có dòng tính biên và điều kiện lỗ; xem `templates/HOI-DAP.md` mục F |

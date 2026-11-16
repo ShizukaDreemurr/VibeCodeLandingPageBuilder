@@ -1,5 +1,7 @@
 # 01 — Đọc đề thành spec trong 5 phút
 
+> Đọc `references/00-the-le-chung-ket.md` trước (thể lệ, 4 món nộp, cấm chuẩn bị sẵn). T+0 mở luôn **file dữ liệu mẫu BTC của bảng mình**; sheet/cột của nó vào Schema Contract. Kinh tế: thêm mục **Giả định** (nguồn từng con số) vào spec.
+
 Mục tiêu: sau 5 phút có `docs/spec-nhanh.md` 1 trang (mẫu: `templates/spec-nhanh.md`, `scripts/new-project.sh` đã chép vào `docs/`; mẫu rút gọn bên dưới dùng cho ghi nhanh) để mọi agent đọc. Spec là chuẩn; không có trong spec thì không làm.
 
 ## Quy trình (đồng hồ)
@@ -47,7 +49,7 @@ Bảng B cần ≥3 ca kiểm thử (thường, thiếu/sai, biên); Bảng A �
 Người dùng chính: <1 câu>  |  Vấn đề: <1 câu>  |  Giá trị: <1 câu>
 ## 5 tính năng (khung Input→Quy tắc→Output→Lưu trữ)
 ## Nghiệm thu (bảng trên)
-## AI: làm gì / mock thế nào / nhãn nguyên văn: "<câu BTC yêu cầu, CHÉP TỪ ĐỀ CHUNG KẾT>"
+## AI: làm gì / mock thế nào / nhãn dữ liệu mẫu-mô phỏng: "<câu đề đưa (chép nguyên văn) hoặc câu rõ nghĩa của đội>"
 ## Dữ liệu demo: <3–6 bản ghi thật, tiếng Việt>
 ## Không làm (ngoài phạm vi)
 ## Giả định đã chọn (đề không nói)
@@ -56,10 +58,11 @@ Người dùng chính: <1 câu>  |  Vấn đề: <1 câu>  |  Giá trị: <1 câ
 
 ## Bẫy khi đọc đề
 
-- **Nhãn mô phỏng AI: chép NGUYÊN VĂN từ đề/BTC.** Câu của vòng loại là `Bản demo vòng loại - Dữ liệu mô phỏng AI`; chung kết có thể đổi chữ, đừng giả định. Tìm câu này ngay ở phút 0-1.5, ghi vào spec, rồi đặt vào `mockNotice` trong `js/config.js` (và sửa 2 assert trong `tests/smoke.cjs`). Không tìm thấy: dùng `Dữ liệu mô phỏng AI` và ghi "chưa xác nhận" vào `docs/DECISIONS.md`.
+- **Nhãn dữ liệu mẫu/mô phỏng: ghi rõ ràng.** Thể lệ chung kết không còn câu cố định. Đề/BTC có đưa câu nào thì **chép nguyên văn**; không thì dùng câu rõ nghĩa của đội (ví dụ `Dữ liệu mẫu/mô phỏng, không phải số liệu thật`) và ghi vào `docs/DECISIONS.md`. Đặt vào `mockNotice` trong `js/config.js` (và sửa 2 assert trong `tests/smoke.cjs`). Câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI` không dùng lại.
+- **Không viết sẵn tính năng cho đề** (thể lệ cấm); chỉ dùng khung chung và khai báo trong README.
 
 - **Nơi lưu dữ liệu do đề quy định là bản chính** (vd localStorage). Firebase/Sheet chỉ làm tuỳ chọn và mô tả đúng là tuỳ chọn; mô tả ngược sẽ bị nhận xét "chưa đúng tính năng".
-- **Bảng thi (A/B) và hạn nộp**: xác nhận ngay T+0 từ thông báo/BTC (bảng A: ≥6 ca, mock AI chỉ tối đa 4/15; bảng B: ≥3 ca, mock minh bạch vẫn đạt). Số liệu lệch giữa các nguồn (23:59 so với 00:30) thì làm theo mốc sớm nhất, ghi vào `docs/DECISIONS.md`.
+- **Bảng thi (A/B) và hạn nộp**: xác nhận ngay T+0 từ thông báo/BTC (bảng A: ≥6 ca, mock AI chỉ tối đa 4/15; bảng B: ≥3 ca, mock minh bạch vẫn đạt; chung kết dùng thang riêng ở `references/00`). Số liệu lệch giữa các nguồn (23:59 so với 00:30) thì làm theo mốc sớm nhất, ghi vào `docs/DECISIONS.md`.
 - Thêm tính năng ngoài đề → mất thời gian, không có điểm. Phạm vi hẹp, lõi chạy trọn.
 - Đề trùng lĩnh vực với đề khác → giữ đúng ranh giới đề của mình (ví dụ chỉ làm checklist, không làm công cụ chấm điểm).
 - Đề mơ hồ: chọn mặc định đơn giản nhất, ghi "Giả định" trong spec, nói ra khi thuyết trình. Hỏi BTC nếu có thể hỏi, đừng chờ.

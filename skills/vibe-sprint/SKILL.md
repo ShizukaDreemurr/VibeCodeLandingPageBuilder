@@ -1,9 +1,11 @@
 ---
 name: vibe-sprint
-description: Chạy nước rút 60 phút cho chung kết VIBE-CODING 2026 (đội bốc đề MỚI, phải nộp app mini chạy được + bộ slide thuyết trình). Dùng khi người dùng nói "đề chung kết", "vibe coding 60 phút", "làm app nhanh từ đề", "quay đề mới", "bốc đề", "slide thuyết trình đề", "sprint 60 phút", "làm app trong 1 tiếng", hoặc dán một đề bài và cần ra app + slide + demo thật nhanh. Điều phối nhiều subagent Sonnet/Haiku song song, giữ chất lượng như app Xclipse (HTML/CSS/JS thuần, không build, GitHub Pages, mock AI có nhãn, sáng/tối, mobile, test Playwright).
+description: Chạy nước rút 60 phút cho chung kết VIBE-CODING 2026 (đọc references/00-the-le-chung-ket.md trước) (đội bốc đề MỚI, phải nộp app mini chạy được + bộ slide thuyết trình). Dùng khi người dùng nói "đề chung kết", "vibe coding 60 phút", "làm app nhanh từ đề", "quay đề mới", "bốc đề", "slide thuyết trình đề", "sprint 60 phút", "làm app trong 1 tiếng", hoặc dán một đề bài và cần ra app + slide + demo thật nhanh. Điều phối nhiều subagent Sonnet/Haiku song song, giữ chất lượng như app Xclipse (HTML/CSS/JS thuần, không build, GitHub Pages, mock AI có nhãn, sáng/tối, mobile, test Playwright).
 ---
 
 # vibe-sprint — 60 phút từ đề lạ đến app + slide chạy được
+
+> **ĐỌC TRƯỚC: [`references/00-the-le-chung-ket.md`](references/00-the-le-chung-ket.md)** — thể lệ Chung kết 2026: 13:15–14:15 làm bài, nộp **4 món** lúc phút 60 (link demo · mã nguồn · README · minh chứng thời điểm chốt), **cấm chuẩn bị sẵn tính năng cho đề**, mobile 360–390px, thang điểm hai bảng. Mọi mục dưới đây đã khớp thể lệ đó; thể lệ phát tại chỗ khác thì thể lệ phát tại chỗ thắng (ghi vào `docs/DECISIONS.md`).
 
 ## Chính sách tài nguyên: xả láng
 
@@ -25,14 +27,16 @@ Khi skill này chạy, **usage/token KHÔNG phải ràng buộc. Thời gian là
 
 | Phút | Việc | Ai làm | Đầu ra |
 |---|---|---|---|
-| T+0→5 | Đọc đề, viết spec 1 trang, 5 tính năng + tiêu chí nghiệm thu (`references/01`) | Điều phối + 1 agent research (Haiku) song song | `docs/spec-nhanh.md` |
-| **T+5 (bắt buộc)** | **Schema Contract**: khối 10-15 dòng ở mục 0 của spec (trường + kiểu, tên hàm + hình dạng trả về, collection, id `EP.*`). **Chưa có thì chưa spawn.** | Điều phối | Contract dán nguyên văn vào mọi prompt |
+| T+0→5 | Đọc đề + thể lệ phát tại chỗ; **mở file dữ liệu mẫu BTC của bảng mình** (tên sheet, cột, định dạng); viết spec 1 trang, 5 tính năng + tiêu chí nghiệm thu (`references/01`) | Điều phối + 1 agent research (Haiku) song song | `docs/spec-nhanh.md` |
+| **T+5 (bắt buộc)** | **Schema Contract** (10-15 dòng, mục 0 của spec: trường + kiểu, tên hàm + hình dạng trả về, collection, id `EP.*`) **và danh sách Giả định** (số nào do BTC cho, số nào đội tự đặt, ghi nguồn/lý do). **Chưa có thì chưa spawn.** | Điều phối | Contract + Giả định dán nguyên văn vào mọi prompt |
 | T+5→8 | Chọn starter + UI tokens; kiểm tra UI 2 phút (bảng màu, font, bố cục 3 màn) | Điều phối | `docs/PROGRESS.md` (ghi 5 dòng kiểm UI) |
-| T+8→40 | **Song song** (xem bảng agent dưới) | N agent tính năng + deck + docs + data/demo + QA | Mỗi agent commit trên worktree/thư mục riêng |
+| T+8→40 | **Song song** (xem bảng agent dưới) | N agent tính năng + deck + docs + data/demo + QA (+ agent Giả định & mô hình nếu Bảng Kinh tế) | Mỗi agent commit trên worktree/thư mục riêng |
 | T+25 | Merge đợt 1 (khung + dữ liệu), chạy test nhanh, chụp ảnh | Điều phối | App chạy được dù tính năng chưa đủ |
 | T+40→48 | Merge hết, chạy toàn bộ test, `node tools/bump-version.cjs`, `node scripts/scan-secrets.mjs .`, push, deploy Pages | Điều phối + agent QA | Link online chạy |
-| T+48→52 | Polish + kiểm tra mobile 390px, sáng/tối, trạng thái rỗng/lỗi | 2–3 agent polish/QA song song | Ảnh chụp sạch |
-| T+52→60 | Tập thuyết trình + demo, chuẩn bị video dự phòng và Q&A (`references/05`) | Cả đội | Slide + kịch bản demo |
+| T+48→50 | Polish cuối + kiểm tra **mobile 360px VÀ 390px** (5 tiêu chí), sáng/tối, trạng thái rỗng/lỗi. **Sau T+50 không thêm tính năng** | 2–3 agent polish/QA song song | Ảnh chụp sạch |
+| **T+50→55** | **Minh chứng thời điểm chốt:** ảnh chụp từng màn chính (desktop + 360/390) hoặc quay màn hình luồng chính, **kèm hash commit đang chạy trên link** (`git rev-parse --short HEAD`, hiện cả phiên bản trên app). Lưu `docs/minh-chung-chot/` | QA agent + điều phối | Ảnh/video + hash |
+| **T+55→60** | **Nộp 4 món:** (1) link demo/cách mở, (2) mã nguồn, (3) README (cài chạy, công nghệ, dữ liệu mẫu/tài khoản, khai báo khung chuẩn bị trước), (4) minh chứng chốt. Mở link ở cửa sổ ẩn danh kiểm lần cuối. **Không đẩy thêm commit sau khi chụp minh chứng.** | Điều phối + cả đội | 4 món đã nộp |
+| Sau 14:15 | Chuẩn bị pitch (3 bản 10/5/3 phút theo thời lượng BTC báo) + Q&A vòng phản biện (`references/05`) trong lúc giám khảo kiểm tra 14:15–14:45 | Cả đội | Slide + kịch bản demo |
 
 Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** Tại T+40 mà tính năng nào chưa chạy → dùng bản rút gọn nhưng chạy được.
 
@@ -47,6 +51,7 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 | Feature 1…N (mỗi tính năng 1 agent) | Sonnet | Một tính năng (`features/<tên>/feature.js` + `EP.register`) + validation + test | `prompts/02-feature-agent.md` | 8217–8224 |
 | Deck | Sonnet | Slide từ `deck/` (điền `deck.data.js`, chụp ảnh, xuất PDF) | `prompts/07-deck-agent.md` | 8225 |
 | Docs | Haiku | README, bảng kiểm thử, minh chứng AI, kịch bản demo, hỏi đáp | `prompts/08-docs-agent.md` | 8226 |
+| **Giả định & mô hình kinh doanh** (Bảng Kinh tế, bắt buộc) | Sonnet | Danh sách giả định có nguồn, kịch bản lạc quan/cơ sở/bi quan, hòa vốn, độ nhạy, dự phòng, kiểm ưu đãi có lỗ không; dùng `EP.scenario` (`js/scenario.js`) + `EP.importer` (`js/import.js`) của starter; đọc `references/11-mo-hinh-kinh-doanh.md`; nạp file dữ liệu BTC | `prompts/02-feature-agent.md` (+ `references/11`) | 8231 |
 | QA / second opinion #1–#3 | Sonnet + Haiku | Chụp ảnh, chạy test, thử đầu vào sai, mobile | `prompts/06-qa-agent.md` | 8227–8229 |
 | Cấp cứu / dự phòng | Sonnet | Re-spawn bản rút gọn, bản demo dự phòng | `prompts/11-emergency.md` | 8230 |
 | Điều phối (bản merge) | Claude chính | Merge, test, deploy | `prompts/09-merge-deploy.md` | 8211 |
@@ -58,7 +63,7 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 | **8211** | Điều phối viên / bản merge chính |
 | 8212–8216 | Hỗ trợ: 8212 shell/brand · 8213 AI · 8214 data/demo · 8215–8216 polish #1–#2 |
 | 8217–8224 | Feature agent F1…F8 |
-| 8225–8230 | 8225 deck · 8226 docs · 8227–8229 QA #1–#3 · 8230 cấp cứu/dự phòng |
+| 8225–8231 | 8225 deck · 8226 docs · 8227–8229 QA #1–#3 · 8230 cấp cứu/dự phòng · 8231 giả định & mô hình kinh doanh |
 | **8000** | **CẤM** (nhiều agent từng dùng chung, server phục vụ nhầm worktree của nhau) |
 
 Mỗi agent chỉ dùng cổng của mình, kill server khi xong. Xung đột chi tiết xem `prompts/00-README.md` và `references/02`.
@@ -80,20 +85,27 @@ Haiku cho việc ngắn, rõ, ít suy luận (dữ liệu, docs, QA lặp). Sonn
 ## Luật
 
 1. **Spec là chuẩn.** Không làm ngoài đề; đề không nói thì chọn mặc định đơn giản, ghi 1 dòng vào `docs/spec-nhanh.md` (mục Giả định). Lõi chạy trọn vẹn trước, tính năng thêm sau.
-2. **Mock luôn có nhãn, và nhãn phải NGUYÊN VĂN theo đề/BTC.** Mọi nội dung AI mô phỏng hiện nhãn trên UI + README. Xem khung cảnh báo ngay dưới. Điểm AI: chỉ mock tối đa 4/15 (Bảng A) — nếu thời gian cho phép thêm đường gọi AI thật bằng key người dùng nhập (Gemini hoặc copy-dán, có sẵn trong `EP.ai`).
+2. **Dữ liệu/AI mô phỏng luôn gắn nhãn rõ "mẫu/mô phỏng"** trên UI + README. Thể lệ chung kết không còn câu cố định; **đề/BTC đưa câu nào thì chép nguyên văn**. Xem khung ngay dưới. Điểm AI: chỉ mock tối đa 4/15 (Bảng A) — nếu thời gian cho phép thêm đường gọi AI thật bằng key người dùng nhập (Gemini hoặc copy-dán, có sẵn trong `EP.ai`).
 3. **Không secret:** key không vào code/chat/commit; ô nhập key hiện `***`, lưu localStorage của người dùng. Quét trước khi push: `node scripts/scan-secrets.mjs .` (xem `references/06`).
-4. **Mobile-first**, kiểm tra 390px, không tràn ngang.
+4. **Mobile-first**, kiểm tra **360 và 390px** theo 5 tiêu chí (không tràn ngang, nút đủ to, chữ đọc được, luồng chính làm được, điều hướng rõ).
 5. **UI tiếng Việt có dấu**, kiểm tra validation (tên trống, email/SĐT sai, trùng, biên).
 6. **Chỉ báo kết quả thật** (test đã chạy, ảnh đã chụp). Không ghi "Đạt" cho ca chưa thử.
 7. **Điều phối viên không viết code tính năng**; chỉ sửa merge conflict nhỏ và cấu hình.
 
-## CẢNH BÁO: nhãn mô phỏng AI phải chép NGUYÊN VĂN từ đề/BTC
+## Nhãn dữ liệu mẫu/mô phỏng và luật "không chuẩn bị sẵn"
 
-> **Câu `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của VÒNG LOẠI.** Starter đang đặt sẵn câu này làm mặc định (`mockNotice` trong `js/config.js`) cho vui chân, **không có nghĩa chung kết dùng đúng câu đó**.
->
-> 1. Ngay ở T+0, tìm trong đề chung kết / thể lệ / thông báo BTC xem có yêu cầu **câu nhãn mô phỏng** nào không. Nếu có: **chép nguyên văn từng chữ, từng dấu** (không sửa chính tả, không viết lại cho "hay hơn", không đổi dấu gạch).
-> 2. Đặt câu đó vào MỘT chỗ: `mockNotice` trong `js/config.js` (nguồn duy nhất; `EP.ai.MOCK_NOTICE`, chân trang, `EP.ai.noticeHtml` đều đọc từ đây). Sau đó sửa **hai dòng assert** trong `tests/smoke.cjs` đang so với câu vòng loại (tìm `Bản demo vòng loại`), chép câu mới vào README, bảng kiểm thử và slide.
-> 3. Đề không nói gì và không hỏi được BTC: dùng `Dữ liệu mô phỏng AI` kèm ghi chú "chưa xác nhận wording BTC" trong `docs/DECISIONS.md`. **Đừng giả định, đừng tự nghĩ ra câu.**
+**Nhãn mô phỏng.** Thể lệ chung kết không còn câu nhãn cố định; bắt buộc là **ghi rõ** số liệu/nội dung nào là mẫu hay mô phỏng.
+
+1. T+0: tìm trong đề/thể lệ phát/thông báo BTC xem có **câu** nhãn nào không. **Có thì chép nguyên văn từng chữ, từng dấu** (không sửa, không viết lại).
+2. Không có: dùng câu rõ nghĩa của đội, ví dụ `Dữ liệu mẫu/mô phỏng, không phải số liệu thật`, ghi vào `docs/DECISIONS.md`. (`Bản demo vòng loại - Dữ liệu mô phỏng AI` là câu **vòng loại**, đừng dùng lại.)
+3. Đặt ở MỘT chỗ: `mockNotice` trong `js/config.js` (`EP.ai.noticeHtml`, chân trang đọc từ đây). Đổi câu thì sửa 2 assert trong `tests/smoke.cjs`, README, bảng kiểm thử, slide.
+4. Số từ file BTC ghi "Dữ liệu BTC"; số đội tự đặt ghi "Giả định của đội"; số sinh ra ghi "Mô phỏng". Không để người xem lẫn ba loại.
+
+**Luật không chuẩn bị sẵn (thể lệ cấm).** `starter/` chỉ là **khung chung** chuẩn bị trước (token, form, bảng, biểu đồ, `EP.ai`, `EP.scenario`, `EP.importer`...). **Không viết sẵn mã/dữ liệu/giao diện riêng cho đề dự đoán**; `catalog/` chỉ để luyện, không chép code từ bài luyện sang bài thi. Tính năng của đề chỉ được viết sau khi đề công bố. **README bắt buộc nêu:** "khung `vibe-sprint` chung (không chứa logic của đề) được chuẩn bị trước giờ thi; toàn bộ tính năng, dữ liệu và giao diện theo đề được xây trong 60 phút thi" (mẫu: `templates/README-du-thi.md` mục 10). BTC có thể yêu cầu giải thích, nên giữ lịch sử commit và minh chứng AI.
+
+## Bảng Kinh tế: ưu tiên điểm mô hình
+
+Điểm Kinh tế: lõi 27 · **mô hình kinh doanh 22 · số liệu dự phòng và giả định 17 · cơ chế khuyến mãi thực tế 10** · mobile 10 · UI 5 · hồ sơ 9. Vì thế luôn có một agent **"Giả định & mô hình kinh doanh"** dùng `EP.scenario` + `EP.importer`, và app có sẵn: danh sách giả định (có nguồn), kịch bản, hòa vốn, độ nhạy, dự phòng, kiểm ưu đãi có lỗ không. Chi tiết: `references/11-mo-hinh-kinh-doanh.md`. Pitch có slide "Giả định & cách tính" (`references/05`).
 
 ## Dùng các thư mục đi kèm
 
@@ -109,7 +121,7 @@ Mọi thứ nằm trong `skills/vibe-sprint/` (gọi tắt `<SKILL>`). Đường
 - `prompts/` — prompt tự đủ ngữ cảnh cho từng loại agent (`00-README.md` là mục lục + bảng cổng).
 - `catalog/` — gợi ý theo loại đề (`de-bai-vong-1.md`, `de-moi-du-doan.md`, `module-map.md`).
 - `scripts/` — `new-project.sh`, `scan-secrets.mjs`.
-- `references/` — đọc theo nhu cầu: `01` đọc đề → spec · `02` điều phối agent · `03` chuẩn chất lượng Xclipse · `04` bài học lỗi (đã bổ sung đợt 2: quy trình agent, mobile/animation, dữ liệu/AI/chia sẻ) · `05` thuyết trình + hỏi đáp · `06` hồ sơ + triển khai (có Firebase + GitHub Pages) · **`07` cookbook đoạn mã mẫu ≤15 dòng** (cache `?v=`, chống nháy theme, vòng tròn đổi theme, CSS mobile, form/SĐT, nén ảnh, AI schema + mock + nhãn, Gemini, OG/trang chia sẻ tĩnh, Firebase init + rules + deploy, Pages, Sheet, Playwright, ảnh minh chứng, giải merge) · **`08` quy ước viết** (đặt tên, câu chữ tiếng Việt cho UI/lỗi/nút, comment, commit + trailer, thư mục, báo cáo agent). Prompt giao việc nên dán thêm đoạn liên quan của `07`/`08`. **`10` Lucian UI: bảng tra phần tử theo nhu cầu của đề + cách chép trong 5 phút (`references/10-lucian-ui.md`, 22 phần tử ở `vendor/lucian/`)** · **`09` tư liệu chạy thử thật của đội** (50 phút, 16 subagent, 3 đợt, 60/60 test; lỗi tên trường và bài học điều phối): `references/09-case-study-de7-livetrack.md`.
+- `references/` — **`00` thể lệ chung kết (đọc đầu tiên)** · **`11` mô hình kinh doanh/giả định (Bảng Kinh tế)** · đọc theo nhu cầu: `01` đọc đề → spec · `02` điều phối agent · `03` chuẩn chất lượng Xclipse · `04` bài học lỗi (đã bổ sung đợt 2: quy trình agent, mobile/animation, dữ liệu/AI/chia sẻ) · `05` thuyết trình + hỏi đáp · `06` hồ sơ + triển khai (có Firebase + GitHub Pages) · **`07` cookbook đoạn mã mẫu ≤15 dòng** (cache `?v=`, chống nháy theme, vòng tròn đổi theme, CSS mobile, form/SĐT, nén ảnh, AI schema + mock + nhãn, Gemini, OG/trang chia sẻ tĩnh, Firebase init + rules + deploy, Pages, Sheet, Playwright, ảnh minh chứng, giải merge) · **`08` quy ước viết** (đặt tên, câu chữ tiếng Việt cho UI/lỗi/nút, comment, commit + trailer, thư mục, báo cáo agent). Prompt giao việc nên dán thêm đoạn liên quan của `07`/`08`. **`10` Lucian UI: bảng tra phần tử theo nhu cầu của đề + cách chép trong 5 phút (`references/10-lucian-ui.md`, 22 phần tử ở `vendor/lucian/`)** · **`09` tư liệu chạy thử thật của đội** (50 phút, 16 subagent, 3 đợt, 60/60 test; lỗi tên trường và bài học điều phối): `references/09-case-study-de7-livetrack.md`.
 
 ### Lệnh thật (không có tên giữ chỗ)
 
@@ -137,4 +149,4 @@ node scripts/scan-secrets.mjs . [.env.local]     # kết quả phải sạch; ch
 - **Agent kẹt >5 phút / vòng lặp:** kill, spawn lại với phạm vi nhỏ hơn + trích đúng đoạn lỗi.
 - **Merge conflict nặng:** lấy bản của agent tính năng, chạy lại agent kia rebase (xem `references/02`).
 - **Test đỏ phút T+45:** cô lập tính năng gây lỗi, tắt/rút gọn thay vì sửa lan man.
-- **Hết giờ mà chưa xong:** ưu tiên (1) link chạy + 3 tính năng lõi, (2) slide, (3) mock có nhãn, (4) phần còn lại nói thật là chưa làm.
+- **Hết giờ mà chưa xong:** ưu tiên (1) nộp đủ 4 món đúng phút 60 với link chạy + 3 tính năng lõi, (2) minh chứng thời điểm chốt, (3) dữ liệu mô phỏng có nhãn, (4) phần còn lại nói thật là chưa làm. Quá 14:15 không sửa, trừ khi BTC mở khung sự cố.

@@ -1,6 +1,6 @@
 # Chuẩn bị hỏi đáp: <Tên sản phẩm> (Bảng B)
 
-> 20 câu hỏi giám khảo hay hỏi, với khung trả lời. Mỗi câu gắn người trả lời: `[DA]` Diệu Anh, `[Dũng]` Vũ Trí Dũng, `[Nguyên]` Nguyên. Câu không có chủ hoặc câu bẫy: **Nguyên bắt**. Luôn nói **câu trả lời ngắn (1 câu) trước**, rồi mới bằng chứng. Thay `<…>` bằng số liệu thật của đội. Đừng học thuộc: trả lời theo cấu trúc **Trả lời ngắn 1 câu → Bằng chứng (chỗ trên app hoặc file) → Giới hạn nếu có**.
+> 30 câu hỏi giám khảo hay hỏi (20 câu chung + 10 câu mô hình kinh doanh ở mục F, **Q&A chỉ có ở vòng phản biện; Bảng Kinh tế phải trình bày giả định và cách tính**), với khung trả lời. Mỗi câu gắn người trả lời: `[DA]` Diệu Anh, `[Dũng]` Vũ Trí Dũng, `[Nguyên]` Nguyên. Câu không có chủ hoặc câu bẫy: **Nguyên bắt**. Luôn nói **câu trả lời ngắn (1 câu) trước**, rồi mới bằng chứng. Thay `<…>` bằng số liệu thật của đội. Đừng học thuộc: trả lời theo cấu trúc **Trả lời ngắn 1 câu → Bằng chứng (chỗ trên app hoặc file) → Giới hạn nếu có**.
 > Đừng bịa số. Chưa làm thì nói chưa làm, kèm cách đội sẽ làm.
 
 ## A. Cách dùng
@@ -109,3 +109,55 @@
 - Trả lời ngắn (nói trước, ≤ 10 giây): <Ai xem được gì>; đã kiểm thử <ca bảo mật>.
 - Trả lời: <ai xem được gì>. Ghi chú đã kiểm thử: <ca bảo mật nếu có>.
 - Giới hạn: <chưa kiểm tra bằng tài khoản thứ ba, v.v.>.
+
+## F. Mô hình kinh doanh, giả định và cách tính (Bảng Kinh tế, vòng phản biện)
+
+Cấu trúc: **kết luận 1 câu → số trong app → giới hạn**. Chỉ nêu số có trong app (bảng giả định, kịch bản, hòa vốn). Giả định chưa có số thật thì nói là giả định.
+
+**21. Các giả định lấy từ đâu?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Giả định chia 3 loại: số của BTC, số công khai có nguồn, số đội tự đặt, và loại nào cũng ghi nhãn trong app.
+- Trả lời: <file BTC: sheet <…>> · <nguồn công khai: biểu phí <…> ngày <…>> · <đội đặt: <…>, lý do <…>>. Mở bảng giả định cho giám khảo xem cột "Nguồn".
+- Giới hạn: <giả định nào chưa có nguồn thật và đội kiểm bằng cách nào>.
+
+**22. Vì sao chọn tỉ lệ đó (ví dụ <x>%) chứ không phải số khác?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Vì <lý do một câu: mức trung bình ngành / số liệu BTC / thận trọng>, và đội có kịch bản cho mức khác.
+- Trả lời: <x>% lấy từ <nguồn>; chọn mức thận trọng vì <…>; đổi sang <y>% thì lợi nhuận đổi <z> (xem độ nhạy).
+- Giới hạn: <chưa có dữ liệu thật của riêng shop>.
+
+**23. Nếu chi phí tăng 20% thì sao?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Lợi nhuận giảm còn <…>, hòa vốn dịch từ <a> lên <b>, vẫn <còn lãi / lỗ>.
+- Trả lời: bấm kịch bản "chi phí +20%" trong app: biên từ <…> xuống <…>; điều chỉnh <giá/ưu đãi> để giữ biên.
+- Bằng chứng: bảng độ nhạy trong app.
+
+**24. Khi nào hòa vốn?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Hòa vốn ở <n> <đơn/sản phẩm/tháng>, tính bằng chi phí cố định chia cho phần đóng góp mỗi đơn.
+- Trả lời: chi phí cố định <…> / (giá <…> − biến phí <…>) = <n>. Có đường hòa vốn trong app; đổi giả định thì số đổi theo.
+- Giới hạn: giả định giá và sản lượng ổn định trong kỳ tính.
+
+**25. Chương trình ưu đãi/khuyến mãi này có làm lỗ không?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Không lỗ nếu <điều kiện>; lỗ khi <điều kiện>, và app cảnh báo ngay.
+- Trả lời: biên sau ưu đãi = <…>; đơn tối thiểu <…>, trần giảm <…>, cộng dồn: <có/không>. Ví dụ đơn <…> còn lãi <…>.
+- Bằng chứng: dòng "ưu đãi có lỗ không" trong app, ca TC10.
+
+**26. Dự phòng bao nhiêu và vì sao?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Dự phòng <x>% chi phí, vì giả định <yếu nhất> biến động nhất.
+- Trả lời: <x>% = <căn cứ: biến động giá, tỉ lệ hoàn/hủy…>; kịch bản xấu nhất vẫn <lãi/lỗ> <…>.
+- Giới hạn: <chưa kiểm bằng dữ liệu thật nhiều tháng>.
+
+**27. Giả định nào nhạy nhất, nếu sai thì hỏng ở đâu?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): <Giả định> nhạy nhất: đổi 10% thì lợi nhuận đổi <z>%.
+- Trả lời: từ bảng độ nhạy: <xếp hạng 3 giả định>. Giả định này đội sẽ kiểm trước bằng <cách>.
+
+**28. Đơn vị mô hình: lãi mỗi đơn, mỗi khách hay mỗi tháng? Có tính chi phí cố định không?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Tính theo <đơn vị>, có cộng chi phí cố định <…> để ra hòa vốn.
+- Trả lời: <biến phí gồm: giá vốn, phí sàn, ship, QC>; <cố định gồm: …>. Mẫu số 0 thì app báo "Không đủ dữ liệu", không ra số ảo.
+
+**29. Con số nào là thật, con số nào là mô phỏng? Có dùng dữ liệu BTC không?** `[Nguyên]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Số từ file BTC ghi "Dữ liệu BTC", số đội đặt ghi "Giả định", số sinh ra ghi "Mô phỏng".
+- Trả lời: nạp file BTC (sheet <…>) bằng <nút>; dữ liệu mẫu của đội do <…> tạo trong giờ thi; nhãn: "<câu nhãn>".
+- Bằng chứng: README mục Dữ liệu.
+
+**30. Mô hình này có mở rộng/thực tế với người bán thật không?** `[Dũng]`
+- Trả lời ngắn (nói trước, ≤ 10 giây): Có với <quy mô>, vì <cơ chế khuyến mãi thực tế: điều kiện, trần>; chưa kiểm với <…>.
+- Trả lời: <nhóm người bán đầu tiên>, <cách thu thập số thật để thay giả định>, <rủi ro: …>.
+- Giới hạn: giả định chưa kiểm thị trường thật, đội nói rõ khi trình bày.

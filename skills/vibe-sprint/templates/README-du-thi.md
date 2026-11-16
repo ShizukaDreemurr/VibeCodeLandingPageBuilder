@@ -1,9 +1,9 @@
 # <Tên sản phẩm>: <Tên cuộc thi>
 
 > Điền các mục `<…>`. Ghi đúng công nghệ đã dùng và đúng phiên bản. Xoá dòng mẫu nào không áp dụng.
-> Nếu có chế độ AI mô phỏng, giữ nguyên câu cảnh báo dưới đây. **Câu này phải chép NGUYÊN VĂN từ đề/thể lệ chung kết** (câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ đúng cho vòng loại; đừng dùng lại nếu đề chung kết khác).
+> Thể lệ chung kết: README là 1 trong 4 món nộp (cài đặt/chạy, công nghệ, dữ liệu mẫu/tài khoản). Không còn câu nhãn cố định: **ghi rõ phần nào là dữ liệu mẫu/mô phỏng**; đề có đưa câu nhãn thì chép nguyên văn.
 
-> **<Câu cảnh báo mô phỏng AI, đúng nguyên văn thể lệ>**: khi dùng chế độ AI mô phỏng (offline), nội dung do công thức sinh ra, không phải kết quả từ mô hình AI thật.
+> **<Câu nhãn dữ liệu mẫu/mô phỏng (nguyên văn nếu đề đưa; không thì câu rõ nghĩa của đội)>**: khi dùng chế độ mô phỏng (offline), nội dung/số liệu do công thức sinh ra, không phải kết quả thật.
 
 ## 1. Thông tin bài nộp
 
@@ -17,6 +17,8 @@
 | Source ZIP | <tên gói hoặc URL> |
 | Minh chứng dùng AI | `docs/MINH-CHUNG-AI.md` |
 | Bảng kiểm thử | `docs/BANG-KIEM-THU.md` (mục 11) |
+| Commit đã nộp (hash) | <git rev-parse --short HEAD, khớp bản đang chạy trên link> |
+| Minh chứng thời điểm chốt | `docs/minh-chung-chot/` |
 | Liên hệ | <email> |
 
 ## 2. Tính năng chính
@@ -104,3 +106,27 @@ Chép bảng từ `docs/BANG-KIEM-THU.md` (ít nhất các ca bắt buộc của
 - Source ZIP gồm mã nguồn, README, minh chứng AI, bảng kiểm thử. Không kèm `.git`, không kèm `.env.local`.
 - Tài khoản hoặc dữ liệu demo: <có / không; nếu có, ghi cách lấy>.
 - Dữ liệu mẫu: bấm **"<Điền dữ liệu mẫu>"** trong app.
+
+## 13. Giả định & cách tính (Bảng Kinh tế bắt buộc; Bảng Kỹ thuật ghi quy tắc nghiệp vụ)
+- **Danh sách giả định:** bảng `Giả định · Giá trị · Đơn vị · Nguồn/lý do · Loại (BTC / đội đặt / mô phỏng)`. Ví dụ: `Phí sàn · 6 · % · biểu phí công khai của sàn <ngày> · đội đặt`.
+- **Công thức chính:** <lợi nhuận = …; điểm hòa vốn = chi phí cố định / (giá − biến phí); biên sau ưu đãi = …>. Mẫu số 0 thì app hiện "Không đủ dữ liệu".
+- **Kịch bản:** <lạc quan / cơ sở / bi quan: đổi những giả định nào, kết quả khác nhau ra sao>.
+- **Độ nhạy và dự phòng:** <giả định nào nhạy nhất; dự phòng bao nhiêu % và vì sao>.
+- **Cơ chế ưu đãi:** <điều kiện, trần, có lỗ không và ở mức nào>.
+
+## 14. Dữ liệu (file BTC / mẫu / mô phỏng)
+| Bộ dữ liệu | Nguồn | Dùng ở đâu | Nhãn trong app |
+|---|---|---|---|
+| File mẫu BTC phát đầu giờ (sheet: <tên>) | BTC | <màn nhập/nạp: tên nút> | "Dữ liệu BTC" |
+| Dữ liệu mẫu của đội (nút "<Điền dữ liệu mẫu>") | Đội tự tạo trong giờ thi | <…> | "Dữ liệu mẫu" |
+| Số liệu mô phỏng (AI/công thức) | Sinh bởi <…> | <…> | "<câu nhãn mô phỏng>" |
+- Không có tài khoản đăng nhập / tài khoản demo: <…>.
+
+## 15. Khung chuẩn bị trước (khai báo theo thể lệ)
+- Trước giờ thi chỉ chuẩn bị **khung chung `vibe-sprint`**: token giao diện, hàm form/bảng/biểu đồ, `EP.ai` (một cửa AI + mô phỏng), `EP.scenario`, `EP.importer`, công cụ kiểm thử và quét key. Khung **không chứa logic, dữ liệu hay giao diện riêng cho đề**.
+- **Toàn bộ tính năng, dữ liệu mẫu, giao diện và nội dung theo đề được xây trong 60 phút thi** (13:15–14:15, ngày <dd/mm/yyyy>). Lịch sử commit và `docs/MINH-CHUNG-AI.md` thể hiện quá trình.
+- Thư viện/công cụ bên ngoài: xem mục 9.
+
+## 16. Minh chứng thời điểm chốt
+- Ảnh/video: `docs/minh-chung-chot/<tên tệp>` chụp lúc <hh:mm>, màn hình: <danh sách>, kích thước: desktop + 360px + 390px.
+- Commit đang chạy tại thời điểm chốt: `<hash>`; phiên bản hiển thị trên app: `<x.y.z>`.

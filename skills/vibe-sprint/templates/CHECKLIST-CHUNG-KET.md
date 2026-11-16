@@ -1,62 +1,87 @@
 # Checklist chung kết: <Tên sản phẩm>
 
-> Dùng cho ngày chấm trực tiếp. In ra hoặc để trên màn hình phụ. Tick từng dòng, không dựa vào trí nhớ.
+> Khớp Thể lệ Chung kết VIBE-CODING 2026 (`references/00-the-le-chung-ket.md`). Làm 60 phút (13:15–14:15), nộp **4 món** lúc phút 60, sau đó không sửa (trừ khung sự cố BTC mở). Tick từng dòng, không dựa vào trí nhớ. Thể lệ phát tại chỗ khác bản này thì làm theo bản phát tại chỗ và ghi vào `DECISIONS.md`.
 
-> **CẢNH BÁO: câu nhãn mô phỏng AI phải chép NGUYÊN VĂN từ đề/BTC của chung kết.** `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của VÒNG LOẠI (starter đặt sẵn làm mặc định trong `js/config.js`), chung kết có thể khác. Đối chiếu từng chữ, từng dấu với đề trước khi quay video/nộp; chỗ cần khớp: `mockNotice` trong `js/config.js`, 2 assert trong `tests/smoke.cjs`, README, bảng kiểm thử, slide, ảnh minh chứng.
+## A. Trước giờ thi (chuẩn bị được phép: máy, tài khoản, khung chung)
 
-## Trước khi đi (trước 1 ngày)
+- [ ] Laptop sạc đầy, trình duyệt cập nhật, Playwright chạy được, hotspot điện thoại thử trước.
+- [ ] Tài khoản cần dùng (GitHub, hosting, AI) đã đăng nhập sẵn; không cần nhớ mật khẩu lúc thi.
+- [ ] Khung `vibe-sprint` chung đã sẵn sàng. **Trong khung KHÔNG có mã, dữ liệu hay giao diện viết riêng cho một đề cụ thể** (thể lệ cấm chuẩn bị sẵn tính năng cho đề).
+- [ ] Đã đọc `references/00`; cả đội biết phân vai (điều phối, agent giả định/mô hình, QA, nộp bài).
 
-**Thiết bị**
-- [ ] Laptop chạy demo: đã cập nhật hệ điều hành, đã đóng ứng dụng nặng không cần.
-- [ ] Điện thoại để xem bản responsive: đã đăng nhập sẵn, cỡ chữ mặc định.
-- [ ] Máy dự phòng (nếu có): đã cài trình duyệt, đã mở link Pages.
-- [ ] Dây sạc laptop, dây sạc điện thoại, adapter HDMI hoặc USB-C nếu cần chiếu màn hình.
-- [ ] Chuột, bộ chuyển đổi, tai nghe nếu có thuyết trình giọng nói.
+## B. T+0→5 (đọc đề)
 
-**Mạng**
-- [ ] Đã thử điểm phát wifi (hotspot) từ điện thoại. Ghi lại tên và mật khẩu hotspot ở chỗ dễ thấy.
-- [ ] Biết cách bật hotspot trên điện thoại chính và điện thoại dự phòng.
+- [ ] Đọc đề và thể lệ phát tại chỗ; xác nhận **bảng thi**, giờ nộp, câu nhãn (nếu đề có đưa).
+- [ ] **Mở file dữ liệu mẫu BTC của bảng mình**; ghi tên sheet/cột vào spec.
+- [ ] Spec + Schema Contract + danh sách Giả định xong trước khi spawn agent.
 
-**Tài khoản và dữ liệu**
-- [ ] Các tài khoản cần dùng (Google, Firebase, GitHub, hosting) đã đăng nhập sẵn trên trình duyệt của máy chạy demo.
-- [ ] Mật khẩu hoặc mã 2 lớp đã sẵn sàng, không cần nhớ lại lúc chấm.
-- [ ] Dữ liệu mẫu đã có trong app; biết nút "<Điền dữ liệu mẫu>" ở đâu.
-- [ ] Đã tắt chế độ lưu mật khẩu tự động cho tài khoản không cần thiết.
+## C. Dữ liệu và nhãn
 
-**Sản phẩm**
-- [ ] Link GitHub Pages chạy đúng bản đã nộp. Đã thử ở cửa sổ ẩn danh.
-- [ ] Nhánh và tag/commit đã nộp được ghi lại trong `PROGRESS.md`.
-- [ ] Không còn `<…>` trong README, bảng kiểm thử, minh chứng AI.
-- [ ] Câu nhãn mô phỏng AI khớp **nguyên văn** đề/BTC chung kết (không phải câu vòng loại nếu đề đổi chữ): mở app ở chế độ Mô phỏng, đọc chân trang và nhãn cạnh kết quả AI, so từng chữ với đề.
-- [ ] Đã chạy `node tools/bump-version.cjs` và `node scripts/scan-secrets.mjs .` (sạch) trên bản nộp.
+- [ ] Mọi số liệu/nội dung mô phỏng hoặc mẫu có nhãn rõ cạnh nơi hiển thị (UI + README).
+- [ ] Phân biệt ba loại: **Dữ liệu BTC** · **Giả định của đội** · **Mô phỏng**.
+- [ ] Đề có đưa câu nhãn thì chép nguyên văn (`mockNotice` trong `js/config.js`, 2 assert `tests/smoke.cjs`, README, bảng kiểm thử, slide khớp nhau).
+- [ ] Nút "Điền dữ liệu mẫu" chạy; app mở được từ trạng thái trống.
+- [ ] Không còn API key trong mã/ảnh; `node scripts/scan-secrets.mjs .` sạch.
 
-**Dự phòng**
-- [ ] Video backup 2 phút (MP4) đã có trên máy chạy demo và trên USB.
-- [ ] Slide hoặc tài liệu tóm tắt dạng PDF trên USB. Mở thử được trên máy khác.
-- [ ] Ảnh chụp màn hình các màn hình chính (đề phòng mất mạng).
+## D. Bảng Kinh tế: mô hình và giả định (49/100 điểm)
 
-## Trong ngày (trước khi vào phòng và khi đang chấm)
+- [ ] **Danh sách giả định** hiện trong app, mỗi giả định có giá trị, đơn vị, nguồn/lý do, chỉnh được.
+- [ ] **Kịch bản** (lạc quan/cơ sở/bi quan) với số khác nhau thấy được.
+- [ ] **Điểm hòa vốn** tính bằng code, có công thức hiển thị, mẫu số 0 thì báo "Không đủ dữ liệu".
+- [ ] **Phân tích độ nhạy** (đổi 1 giả định ±10–20%, xem lãi/lỗ đổi thế nào).
+- [ ] **Dự phòng** (chi phí/doanh thu lệch) có số cụ thể và lý do.
+- [ ] Cơ chế khuyến mãi/ưu đãi **thực tế**: có điều kiện, trần, và dòng "có lỗ không".
+- [ ] Slide/đoạn pitch **"Giả định & cách tính"** có mặt (vòng phản biện Kinh tế bắt buộc nêu).
+- [ ] *(Bảng Kỹ thuật: bỏ mục D; thay bằng kiểm tra ổn định, lỗi biên, mở rộng.)*
 
-- [ ] Mở sẵn: link Pages, bảng kiểm thử, README, `KICH-BAN-DEMO.md`, video backup (tab riêng).
-- [ ] Zoom trình duyệt ở **100%**. Thử phóng to 110% và thu về 90% xem bố cục có vỡ không; để ở 100% khi chấm.
-- [ ] Tắt thông báo hệ thống, chế độ tập trung (không nhận tin nhắn trong lúc demo).
-- [ ] Kiểm tra độ sáng màn hình và cỡ chữ đủ đọc từ chỗ giám khảo ngồi.
-- [ ] Tắt tab không cần thiết, đóng cửa sổ có tài khoản cá nhân không liên quan.
-- [ ] Điện thoại để chế độ máy bay khi không cần, trừ khi đang dùng hotspot.
-- [ ] Đã chạy lại dữ liệu mẫu ngay trước khi vào, để demo không bắt đầu với form trống.
-- [ ] Đang cắm sạc laptop.
-- [ ] Biết ai trong đội trả lời câu nào trong `HOI-DAP.md`.
+## E. Mobile 360px VÀ 390px (5 tiêu chí thể lệ)
 
-**Khi mạng hoặc app lỗi:**
-- [ ] Chuyển sang video backup và nói rõ đó là bản quay thao tác thật.
-- [ ] Nếu chỉ một tính năng lỗi: bỏ qua, nói thẳng và tiếp tục mốc sau.
-- [ ] Không khởi động lại máy trước mặt giám khảo nếu chưa cần.
+Kiểm ở cả hai độ rộng, mọi màn chính:
+- [ ] 1. Không tràn ngang, không cuộn ngang (cả bảng, biểu đồ, dialog).
+- [ ] 2. Nút/ô nhập đủ to cho ngón tay (≥ 44px), không chồng nhau.
+- [ ] 3. Chữ đọc được ở zoom mặc định (ô nhập ≥ 16px).
+- [ ] 4. **Mọi luồng chính** làm trọn được trên điện thoại (nhập → kết quả → lưu → xem lại).
+- [ ] 5. Điều hướng/tab rõ, luôn biết đang ở đâu.
 
-## Sau khi chấm
+## F. T+50→55: minh chứng thời điểm chốt (món 4)
 
-- [ ] Ghi lại câu hỏi giám khảo đã hỏi và câu trả lời (để làm `HOI-DAP.md` đúng hơn).
-- [ ] Ghi lại lỗi xảy ra, kèm mốc giờ và cách xử lý.
-- [ ] Không sửa tính năng sau giờ nộp nếu thể lệ yêu cầu bản nộp là căn cứ chấm.
-- [ ] Giữ nguyên tag/commit đã nộp để đối chiếu.
-- [ ] Lưu ảnh màn hình xác nhận đã nộp bài và các file đã dùng (ZIP, PDF, MP4).
-- [ ] Đóng gói các file đã nộp vào một thư mục để tra cứu sau này.
+- [ ] Sau T+50 **không thêm tính năng**; không push sau khi chụp.
+- [ ] Ảnh chụp từng màn chính (desktop + 360/390) **hoặc** video quay luồng chính, hiển thị rõ phiên bản/ngày giờ.
+- [ ] Ghi **hash commit** đang chạy trên link vào README và `PROGRESS.md`: `git rev-parse --short HEAD`.
+- [ ] Lưu ở `docs/minh-chung-chot/` (và bản sao ngoài repo, đề phòng).
+
+## G. T+55→60: nộp 4 món
+
+| # | Món | Kiểm tra | Xong |
+|---|---|---|---|
+| 1 | **Link demo / cách mở** | Mở ở cửa sổ ẩn danh + điện thoại; bản mới nhất; link online bắt buộc | [ ] |
+| 2 | **Mã nguồn** | Đúng commit đang chạy trên link; không `.env*`, không key, không `.git` nếu nộp ZIP | [ ] |
+| 3 | **README** | Cài đặt/chạy, công nghệ, dữ liệu mẫu/tài khoản, mục Giả định & cách tính, khai báo khung chuẩn bị trước, không còn `<…>` | [ ] |
+| 4 | **Minh chứng chốt** | Ảnh/video thấy sản phẩm lúc chốt + hash commit | [ ] |
+
+- [ ] Bản nộp đã chạy `node tools/bump-version.cjs`; phiên bản trên app khớp README.
+- [ ] Đã nộp đủ 4 món trước 14:15. Chụp màn hình xác nhận nộp.
+
+## H. README bắt buộc có (kiểm nhanh)
+
+- [ ] Công nghệ + phiên bản; cách chạy local.
+- [ ] Mục **Dữ liệu**: file BTC dùng thế nào / dữ liệu mẫu / dữ liệu mô phỏng, ghi rõ.
+- [ ] Mục **Giả định & cách tính** (công thức, nguồn con số).
+- [ ] Mục **Khung chuẩn bị trước**: "khung vibe-sprint chung chuẩn bị trước giờ thi; mọi tính năng theo đề làm trong 60 phút thi; không có mã riêng cho đề trước giờ thi".
+- [ ] Mục **Minh chứng thời điểm chốt** (đường dẫn + hash).
+
+## I. Sau khi nộp (14:15–14:45 giám khảo kiểm tra)
+
+- [ ] **Không sửa** sản phẩm; chỉ dùng khung sự cố nếu BTC mở và ghi lại mọi thay đổi.
+- [ ] Máy demo: mở sẵn link, bản local dự phòng, video 30 giây, README, bảng kiểm thử.
+- [ ] Chọn bản pitch **10/5/3 phút** khi BTC báo thời lượng; cả bản có phần "Giả định & cách tính".
+- [ ] Zoom 100%, tắt thông báo, sạc laptop, dữ liệu mẫu đã nạp.
+- [ ] BTC có thể yêu cầu **giải thích** cách làm: mở lịch sử commit, `MINH-CHUNG-AI.md`, trả lời trung thực.
+- [ ] Vòng phản biện (đội được chọn): Bảng Kinh tế trình bày giả định và cách tính; xem `HOI-DAP.md` mục F.
+
+**Khi mạng hoặc app lỗi:** chuyển video/bản local, nói rõ đó là bản quay/bản chạy của đúng bản đã nộp; lỗi một tính năng thì nói thẳng, đi tiếp.
+
+## J. Sau buổi chấm
+
+- [ ] Ghi câu hỏi giám khảo và câu trả lời; ghi lỗi + mốc giờ.
+- [ ] Giữ nguyên commit/tag đã nộp; lưu file đã nộp và ảnh xác nhận nộp.

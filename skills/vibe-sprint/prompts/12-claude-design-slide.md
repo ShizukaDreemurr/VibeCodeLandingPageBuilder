@@ -5,9 +5,9 @@
 ---
 
 ```markdown
-Bạn là **Chuyên gia Thiết kế Trình chiếu (Slide UI/UX Designer)** của đội **Xclipse** (`{{TRUONG}}`) tại Chung kết **VIBE-CODING 2026 (Bảng B – Kinh tế)**.
+Bạn là **Chuyên gia Thiết kế Trình chiếu (Slide UI/UX Designer)** của đội **Xclipse** (`{{TRUONG}}`) tại Chung kết **VIBE-CODING 2026 (`{{BANG}}`)**.
 
-Hãy thiết kế một bộ slide thuyết trình **11 trang (khớp 10 phút) (tỉ lệ 16:9 · 1920×1080px)** cho sản phẩm vừa hoàn thành dưới đây. Yêu cầu **TUÂN THỦ KHẮT KHE** bộ Theme chuẩn hóa và quy tắc trình bày của Xclipse — không tự ý sáng tạo màu hoặc phong cách khác.
+Hãy thiết kế một bộ slide thuyết trình **`{{SLIDE_COUNT}}` trang (5 / 7 / 11 trang, khớp `{{PITCH_MINUTES}}` phút: 3 phút = 5 slide, 5 phút = 7 slide, 10 phút = 11 slide; xem mục 3) (tỉ lệ 16:9 · 1920×1080px)** cho sản phẩm vừa hoàn thành dưới đây. Yêu cầu **TUÂN THỦ KHẮT KHE** bộ Theme chuẩn hóa và quy tắc trình bày của Xclipse — không tự ý sáng tạo màu hoặc phong cách khác.
 
 ---
 
@@ -36,8 +36,8 @@ Hãy thiết kế một bộ slide thuyết trình **11 trang (khớp 10 phút) 
 - **Trình bày Ảnh chụp App thật (Desktop & Mobile 390px):**
   - Đặt trong khung thiết bị/khung cửa sổ sạch sẽ (bo góc `16px`, viền Navy mảnh), **không cắt xén mất thanh điều hướng hay số liệu**.
   - Slide Demo Mobile bắt buộc đặt khung điện thoại `390px` cạnh phần giải thích ngắn gọn (2–3 ý).
-- **Minh bạch AI (Bắt buộc theo thể lệ):**
-  - Ghi rõ nhãn mô phỏng AI **NGUYÊN VĂN** theo đề/BTC: `{{MOCK_NOTICE}}`
+- **Minh bạch dữ liệu/AI (Bắt buộc theo thể lệ):**
+  - Ghi rõ nhãn dữ liệu mẫu/mô phỏng: `{{MOCK_NOTICE}}` (nguyên văn nếu đề/BTC đưa câu; không thì câu rõ nghĩa của đội). Số mô phỏng phải nhận diện được là mẫu/mô phỏng.
   - Ghi rõ công cụ AI đội sử dụng: **Claude (Opus / Sonnet / Haiku / Claude Design)** phối hợp cùng **Gemini / Antigravity**.
 
 ---
@@ -55,7 +55,11 @@ Hãy thiết kế một bộ slide thuyết trình **11 trang (khớp 10 phút) 
   3. `{{TINH_NANG_3}}`
   4. `{{TINH_NANG_4}}`
   5. `{{TINH_NANG_5}}`
-- **Người nói & mốc giờ:** `{{NGUOI_1}}` (slide 1–3, 00:00–02:30) · `{{NGUOI_2}}` (slide 4–7, 02:30–06:15) · `{{NGUOI_3}}` (slide 8–11, 06:15–09:45)
+- **Thời lượng pitch (BTC báo, giống nhau cho mọi đội) và số slide:** `{{PITCH_MINUTES}}` phút → `{{SLIDE_COUNT}}` slide (3→5, 5→7, 10→11)
+- **Bảng thi:** `{{BANG}}` (Kinh tế hoặc Kỹ thuật)
+- **Người nói & mốc giờ:** theo bản đã chọn ở mục 3 (`{{NGUOI_1}}` đầu · `{{NGUOI_2}}` giữa · `{{NGUOI_3}}` cuối)
+- **Giả định & cách tính (Kinh tế):** `{{GIA_DINH}}` (3 giả định chính + nguồn) · `{{KICH_BAN}}` (cơ sở / xấu nhất) · `{{HOA_VON}}` (điểm hòa vốn) · `{{UU_DAI_LO}}` (ưu đãi lỗ khi nào)
+- **Ảnh minh chứng:** ảnh chụp thật của app, mobile 360px/390px
 - **Điểm AI & Minh bạch:** `{{MO_TA_AI}}` (Nhãn nguyên văn: `{{MOCK_NOTICE}}`)
 - **Kết quả kiểm thử thật (`smoke.cjs` + thủ công):** `{{KET_QUA_TEST}}`
 - **Link demo online & GitHub:** `{{LINK_DEMO}}` · `{{LINK_REPO}}`
@@ -63,7 +67,18 @@ Hãy thiết kế một bộ slide thuyết trình **11 trang (khớp 10 phút) 
 
 ---
 
-## 3. CẤU TRÚC 11 SLIDE BẮT BUỘC (THỜI LƯỢNG THUYẾT TRÌNH 10 PHÚT · 3 NGƯỜI NÓI)
+## 3. CẤU TRÚC SLIDE THEO THỜI LƯỢNG (CHỌN ĐÚNG MỘT BẢN: 11 / 7 / 5 SLIDE · 3 NGƯỜI NÓI)
+
+> Thời lượng pitch BTC báo sau. Dựng bản đúng `{{PITCH_MINUTES}}`; nếu chưa biết, dựng bản 11 slide và đánh dấu slide có thể gộp. **Bảng Kinh tế: bắt buộc có slide "Giả định & cách tính" ở cả ba bản** (nội dung ở dưới). Người nói giữ nguyên: Diệu Anh đầu · Dũng giữa · Nguyên cuối.
+
+### Slide "Giả định & cách tính" (bắt buộc cho Bảng Kinh tế; Bảng Kỹ thuật dùng chỗ này cho "Quy tắc nghiệp vụ & quyết định kỹ thuật")
+- Tiêu đề: `Giả định & cách tính` (một cụm nhấn bằng Playfair Italic).
+- Bố cục 3 khối: **(a) Bảng giả định** (tối đa 4 dòng: giả định · giá trị · nguồn), **(b) 3 kịch bản** (lạc quan / cơ sở / bi quan: lãi hoặc lỗ, thanh ngang có số) và **(c) điểm hòa vốn + ưu đãi**: 1 công thức dạng chữ (ví dụ `Hòa vốn = Chi phí cố định / (Giá − Biến phí)`) và 1 dòng `Ưu đãi lỗ khi …`.
+- **Điểm tựa thị giác: 1 con số lớn** là điểm hòa vốn (`{{HOA_VON}}`) hoặc lãi kịch bản xấu nhất; chữ gọn, mỗi dòng ≤ 12 từ. Số mô phỏng/giả định gắn nhãn nhỏ ngay cạnh ("Giả định", "Mô phỏng", "Dữ liệu BTC").
+
+### Bản 11 slide (10 phút)
+
+
 
 **Diệu Anh (slide 1–3, 00:00–02:30): bài toán, nỗi đau, UI/UX sơ bộ**
 1. **Slide 1 — Bìa (Fluted Glass Hero):** Tên sản phẩm (`Be Vietnam Pro` + `Playfair Display` italic), Tagline, Đội Xclipse · `{{TRUONG}}` · VIBE-CODING 2026. Điểm tựa: 1 con số mục tiêu lớn hoặc ảnh màn hình chính.
@@ -79,12 +94,20 @@ Hãy thiết kế một bộ slide thuyết trình **11 trang (khớp 10 phút) 
 **Nguyên (slide 8–11, 06:15–09:45): kỹ thuật, tổng kết, phản biện**
 8. **Slide 8 — Kiến trúc & AI/proxy & Minh bạch AI:** 1 sơ đồ duy nhất (UI → logic → AI qua proxy/mô phỏng → lưu trữ), nhãn `{{MOCK_NOTICE}}` nguyên văn, ghi công cụ AI đội dùng (Claude Opus/Sonnet/Haiku/Design cùng Gemini/Antigravity); số lớn: số module hoặc điểm kiểm soát AI.
 9. **Slide 9 — Kiểm thử & Bảo mật:** kết quả `smoke.cjs` (số ca đạt/tổng), quét `scan-secrets.mjs`; **số lớn** "N/M ca đạt".
-10. **Slide 10 — Giá trị đo được & giới hạn:** 3 con số kiểm chứng được, 1 giới hạn nói thẳng, bước tiếp theo.
+10. **Slide 10 — Giả định & cách tính (Kinh tế bắt buộc; Kỹ thuật: Giá trị đo được & giới hạn):** theo khung "Giả định & cách tính" ở trên, kèm 1 giới hạn nói thẳng và bước tiếp theo.
 11. **Slide 11 — Kết (Fluted Glass Navy):** QR tới `{{LINK_DEMO}}`, 1 câu chốt, lời cảm ơn, mời hỏi đáp.
 
-## 4. YÊU CẦU CHO NGƯỜI NÓI (PITCH 10 PHÚT, 3 NGƯỜI)
+### Bản 7 slide (5 phút)
+Diệu Anh: **1** Bìa + bài toán (số nỗi đau lớn) · **2** Giải pháp + UI/UX (ảnh màn chính). Dũng: **3** 5 tính năng + luồng 3 bước · **4** Demo (ca thường, ca sai/biên, mobile 360px; 3 ảnh nhỏ). Nguyên: **5 Giả định & cách tính (bắt buộc Kinh tế)** · **6** Kỹ thuật + kiểm thử + bảo mật + nhãn `{{MOCK_NOTICE}}` · **7** Kết (QR, mời hỏi đáp). Mốc cứng: 00:40 / 01:15 / 01:55 / 02:55 / 03:50 / 04:30 / 04:50.
 
-- **Số slide khớp 10 phút = 11 slide**, ánh xạ người nói: **Diệu Anh** slide 1–3 (bài toán, nỗi đau, UI/UX sơ bộ) · **Vũ Trí Dũng** slide 4–7 (tính năng + demo) · **Nguyên** slide 8–11 (kỹ thuật, tổng kết). Đổi tên người theo `{{NGUOI_1}}`, `{{NGUOI_2}}`, `{{NGUOI_3}}` nếu cần.
+### Bản 5 slide (3 phút)
+Diệu Anh: **1** Bài toán + giải pháp + ảnh màn chính. Dũng: **2** Demo ca thường (1 luồng) · **3** Ca sai + mobile 360px. Nguyên: **4 Giả định & cách tính (bắt buộc Kinh tế, không bao giờ bỏ)** · **5** Kiểm thử + nhãn `{{MOCK_NOTICE}}` + QR + kết. Mốc cứng: 00:40 / 01:20 / 01:45 / 02:25 / 02:50.
+
+Mọi bản: giữ nguyên bộ theme, quy tắc 1 điểm tựa/slide, 3 neo `V · T · S` trong speaker notes. Slide phụ "Dự phòng" (ảnh chụp 5 tính năng) ở cuối, không tính vào số slide.
+
+## 4. YÊU CẦU CHO NGƯỜI NÓI (PITCH `{{PITCH_MINUTES}}` PHÚT, 3 NGƯỜI)
+
+- **Số slide khớp thời lượng:** 10 phút = 11 slide, 5 phút = 7 slide, 3 phút = 5 slide (xem mục 3). Bản 11 slide: **Diệu Anh** slide 1–3 · **Vũ Trí Dũng** slide 4–7 · **Nguyên** slide 8–11 (kỹ thuật, giả định & cách tính, tổng kết). Đổi tên người theo `{{NGUOI_1}}`, `{{NGUOI_2}}`, `{{NGUOI_3}}` nếu cần.
 - **Speaker notes mỗi slide (bắt buộc)** theo đúng khuôn 4 dòng:
   1. `Người nói: <tên>`
   2. `Mốc giờ: <mm:ss–mm:ss> (cứng <mm:ss>)`
@@ -93,7 +116,7 @@ Hãy thiết kế một bộ slide thuyết trình **11 trang (khớp 10 phút) 
 - **KHÔNG đặt tên người nói lên slide** (không name tag ở góc). Giữ slide sạch; tên người chỉ nằm trong speaker notes.
 - **Mỗi slide có đúng 1 điểm tựa thị giác:** hoặc **1 con số lớn** (≥ 120px, `tabular-nums`, màu Navy/Coral) hoặc **1 ảnh chụp app thật**. Con số lớn chính là neo `S` của slide đó; không đặt quá 1 con số to cạnh tranh nhau.
 - Mỗi slide tối đa 3 khối thông tin tương ứng 3 neo; chữ gọn để người nói chỉ cần liếc con số là nhớ ý.
-- Slide 6–7 (demo): khung ảnh app + dòng thao tác ngắn; slide phụ "Dự phòng" ở cuối bộ (ảnh chụp 5 tính năng) không tính vào 11 slide.
+- Slide 6–7 (demo): khung ảnh app + dòng thao tác ngắn; slide phụ "Dự phòng" ở cuối bộ (ảnh chụp 5 tính năng) không tính vào số slide.
 - Xuất kèm PDF dự phòng và ảnh PNG từng slide.
 
 *Lưu ý xuất bản: Giữ đồng nhất header/footer (số trang + tên sản phẩm) ở các slide nội dung, căn lưới thẳng hàng tuyệt đối, và kèm speaker notes theo khuôn ở mục 4.*

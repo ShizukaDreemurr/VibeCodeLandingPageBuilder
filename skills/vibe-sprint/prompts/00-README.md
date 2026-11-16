@@ -12,10 +12,10 @@ Dành cho **coordinator** (Claude điều phối). Mỗi file `NN-*.md` = hướ
 - **Coordinator chỉ điều phối**: viết spec, spawn, merge, chạy test tổng, push. Không tự code feature (trừ sửa xung đột merge / hotfix 1-2 dòng).
 - Mỗi prompt template có dòng header: *"Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, chạy lại test đến khi đạt."*
 
-## CẢNH BÁO: nhãn mô phỏng AI phải chép NGUYÊN VĂN từ đề/BTC
+## Nhãn dữ liệu mẫu/mô phỏng (thể lệ chung kết: ghi rõ, không còn câu cố định; đề đưa câu nào thì nguyên văn)
 
-- Câu `Bản demo vòng loại - Dữ liệu mô phỏng AI` là câu của **vòng loại**. Starter đặt sẵn câu này làm mặc định trong `js/config.js` (`mockNotice`), **chung kết có thể khác, đừng giả định**.
-- Coordinator đọc đề chung kết/thể lệ, tìm câu nhãn BTC yêu cầu và **chép nguyên văn từng chữ, từng dấu** vào biến `{{MOCK_NOTICE}}` của mọi prompt (shell, AI, feature, QA, docs, deck). Chưa tìm thấy/chưa hỏi được: dùng `Dữ liệu mô phỏng AI` và ghi chú "chưa xác nhận wording BTC" trong `docs/DECISIONS.md`.
+- Câu `Bản demo vòng loại - Dữ liệu mô phỏng AI` là câu của **vòng loại** (starter đặt sẵn làm mặc định trong `js/config.js`). Thể lệ chung kết chỉ yêu cầu **nhận diện rõ** dữ liệu mẫu/mô phỏng; coi câu này chỉ là chỗ giữ.
+- Coordinator đọc đề chung kết/thể lệ, tìm câu nhãn BTC yêu cầu và **chép nguyên văn từng chữ, từng dấu** vào biến `{{MOCK_NOTICE}}` của mọi prompt (shell, AI, feature, QA, docs, deck). Đề không đưa câu nào: dùng câu rõ nghĩa của đội (ví dụ `Dữ liệu mẫu/mô phỏng, không phải số liệu thật`) và ghi vào `docs/DECISIONS.md`. **Cấm viết sẵn mã riêng cho đề; mọi agent chỉ dùng khung chung và viết tính năng sau khi đề công bố.**
 - Chỉ **một nơi** được đặt câu này: `mockNotice` trong `js/config.js` (do shell agent sửa). Không ai khác hardcode câu nhãn vào JS/HTML/CSS. Đổi câu thì phải sửa luôn hai dòng assert trong `tests/smoke.cjs` (tìm `Bản demo vòng loại`), README, bảng kiểm thử, slide.
 - Mọi kết quả mock phải hiển thị cạnh nhãn này (dùng `EP.ai.noticeHtml(result)`, chân trang tự hiện khi ở chế độ mock).
 
@@ -108,7 +108,7 @@ Agent phải tự `kill` server của mình khi xong. Test hardcode port khác -
 
 ## Biến chung
 
-`{{DE_SO}}` số đề, `{{DE_TEXT}}` nguyên văn đề, `{{REPO}}` đường dẫn repo tuyệt đối, `{{BRANCH}}` nhánh gốc, `{{PORT}}`, `{{FEATURE_NAME}}`, `{{FEATURE_DESC}}`, `{{ACCEPTANCE}}`, `{{APP_NAME}}`, `{{BRAND_COLORS}}`, `{{SESSION_URL}}`, `{{SCHEMA_CONTRACT}}` (khối Schema Contract dán nguyên văn từ `docs/spec-nhanh.md` mục 0), `{{OWNED_PATHS}}`, `{{COMMIT_MODE}}` (`commit-on-worktree` | `no-commit`), `{{MOCK_NOTICE}}` (câu nhãn mô phỏng chép NGUYÊN VĂN từ đề/BTC, xem cảnh báo ở trên), `{{FEATURE_LIST}}`, `{{DOMAIN}}`, `{{AI_USES}}`, `{{SCHEMAS}}`, `{{QA_SCOPE}}`, `{{POLISH_SCOPE}}`, `{{PITCH_MINUTES}}`, `{{SLIDE_COUNT}}`, `{{LIVE_URL}}`, `{{REPO_URL}}`, `{{TEAM}}`, `{{TRANSCRIPT_PATH}}`, `{{MINUTES}}`, `{{OLD_BRANCH}}`, `{{ACCEPTANCE_MIN}}` (chỉ ở `11-emergency.md`), `{{REPO_SLUG}}`, `{{BRANCH_LIST}}` (chỉ ở `09-merge-deploy.md`).
+`{{DE_SO}}` số đề, `{{DE_TEXT}}` nguyên văn đề, `{{REPO}}` đường dẫn repo tuyệt đối, `{{BRANCH}}` nhánh gốc, `{{PORT}}`, `{{FEATURE_NAME}}`, `{{FEATURE_DESC}}`, `{{ACCEPTANCE}}`, `{{APP_NAME}}`, `{{BRAND_COLORS}}`, `{{SESSION_URL}}`, `{{SCHEMA_CONTRACT}}` (khối Schema Contract dán nguyên văn từ `docs/spec-nhanh.md` mục 0), `{{OWNED_PATHS}}`, `{{COMMIT_MODE}}` (`commit-on-worktree` | `no-commit`), `{{MOCK_NOTICE}}` (câu nhãn mô phỏng chép NGUYÊN VĂN từ đề/BTC, xem cảnh báo ở trên), `{{FEATURE_LIST}}`, `{{DOMAIN}}`, `{{AI_USES}}`, `{{SCHEMAS}}`, `{{QA_SCOPE}}`, `{{POLISH_SCOPE}}`, `{{PITCH_MINUTES}}`, `{{SLIDE_COUNT}}`, `{{LIVE_URL}}`, `{{REPO_URL}}`, `{{TEAM}}`, `{{TRANSCRIPT_PATH}}`, `{{MINUTES}}`, `{{OLD_BRANCH}}`, `{{ACCEPTANCE_MIN}}` (chỉ ở `11-emergency.md`), `{{REPO_SLUG}}`, `{{BRANCH_LIST}}` (chỉ ở `09-merge-deploy.md`), `{{BANG}}`, `{{GIA_DINH}}`, `{{KICH_BAN}}`, `{{HOA_VON}}`, `{{UU_DAI_LO}}` (chỉ ở `12-claude-design-slide.md`; `{{PITCH_MINUTES}}` = 10, 5 hoặc 3 và `{{SLIDE_COUNT}}` = 11, 7 hoặc 5).
 
 ## Khối chuẩn chèn vào mọi prompt (đã có sẵn trong từng file)
 

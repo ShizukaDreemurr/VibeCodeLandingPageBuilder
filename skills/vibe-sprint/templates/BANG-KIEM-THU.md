@@ -11,6 +11,8 @@ Chỉ ghi kết quả đã chạy thật. Ca nào là test tự động, ca nào
 | **A** (Công nghệ) | ≥ 6 ca | 2 ca bình thường · 2 ca đầu vào sai · 2 ca biên hoặc sự cố |
 | **B** (Kinh tế) | ≥ 3 ca | 1 ca bình thường · 1 ca thiếu hoặc sai · 1 ca biên |
 
+Ghi chú chung kết: ca mobile 360px và 390px (TC07, TC08) là bắt buộc, kiểm đủ 5 tiêu chí của thể lệ.
+
 Mẹo: đặt "Loại ca" đúng nhãn ở cột 2 để BTC dò nhanh. Một ca có thể đáp ứng cả Bảng A và Bảng B; ghi chú ở cột "Loại ca" (ví dụ: `Bình thường (A, B)`).
 
 ## Bảng ca kiểm thử
@@ -24,7 +26,12 @@ Mẹo: đặt "Loại ca" đúng nhãn ở cột 2 để BTC dò nhanh. Một ca
 | TC05 | Biên hoặc sự cố (A, B) | <Trùng dữ liệu, ví dụ: đăng ký lại cùng SĐT> | <Báo đã có, không ghi thêm> | <…> | <…> |
 | TC06 | Biên hoặc sự cố (A) | <Hết chỗ, sự kiện đã qua, hoặc AI trả JSON lỗi> | <Chuyển danh sách chờ / hiện "<trạng thái>" / bù bằng bản mô phỏng và báo rõ> | <…> | <…> |
 
-Thêm ca nếu có thời gian (TC07 trở đi), ưu tiên ca liên quan đến luồng chấm điểm chính.
+| TC07 | Mobile 360px | Mở bản online ở rộng 360px (DevTools hoặc điện thoại), đi trọn luồng chính: nhập → kết quả → lưu → xem lại | 5 tiêu chí: không cuộn ngang; nút/ô nhập đủ to, không chồng; chữ đọc được; luồng chính làm xong; tab/điều hướng rõ vị trí | <Ghi đúng điều quan sát được, kèm ảnh `docs/minh-chung-chot/`> | <…> |
+| TC08 | Mobile 390px | Như TC07 ở rộng 390px | Như TC07 | <…> | <…> |
+| TC09 | Dữ liệu mẫu có nhãn (B) | Bấm "<Điền dữ liệu mẫu>" và nạp file BTC (nếu có) | Mọi số mẫu/mô phỏng có nhãn rõ cạnh số | <…> | <…> |
+| TC10 | Giả định và hòa vốn (B) | Đổi 1 giả định ±20%, xem kịch bản, hòa vốn, ưu đãi có lỗ không | Số đổi đúng theo công thức; mẫu số 0 hiện "Không đủ dữ liệu" | <…> | <…> |
+
+Thêm ca nếu có thời gian (TC11 trở đi), ưu tiên ca liên quan đến luồng chấm điểm chính.
 
 ## Kiểm thử tự động (nếu có)
 

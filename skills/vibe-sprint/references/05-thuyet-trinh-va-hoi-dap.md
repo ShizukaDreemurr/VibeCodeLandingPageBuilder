@@ -1,12 +1,20 @@
 # 05 — Thuyết trình, demo trực tiếp và hỏi đáp
 
-Pitch chung kết **10 phút** (xác nhận lại với BTC ngay khi bốc đề; thời lượng khác thì co giãn theo tỉ lệ ở run-sheet) + hỏi đáp. Đội 3 người, **vai cố định**:
+> Thể lệ chung kết: thuyết trình + Q&A diễn ra 14:45–15:45; **thời lượng mỗi đội BTC báo sau, giống nhau cho mọi đội**. **Vòng 1 không có Q&A**; Q&A chỉ ở **vòng phản biện** với đội được chọn, và **Bảng Kinh tế phải trình bày thêm giả định và cách tính nghiệp vụ**. Vì vậy có **ba bản: 10 phút (11 slide), 5 phút (7 slide), 3 phút (5 slide)**, chọn ngay khi BTC báo (`templates/KICH-BAN-DEMO.md` mục 1, 6.1, 6.2). **Bảng Kinh tế: slide/đoạn "Giả định & cách tính" bắt buộc trong cả ba bản** (khung 50 giây ở mục 6.3 của run-sheet: số giả định + nguồn, 3 kịch bản, hòa vốn, ưu đãi có lỗ không, giả định yếu nhất).
+
+| Bản | Slide | Diệu Anh | Dũng | Nguyên | Slide Giả định |
+|---|---|---|---|---|---|
+| 10 phút | 11 | 1–3 (00:00–02:30) | 4–7 (02:30–06:15) | 8–11 (06:15–09:45) | slide 10 |
+| 5 phút | 7 | 1–2 (00:00–01:10) | 3–4 (01:10–02:50) | 5–7 (02:50–04:45) | slide 5 |
+| 3 phút | 5 | 1 (00:00–00:35) | 2–3 (00:35–01:40) | 4–5 (01:40–02:45) | slide 4 |
+
+Phần còn lại của tài liệu này mô tả **bản 10 phút** (co giãn theo tỉ lệ cho bản 5 và 3 phút) + hỏi đáp. Đội 3 người, **vai cố định**:
 
 | Người | Vị trí | Thời lượng | Slide | Phần việc |
 |---|---|---|---|---|
 | Diệu Anh | Đầu | ~2:30–3:00 | 1–3 | bài toán, nỗi đau, giới thiệu sơ bộ UI/UX |
 | Vũ Trí Dũng | Giữa | ~3:30–4:00 | 4–7 | tính năng chính + demo thao tác |
-| Nguyên (trưởng nhóm) | Cuối | ~3:00–3:30 + Q&A | 8–11 | kỹ thuật (kiến trúc, AI/proxy, kiểm thử, bảo mật), tổng kết, phản biện |
+| Nguyên (trưởng nhóm) | Cuối | ~3:00–3:30 + Q&A (nếu vào vòng phản biện) | 8–11 | kỹ thuật (kiến trúc, AI/proxy, kiểm thử, bảo mật), **giả định & cách tính (Kinh tế)**, tổng kết, phản biện |
 
 Nguyên là **neo dự phòng**: nếu hai bạn trước lố giờ, Nguyên rút gọn phần kỹ thuật bằng bản 3:30 / 2:00 / 1:00 (xem `templates/KICH-BAN-DEMO.md` mục 3).
 
@@ -102,6 +110,8 @@ Luật phối hợp:
 - Không hiểu câu hỏi: nhắc lại bằng lời mình ("Em hiểu câu hỏi là … đúng không ạ?") để câu giờ và xác nhận.
 - Nhận giới hạn trước khi bị hỏi; chỉ nói điều đã chạy thật; "chưa làm, sẽ làm như sau…" tốt hơn nói quá. Không nói "AI làm hết".
 
+Bảng Kinh tế: mục F của `HOI-DAP.md` có 10 câu về giả định, hòa vốn, ưu đãi, dự phòng, độ nhạy; Nguyên trả lời phần lớn, Dũng trả lời hòa vốn và ưu đãi.
+
 Các nhóm câu thường gặp (đầy đủ ở `HOI-DAP.md`): cách dùng; nghiệp vụ; dữ liệu thật hay mô phỏng; vòng cải thiện bằng AI (prompt đầu, lỗi, sửa, ví dụ trước/sau thật); giới hạn và mở rộng; bảng A: vì sao vanilla, tách module, số ca test, bảo mật key.
 
 ## Việc cần có trước khi vào phòng
@@ -109,6 +119,7 @@ Các nhóm câu thường gặp (đầy đủ ở `HOI-DAP.md`): cách dùng; ng
 - [ ] Link online mở được trên điện thoại (QR trên slide cuối).
 - [ ] Video dự phòng 30 giây + bản local chạy; ảnh dự phòng trong slide phụ.
 - [ ] In `CUE-CARDS.md` (3 thẻ, mỗi người một thẻ), kiểm tra mốc giờ khớp run-sheet.
-- [ ] Mỗi người thuộc: câu mở, câu chuyền, và con số `S` của slide mình; Nguyên thuộc cả ba bản 3:30 / 2:00 / 1:00.
+- [ ] Mỗi người thuộc: câu mở, câu chuyền, và con số `S` của slide mình; Nguyên thuộc cả ba bản 3:30 / 2:00 / 1:00 và khung "Giả định & cách tính".
+- [ ] Đã tập đủ cả ba bản pitch (10 / 5 / 3 phút) ít nhất 1 lần; biết cách chọn bản trong 10 giây khi BTC báo thời lượng.
 - [ ] Thống nhất hiệu tay (bấm tới / lùi / cắt) và ai giữ clicker.
 - [ ] Tập đủ 2 lần có đồng hồ, trong đó 1 lần cố ý trễ 40 giây để Nguyên tập chọn bản rút gọn.

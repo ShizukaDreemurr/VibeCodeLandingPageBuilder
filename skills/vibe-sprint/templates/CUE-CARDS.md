@@ -1,4 +1,4 @@
-# Thẻ nhắc (Cue Card) in tay: {{TEN_APP}}
+# Thẻ nhắc (Cue Card) in tay: {{TEN_APP}} (bản 10 phút + bản 5 và 3 phút ở cuối)
 
 > Sinh từ `KICH-BAN-DEMO.md` (mục 1). Khi bảng run-sheet đổi thì sửa lại thẻ cho khớp.
 > In khổ A4 rồi cắt đôi/tư thành thẻ cỡ A6 (mỗi người 1 thẻ, bỏ túi áo hoặc cầm tay). Chữ ≥ 14pt, in một mặt, gạch chân con số `S`.
@@ -57,7 +57,7 @@
 |---|---|---|---|---|
 | 8 | 06:15–07:15 | kiến trúc + AI/proxy trong 1 hình | key không lộ + nhãn `{{MOCK_NOTICE}}` | {{SO_MODULE_HOAC_DIEM_AI}} |
 | 9 | 07:15–08:15 | kiểm thử + bảo mật | ca bắt lỗi thật {{CA_BAT_LOI}} | {{SO_CA_DAT}}/{{TONG_CA}}; quét key {{KET_QUA_QUET}} |
-| 10 | 08:15–09:00 | giá trị đo được | 1 giới hạn + bước tiếp | {{SO_GIA_TRI}} |
+| 10 | 08:15–09:00 | **Giả định & cách tính** (Kinh tế bắt buộc): số dựa trên giả định nào | bảng giả định + 3 kịch bản + hòa vốn + ưu đãi có lỗ không; 1 giới hạn | {{SO_HOA_VON}} |
 | 11 | 09:00–09:45 | tổng kết 1 câu | QR + link | {{SO_NHO_NHAT}} |
 
 **Câu chốt (học thuộc):** "Cảm ơn ban giám khảo, đội xin nhận câu hỏi."
@@ -72,3 +72,33 @@
 
 **Q&A:** tự nhận mọi câu không có chủ; câu hỏi cách dùng chuyển Diệu Anh, câu tính năng/demo chuyển Dũng (xem `HOI-DAP.md`).
 **Giữ giờ cho cả đội:** liếc đồng hồ ở mốc 02:30 và 06:15; ra hiệu tay "cắt" cho Diệu Anh/Dũng khi quá mốc cứng.
+
+<div style="page-break-after: always"></div>
+
+## THẺ PHỤ · BẢN 5 PHÚT (7 slide) · cả ba người trên một tờ
+
+Cùng câu mở, câu chuyền mic như bản 10 phút. Hết mốc cứng thì chuyển ngay.
+
+| Người | Slide | Giờ | Neo cần nhớ |
+|---|---|---|---|
+| **Diệu Anh** | 1 Bài toán | 00:00–00:35 | {{NHOM_NGUOI_DUNG}} mất {{VIEC_TON_THOI_GIAN}} · S {{SO_NOI_DAU}} |
+| **Diệu Anh** | 2 Giải pháp + UI | 00:35–01:10 | {{GIAI_PHAP_1_CAU}} · S {{SO_THAO_TAC_HOAN_THANH}} → "gửi **Dũng**" |
+| **Dũng** | 3 Tính năng + luồng | 01:10–01:50 | 5 tính năng · {{QUY_TAC_CHINH}} · "Giờ mình **bấm thật**" |
+| **Dũng** | 4 Demo thường + sai/biên + 360px | 01:50–02:50 | {{THAO_TAC_1}} → {{CA_SAI}} → 360px (≤ 20s mỗi bước) → "nhường **Nguyên**" |
+| **Nguyên** | 5 **Giả định & cách tính** | 02:50–03:45 | giả định có nguồn · 3 kịch bản · hòa vốn {{SO_HOA_VON}} · ưu đãi có lỗ không |
+| **Nguyên** | 6 Kỹ thuật + kiểm thử | 03:45–04:25 | `{{MOCK_NOTICE}}` · key không lộ · {{SO_CA_DAT}}/{{TONG_CA}} |
+| **Nguyên** | 7 Kết | 04:25–04:45 | QR + link · "đội xin nhận câu hỏi" |
+
+<div style="page-break-after: always"></div>
+
+## THẺ PHỤ · BẢN 3 PHÚT (5 slide)
+
+| Người | Slide | Giờ | Neo cần nhớ |
+|---|---|---|---|
+| **Diệu Anh** | 1 Bài toán + giải pháp | 00:00–00:35 | {{NHOM_NGUOI_DUNG}} mất {{VIEC_TON_THOI_GIAN}} · "gửi **Dũng** làm thử ngay" |
+| **Dũng** | 2 Demo thường | 00:35–01:15 | {{THAO_TAC_1}} → {{THAO_TAC_2}} → kết quả · S {{GIAY_PHAN_HOI}} giây |
+| **Dũng** | 3 Ca sai + 360px | 01:15–01:40 | {{CA_SAI}} báo lỗi · thu 360px → "nhường **Nguyên**" |
+| **Nguyên** | 4 **Giả định & cách tính** (không bỏ) | 01:40–02:20 | 3 giả định + nguồn · hòa vốn {{SO_HOA_VON}} · ưu đãi có lỗ không |
+| **Nguyên** | 5 Kiểm thử + kết | 02:20–02:45 | `{{MOCK_NOTICE}}` · {{SO_CA_DAT}}/{{TONG_CA}} · QR · "đội xin nhận câu hỏi" |
+
+**Khung nói "Giả định & cách tính" (Nguyên, ≤ 50 giây, dùng ở cả ba bản):** (1) "Mọi con số đến từ {{SO_GIA_DINH}} giả định, hiện cạnh số, chỉnh được." (2) đọc 3 giả định + nguồn. (3) "Cơ sở lãi {{LAI_CO_SO}}, xấu nhất {{LAI_XAU_NHAT}}; hòa vốn {{SO_HOA_VON}}." (4) "Ưu đãi giữ biên {{BIEN_SAU_UU_DAI}}, lỗ khi {{DIEU_KIEN_LO}}." (5) nói thẳng giả định yếu nhất.

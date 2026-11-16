@@ -19,6 +19,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `products[]`, công thức phí ghi trong app.
 - **Dữ liệu demo gợi ý:** 5 sản phẩm: 2 lỗ, 3 lãi (ví dụ 1 sản phẩm lỗ nặng vì phí sàn + ship, 1 lãi mỏng sát hòa vốn), tên và giá có thật (áo thun 89.000 đ, tai nghe 159.000 đ). Có đủ ca để demo cảnh báo lỗ, biểu đồ có cả cột âm, và AI đề xuất giá tối thiểu cho sản phẩm lỗ.
 - **Bẫy:** đơn vị phần trăm và VND; chia cho 0 khi giá bán = 0; AI đề xuất giá dưới giá vốn.
+- **Giả định cần nêu (Bảng Kinh tế):** Phí sàn (%) lấy từ biểu phí công khai của sàn (ghi nguồn + ngày); phí ship trung bình theo đơn; tỉ lệ hoàn/hủy 3-8%; chi phí quảng cáo/đơn; giá vốn do shop cung cấp. 3 kịch bản: phí sàn +2 điểm %, ship +20%, giá bán -10%.
+- **Cơ chế ưu đãi thực tế:** Giảm giá/voucher chỉ an toàn khi biên sau ưu đãi còn > 0: giá sàn = (giá vốn + ship + QC) / (1 - phí sàn% - biên tối thiểu%). Hiện dòng 'ưu đãi tối đa không lỗ' cho từng sản phẩm; freeship chỉ khi đơn vượt ngưỡng.
 
 ## 2. Quản lý tồn kho và cảnh báo hết hàng
 
@@ -33,6 +35,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `skus[]`, `movements[]` (ngày, loại nhập/bán, số lượng).
 - **Dữ liệu demo gợi ý:** 6 SKU: 2 sắp hết (dưới ngưỡng), 1 tồn lâu không bán, 3 bình thường; 14 ngày lịch sử nhập/bán, trong đó 1 SKU mới chỉ có 3 ngày dữ liệu (để demo ca chưa đủ 7 ngày) và 1 SKU suýt âm tồn.
 - **Bẫy:** tồn âm khi nhập bán nhiều hơn tồn; đơn vị ngày khi chưa đủ 7 ngày dữ liệu; trùng SKU.
+- **Giả định cần nêu (Bảng Kinh tế):** Tốc độ bán lấy từ 7 ngày gần nhất (ghi rõ nếu < 7 ngày); thời gian giao hàng của nhà cung cấp (lead time); tồn an toàn = số ngày cover do đội chọn; vốn bị khóa = tồn × giá vốn. Kịch bản: bán nhanh +30%, lead time +3 ngày.
+- **Cơ chế ưu đãi thực tế:** Xả hàng tồn lâu: giảm giá theo bậc, dừng ở mức giá vốn + chi phí lưu kho; so lỗ khi giữ tồn (vốn chết) với lỗ khi giảm sâu. Combo hàng chậm + hàng chạy chỉ khi biên gộp > 0.
 
 ## 3. Phân loại và phản hồi đánh giá khách hàng
 
@@ -47,6 +51,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `reviews[]` (nội dung, sao, nhãn AI, nhãn người sửa).
 - **Dữ liệu demo gợi ý:** 12 đánh giá: 5 tích cực, 4 tiêu cực (giao chậm, chất lượng, giá), 3 trung tính; có 1 đánh giá không dấu, 1 đánh giá mâu thuẫn (5 sao nhưng chê), 1 đánh giá rất ngắn ("ok").
 - **Bẫy:** AI trả nhãn ngoài danh sách; đánh giá tiếng Việt không dấu; câu trả lời hứa hẹn quá mức (hoàn tiền, đổi hàng không có chính sách thật).
+- **Giả định cần nêu (Bảng Kinh tế):** Chi phí xử lý 1 đánh giá thủ công (phút × lương giờ); tỉ lệ tiêu cực hiện tại; ước tính doanh thu giữ được khi phản hồi nhanh (ghi là giả định, nêu cách ước tính). Kịch bản: tỉ lệ tiêu cực +5 điểm %.
+- **Cơ chế ưu đãi thực tế:** Quà xin lỗi/hoàn tiền cho khách tiêu cực: chi phí mỗi ca so với giá trị vòng đời khách giữ lại; đặt trần hoàn tiền theo biên đơn. Không hứa chính sách đổi/hoàn mà shop chưa có.
 
 ## 4. Chatbot tra cứu đơn hàng và chính sách
 
@@ -61,6 +67,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `orders[]` mẫu, `faq[]`, `tickets[]`.
 - **Dữ liệu demo gợi ý:** 5 đơn mẫu: 2 đã giao, 1 đang giao, 1 chờ xác nhận, 1 đã hủy; 6 câu FAQ (đổi trả, ship, giờ làm việc, thanh toán, bảo hành, hủy đơn); 2 câu hỏi demo biết trước là chatbot không trả lời được để bật luồng để lại lời nhắn.
 - **Bẫy:** chatbot tự "biết" đơn mà không khớp mã; số điện thoại trong tra cứu phải che bớt khi hiển thị; khớp từ khóa không bỏ dấu.
+- **Giả định cần nêu (Bảng Kinh tế):** Số câu hỏi lặp mỗi ngày; thời gian trả lời thủ công mỗi câu; tỉ lệ chatbot tự giải quyết (giả định, chưa đo thật); lương giờ nhân viên CSKH. Kịch bản: tỉ lệ tự giải quyết 40/60/80%.
+- **Cơ chế ưu đãi thực tế:** Ưu đãi bồi thường chậm đơn (voucher nhỏ) chỉ dùng cho đơn trễ thật; tính chi phí voucher so với chi phí mất khách. Có trần số voucher mỗi tháng.
 
 ## 5. Viết mô tả sản phẩm cho sàn thương mại điện tử
 
@@ -75,6 +83,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `drafts[]`, bảng giới hạn ký tự theo sàn (ghi trong app).
 - **Dữ liệu demo gợi ý:** 4 sản phẩm thuộc 2 nhóm (thời trang, đồ gia dụng) và 2 sàn đích có giới hạn ký tự khác nhau; 1 sản phẩm cố tình thiếu thông số để demo chỗ AI đánh dấu "cần xác nhận", 1 sản phẩm có tên rất dài để demo cảnh báo vượt giới hạn.
 - **Bẫy:** AI thêm thông số không có trong đầu vào; vượt giới hạn sau khi copy; từ khóa lặp.
+- **Giả định cần nêu (Bảng Kinh tế):** Số sản phẩm cần viết mô tả; phút/mô tả khi làm tay; chi phí gọi AI mỗi mô tả (hoặc 0 khi dùng mô phỏng, nói rõ); tỉ lệ cần sửa tay sau AI. Kịch bản: tỉ lệ sửa tay 20/40/60%.
+- **Cơ chế ưu đãi thực tế:** Ưu đãi gói 'viết mô tả hàng loạt' (nếu có): giá/mô tả giảm theo bậc nhưng giữ biên > chi phí AI + công kiểm duyệt; ghi điểm hòa vốn theo số mô tả/tháng.
 
 ## 6. Phân khúc khách hàng và soạn tin khuyến mãi
 
@@ -89,6 +99,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `customers[]`, `segments` (ngưỡng), `campaigns[]`.
 - **Dữ liệu demo gợi ý:** 15 khách: 5 mới (1 lần mua), 5 trung thành (từ 4 lần, chi tiêu cao), 5 lâu không quay lại (trên 90 ngày); 1 cặp khách trùng SĐT và 1 khách thiếu ngày mua để demo kiểm tra dữ liệu.
 - **Bẫy:** ngày mua không đúng định dạng; khách có SĐT trùng; tin vượt giới hạn SMS (70 ký tự có dấu) — cần đếm đúng.
+- **Giả định cần nêu (Bảng Kinh tế):** Đơn giá SMS/Zalo (nhà mạng, ghi nguồn); tỉ lệ phản hồi/chuyển đổi theo nhóm (giả định, cho khoảng min-max); giá trị đơn trung bình; biên sau ưu đãi. Kịch bản: chuyển đổi 1/3/5%.
+- **Cơ chế ưu đãi thực tế:** Mã giảm cho nhóm 'lâu không quay lại': tính chi phí = số khách nhận × tỉ lệ dùng × mức giảm; so với biên đơn quay lại. Kiểm ưu đãi có lỗ không và số tin gửi hòa vốn (chi phí tin / biên mỗi đơn).
 
 ## 7. Chấm điểm lead và kịch bản chốt sales
 
@@ -103,6 +115,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `leads[]`, `weights`, `status`.
 - **Dữ liệu demo gợi ý:** 8 lead: 2 nóng (điểm từ 80), 3 ấm, 2 lạnh, 1 thiếu trường (điểm chưa đủ dữ liệu); 1 cặp lead trùng số điện thoại; trọng số mặc định cộng đúng 100.
 - **Bẫy:** điểm không cộng đúng 100 khi thiếu trường; lead trùng số điện thoại; kịch bản có lời hứa không đúng sản phẩm.
+- **Giả định cần nêu (Bảng Kinh tế):** Tỉ lệ chốt theo nhóm nóng/ấm/lạnh (giả định có khoảng); thời gian gọi mỗi lead; giá trị hợp đồng trung bình; chi phí mua lead. Kịch bản: tỉ lệ chốt -30%, chi phí lead +20%.
+- **Cơ chế ưu đãi thực tế:** Chiết khấu để chốt lead nóng: chỉ khi biên sau chiết khấu > chi phí mua + công sales; đặt trần chiết khấu theo nhóm. Hoa hồng sales (nếu có) tính vào biên.
 
 ## 8. Landing page flash sale với mã giảm giá và đếm ngược
 
@@ -117,6 +131,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `sale`, `coupons[]`, `orders[]`.
 - **Dữ liệu demo gợi ý:** 1 đợt sale 48 giờ, 3 mã giảm (1 còn hạn, 1 hết lượt dùng, 1 hết hạn), tồn kho 5 sản phẩm trong đó 1 chỉ còn 2 suất để demo ca hết chỗ khi hai người đặt cùng lúc; đồng hồ đếm ngược theo giờ Việt Nam.
 - **Bẫy:** "số lượng còn lại" phải phản ánh thật (không đếm ngược giả, theo quy tắc BTC ở đề 8 vòng 1); đặt hai lần làm âm tồn; múi giờ đếm ngược.
+- **Giả định cần nêu (Bảng Kinh tế):** Số lượng sale có hạn (thật, không đếm ngược giả); giá gốc, giá vốn, giá sale; tỉ lệ dùng mã; chi phí quảng cáo cho đợt. Kịch bản: bán hết 50/80/100% số lượng; QC +30%.
+- **Cơ chế ưu đãi thực tế:** Điểm hòa vốn của đợt flash sale = (chi phí QC + cố định) / (giá sale - giá vốn - phí); cảnh báo khi giá sale thấp hơn giá vốn + phí; mã giảm cộng dồn không được đẩy biên âm; mỗi mã có hạn lượt dùng.
 
 ## 9. Giỏ hàng và checkout tính phí ship và voucher
 
@@ -131,6 +147,8 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `products[]`, `vouchers[]`, `shippingZones`, `orders[]`.
 - **Dữ liệu demo gợi ý:** 6 sản phẩm, 3 voucher (1 phần trăm, 1 trừ thẳng, 1 vượt tổng đơn để demo chặn âm tiền), 3 vùng ship (nội thành, ngoại thành, tỉnh); 1 giỏ mẫu có tổng lẻ để kiểm tra làm tròn VND.
 - **Bẫy:** làm tròn VND; voucher cộng dồn; giảm giá vượt tổng đơn (âm tiền); làm mới trang mất giỏ.
+- **Giả định cần nêu (Bảng Kinh tế):** Bảng phí ship theo vùng (đội đặt, ghi nguồn tham khảo hãng ship); ngưỡng freeship; điều kiện voucher; giá vốn; tỉ lệ bỏ giỏ hiện tại. Kịch bản: ship thực +15%, tỉ lệ dùng voucher +10 điểm %.
+- **Cơ chế ưu đãi thực tế:** Freeship + voucher: đơn nhỏ vừa freeship vừa giảm có thể lỗ; kiểm biên từng đơn mẫu, cảnh báo đơn lỗ; ngưỡng freeship phải ≥ giá trị đơn mà biên còn dương sau ship. Voucher không cộng dồn hoặc có trần giảm.
 
 ## 10. Lịch nội dung và kế hoạch chiến dịch đa kênh
 
@@ -145,10 +163,14 @@ Hướng chung dự đoán: thương mại điện tử và kinh doanh, theo cá
 - **Dữ liệu:** `campaigns[]`, `posts[]` (ngày, kênh, trạng thái).
 - **Dữ liệu demo gợi ý:** 3 chiến dịch trên 4 kênh, 12 bài trải 4 tuần: 3 đã đăng, 2 quá hạn (tô màu), 7 chờ duyệt; 1 cặp bài trùng ngày cùng kênh và 1 chiến dịch bắt đầu 28/2 để demo ngày cuối tháng.
 - **Bẫy:** ngày không tồn tại (30/2); múi giờ khi xuất ICS; bài trùng ngày trên cùng kênh; lịch không đủ 4 tuần.
+- **Giả định cần nêu (Bảng Kinh tế):** Ngân sách mỗi kênh và giá mỗi lượt tiếp cận/click (giả định, ghi khoảng); tỉ lệ chuyển đổi mỗi kênh; giá trị đơn trung bình; tần suất đăng. Không hứa hiệu quả, chỉ ước tính theo kịch bản. Kịch bản: CPC +20%, chuyển đổi -30%.
+- **Cơ chế ưu đãi thực tế:** Ưu đãi theo kênh (mã riêng cho TikTok/Facebook/email): mỗi mã tính chi phí trên đơn so với biên; kênh có ROI < 1 ở kịch bản cơ sở thì đề xuất giảm ngân sách; ghi điểm hòa vốn ngân sách chiến dịch.
 
 ---
 
 ## Cách dùng để tập
+
+- **Luật chung kết:** thể lệ **cấm chuẩn bị sẵn tính năng cho đề**. Các hướng này chỉ để luyện phản xạ; không chép code/dữ liệu từ bài luyện sang bài thi. Với mỗi hướng, tập nêu **Giả định cần nêu** và **Cơ chế ưu đãi thực tế** (đáng 49/100 điểm Bảng Kinh tế: mô hình 22 + giả định/dự phòng 17 + cơ chế 10), dùng `EP.scenario`/`references/11-mo-hinh-kinh-doanh.md`.
 
 - Mỗi thành viên bốc một hướng ngẫu nhiên, dựng MVP 45 phút theo mẫu vòng 1.
 - Chốt 5 tính năng trước, ghi vào README, rồi mới bắt đầu code.

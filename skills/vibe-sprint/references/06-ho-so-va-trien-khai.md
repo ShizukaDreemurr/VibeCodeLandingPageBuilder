@@ -39,6 +39,10 @@ git add -A && git commit -m "..." && git push -u origin <nhánh>
 - Rules mới phải **Publish lên dự án thật** thì tính năng mới chạy trên web; ghi vào danh sách việc người dùng phải tự làm (đánh số).
 - Môi trường agent thường không có emulator/quyền Firebase: điều phối viên chạy test Firebase ở máy có Java sau merge và báo phần chưa chạy.
 
+## Bộ 4 món nộp lúc phút 60 (thể lệ chung kết)
+
+(1) link demo/cách mở (online bắt buộc) · (2) mã nguồn khớp bản demo · (3) README (cài chạy, công nghệ, dữ liệu mẫu/tài khoản, khai báo khung chuẩn bị trước) · (4) minh chứng tại thời điểm chốt: ảnh/quay màn hình + hash commit, làm ở T+50–55 và lưu `docs/minh-chung-chot/`. Nộp ở T+55–60, **không push thêm** sau đó. Chi tiết `references/00`.
+
 ## Hồ sơ nhanh (điền từ `templates/`)
 
 | Hồ sơ | Làm thế nào trong ~5 phút | Ai |
@@ -73,8 +77,9 @@ Kết quả phải rỗng (trừ `js/firebase-config.js` công khai có chủ ý
 - [ ] Test xanh (kết quả thật) trên bản đã merge.
 - [ ] `node scripts/scan-secrets.mjs .` sạch.
 - [ ] `node tools/bump-version.cjs` đã chạy (phiên bản + `?v=`); link online mở ở ẩn danh, đúng phiên bản.
-- [ ] Mobile 390px không tràn ngang; sáng/tối ổn.
-- [ ] Nhãn mô phỏng đúng **nguyên văn đề/BTC** (từng chữ, từng dấu; không mặc định câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI`), khớp ở `js/config.js`, README, bảng kiểm thử, slide và `tests/smoke.cjs`.
+- [ ] Mobile **360 và 390px** đủ 5 tiêu chí (không tràn, nút to, chữ đọc được, luồng chính làm được, điều hướng rõ); sáng/tối ổn.
+- [ ] Dữ liệu/AI mô phỏng có nhãn rõ (câu đề đưa thì nguyên văn; không có thì câu rõ nghĩa của đội), khớp ở `js/config.js`, README, bảng kiểm thử, slide và `tests/smoke.cjs`.
+- [ ] README khai báo khung vibe-sprint chuẩn bị trước, tính năng theo đề làm trong giờ thi.
 - [ ] README + bảng kiểm thử + minh chứng đủ; không key.
 - [ ] Video/bản local/ảnh dự phòng sẵn sàng.
 
