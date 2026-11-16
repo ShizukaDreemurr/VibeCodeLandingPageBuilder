@@ -241,7 +241,7 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ candidates: [{ content: { parts: [{ text: '```json\n{"title":"T","summary":"S","tags":["a","b","c"],"priority":9}\n```' }] } }] }) });
     });
     const spec = { prompt: 'x', schema: { type: 'object', props: { title: { type: 'string' }, summary: { type: 'string' }, tags: { type: 'array', min: 3, max: 3 }, priority: { type: 'number', min: 1, max: 5 } } }, mock: () => ({ title: 'M', summary: 'M', tags: ['1', '2', '3'], priority: 1 }) };
-    const res = await page.evaluate((s) => { return EP.ai.generate(Object.assign({}, s, { schema: JSON.parse(JSON.stringify(s.schema)) }), { mode: 'gemini', key: 'TESTKEY', instant: true }).then((r) => ({ mode: r.mode, model: r.model, p: r.data.priority, w: r.warnings })); }, { schema: spec.schema });
+    const res = await page.evaluate((s) => { EP.config.ai = { proxyUrl: '', appToken: '' }; return EP.ai.generate(Object.assign({}, s, { schema: JSON.parse(JSON.stringify(s.schema)) }), { mode: 'gemini', key: 'TESTKEY', instant: true }).then((r) => ({ mode: r.mode, model: r.model, p: r.data.priority, w: r.warnings })); }, { schema: spec.schema });
     return { res, calls, models };
   })().catch((e) => ({ err: String(e) }));
   ok('Gemini: sai định dạng được thử lại + clamp schema', gem.res && gem.res.mode === 'gemini' && gem.res.p === 5, gem);
@@ -300,7 +300,10 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
   }
 
   console.log('# Cài đặt: AI + dữ liệu');
-  await page.goto(URL + '#/settings'); await page.waitForSelector('#ai-key');
+  await page.goto(URL + '#/settings');
+  await page.waitForSelector('#set-ai');
+  await page.evaluate(() => { EP.config.ai = { proxyUrl: '', appToken: '' }; EP.ai.mountSettings(document.querySelector('#set-ai')); });
+  await page.waitForSelector('#ai-key');
   await page.fill('#ai-key', 'abc');
   ok('key không lưu localStorage khi chưa tick nhớ', await page.evaluate((p) => localStorage.getItem(p + 'ai_key') === null, CFG.prefix));
   await page.check('#ai-remember');

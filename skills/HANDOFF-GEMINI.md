@@ -13,7 +13,8 @@
    - Cập nhật mục lục `Tài liệu & script` trong `skills/gh-pages-deploy/SKILL.md`.
 2. `ee08335`..`7b013eb` — Tạo và cập nhật `skills/HANDOFF-GEMINI.md` trên `ag/tam-thoi`.
 3. `cf3fb32` — `proxy: compare ALLOWED_ORIGINS case-insensitively in worker.js` (sửa lỗi `403 Forbidden` khi trình duyệt gửi `Origin: https://shizukadreemurr.github.io` viết thường).
-4. Commit kế tiếp — `starter: set gemini-4-hydrogen as default model in ai.js and smoke.cjs`.
+4. `c31aaf3` — `starter: set gemini-4-hydrogen as default model in ai.js and smoke.cjs`.
+5. Commit kế tiếp — `starter: pre-fill proxyUrl in config.js and update smoke.cjs` (đã test `smoke.cjs` -> `TẤT CẢ ĐẠT`).
 
 ---
 
