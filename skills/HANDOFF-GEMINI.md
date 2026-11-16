@@ -23,7 +23,7 @@
 - `node skills/vibe-sprint/scripts/scan-secrets.mjs skills`: sẽ chạy ngay trước khi push `ag/tam-thoi`.
 
 ### Chưa test (cần Nguyên thao tác / xác nhận)
-- **Cloudflare Worker Proxy (`skills/vibe-sprint/proxy/`):** Chưa chạy `npx wrangler login`, `npx wrangler secret put GEMINI_API_KEY`, `npx wrangler deploy` (cần Nguyên tự đăng nhập Cloudflare và tự nhập key vào terminal).
+- **Cloudflare Worker Proxy (`skills/vibe-sprint/proxy/`):** Nguyên đã đăng nhập Cloudflare, nạp secret và deploy thành công lên `https://vibe-gemini-proxy.xclipse.workers.dev`. Cần kiểm tra mở `https://vibe-gemini-proxy.xclipse.workers.dev/health` trên trình duyệt (`{"ok":true}`) và test gắn `proxyUrl` vào `starter/js/config.js` (nếu chuỗi secret cũ từng lộ lên chat thì nhớ thu hồi và `wrangler secret put GEMINI_API_KEY` lại bằng key mới).
 - **Deploy GitHub Pages thật (`skills/gh-pages-deploy`):** Chưa tạo repo nháp để chạy thử đẩy + bật Pages + `verify-pages.sh` vì quy tắc mục 6 của `gh-pages-deploy` yêu cầu hỏi xác nhận trước khi tạo repo public.
 - **Thiết lập Firebase thật (`skills/firebase-setup`):** Chưa chạy thử với tài khoản Google rảnh (cần Nguyên tự đăng nhập Google / Firebase Console).
 
@@ -35,5 +35,5 @@
 ---
 
 ## 4. Câu hỏi cần Nguyên hoặc Claude quyết
-1. **Nguyên:** Bạn có muốn mở terminal làm 5 bước đẩy proxy lên Cloudflare (`skills/vibe-sprint/proxy/README.md`) luôn bây giờ không?
+1. **Claude / Nguyên:** Có muốn điền sẵn `proxyUrl: 'https://vibe-gemini-proxy.xclipse.workers.dev'` vào `starter/js/config.js` (hoặc chỉ bật lúc thi) không?
 2. **Nguyên:** Bạn có đồng ý cho tạo 1 repo GitHub **public** nháp (ví dụ `xclipse-pages-test` — ai cũng xem được code) để Antigravity chạy test thật trọn luồng `gh-pages-deploy` không?
