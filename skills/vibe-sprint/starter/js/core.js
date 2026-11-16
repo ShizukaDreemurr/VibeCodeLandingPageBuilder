@@ -134,7 +134,7 @@
   function themeStore(mode) {
     try { if (mode === 'system') localStorage.removeItem(cfg.prefix + 'theme'); else localStorage.setItem(cfg.prefix + 'theme', mode); } catch (e) { /* bỏ qua */ }
   }
-  var themeBusy = false, THEME_MS = 480, THEME_EASE = 'cubic-bezier(.2,.8,.2,1)';
+  var themeBusy = false, THEME_MS = 650, THEME_EASE = 'cubic-bezier(.45,0,.25,1)';
   function themeSet(mode, origin) {
     if (mode !== 'light' && mode !== 'dark') mode = 'system';
     var de = doc.documentElement;
