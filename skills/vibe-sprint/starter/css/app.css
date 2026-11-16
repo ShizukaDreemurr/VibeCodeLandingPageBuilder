@@ -37,7 +37,12 @@
   ::view-transition-old(root), ::view-transition-new(root) { animation-duration: var(--dur-3); animation-timing-function: var(--ease-out); }
   html[data-vt="theme"]::view-transition-old(root), html[data-vt="theme"]::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
   html[data-vt="theme"]::view-transition-old(root) { z-index: 1; }
-  html[data-vt="theme"]::view-transition-new(root) { z-index: 2; }
+  html[data-vt="theme"]::view-transition-new(root) { z-index: 2; will-change: clip-path; }
+  /* Đang đổi giao diện: tắt transition từng phần tử (tránh đấu với snapshot) và làm phẳng backdrop-filter (chụp snapshot rẻ hơn nhiều) */
+  html[data-vt="theme"] *, html[data-vt="theme"] *::before, html[data-vt="theme"] *::after { transition: none !important; }
+  html[data-vt="theme"] .topbar, html[data-vt="theme"] .hero-flute, html[data-vt="theme"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  /* Trình duyệt không có View Transition: mờ chéo màu 200ms */
+  html[data-vt="fade"] *, html[data-vt="fade"] *::before, html[data-vt="fade"] *::after { transition: background-color .2s linear, color .2s linear, border-color .2s linear, fill .2s linear, stroke .2s linear !important; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
     ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }

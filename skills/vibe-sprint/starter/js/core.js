@@ -123,18 +123,29 @@
   var THEME_NEXT = { system: 'light', light: 'dark', dark: 'system' };
   function themeGet() { var t = doc.documentElement.getAttribute('data-theme'); return t === 'light' || t === 'dark' ? t : 'system'; }
   function themeIsDark() { var m = themeGet(); return m === 'dark' || (m === 'system' && root.matchMedia && root.matchMedia('(prefers-color-scheme: dark)').matches); }
-  function themeApply(m) {
+  /* Gọn nhất có thể trong callback của View Transition: chỉ đổi thuộc tính + nhãn nút. Lưu trữ và phát sự kiện dời ra sau. */
+  function themeApply(m, quiet) {
     var de = doc.documentElement;
     if (m === 'system') de.removeAttribute('data-theme'); else de.setAttribute('data-theme', m);
     var b = doc.getElementById('btn-theme');
     if (b) { b.dataset.mode = m; var t = 'Giao diện: ' + THEME_L[m]; b.title = t; b.setAttribute('aria-label', t + '. Bấm để đổi'); }
-    EP.bus.emit('theme', m);
+    if (!quiet) EP.bus.emit('theme', m);
   }
+  function themeStore(mode) {
+    try { if (mode === 'system') localStorage.removeItem(cfg.prefix + 'theme'); else localStorage.setItem(cfg.prefix + 'theme', mode); } catch (e) { /* bỏ qua */ }
+  }
+  var themeBusy = false, THEME_MS = 480, THEME_EASE = 'cubic-bezier(.2,.8,.2,1)';
   function themeSet(mode, origin) {
     if (mode !== 'light' && mode !== 'dark') mode = 'system';
-    try { if (mode === 'system') localStorage.removeItem(cfg.prefix + 'theme'); else localStorage.setItem(cfg.prefix + 'theme', mode); } catch (e) { /* bỏ qua */ }
     var de = doc.documentElement;
-    if (!doc.startViewTransition || EP.reduced()) { themeApply(mode); return; }
+    if (themeBusy) { EP.bus.emit('theme', themeGet()); return; } /* bấm dồn: bỏ qua khi đang chạy, đồng bộ lại nút chọn */
+    if (EP.reduced()) { themeStore(mode); themeApply(mode); return; }
+    if (!doc.startViewTransition) { /* trình duyệt cũ: mờ chéo màu 200ms */
+      de.setAttribute('data-vt', 'fade'); themeBusy = true;
+      themeStore(mode); themeApply(mode);
+      setTimeout(function () { themeBusy = false; if (de.getAttribute('data-vt') === 'fade') de.removeAttribute('data-vt'); }, 260);
+      return;
+    }
     if (activeVT) { try { activeVT.skipTransition(); } catch (e) { /* bỏ qua */ } activeVT = null; }
     var vv = root.visualViewport, r = origin && origin.getBoundingClientRect ? origin.getBoundingClientRect() : null;
     var w = Math.max(root.innerWidth || 0, de.clientWidth || 0, vv ? vv.width + vv.offsetLeft : 0);
@@ -142,15 +153,23 @@
     var hasR = r && (r.width || r.height);
     var x = hasR ? r.left + r.width / 2 : w / 2, y = hasR ? r.top + r.height / 2 : 0;
     var rad = Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y))) + 2;
+    themeStore(mode); /* ghi sớm (vài micro giây) để tải lại giữa chừng vẫn nhớ */
     de.setAttribute('data-vt', 'theme');
-    var t;
-    var done = function () { if (activeVT === t) activeVT = null; if (!activeVT) de.removeAttribute('data-vt'); };
-    try { t = doc.startViewTransition(function () { themeApply(mode); }); } catch (e) { activeVT = null; de.removeAttribute('data-vt'); themeApply(mode); return; }
+    themeBusy = true;
+    var t, finished = false;
+    var done = function () {
+      if (finished) return; finished = true; themeBusy = false;
+      if (activeVT === t) activeVT = null;
+      if (!activeVT) de.removeAttribute('data-vt');
+      /* việc nặng chạy sau khi hoạt ảnh xong, không chen vào khung hình */
+      root.requestAnimationFrame(function () { EP.bus.emit('theme', mode); });
+    };
+    try { t = doc.startViewTransition(function () { themeApply(mode, true); }); } catch (e) { activeVT = null; themeBusy = false; de.removeAttribute('data-vt'); themeApply(mode); return; }
     activeVT = t;
     t.ready.then(function () {
       try {
         de.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + rad + 'px at ' + x + 'px ' + y + 'px)'] },
-          { duration: 550, easing: 'ease-in-out', fill: 'both', pseudoElement: '::view-transition-new(root)' });
+          { duration: THEME_MS, easing: THEME_EASE, fill: 'both', pseudoElement: '::view-transition-new(root)' });
       } catch (e) { /* bỏ qua */ }
     }, function () { /* bị bỏ qua */ });
     t.finished.then(done, done);
