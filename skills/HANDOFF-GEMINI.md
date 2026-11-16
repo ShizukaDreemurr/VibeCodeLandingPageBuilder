@@ -22,10 +22,10 @@
 - `node skills/firebase-setup/scripts/check-firebase-config.mjs skills/vibe-sprint/starter`: chạy đúng, xác nhận `firestore.rules` đạt và báo đúng 4 trường config trống khi Firebase đang tắt.
 - `node skills/vibe-sprint/scripts/scan-secrets.mjs skills`: đạt (`114 tệp, Lộ: 0`).
 - **Cloudflare Worker Proxy (`https://vibe-gemini-proxy.xclipse.workers.dev/health`):** Nguyên đã deploy và kiểm tra `/health` trả về `{"ok":true}`.
+- **Deploy GitHub Pages thật (`skills/gh-pages-deploy`):** Đã chạy thử trọn luồng trên repo public nháp `ShizukaDreemurr/xclipse-pages-test` (nhánh `main`, bật `data-hero="fluted"` và `proxyUrl: 'https://vibe-gemini-proxy.xclipse.workers.dev'`): `preflight.sh` đạt (`0 loi, 0 canh bao`), `gh api` bật Pages thành công, `pages/builds/latest` trả về `status: "built"`, `error: null` tại `https://shizukadreemurr.github.io/xclipse-pages-test/`.
 
 ### Chưa test (cần Nguyên thao tác / xác nhận)
-- **Gọi Gemini qua Proxy từ trình duyệt (`proxyUrl`):** Chưa test gắn `proxyUrl: 'https://vibe-gemini-proxy.xclipse.workers.dev'` vào `starter/js/config.js` để gọi thật từ `https://ShizukaDreemurr.github.io` hoặc `http://localhost:8216` (lưu ý nếu secret cũ từng lộ lên chat thì nhớ thu hồi và `wrangler secret put GEMINI_API_KEY` lại bằng key mới).
-- **Deploy GitHub Pages thật (`skills/gh-pages-deploy`):** Chưa tạo repo nháp để chạy thử đẩy + bật Pages + `verify-pages.sh` vì quy tắc mục 6 của `gh-pages-deploy` yêu cầu hỏi xác nhận trước khi tạo repo public.
+- **Gọi Gemini qua Proxy từ trình duyệt (`https://shizukadreemurr.github.io/xclipse-pages-test/`):** Cần Nguyên mở link sống vừa deploy và bấm thử nút AI ở tab Mục (không cần nhập key) để xác nhận Worker trả kết quả thật về UI.
 - **Thiết lập Firebase thật (`skills/firebase-setup`):** Chưa chạy thử với tài khoản Google rảnh (cần Nguyên tự đăng nhập Google / Firebase Console).
 
 ---
