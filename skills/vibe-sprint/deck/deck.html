@@ -83,6 +83,82 @@ h2.title strong,.s-solution .one strong{font-weight:800;background:var(--grad);-
 .frame.phone{border-radius:44px;border:10px solid var(--ink)}
 .frame.phone .bar{display:none}
 
+/* ---------- Khung điện thoại (ảnh chụp DỌC 9:19,5 — 390x844@3x hoặc 1170x2532) ----------
+   Đặt chiều cao ngoài bằng --ph; chiều rộng tự suy ra để vùng màn hình đúng tỉ lệ 9:19,5, ảnh object-fit:cover, bám mép trên. */
+.pf{--bz:12px;position:relative;flex:none;height:var(--ph,800px);width:calc((var(--ph,800px) - 2*var(--bz)) * 9 / 19.5 + 2*var(--bz));padding:var(--bz);border-radius:58px;
+  background:linear-gradient(155deg,#34313F 0%,#16151B 38%,#0E0D12 100%);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 38%,#16151B),0 1px 0 1px rgba(255,255,255,.14) inset,0 60px 80px -40px rgba(22,21,27,.55),0 22px 40px -22px color-mix(in srgb,var(--accent) 45%,transparent)}
+.pf::before,.pf::after{content:"";position:absolute;width:5px;border-radius:3px;background:#2A2833}
+.pf::before{left:-5px;top:19%;height:52px;box-shadow:0 78px 0 #2A2833}
+.pf::after{right:-5px;top:26%;height:96px}
+.pf-screen{position:relative;width:100%;height:100%;border-radius:calc(58px - var(--bz));overflow:hidden;background:linear-gradient(160deg,#ECE9FD,#DCEBFA)}
+.pf-screen{--sb:46px;--sbg:#F6F5FB;--sbf:#16151B}
+.pf-screen.dk{--sbg:#0E0D12;--sbf:#E9E7F2}
+.pf-screen::before{content:"";position:absolute;left:0;right:0;top:0;height:var(--sb);background:var(--sbg);z-index:1}
+.pf-sb{position:absolute;left:0;right:0;top:0;height:var(--sb);z-index:2;display:flex;align-items:center;justify-content:space-between;padding:6px 8% 0;font:700 17px/1 var(--font);color:var(--sbf)}
+.pf-sb i{display:inline-block;width:26px;height:12px;border-radius:4px;border:2px solid var(--sbf);position:relative;opacity:.8}
+.pf-sb i::after{content:"";position:absolute;inset:1px 5px 1px 1px;background:var(--sbf);border-radius:1px}
+.pf-screen img{position:absolute;left:0;right:0;bottom:0;top:var(--sb);width:100%;height:calc(100% - var(--sb));object-fit:cover;object-position:top center;display:block}
+.pf-screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.pf-screen.missing::after{content:attr(data-missing);position:absolute;inset:0;display:grid;place-items:center;font:600 22px/1.4 var(--mono);color:var(--muted);text-align:center;padding:36px}
+.pf-island{position:absolute;top:10px;left:50%;width:27%;height:28px;transform:translateX(-50%);border-radius:20px;background:#0A090D;z-index:3;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+.pf-home{position:absolute;bottom:9px;left:50%;width:34%;height:6px;transform:translateX(-50%);border-radius:4px;background:rgba(22,21,27,.55);z-index:2}
+.pf-pin{position:absolute;left:-26px;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 26px/1 var(--mono);z-index:3;border:4px solid var(--bg);box-shadow:0 14px 24px -10px var(--accent)}
+.pcap{margin-top:20px;text-align:center;font-size:28px;font-weight:700;line-height:1.25}
+.pcap small{display:block;margin-top:4px;font-size:22px;font-weight:500;color:var(--muted)}
+.pcol{display:flex;flex-direction:column;align-items:center;flex:none}
+
+/* ---------- Slide phone (1 điện thoại + 3 chú thích) ---------- */
+.s-phone .inner,.s-phones-2 .inner,.s-phones-3 .inner,.s-demo .inner.dp{flex-direction:row;align-items:center;gap:72px;padding-top:64px;padding-bottom:118px}
+.s-phone .left,.s-phones-2 .left,.s-phones-3 .left,.s-demo .dp .left{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.s-phone .right,.s-phones-2 .right,.s-phones-3 .right,.s-demo .dp .right{flex:none;display:flex;align-items:center;justify-content:center}
+.s-phone h2.title,.s-phones-2 h2.title,.s-phones-3 h2.title{font-size:60px;max-width:none}
+.s-phone .head,.s-phones-2 .head,.s-phones-3 .head{margin-bottom:40px}
+.callouts{list-style:none;display:flex;flex-direction:column;gap:22px}
+.callouts li{display:flex;gap:22px;align-items:flex-start;padding:24px 28px}
+.callouts .n{flex:none;width:52px;height:52px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 26px/1 var(--mono);box-shadow:0 12px 22px -10px var(--accent)}
+.callouts h3{font-size:34px;line-height:1.15;font-weight:700}
+.callouts p{font-size:25px;line-height:1.4;color:var(--muted);margin-top:6px}
+.s-phone .right{padding:0 40px 0 30px}
+.s-phone .pf{--ph:890px}
+.s-phones-2 .pf{--ph:800px}
+.s-phones-2 .right{gap:56px;align-items:flex-start}
+.s-phones-3 .pf{--ph:690px}
+.s-phones-3 .right{gap:36px;align-items:flex-start}
+.s-phones-3 h2.title{font-size:52px}
+.s-phones-3 .pcap{font-size:25px}.s-phones-3 .pcap small{font-size:20px}
+.plist{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.plist li{display:flex;gap:14px;align-items:flex-start;font-size:28px;line-height:1.4;font-weight:500}
+.s-phones-3 .plist li{font-size:25px}
+.plist .ico{color:var(--accent);font-size:32px;margin-top:3px}
+.pnote{margin-top:30px;padding:20px 26px;font-size:24px;line-height:1.45;color:var(--muted);display:flex;gap:14px;align-items:flex-start}
+.pnote .ico{color:var(--accent);font-size:30px;margin-top:2px}
+
+/* ---------- Slide phone-steps (luồng 1 → 2 → 3) ---------- */
+.s-phone-steps .inner{padding-top:60px;padding-bottom:112px}
+.s-phone-steps .head{margin-bottom:22px}
+.s-phone-steps h2.title{font-size:56px;margin-top:10px;max-width:none}
+.s-phone-steps .row{flex:1;display:flex;justify-content:center;align-items:flex-start;min-height:0}
+.s-phone-steps .pf{--ph:590px}
+.s-phone-steps .st{display:flex;flex-direction:column;align-items:center;width:420px;text-align:center;position:relative}
+.s-phone-steps .st h3{margin-top:20px;font-size:32px;line-height:1.15;font-weight:700}
+.s-phone-steps .st p{margin-top:6px;font-size:24px;line-height:1.35;color:var(--muted)}
+.s-phone-steps .st .badge-n{position:absolute;left:calc(50% - 176px);top:-6px;width:56px;height:56px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 28px/1 var(--mono);z-index:4;border:4px solid var(--bg);box-shadow:0 14px 24px -10px var(--accent)}
+.s-phone-steps .arr{flex:none;width:110px;height:590px;display:grid;place-items:center;color:var(--accent);font-size:64px}
+.s-phone-steps .arr .ico{stroke-width:2.2}
+.s-phone-steps .note{margin-top:8px;padding:16px 26px;font-size:24px;display:flex;gap:14px;align-items:center}
+.s-phone-steps .note .ico{color:var(--accent);font-size:30px}
+
+/* ---------- Cover / Demo bản điện thoại ---------- */
+.s-cover .right .pf{--ph:880px;transform:rotate(1.5deg)}
+.s-demo .dp .head{margin-bottom:34px}
+.s-demo .dp h2.title{font-size:62px;margin-top:14px}
+.s-demo .dp .pf{--ph:890px}
+.s-demo .dp .side{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:start}
+.s-demo .dp .qrcard{width:330px}
+.s-demo .dp .qrbox{width:230px;height:230px}
+.s-demo .dp .sidenote{font-size:26px}
+
 /* ---------- Cover ---------- */
 .s-cover .inner{padding:96px 120px 96px;flex-direction:row;align-items:stretch;gap:60px}
 .s-cover .left{flex:.95;display:flex;flex-direction:column;justify-content:center;min-width:0}
@@ -454,10 +530,19 @@ function rvc(c,i){return 'class="rv '+c+'" style="--i:'+i+'"'}
 function img(src,alt){return src?'<img src="'+esc(src)+'" alt="'+esc(alt||'')+'" loading="eager" onerror="this.parentNode.classList.add(\'missing\');this.remove()">':''}
 function shot(src,alt,extra){return '<div class="shot'+(src?'':' missing')+'" data-missing="'+esc(src?('Không tải được ảnh: '+src):'Chưa có ảnh (điền field image)')+'">'+img(src,alt)+(extra||'')+'</div>'}
 function frame(src,url,cls,alt,extra){return '<div class="frame'+(cls?' '+cls:'')+'"><div class="bar"><i></i><i></i><i></i><div class="url">'+esc(shortUrl(url)||'localhost')+'</div></div>'+shot(src,alt,extra)+'</div>'}
+function pshot(src,alt,extra){return '<div class="pf-screen'+(src?'':' missing')+(/dark/i.test(src||'')?' dk':'')+'" data-missing="'+esc(src?('Không tải được ảnh: '+src):'Chưa có ảnh DỌC 9:19,5 (1170×2532 hoặc 390×844@3x) — điền field image')+'">'+img(src,alt)+'<i class="pf-island"></i><div class="pf-sb"><span>9:41</span><i></i></div><i class="pf-home"></i>'+(extra||'')+'</div>'}
+/* Khung điện thoại: ảnh DỌC. o.ph = chiều cao ngoài (px), o.pins=[{n,y:'25%'}], o.extra = html chèn vào màn hình (nút Chạy trực tiếp) */
+function pframe(src,alt,o){o=o||{};return '<div class="pf"'+(o.ph?' style="--ph:'+o.ph+'px"':'')+'>'+arr(o.pins).map(function(p){return '<span class="pf-pin" style="top:'+esc(p.y)+'">'+esc(p.n)+'</span>'}).join('')+pshot(src,alt,o.extra)+'</div>'}
 function head(s,def,small){var e=s.eyebrow==null?def:s.eyebrow;return '<header class="head rv" style="--i:0"><div class="eyebrow">'+esc(e)+'</div>'+(s.title?'<h2 class="title">'+md(s.title)+'</h2>':'')+'</header>'}
 function qrBox(url,cls){return '<div class="qrbox'+(cls?' '+cls:'')+'">'+QR.svg(url,{ecl:'M',margin:1})+'</div>'}
 
 /* =============== Bộ dựng từng loại slide =============== */
+function phonesN(s,n){var ph=arr(s.phones||s.images).slice(0,n).map(function(x){return typeof x==='string'?{image:x}:x});
+ return '<div class="inner"><div class="left">'+head(s,'Giao diện điện thoại')
+  +(s.points&&s.points.length?'<ul '+rvc('plist',1)+'>'+arr(s.points).slice(0,4).map(function(t){return '<li>'+icon('check')+'<span>'+md(t)+'</span></li>'}).join('')+'</ul>':'')
+  +(s.note?'<div '+rvc('card pnote',2)+'>'+icon('bolt')+'<span>'+md(s.note)+'</span></div>':'')+'</div>'
+  +'<div class="right">'+ph.map(function(x,i){return '<div '+rvc('pcol',i+1)+'>'+pframe(x.image,x.label||('Màn hình '+(i+1)))+(x.label?'<div class="pcap">'+md(x.label)+(x.sub?'<small>'+md(x.sub)+'</small>':'')+'</div>':'')+'</div>'}).join('')+'</div></div>'}
+
 var R={
 cover:function(s,c){var m=c.meta;
  return '<div class="inner"><div class="left">'
@@ -465,7 +550,7 @@ cover:function(s,c){var m=c.meta;
   +'<h1 '+rvc('hl',1)+'>'+esc(s.app||m.app||'Tên ứng dụng')+'</h1>'
   +'<p '+rvc('tagline',2)+'>'+md(s.tagline||'')+'</p>'
   +'<div '+rvc('team',3)+'>'+(s.team?'<span>Đội <b>'+esc(String(s.team).replace(/^\s*đội\s+/i,''))+'</b></span>':'')+(s.date?'<i class="dot"></i><span>'+esc(s.date)+'</span>':'')+(s.members&&s.members.length?'<span class="ml">'+arr(s.members).map(function(x){return '<i>'+esc(x)+'</i>'}).join(' ')+'</span>':'')+'</div>'
-  +'</div><div class="right rv" style="--i:2">'+(s.image?frame(s.image,s.url||m.liveUrl,'',s.app):'<div class="orb"></div>')+'</div></div>'},
+  +'</div><div class="right rv" style="--i:2">'+(s.image?(s.device==='browser'?frame(s.image,s.url||m.liveUrl,'',s.app):pframe(s.image,s.app)):'<div class="orb"></div>')+'</div></div>'},
 
 problem:function(s){var p=s.persona||{};
  return '<div class="inner">'+head(s,'Vấn đề')+'<div class="body">'
@@ -488,6 +573,11 @@ features:function(s){
 
 demo:function(s,c){var url=s.url||c.meta.liveUrl||'';var auto=s.live==='auto';
  var extra=(s.iframe&&url)?'<button class="livebtn" data-live="'+esc(url)+'" data-auto="'+(auto?1:0)+'">'+icon('play')+' Chạy trực tiếp</button>':'';
+ if(s.device==='phone'){
+  return '<div class="inner dp"><div class="left">'+head(s,'Demo trực tiếp')
+   +'<div class="side"><div '+rvc('card qrcard',2)+'>'+(url?qrBox(url):'')+'<div class="scan">'+esc(s.qrLabel||'Quét để dùng thử')+'</div><div class="link">'+esc(shortUrl(url))+'</div></div>'
+   +'<div '+rvc('card sidenote',3)+'>'+(s.caption?'<div>'+md(s.caption)+'</div>':'')+(s.videoUrl||c.meta.videoUrl?'<div>Video: <b class="mono" style="font-size:.88em">'+esc(shortUrl(s.videoUrl||c.meta.videoUrl))+'</b></div>':'')+'</div></div></div>'
+   +'<div class="right rv" style="--i:1">'+pframe(s.image,s.title||'Demo',{extra:extra})+'</div></div>'}
  return '<div class="inner">'+head(s,'Demo trực tiếp')+'<div class="body">'
   +'<div class="rv" style="--i:1;min-height:0;display:flex">'+frame(s.image,url,'',s.title||'Demo',extra)+'</div>'
   +'<div class="side"><div '+rvc('card qrcard',2)+'>'+(url?qrBox(url):'')+'<div class="scan">'+esc(s.qrLabel||'Quét để dùng thử')+'</div><div class="link">'+esc(shortUrl(url))+'</div></div>'
@@ -497,6 +587,22 @@ demo:function(s,c){var url=s.url||c.meta.liveUrl||'';var auto=s.live==='auto';
 flow:function(s){var st=arr(s.steps).slice(0,5);
  return '<div class="inner">'+head(s,'Luồng sử dụng')+'<div class="steps">'
   +st.map(function(x,i){return '<div '+rvc('step',i+1)+'><div class="node"><div class="circle">'+ic(x.icon,'arrow')+'<sup>'+(i+1)+'</sup></div><div class="rail"></div></div><h3>'+md(x.title)+'</h3><p>'+md(x.desc||'')+'</p></div>'}).join('')
+  +'</div>'+(s.note?'<div '+rvc('card note',st.length+1)+'>'+icon('bolt')+'<span>'+md(s.note)+'</span></div>':'')+'</div>'},
+
+/* ---- Slide cho ảnh DỌC (điện thoại) ---- */
+phone:function(s){var co=arr(s.callouts||s.bullets).slice(0,3).map(function(b){return typeof b==='string'?{title:b}:b});
+ var ys=['22%','50%','78%'];
+ return '<div class="inner"><div class="left">'+head(s,'Màn hình chính')
+  +'<ul '+rvc('callouts',1)+'>'+co.map(function(b,i){return '<li class="card"><span class="n">'+(b.n||i+1)+'</span><div><h3>'+md(b.title||b.text||'')+'</h3>'+(b.desc?'<p>'+md(b.desc)+'</p>':'')+'</div></li>'}).join('')+'</ul></div>'
+  +'<div class="right rv" style="--i:2">'+pframe(s.image,s.title||'Màn hình',{pins:co.map(function(b,i){return {n:b.n||(i+1),y:b.y||ys[i]||'50%'}})})+'</div></div>'},
+
+'phones-2':function(s){return phonesN(s,2)},
+'phones-3':function(s){return phonesN(s,3)},
+
+'phone-steps':function(s){var st=arr(s.steps).slice(0,3);
+ return '<div class="inner">'+head(s,'Luồng sử dụng')+'<div class="row">'
+  +st.map(function(x,i){return (i?'<div class="arr rv" style="--i:'+(i+1)+'">'+icon('arrow')+'</div>':'')
+   +'<div '+rvc('st',i+1)+'><span class="badge-n">'+(i+1)+'</span>'+pframe(x.image,x.title||('Bước '+(i+1)))+'<h3>'+md(x.title||'')+'</h3>'+(x.desc?'<p>'+md(x.desc)+'</p>':'')+'</div>'}).join('')
   +'</div>'+(s.note?'<div '+rvc('card note',st.length+1)+'>'+icon('bolt')+'<span>'+md(s.note)+'</span></div>':'')+'</div>'},
 
 ai:function(s){var p=s.pipeline||{},steps=arr(p.steps),fi=p.fallbackAt==null?Math.max(steps.length-2,0):p.fallbackAt;

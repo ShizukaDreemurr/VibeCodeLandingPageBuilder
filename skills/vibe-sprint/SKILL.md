@@ -33,8 +33,9 @@ Khi skill này chạy, **usage/token KHÔNG phải ràng buộc. Thời gian là
 | T+8→40 | **Song song** (xem bảng agent dưới) | N agent tính năng + deck + docs + data/demo + QA (+ agent Giả định & mô hình nếu Bảng Kinh tế) | Mỗi agent commit trên worktree/thư mục riêng |
 | T+25 | Merge đợt 1 (khung + dữ liệu), chạy test nhanh, chụp ảnh | Điều phối | App chạy được dù tính năng chưa đủ |
 | T+40→48 | Merge hết, chạy toàn bộ test, `node tools/bump-version.cjs`, `node scripts/scan-secrets.mjs .`, push, deploy Pages | Điều phối + agent QA | Link online chạy |
+| T+45 | **Agent Sonnet chụp ảnh điện thoại dọc:** tự mở web app bằng giả lập điện thoại (390×844 @3x và 360×780, sáng + tối) rồi chụp từng tab bằng `starter/tools/shots-mobile.cjs` hoặc `deck/tools/capture.cjs`. Ảnh dọc này dùng cho slide (khung điện thoại, ≤ 3 máy/slide; không dùng ảnh ngang/desktop) và README | 1 agent Sonnet (deck/QA) | `deck/assets/NN-ten-mobile-light|dark.png` |
 | T+48→50 | Polish cuối + kiểm tra **mobile 360px VÀ 390px** (5 tiêu chí), sáng/tối, trạng thái rỗng/lỗi. **Sau T+50 không thêm tính năng** | 2–3 agent polish/QA song song | Ảnh chụp sạch |
-| **T+50→55** | **Minh chứng thời điểm chốt:** ảnh chụp từng màn chính (desktop + 360/390) hoặc quay màn hình luồng chính, **kèm hash commit đang chạy trên link** (`git rev-parse --short HEAD`, hiện cả phiên bản trên app). Lưu `docs/minh-chung-chot/` | QA agent + điều phối | Ảnh/video + hash |
+| **T+50→55** | **Minh chứng thời điểm chốt:** ảnh điện thoại dọc từng màn chính (360 và 390, sáng/tối, agent Sonnet chụp bằng giả lập) + 1 ảnh desktop, hoặc quay dọc màn hình luồng chính, **kèm hash commit đang chạy trên link** (`git rev-parse --short HEAD`, hiện cả phiên bản trên app). Lưu `docs/minh-chung-chot/` | QA agent + điều phối | Ảnh/video + hash |
 | **T+55→60** | **Nộp 4 món:** (1) link demo/cách mở, (2) mã nguồn, (3) README (cài chạy, công nghệ, dữ liệu mẫu/tài khoản, khai báo khung chuẩn bị trước), (4) minh chứng chốt. Mở link ở cửa sổ ẩn danh kiểm lần cuối. **Không đẩy thêm commit sau khi chụp minh chứng.** | Điều phối + cả đội | 4 món đã nộp |
 | Sau 14:15 | Chuẩn bị pitch (3 bản 10/5/3 phút theo thời lượng BTC báo) + Q&A vòng phản biện (`references/05`) trong lúc giám khảo kiểm tra 14:15–14:45 | Cả đội | Slide + kịch bản demo |
 
@@ -49,10 +50,10 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 | Data/demo | Haiku | Dữ liệu demo thật, sạch, tiếng Việt (`EP.demo.register`) | `prompts/05-data-demo-agent.md` | 8214 |
 | Polish #1, #2 | Sonnet | Motion, a11y, tương phản, copy | `prompts/10-polish-agent.md` | 8215, 8216 |
 | Feature 1…N (mỗi tính năng 1 agent) | Sonnet | Một tính năng (`features/<tên>/feature.js` + `EP.register`) + validation + test | `prompts/02-feature-agent.md` | 8217–8224 |
-| Deck | Sonnet | Slide từ `deck/` (điền `deck.data.js`, chụp ảnh, xuất PDF) | `prompts/07-deck-agent.md` | 8225 |
+| Deck | Sonnet | Slide từ `deck/` (điền `deck.data.js`, **chụp ảnh điện thoại dọc 390×844@3x bằng giả lập**, xuất PDF) | `prompts/07-deck-agent.md` | 8225 |
 | Docs | Haiku | README, bảng kiểm thử, minh chứng AI, kịch bản demo, hỏi đáp | `prompts/08-docs-agent.md` | 8226 |
 | **Giả định & mô hình kinh doanh** (Bảng Kinh tế, bắt buộc) | Sonnet | Danh sách giả định có nguồn, kịch bản lạc quan/cơ sở/bi quan, hòa vốn, độ nhạy, dự phòng, kiểm ưu đãi có lỗ không; dùng `EP.scenario` (`js/scenario.js`) + `EP.importer` (`js/import.js`) của starter; đọc `references/11-mo-hinh-kinh-doanh.md`; nạp file dữ liệu BTC | `prompts/13-business-agent.md` (+ `references/11`, `12`, `kien-thuc/`) | 8231 |
-| QA / second opinion #1–#3 | Sonnet + Haiku | Chụp ảnh, chạy test, thử đầu vào sai, mobile | `prompts/06-qa-agent.md` | 8227–8229 |
+| QA / second opinion #1–#3 | Sonnet + Haiku | Chụp ảnh điện thoại dọc (360 + 390), chạy test, thử đầu vào sai, mobile | `prompts/06-qa-agent.md` | 8227–8229 |
 | Cấp cứu / dự phòng | Sonnet | Re-spawn bản rút gọn, bản demo dự phòng | `prompts/11-emergency.md` | 8230 |
 | Điều phối (bản merge) | Claude chính | Merge, test, deploy | `prompts/09-merge-deploy.md` | 8211 |
 

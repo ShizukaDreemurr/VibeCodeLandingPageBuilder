@@ -2,6 +2,8 @@
 
 Một file `deck.html` (không phụ thuộc thư viện, 16:9, chạy offline). Bạn **chỉ sửa dữ liệu**, không sửa layout.
 
+**Quy tắc ảnh: chỉ ảnh điện thoại DỌC.** Giám khảo chấm app trên điện thoại (360–390px), nên mọi ảnh app trong slide là ảnh dọc 9:19,5 (390×844 @3x = 1170×2532) đặt trong khung điện thoại; tối đa 3 máy mỗi slide; không dùng ảnh ngang/vuông/desktop. Ảnh do agent Claude Sonnet chụp bằng giả lập điện thoại (không chụp tay).
+
 Phím: `←/→/Space` chuyển slide · `N` ghi chú + đồng hồ · `F` toàn màn hình · vuốt/bấm trên điện thoại · `Ctrl+P` in PDF. Link thẳng slide: `deck.html#6`.
 
 ## Quy trình 5 phút
@@ -11,9 +13,10 @@ Phím: `←/→/Space` chuyển slide · `N` ghi chú + đồng hồ · `F` toà
 3. **Chụp ảnh** (app chạy local, ví dụ `python3 -m http.server 8225` (cổng deck trong bảng cổng của skill; không dùng 8000) ở thư mục gốc app):
    `cp tools/capture.example.json tools/capture.json`, sửa `base` (file mẫu ghi `http://localhost:8225/`, đổi thành cổng bạn đang dùng) và `views`, rồi `node tools/capture.cjs tools/capture.json`.
    File mẫu nhắm vào route của starter (`#/home`, `#/example`): đổi `example` thành id feature thật, đổi selector theo form của bạn. Bước (`steps`): `click`, `fill:[sel,text]`, `select:[sel,value]`, `press`, `wait`, `waitFor`, `hide`, `scroll`, `eval`, `optionalClick`, `storage`.
-   Nhanh 1 ảnh: `node tools/capture.cjs --url http://localhost:8225/ --name home --mobile`. Ảnh ra `assets/` (1600x1000; mobile 390x844 đuôi `-m`).
+   Mặc định đã là giả lập điện thoại: 390×844, `deviceScaleFactor` 3, `isMobile` + `hasTouch` (PNG 1170×2532). Nhanh 1 ảnh: `node tools/capture.cjs --url http://localhost:8225/ --name 04-tinh-nang-1 --theme both` → `assets/04-tinh-nang-1-mobile-light.png` và `-mobile-dark.png`. Cỡ nhỏ: `"mobile": [360, 780]` trong cấu hình. Ảnh desktop chỉ khi yêu cầu rõ (`--desktop` / `"devices":["desktop"]`), dùng làm chứng cứ, không đưa vào slide.
+   Chụp mọi tab sáng + tối một lần bằng công cụ của starter: `node tools/capture.cjs --starter-shots http://localhost:8225/` (chạy `tools/shots-mobile.cjs` nếu có, ảnh vào `assets/auto/NN-tab-light|dark.png`; hoặc đặt `"starterShots": true` trong cấu hình).
 4. **Xem thử**: mở `deck.html`; ảnh thiếu hiện khung nhắc.
-5. **Xuất**: `node tools/export.cjs` (dùng `deck.data.js`) → `out/<tên>.pdf` (1 trang/slide), `out/png/slide-NN.png` (1920x1080, `--scale 2` cho 4K). Có `pptxgenjs` (`npm i pptxgenjs` trong `deck/`) thì ra thêm `.pptx` (mỗi slide là ảnh + ghi chú). Mang theo cả PDF dự phòng khi trình chiếu.
+5. **Xuất**: `node tools/export.cjs` (dùng `deck.data.js`) → `out/<tên>.pdf` (1 trang/slide), `out/png/slide-NN.png` (1920x1080, `--scale 2` cho 4K). Có `pptxgenjs` (`npm i pptxgenjs` trong `deck/`) thì ra thêm `.pptx` (mỗi slide là ảnh PNG 16:9 chứa sẵn các điện thoại dọc + ghi chú, nên tỉ lệ dọc của ảnh app luôn đúng). Mang theo cả PDF dự phòng khi trình chiếu.
 
 Yêu cầu: Node + Playwright (`npm i -g playwright && npx playwright install chromium`). `out/` đã được git-ignore. PDF ví dụ: `example/Xclipse-example.pdf`; ảnh của ví dụ nằm ở `example/assets/` (thư mục `deck/assets/` dành cho ảnh của đội bạn, ban đầu trống; `new-project.sh` không chép `example/`).
 
@@ -21,11 +24,14 @@ Yêu cầu: Node + Playwright (`npm i -g playwright && npx playwright install ch
 
 | type | Trường |
 |---|---|
-| cover | app, tagline, de, bang, event, team, members[], date, image |
+| cover | app, tagline, de, bang, event, team, members[], date, image (ảnh dọc, khung điện thoại; `device:'browser'` để dùng khung trình duyệt cũ) |
 | problem | title, persona{name,role,photo}, pains[], scenarioLabel, scenario, stat{value,label} |
-| solution | oneLiner, bullets[{icon,text}], image |
+| solution | oneLiner, bullets[{icon,text}], image (khung trình duyệt cũ; ảnh dọc thì dùng `phone`) |
+| **phone** | title, eyebrow, image (dọc), callouts[{title,desc,y}] (3, ghim số trên máy tại `y`, ví dụ '48%') |
+| **phones-2** / **phones-3** | title, phones[{image,label,sub}] (2 hoặc 3 máy cạnh nhau, ví dụ Sáng/Tối hoặc ca thường/sai/biên), points[], note |
+| **phone-steps** | title, steps[{image,title,desc}] (3 máy, mũi tên 1 → 2 → 3), note |
 | features | title, items[{icon,title,desc}] (5) |
-| demo | title, url, image, iframe:true, live:'auto', caption, qrLabel |
+| demo | title, url, image (dọc), device:'phone' (điện thoại + QR bên cạnh; để trống = khung trình duyệt cũ), iframe:true (chạy trực tiếp trong khung điện thoại), live:'auto', caption, qrLabel |
 | flow | title, steps[{icon,title,desc}] (3–5), note |
 | ai | real[], mock[], controls[], pipeline{steps[{label,sub,kind}], fallbackAt, fallback{label,sub}} |
 | quality | rows[{id,kind,case,result,status:pass/warn/fail,label}], summary{value,label}, legend[] |

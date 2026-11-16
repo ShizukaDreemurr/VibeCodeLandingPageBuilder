@@ -37,6 +37,7 @@
 ## E. Mobile 360px VÀ 390px (5 tiêu chí thể lệ)
 
 Kiểm ở cả hai độ rộng, mọi màn chính:
+Ca thử chi tiết: bảng M1–M5 trong `BANG-KIEM-THU.md`; agent Sonnet thử bằng giả lập điện thoại rồi chụp ảnh dọc.
 - [ ] 1. Không tràn ngang, không cuộn ngang (cả bảng, biểu đồ, dialog).
 - [ ] 2. Nút/ô nhập đủ to cho ngón tay (≥ 44px), không chồng nhau.
 - [ ] 3. Chữ đọc được ở zoom mặc định (ô nhập ≥ 16px).
@@ -46,7 +47,9 @@ Kiểm ở cả hai độ rộng, mọi màn chính:
 ## F. T+50→55: minh chứng thời điểm chốt (món 4)
 
 - [ ] Sau T+50 **không thêm tính năng**; không push sau khi chụp.
-- [ ] Ảnh chụp từng màn chính (desktop + 360/390) **hoặc** video quay luồng chính, hiển thị rõ phiên bản/ngày giờ.
+- [ ] **Agent Claude Sonnet chụp** (không chụp tay, không nhờ Gemini): mở web app trên link đã chốt bằng giả lập điện thoại và chụp **ảnh điện thoại DỌC** từng màn chính (mỗi tab), **sáng + tối**, ở **360×780** và **390×844** (DPR 3): `node tools/shots-mobile.cjs <URL> docs/minh-chung-chot/390` và `... --width 360 --height 780` cho bản 360 (hoặc `node deck/tools/capture.cjs`).
+- [ ] Thêm **1 ảnh desktop** (làm chứng cứ, không đưa vào slide), rồi mở từng ảnh kiểm: không tràn ngang, không banner lỗi, đúng bản đã chốt.
+- [ ] **Hoặc/và** video quay luồng chính **theo chiều dọc** trên điện thoại (không quay ngang), hiển thị rõ phiên bản/ngày giờ.
 - [ ] Ghi **hash commit** đang chạy trên link vào README và `PROGRESS.md`: `git rev-parse --short HEAD`.
 - [ ] Lưu ở `docs/minh-chung-chot/` (và bản sao ngoài repo, đề phòng).
 
@@ -57,7 +60,7 @@ Kiểm ở cả hai độ rộng, mọi màn chính:
 | 1 | **Link demo / cách mở** | Mở ở cửa sổ ẩn danh + điện thoại; bản mới nhất; link online bắt buộc | [ ] |
 | 2 | **Mã nguồn** | Đúng commit đang chạy trên link; không `.env*`, không key, không `.git` nếu nộp ZIP | [ ] |
 | 3 | **README** | Cài đặt/chạy, công nghệ, dữ liệu mẫu/tài khoản, mục Giả định & cách tính, khai báo khung chuẩn bị trước, không còn `<…>` | [ ] |
-| 4 | **Minh chứng chốt** | Ảnh/video thấy sản phẩm lúc chốt + hash commit | [ ] |
+| 4 | **Minh chứng chốt** | Ảnh điện thoại dọc 360 + 390 (sáng/tối) + 1 ảnh desktop, hoặc video dọc, thấy sản phẩm lúc chốt + hash commit | [ ] |
 
 - [ ] Bản nộp đã chạy `node tools/bump-version.cjs`; phiên bản trên app khớp README.
 - [ ] Đã nộp đủ 4 món trước 14:15. Chụp màn hình xác nhận nộp.
@@ -73,7 +76,7 @@ Kiểm ở cả hai độ rộng, mọi màn chính:
 ## I. Sau khi nộp (14:15–14:45 giám khảo kiểm tra)
 
 - [ ] **Không sửa** sản phẩm; chỉ dùng khung sự cố nếu BTC mở và ghi lại mọi thay đổi.
-- [ ] Máy demo: mở sẵn link, bản local dự phòng, video 30 giây, README, bảng kiểm thử.
+- [ ] Máy demo: điện thoại đã phát lên máy chiếu (Android `scrcpy`; iPhone QuickTime/AirPlay; dự phòng Chrome DevTools 390×844), link mở sẵn, bản local dự phòng, video DỌC 30 giây, README, bảng kiểm thử, cáp/đầu chuyển.
 - [ ] Chọn bản pitch **10/5/3 phút** khi BTC báo thời lượng; cả bản có phần "Giả định & cách tính".
 - [ ] Zoom 100%, tắt thông báo, sạc laptop, dữ liệu mẫu đã nạp.
 - [ ] BTC có thể yêu cầu **giải thích** cách làm: mở lịch sử commit, `MINH-CHUNG-AI.md`, trả lời trung thực.

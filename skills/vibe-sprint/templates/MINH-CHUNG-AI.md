@@ -2,7 +2,7 @@
 
 **Đội:** <Tên đội> · **Công cụ AI:** <Claude (model) để lập kế hoạch và viết mã; Gemini để tạo ảnh mockup; …>
 
-> Tối đa **1 trang A4** và **5 ảnh**. Mỗi ảnh là ảnh chụp thật cuộc trò chuyện hoặc màn hình. Che API key, email và số điện thoại thật trước khi chụp hoặc nộp.
+> Tối đa **1 trang A4** và **5 ảnh**. Mỗi ảnh là ảnh chụp thật cuộc trò chuyện hoặc màn hình. **Ảnh màn hình app là ảnh điện thoại DỌC** (390×844@3x = 1170×2532, hoặc 360×780), do agent Claude Sonnet mở web app bằng giả lập điện thoại và chụp (`starter/tools/shots-mobile.cjs` hoặc `deck/tools/capture.cjs`), không chụp ngang/desktop; đặt 2–3 ảnh dọc cạnh nhau trong một ô nếu cần tiết kiệm chỗ. Che API key, email và số điện thoại thật trước khi chụp hoặc nộp.
 
 Mỗi vòng trả lời đủ 5 mục: **mục tiêu → yêu cầu cho AI → vấn đề phát hiện khi thử → yêu cầu sửa → kết quả kiểm tra lại**. Kết quả phải là thứ đo được hoặc quan sát được, không ghi "đã tốt hơn".
 
@@ -40,11 +40,11 @@ Mỗi vòng trả lời đủ 5 mục: **mục tiêu → yêu cầu cho AI → v
 
 1. <Mô tả ngắn: ví dụ "Vòng 1, prompt gửi kèm ảnh chụp lỗi">
 
-   ![<mô tả>](minh-chung-ai/anh-1.png)
+   ![<mô tả: ảnh điện thoại dọc>](minh-chung-ai/anh-1-mobile-light.png)
 
 2. <…>
 
-   ![<mô tả>](minh-chung-ai/anh-2.png)
+   ![<mô tả: ảnh điện thoại dọc>](minh-chung-ai/anh-2-mobile-light.png)
 
 ## Bài học (2–3 dòng)
 

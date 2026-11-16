@@ -80,10 +80,20 @@ Người nhận mic **luôn bắt đầu bằng câu mở của mình** (1 câu 
 - Mở sẵn `deck.html` toàn màn hình (`F`), kiểm tra phím `←/→` chạy, đã mở PDF dự phòng ở cửa sổ khác.
 - Bấm nhầm: không giải thích, bấm lại, nói neo của slide hiện tại.
 
+## Demo trên điện thoại (giám khảo chấm app trên điện thoại)
+
+Chung kết chấm app ở 360–390px, nên slide và demo đều dùng **điện thoại dọc**, không dùng màn hình ngang/desktop làm hình đại diện.
+
+- **Slide:** mọi ảnh app là ảnh điện thoại dọc 9:19,5 (390×844@3x = 1170×2532) trong khung điện thoại của `deck/` (loại `phone`, `phones-2`, `phones-3`, `phone-steps`; tối đa 3 điện thoại mỗi slide). Ảnh do **agent Claude Sonnet** tự mở web app bằng giả lập điện thoại và chụp (sáng + tối, thêm bộ 360×780) bằng `starter/tools/shots-mobile.cjs` hoặc `deck/tools/capture.cjs`; không chụp tay.
+- **Demo trực tiếp:** phát màn hình điện thoại lên máy chiếu: Android dùng `scrcpy`; iPhone dùng QuickTime (cáp) hoặc AirPlay. Mang đủ cáp, thử ở phòng thi trước giờ. **Dự phòng:** Chrome DevTools device mode 390×844 (DPR 3) trên laptop.
+- **Ai cầm gì:** Dũng cầm và thao tác điện thoại; Nguyên giữ laptop (slide, đồng hồ, tab dự phòng); Diệu Anh cầm mic. Chuyền điện thoại cùng lúc với mic.
+- **Thứ tự demo theo thanh tab dưới:** trái sang phải, mỗi tab 1 thao tác ≤ 25 giây; ca sai/biên làm sau cùng; kết bằng chuyển Sáng/Tối.
+- **Dự phòng khi hỏng:** ảnh dọc trong slide phụ và video **quay dọc** 30 giây (quay màn hình điện thoại, không quay ngang). Chi tiết: `templates/KICH-BAN-DEMO.md` mục 4.0.
+
 ## Demo lỗi: phương án dự phòng (chuẩn bị trước T+52)
 
-- **Video quay màn hình 30 giây** (luồng chính) lưu máy + USB/điện thoại, mở sẵn ở tab riêng, mở được offline.
-- **Ảnh chụp** các tính năng trong slide phụ ("Dự phòng") nếu cả hai đều hỏng; chụp từ app thật bằng `deck/tools/capture.cjs`.
+- **Video quay màn hình điện thoại theo chiều DỌC, 30 giây** (luồng chính) lưu máy + USB/điện thoại, mở sẵn ở tab riêng, mở được offline.
+- **Ảnh chụp dọc** (390×844@3x) các tính năng trong slide phụ ("Dự phòng") nếu cả hai đều hỏng; agent Sonnet chụp từ app thật bằng `deck/tools/capture.cjs` hoặc `starter/tools/shots-mobile.cjs`.
 - **Bản local:** `python3 -m http.server 8211` trong thư mục app (mở `http://localhost:8211/?demo=1`) hoặc `file://` nếu app không cần server.
 - Quy tắc: demo hỏng **> 10 giây thì chuyển ngay** sang video/ảnh, **không sửa trên sân khấu**. Câu nói bình tĩnh: "Mạng đang chậm, em chuyển sang bản quay sẵn của đúng bản này."
 - Dữ liệu demo đặt lại bằng "Nạp lại dữ liệu demo" ở Cài đặt (hoặc `?demo=1`) trước khi vào phòng.
@@ -91,7 +101,7 @@ Người nhận mic **luôn bắt đầu bằng câu mở của mình** (1 câu 
 
 ## Luật slide
 
-Một ý mỗi slide, chữ ≥ 28pt (trên 1920×1080 chữ nội dung ≥ 22px), mỗi slide có **1 con số lớn hoặc 1 ảnh chụp app thật** làm điểm tựa thị giác, ghi chú người nói nằm trong notes (không đặt tên người nói lên slide), tiếng Việt có dấu, không đọc nguyên slide. Dựng bằng `deck/` (điền `deck/deck.data.js`; `notes` có người nói + mốc giờ + 3 neo) hoặc `prompts/12-claude-design-slide.md`.
+Một ý mỗi slide, chữ ≥ 28pt (trên 1920×1080 chữ nội dung ≥ 22px), mỗi slide có **1 con số lớn hoặc 1 ảnh chụp app thật (điện thoại dọc trong khung điện thoại, ≤ 3 máy mỗi slide)** làm điểm tựa thị giác, ghi chú người nói nằm trong notes (không đặt tên người nói lên slide), tiếng Việt có dấu, không đọc nguyên slide. Dựng bằng `deck/` (điền `deck/deck.data.js`; `notes` có người nói + mốc giờ + 3 neo) hoặc `prompts/12-claude-design-slide.md`.
 
 ## Hỏi đáp: ai trả lời câu gì
 

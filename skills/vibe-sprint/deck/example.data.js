@@ -19,7 +19,7 @@ window.DECK = {
       tagline: 'Tạo landing page sự kiện trong **5 phút** bằng AI, đủ đăng ký, đếm ngược và QR.',
       de: 'Đề số 8', bang: 'Bảng B · Kinh tế', event: 'Chung kết 60 phút',
       team: 'Xclipse', members: ['Thành viên 1', 'Thành viên 2', 'Thành viên 3'], date: '2026',
-      image: 'example/assets/03-thiet-ke-trang.png',
+      device: 'browser', image: 'example/assets/03-thiet-ke-trang.png',
       notes: 'Chào BGK. Bọn em là đội Xclipse, đề 8 bảng B. Trong 60 phút bọn em làm ra công cụ giúp marketer có landing page sự kiện sau đúng 5 phút. Phần trình bày khoảng 6 phút, có demo trực tiếp.' },
 
     { type: 'problem', time: '0:40',

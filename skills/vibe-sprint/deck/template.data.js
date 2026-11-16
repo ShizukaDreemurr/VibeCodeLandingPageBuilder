@@ -3,6 +3,9 @@
    Mở deck.html là thấy ngay. Không sửa deck.html. Xuất PDF: node tools/export.cjs
    Quy ước chữ:  **đậm**   {{nhấn màu gradient}}
    Ảnh: đặt trong assets/ (chụp bằng tools/capture.cjs). Thiếu ảnh thì khung hiện chữ nhắc.
+   ẢNH LUÔN LÀ ẢNH ĐIỆN THOẠI DỌC (9:19,5; 390×844@3x = 1170×2532) đặt trong khung điện thoại. Không dùng ảnh ngang/vuông/desktop.
+   Tên ảnh: NN-ten-mobile-light.png / NN-ten-mobile-dark.png (ví dụ 04-tinh-nang-1-mobile-light.png). Mỗi slide tối đa 3 điện thoại.
+   Loại slide cho ảnh dọc: cover · phone (1 máy + 3 chú thích) · phones-2 · phones-3 · phone-steps (luồng 1→2→3) · demo với device:'phone'.
    Mỗi slide có:  speaker: 'Tên'  (người nói, chỉ hiện trong ghi chú, KHÔNG hiện lên slide)  ·  time: '0:40'  (thời lượng gợi ý)  ·
    notes: '...'  (bấm N): dòng 1 Người nói, dòng 2 Mốc giờ, rồi V / T / S = 3 neo, cuối cùng Chuyền mic. Chi tiết: templates/KICH-BAN-DEMO.md.
    Bộ 11 slide cho pitch 10 phút: Diệu Anh 1–3 · Dũng 4–7 · Nguyên 8–11. Đổi tên người nói theo đội.
@@ -22,7 +25,7 @@ window.DECK = {
       tagline: 'Một câu: làm gì cho ai, nhanh/tốt hơn thế nào.',  // [2] tagline ≤ 15 từ
       de: 'Đề số X', bang: 'Bảng Y', event: 'Chung kết 60 phút',  // [3] đề + bảng
       team: 'TÊN ĐỘI', members: ['Thành viên 1', 'Thành viên 2'], date: '2026',  // [3]
-      image: 'assets/01-man-hinh-chinh.png',
+      image: 'assets/01-tong-quan-mobile-light.png',               // ảnh DỌC 390×844@3x
       notes: 'Người nói: Diệu Anh\nMốc giờ: 00:00–00:35 (cứng 00:40)\nV: {{NHOM_NGUOI_DUNG}} đang mất {{VIEC_TON_THOI_GIAN}}\nT: tên app + 1 câu hứa\nS: {{SO_MUC_TIEU}}\nChuyền mic: —' },
 
     { type: 'problem', time: '0:55', speaker: 'Diệu Anh', eyebrow: 'Vấn đề',
@@ -34,11 +37,15 @@ window.DECK = {
       stat: { value: 'X phút', label: 'mục tiêu / con số đo được' },
       notes: 'Người nói: Diệu Anh\nMốc giờ: 00:35–01:30 (cứng 01:35)\nV: {{NOI_DAU_CHINH}}\nT: kể 1 tình huống có giờ/số của persona\nS: {{SO_NOI_DAU}}\nChuyền mic: —' },
 
-    { type: 'solution', time: '1:00', speaker: 'Diệu Anh', eyebrow: 'Giải pháp',
-      oneLiner: 'Làm A một lần, ra ngay {{kết quả B}}.',                  // [6] giải pháp một câu
-      bullets: [{ icon: 'wand', text: 'Điểm mạnh 1' }, { icon: 'clock', text: 'Điểm mạnh 2' }, { icon: 'qr', text: 'Điểm mạnh 3' }],
-      image: 'assets/02-giai-phap.png', title: 'Màn hình chính',
-      notes: 'Người nói: Diệu Anh\nMốc giờ: 01:30–02:30 (cứng 02:35)\nV: giải pháp 1 câu\nT: chỉ vào ảnh màn hình chính, nêu 1 điểm UI/UX\nS: {{SO_THAO_TAC_HOAN_THANH}}\nChuyền mic: Em xin gửi Dũng đi vào {{TINH_NANG_NOI_BAT}} và làm thử ngay cho mọi người xem.' },
+    { type: 'phone', time: '1:00', speaker: 'Diệu Anh', eyebrow: 'Giải pháp',
+      title: 'Làm A một lần, ra ngay {{kết quả B}}.',                      // [6] giải pháp một câu
+      callouts: [                                                          // 3 chú thích đánh số, ghim trên máy theo y (tuỳ chọn)
+        { title: 'Điểm mạnh 1', desc: 'Một dòng giải thích.', y: '20%' },
+        { title: 'Điểm mạnh 2', desc: 'Một dòng giải thích.', y: '48%' },
+        { title: 'Điểm mạnh 3', desc: 'Một dòng giải thích.', y: '80%' }
+      ],
+      image: 'assets/02-giai-phap-mobile-light.png',
+      notes: 'Người nói: Diệu Anh\nMốc giờ: 01:30–02:30 (cứng 02:35)\nV: giải pháp 1 câu\nT: chỉ vào 3 ghim số trên điện thoại, nêu 1 điểm UI/UX\nS: {{SO_THAO_TAC_HOAN_THANH}}\nChuyền mic: Em xin gửi Dũng đi vào {{TINH_NANG_NOI_BAT}} và làm thử ngay cho mọi người xem.' },
 
     { type: 'features', time: '0:45', speaker: 'Vũ Trí Dũng', eyebrow: 'Tính năng',
       title: 'Đủ **5 tính năng** của đề',
@@ -51,13 +58,12 @@ window.DECK = {
       ],
       notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 02:30–03:15 (cứng 03:20)\nV: 5 tính năng giải đúng đề\nT: nhấn 1 quy tắc nghiệp vụ\nS: {{SO_TINH_NANG}} tính năng chạy thật\nChuyền mic: —' },
 
-    { type: 'flow', time: '0:40', speaker: 'Vũ Trí Dũng', eyebrow: 'Luồng sử dụng',
-      title: 'Từ A đến B trong **4 bước**',
-      steps: [
-        { icon: 'form', title: 'Bước 1', desc: 'Làm gì' },
-        { icon: 'sparkles', title: 'Bước 2', desc: 'Làm gì' },
-        { icon: 'layout', title: 'Bước 3', desc: 'Làm gì' },
-        { icon: 'qr', title: 'Bước 4', desc: 'Làm gì' }
+    { type: 'phone-steps', time: '0:40', speaker: 'Vũ Trí Dũng', eyebrow: 'Luồng sử dụng',
+      title: 'Từ A đến B trong **3 bước**',
+      steps: [                                                             // 3 ảnh DỌC, thứ tự theo luồng thật
+        { image: 'assets/03-luong-1-mobile-light.png', title: 'Bước 1', desc: 'Làm gì' },
+        { image: 'assets/04-luong-2-mobile-light.png', title: 'Bước 2', desc: 'Làm gì' },
+        { image: 'assets/05-luong-3-mobile-light.png', title: 'Bước 3', desc: 'Làm gì' }
       ],
       note: 'Dữ liệu lưu ở đâu / điều cần biết (tuỳ chọn).',
       notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 03:15–03:55 (cứng 04:00)\nV: người dùng đi qua bao nhiêu bước\nT: chỉ đúng các bước trên slide\nS: {{THOI_GIAN_LUONG_CHINH}} từ đầu đến kết quả\nChuyền mic: Giờ mình bấm thật.'
@@ -65,17 +71,21 @@ window.DECK = {
 
     { type: 'demo', time: '1:15', speaker: 'Vũ Trí Dũng', eyebrow: 'Demo trực tiếp',
       title: 'Đang chạy **ngay bây giờ**',
-      image: 'assets/03-demo.png',                                         // ảnh dự phòng khi mất mạng
-      iframe: true,                                                        // true = có nút "Chạy trực tiếp" nhúng link live (app phải cho phép iframe)
+      device: 'phone',                                                     // điện thoại dọc + QR bên cạnh
+      image: 'assets/06-demo-mobile-light.png',                            // ảnh DỌC dự phòng khi mất mạng
+      iframe: true,                                                        // true = có nút "Chạy trực tiếp" nhúng link live ngay trong khung điện thoại (app phải cho phép iframe)
       caption: 'Kịch bản: **bước 1** → **bước 2** → **bước 3**.',
       notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 03:55–05:10 (cứng 05:15)\nV: ca bình thường\nT: {{THAO_TAC_1}} → {{THAO_TAC_2}} → {{THAO_TAC_3}}, mỗi thao tác ≤ 25s\nS: kết quả hiện sau {{GIAY_PHAN_HOI}} giây\nChuyền mic: —' },
 
-    { type: 'demo', time: '1:05', speaker: 'Vũ Trí Dũng', eyebrow: 'Demo: ca sai, ca biên, mobile',
+    { type: 'phones-3', time: '1:05', speaker: 'Vũ Trí Dũng', eyebrow: 'Demo: ca sai, ca biên, tối',
       title: 'Nhập sai và ca biên: app **xử lý ra sao**',
-      image: 'assets/04-demo-ca-sai.png',                                         // ảnh dự phòng khi mất mạng
-      iframe: false,                                                       // true = có nút "Chạy trực tiếp" nhúng link live (app phải cho phép iframe)
-      caption: 'Ca nhập sai → báo lỗi ngay · ca biên → xử lý đúng · thu nhỏ 390px, Sáng/Tối.',
-      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 05:10–06:15 (cứng 06:20)\nV: ca nhập sai + ca biên + mobile\nT: {{CA_SAI}} báo lỗi ngay; {{CA_BIEN}}; thu nhỏ 390px\nS: {{SO_CA_LOI_BAT_DUOC}} ca lỗi bị chặn\nChuyền mic: Phần bên trong chạy thế nào, mình xin nhường Nguyên.' },
+      phones: [                                                            // 2–3 ảnh DỌC cạnh nhau (dùng 'phones-2' nếu chỉ có 2)
+        { image: 'assets/07-ca-sai-mobile-light.png', label: 'Nhập sai', sub: 'Báo lỗi ngay tại ô' },
+        { image: 'assets/08-ca-bien-mobile-light.png', label: 'Ca biên', sub: 'Xử lý đúng' },
+        { image: 'assets/09-tong-quan-mobile-dark.png', label: 'Giao diện tối', sub: 'Cùng màn hình, chế độ Tối' }
+      ],
+      points: ['Ca nhập sai → báo lỗi ngay', 'Ca biên → xử lý đúng', 'Chạy ở 360 và 390 px'],
+      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 05:10–06:15 (cứng 06:20)\nV: ca nhập sai + ca biên + mobile\nT: {{CA_SAI}} báo lỗi ngay; {{CA_BIEN}}; đưa điện thoại ra cho giám khảo thấy giao diện Tối\nS: {{SO_CA_LOI_BAT_DUOC}} ca lỗi bị chặn\nChuyền mic: Phần bên trong chạy thế nào, mình xin nhường Nguyên.' },
 
     { type: 'ai', time: '1:00', speaker: 'Nguyên', eyebrow: 'AI trong sản phẩm',
       title: 'AI **làm gì**, kiểm soát thế nào',

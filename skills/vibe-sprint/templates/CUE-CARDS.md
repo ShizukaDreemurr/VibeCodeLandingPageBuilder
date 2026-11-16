@@ -18,6 +18,7 @@
 | 2 | 00:35–01:30 | {{NOI_DAU_CHINH}} | kể tình huống của {{PERSONA}} | {{SO_NOI_DAU}} |
 | 3 | 01:30–02:30 | {{GIAI_PHAP_1_CAU}} | chỉ ảnh, nêu {{DIEM_UI}} | {{SO_THAO_TAC_HOAN_THANH}} |
 
+**Slide 3:** chỉ 3 ghim số trên điện thoại dọc (không chỉ vào màn hình ngang).
 **Câu chuyền mic (cuối slide 3):** "Em xin gửi **Dũng** đi vào {{TINH_NANG_NOI_BAT}} và làm thử ngay cho mọi người xem." → đưa mic/nhìn Dũng, lùi 1 bước.
 
 **Mốc cứng:** 00:40 / 01:35 / 02:35. Quá mốc: nói câu chuyền ngay.
@@ -36,12 +37,13 @@
 | 4 | 02:30–03:15 | 5 tính năng giải đúng đề | nhấn {{QUY_TAC_CHINH}} | {{SO_TINH_NANG}} tính năng |
 | 5 | 03:15–03:55 | đi qua bao nhiêu bước | chỉ {{SO_BUOC}} bước | {{THOI_GIAN_LUONG_CHINH}} |
 | 6 | 03:55–05:10 | ca bình thường | {{THAO_TAC_1}} → {{THAO_TAC_2}} → {{THAO_TAC_3}} (≤ 25s mỗi cái) | {{GIAY_PHAN_HOI}} giây |
-| 7 | 05:10–06:15 | ca sai + ca biên + mobile | {{CA_SAI}}; {{CA_BIEN}}; 390px | {{SO_CA_LOI_BAT_DUOC}} ca lỗi |
+| 7 | 05:10–06:15 | ca sai + ca biên + mobile | {{CA_SAI}}; {{CA_BIEN}}; Sáng/Tối trên điện thoại | {{SO_CA_LOI_BAT_DUOC}} ca lỗi |
 
 **Câu chuyền (cuối slide 5):** "Giờ mình **bấm thật**."
 **Câu chuyền mic (cuối slide 7):** "Phần bên trong chạy thế nào, mình xin nhường **Nguyên**."
 
-**Demo lỗi > 10 giây:** chuyển video 30 giây, nói "Mạng đang chậm, em chuyển sang bản quay sẵn." Không sửa trên sân khấu.
+**Điện thoại:** Dũng cầm điện thoại (đã phát lên máy chiếu bằng scrcpy / QuickTime / AirPlay), Nguyên giữ laptop. Demo đi theo thứ tự tab dưới cùng, từ trái sang phải. Phát hỏng thì Nguyên bật DevTools 390×844.
+**Demo lỗi > 10 giây:** chuyển video DỌC 30 giây (quay trên điện thoại), nói "Mạng đang chậm, em chuyển sang bản quay sẵn." Không sửa trên sân khấu.
 **Bấm slide:** Dũng tự bấm khi nói câu chuyền của slide; quên thì Nguyên bấm theo hiệu tay (xem `05-thuyet-trinh`).
 **Mốc cứng:** 03:20 / 04:00 / 05:15 / 06:20.
 
@@ -84,7 +86,7 @@ Cùng câu mở, câu chuyền mic như bản 10 phút. Hết mốc cứng thì 
 | **Diệu Anh** | 1 Bài toán | 00:00–00:35 | {{NHOM_NGUOI_DUNG}} mất {{VIEC_TON_THOI_GIAN}} · S {{SO_NOI_DAU}} |
 | **Diệu Anh** | 2 Giải pháp + UI | 00:35–01:10 | {{GIAI_PHAP_1_CAU}} · S {{SO_THAO_TAC_HOAN_THANH}} → "gửi **Dũng**" |
 | **Dũng** | 3 Tính năng + luồng | 01:10–01:50 | 5 tính năng · {{QUY_TAC_CHINH}} · "Giờ mình **bấm thật**" |
-| **Dũng** | 4 Demo thường + sai/biên + 360px | 01:50–02:50 | {{THAO_TAC_1}} → {{CA_SAI}} → 360px (≤ 20s mỗi bước) → "nhường **Nguyên**" |
+| **Dũng** | 4 Demo thường + sai/biên + 360px | 01:50–02:50 | {{THAO_TAC_1}} → {{CA_SAI}} → 360px trên điện thoại (≤ 20s mỗi bước) → "nhường **Nguyên**" |
 | **Nguyên** | 5 **Giả định & cách tính** | 02:50–03:45 | giả định có nguồn · 3 kịch bản · hòa vốn {{SO_HOA_VON}} · ưu đãi có lỗ không |
 | **Nguyên** | 6 Kỹ thuật + kiểm thử | 03:45–04:25 | `{{MOCK_NOTICE}}` · key không lộ · {{SO_CA_DAT}}/{{TONG_CA}} |
 | **Nguyên** | 7 Kết | 04:25–04:45 | QR + link · "đội xin nhận câu hỏi" |

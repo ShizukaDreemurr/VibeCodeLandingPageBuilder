@@ -1,6 +1,8 @@
 # Prompt chuẩn gửi Claude Design — Thiết kế bộ Slide Chung kết (Team Xclipse)
 
 > **Cách dùng:** Khi app đã hoàn thiện (mốc T+45), điền các biến `{{...}}` bên dưới rồi **copy toàn bộ khối prompt** gửi cho **Claude Design** để xuất bộ slide đồng bộ 100% với giao diện app Xclipse.
+>
+> **Ảnh phải có TRƯỚC khi gửi.** Chung kết chấm app trên điện thoại (360–390px) nên mọi ảnh app là **ảnh điện thoại DỌC**. Ảnh do **agent Claude Sonnet** chụp: agent tự mở web app bằng giả lập điện thoại (Playwright: 390×844 @3x = 1170×2532, kèm 360×780), sáng + tối, bằng `node tools/shots-mobile.cjs <URL> shots-mobile` (starter) hoặc `node deck/tools/capture.cjs deck/tools/capture.json` (hoặc `--starter-shots <URL>`). Không chụp tay, không nhờ Gemini chụp. Đặt tên `NN-ten-mobile-light.png` / `NN-ten-mobile-dark.png` rồi dán danh sách vào `{{DANH_SACH_ANH}}`.
 
 ---
 
@@ -33,9 +35,11 @@ Hãy thiết kế một bộ slide thuyết trình **`{{SLIDE_COUNT}}` trang (5 
   - Lề an toàn tối thiểu **`72px`** ở cả 4 cạnh. Khoảng trắng thoáng đạt (**≥ 30% diện tích slide**).
   - **Không nhồi chữ:** Mỗi slide tối đa **3–4 khối thông tin**, mỗi gạch đầu dòng **≤ 12 từ**, cỡ chữ nội dung tối thiểu `22px` trên khung 1920×1080 để hội trường nhìn rõ từ xa.
   - Thẻ nội dung bo góc `18px–22px`, nền `#FFFFFF`, viền mảnh `1px solid rgba(7, 45, 89, 0.10)`, bóng đổ cực nhẹ `0 10px 28px rgba(7, 45, 89, 0.08)`.
-- **Trình bày Ảnh chụp App thật (Desktop & Mobile 390px):**
-  - Đặt trong khung thiết bị/khung cửa sổ sạch sẽ (bo góc `16px`, viền Navy mảnh), **không cắt xén mất thanh điều hướng hay số liệu**.
-  - Slide Demo Mobile bắt buộc đặt khung điện thoại `390px` cạnh phần giải thích ngắn gọn (2–3 ý).
+- **Trình bày Ảnh chụp App thật: CHỈ ẢNH ĐIỆN THOẠI DỌC (YÊU CẦU CỨNG, thể lệ chấm trên điện thoại):**
+  - Mọi ảnh app là **ảnh chụp điện thoại dọc tỉ lệ 9:19,5** (1170×2532px, tức 390×844 @3x; có thể kèm bản 360×780), đặt **bên trong khung điện thoại** (bo góc ~44px, viền Navy `#072D59`, Dynamic Island/notch, bóng đổ nhẹ). Khung điện thoại luôn đứng dọc; ảnh hiển thị đủ chiều dọc của màn hình, bám mép trên, không cắt xén mất thanh tab dưới hay số liệu.
+  - **TUYỆT ĐỐI KHÔNG** cắt ảnh thành ngang/vuông, không kéo giãn, không đặt ảnh app vào khung cửa sổ trình duyệt/laptop, không dùng ảnh desktop. Ảnh desktop chỉ được dùng khi một slide nói riêng về giao diện máy tính của giám khảo (hiếm); khi đó đặt cạnh ảnh dọc và ghi chú rõ "Desktop".
+  - **Tối đa 3 điện thoại mỗi slide** (1 điện thoại + 3 chú thích đánh số; 2 điện thoại cạnh nhau, ví dụ Sáng/Tối; 3 điện thoại cạnh nhau, ví dụ ca thường/ca sai/ca biên; hoặc luồng 3 bước 1 → 2 → 3 có mũi tên). Phần còn lại của slide chỉ là chữ gọn.
+  - Slide có ảnh app dùng bố cục chia ngang: chữ ở một bên, điện thoại dọc ở bên kia, điện thoại cao gần hết chiều cao slide (≥ 640px) để đọc được từ xa.
 - **Minh bạch dữ liệu/AI (Bắt buộc theo thể lệ):**
   - Ghi rõ nhãn dữ liệu mẫu/mô phỏng: `{{MOCK_NOTICE}}` (nguyên văn nếu đề/BTC đưa câu; không thì câu rõ nghĩa của đội). Số mô phỏng phải nhận diện được là mẫu/mô phỏng.
   - Ghi rõ công cụ AI đội sử dụng: **Claude (Opus / Sonnet / Haiku / Claude Design)** phối hợp cùng **Gemini / Antigravity**.
@@ -59,11 +63,12 @@ Hãy thiết kế một bộ slide thuyết trình **`{{SLIDE_COUNT}}` trang (5 
 - **Bảng thi:** `{{BANG}}` (Kinh tế hoặc Kỹ thuật)
 - **Người nói & mốc giờ:** theo bản đã chọn ở mục 3 (`{{NGUOI_1}}` đầu · `{{NGUOI_2}}` giữa · `{{NGUOI_3}}` cuối)
 - **Giả định & cách tính (Kinh tế):** `{{GIA_DINH}}` (3 giả định chính + nguồn) · `{{KICH_BAN}}` (cơ sở / xấu nhất) · `{{HOA_VON}}` (điểm hòa vốn) · `{{UU_DAI_LO}}` (ưu đãi lỗ khi nào)
-- **Ảnh minh chứng:** ảnh chụp thật của app, mobile 360px/390px
+- **Ảnh minh chứng:** ảnh chụp thật của app, **chỉ ảnh điện thoại DỌC** (9:19,5; 390×844@3x = 1170×2532; kèm 360×780), sáng + tối, do agent Claude Sonnet chụp bằng giả lập điện thoại
 - **Điểm AI & Minh bạch:** `{{MO_TA_AI}}` (Nhãn nguyên văn: `{{MOCK_NOTICE}}`)
 - **Kết quả kiểm thử thật (`smoke.cjs` + thủ công):** `{{KET_QUA_TEST}}`
 - **Link demo online & GitHub:** `{{LINK_DEMO}}` · `{{LINK_REPO}}`
-- **Danh sách ảnh chụp màn hình đính kèm:** `{{DANH_SACH_ANH}}`
+- **Danh sách ảnh chụp màn hình đính kèm (toàn bộ là ảnh dọc, đặt tên `NN-ten-mobile-light|dark.png`):** `{{DANH_SACH_ANH}}`
+  Ví dụ: `01-tong-quan-mobile-light.png` · `02-giai-phap-mobile-light.png` · `04-tinh-nang-1-mobile-light.png` · `05-tinh-nang-2-mobile-light.png` · `06-demo-mobile-light.png` · `07-ca-sai-mobile-light.png` · `08-ca-bien-mobile-light.png` · `09-tong-quan-mobile-dark.png` · `10-ket-qua-ai-mobile-light.png`
 
 ---
 
@@ -81,15 +86,15 @@ Hãy thiết kế một bộ slide thuyết trình **`{{SLIDE_COUNT}}` trang (5 
 
 
 **Diệu Anh (slide 1–3, 00:00–02:30): bài toán, nỗi đau, UI/UX sơ bộ**
-1. **Slide 1 — Bìa (Fluted Glass Hero):** Tên sản phẩm (`Be Vietnam Pro` + `Playfair Display` italic), Tagline, Đội Xclipse · `{{TRUONG}}` · VIBE-CODING 2026. Điểm tựa: 1 con số mục tiêu lớn hoặc ảnh màn hình chính.
+1. **Slide 1 — Bìa (Fluted Glass Hero):** Tên sản phẩm (`Be Vietnam Pro` + `Playfair Display` italic), Tagline, Đội Xclipse · `{{TRUONG}}` · VIBE-CODING 2026. Điểm tựa: 1 con số mục tiêu lớn hoặc 1 điện thoại dọc chứa ảnh màn hình chính.
 2. **Slide 2 — Bài toán & Nỗi đau từ đề bài:** 1 persona + **1 con số nỗi đau lớn** (ví dụ "40 phút/ngày") và tối đa 2 ý phụ.
-3. **Slide 3 — Giải pháp & UI/UX sơ bộ:** 1 câu giải pháp + ảnh chụp màn hình chính (desktop) trong khung thiết bị, 1–2 chú thích điểm UI/UX; số lớn: thời gian/thao tác hoàn thành.
+3. **Slide 3 — Giải pháp & UI/UX sơ bộ:** 1 câu giải pháp + 1 điện thoại dọc (ảnh màn hình chính 390×844) kèm 3 chú thích đánh số về UI/UX; số lớn: thời gian/thao tác hoàn thành.
 
 **Vũ Trí Dũng (slide 4–7, 02:30–06:15): tính năng chính + demo**
 4. **Slide 4 — Tính năng lõi:** 5 tính năng cùng 1 lưới icon, nhấn 1 quy tắc nghiệp vụ; số lớn: "5/5 tính năng chạy thật".
-5. **Slide 5 — Luồng sử dụng 3 bước:** Sơ đồ (`Nhập/Chọn` → `Xử lý / AI gợi ý` → `Kết quả / Xuất báo cáo`); số lớn: thời gian từ đầu đến kết quả.
-6. **Slide 6 — Demo trực tiếp (ca thường):** khung ảnh app thật + dòng 3 thao tác ngắn + số lớn: giây phản hồi; có QR/link tới `{{LINK_DEMO}}`.
-7. **Slide 7 — Demo ca sai/biên + Mobile `390px` & Sáng/Tối:** ảnh mobile cạnh ảnh báo lỗi; số lớn: số ca lỗi bắt được; không tràn ngang, thao tác 1 chạm.
+5. **Slide 5 — Luồng sử dụng 3 bước:** Sơ đồ (`Nhập/Chọn` → `Xử lý / AI gợi ý` → `Kết quả / Xuất báo cáo`) dựng bằng 3 điện thoại dọc (ảnh từng bước) nối bằng mũi tên 1 → 2 → 3; số lớn: thời gian từ đầu đến kết quả.
+6. **Slide 6 — Demo trực tiếp (ca thường):** 1 điện thoại dọc (ảnh app thật) + dòng 3 thao tác ngắn + số lớn: giây phản hồi; có QR/link tới `{{LINK_DEMO}}`.
+7. **Slide 7 — Demo ca sai/biên + Mobile `390px` & Sáng/Tối:** 3 điện thoại dọc cạnh nhau (ca sai · ca biên · giao diện Tối); số lớn: số ca lỗi bắt được; không tràn ngang, thao tác 1 chạm.
 
 **Nguyên (slide 8–11, 06:15–09:45): kỹ thuật, tổng kết, phản biện**
 8. **Slide 8 — Kiến trúc & AI/proxy & Minh bạch AI:** 1 sơ đồ duy nhất (UI → logic → AI qua proxy/mô phỏng → lưu trữ), nhãn `{{MOCK_NOTICE}}` nguyên văn, ghi công cụ AI đội dùng (Claude Opus/Sonnet/Haiku/Design cùng Gemini/Antigravity); số lớn: số module hoặc điểm kiểm soát AI.
@@ -98,12 +103,12 @@ Hãy thiết kế một bộ slide thuyết trình **`{{SLIDE_COUNT}}` trang (5 
 11. **Slide 11 — Kết (Fluted Glass Navy):** QR tới `{{LINK_DEMO}}`, 1 câu chốt, lời cảm ơn, mời hỏi đáp.
 
 ### Bản 7 slide (5 phút)
-Diệu Anh: **1** Bìa + bài toán (số nỗi đau lớn) · **2** Giải pháp + UI/UX (ảnh màn chính). Dũng: **3** 5 tính năng + luồng 3 bước · **4** Demo (ca thường, ca sai/biên, mobile 360px; 3 ảnh nhỏ). Nguyên: **5 Giả định & cách tính (bắt buộc Kinh tế)** · **6** Kỹ thuật + kiểm thử + bảo mật + nhãn `{{MOCK_NOTICE}}` · **7** Kết (QR, mời hỏi đáp). Mốc cứng: 00:40 / 01:15 / 01:55 / 02:55 / 03:50 / 04:30 / 04:50.
+Diệu Anh: **1** Bìa + bài toán (số nỗi đau lớn) · **2** Giải pháp + UI/UX (1 điện thoại dọc màn chính). Dũng: **3** 5 tính năng + luồng 3 bước · **4** Demo (ca thường, ca sai/biên, mobile 360px; tối đa 3 điện thoại dọc). Nguyên: **5 Giả định & cách tính (bắt buộc Kinh tế)** · **6** Kỹ thuật + kiểm thử + bảo mật + nhãn `{{MOCK_NOTICE}}` · **7** Kết (QR, mời hỏi đáp). Mốc cứng: 00:40 / 01:15 / 01:55 / 02:55 / 03:50 / 04:30 / 04:50.
 
 ### Bản 5 slide (3 phút)
-Diệu Anh: **1** Bài toán + giải pháp + ảnh màn chính. Dũng: **2** Demo ca thường (1 luồng) · **3** Ca sai + mobile 360px. Nguyên: **4 Giả định & cách tính (bắt buộc Kinh tế, không bao giờ bỏ)** · **5** Kiểm thử + nhãn `{{MOCK_NOTICE}}` + QR + kết. Mốc cứng: 00:40 / 01:20 / 01:45 / 02:25 / 02:50.
+Diệu Anh: **1** Bài toán + giải pháp + ảnh màn chính. Dũng: **2** Demo ca thường (1 điện thoại dọc) · **3** Ca sai + mobile 360px (2–3 điện thoại dọc). Nguyên: **4 Giả định & cách tính (bắt buộc Kinh tế, không bao giờ bỏ)** · **5** Kiểm thử + nhãn `{{MOCK_NOTICE}}` + QR + kết. Mốc cứng: 00:40 / 01:20 / 01:45 / 02:25 / 02:50.
 
-Mọi bản: giữ nguyên bộ theme, quy tắc 1 điểm tựa/slide, 3 neo `V · T · S` trong speaker notes. Slide phụ "Dự phòng" (ảnh chụp 5 tính năng) ở cuối, không tính vào số slide.
+Mọi bản: giữ nguyên bộ theme, quy tắc 1 điểm tựa/slide, 3 neo `V · T · S` trong speaker notes. Slide phụ "Dự phòng" (ảnh dọc chụp 5 tính năng, tối đa 3 điện thoại mỗi slide) ở cuối, không tính vào số slide.
 
 ## 4. YÊU CẦU CHO NGƯỜI NÓI (PITCH `{{PITCH_MINUTES}}` PHÚT, 3 NGƯỜI)
 
@@ -114,10 +119,11 @@ Mọi bản: giữ nguyên bộ theme, quy tắc 1 điểm tựa/slide, 3 neo `V
   3. `3 neo: V <1 câu vấn đề> · T <1 thao tác/điểm nhấn> · S <1 con số>`
   4. `Chuyền mic: <1 câu cố định>` (chỉ ở slide cuối của mỗi người; còn lại ghi "—")
 - **KHÔNG đặt tên người nói lên slide** (không name tag ở góc). Giữ slide sạch; tên người chỉ nằm trong speaker notes.
-- **Mỗi slide có đúng 1 điểm tựa thị giác:** hoặc **1 con số lớn** (≥ 120px, `tabular-nums`, màu Navy/Coral) hoặc **1 ảnh chụp app thật**. Con số lớn chính là neo `S` của slide đó; không đặt quá 1 con số to cạnh tranh nhau.
+- **Mỗi slide có đúng 1 điểm tựa thị giác:** hoặc **1 con số lớn** (≥ 120px, `tabular-nums`, màu Navy/Coral) hoặc **1 ảnh chụp app thật dạng điện thoại dọc**. Con số lớn chính là neo `S` của slide đó; không đặt quá 1 con số to cạnh tranh nhau.
 - Mỗi slide tối đa 3 khối thông tin tương ứng 3 neo; chữ gọn để người nói chỉ cần liếc con số là nhớ ý.
-- Slide 6–7 (demo): khung ảnh app + dòng thao tác ngắn; slide phụ "Dự phòng" ở cuối bộ (ảnh chụp 5 tính năng) không tính vào số slide.
+- Slide 6–7 (demo): điện thoại dọc + dòng thao tác ngắn; slide phụ "Dự phòng" ở cuối bộ (ảnh dọc chụp 5 tính năng) không tính vào số slide.
 - Xuất kèm PDF dự phòng và ảnh PNG từng slide.
+- **Tự kiểm trước khi trả:** không có ảnh nào bị cắt ngang/vuông; mọi ảnh app nằm trong khung điện thoại dọc; mỗi slide ≤ 3 điện thoại.
 
 *Lưu ý xuất bản: Giữ đồng nhất header/footer (số trang + tên sản phẩm) ở các slide nội dung, căn lưới thẳng hàng tuyệt đối, và kèm speaker notes theo khuôn ở mục 4.*
 ```

@@ -1,11 +1,13 @@
 {
-  "base": "http://localhost:8225/",
+  "base": "http://localhost:8234/",
   "out": "../assets",
-  "desktop": [1600, 1000],
   "mobile": [390, 844],
+  "scale": 3,
+  "themes": ["light"],
+  "starterShots": false,
   "views": [
     { "name": "01-tong-quan", "url": "index.html?demo=1#/home", "settle": 1200,
-      "steps": [ { "hide": "#toasts" }, { "wait": 400 } ], "devices": ["desktop", "mobile"] },
+      "steps": [ { "hide": "#toasts" }, { "wait": 400 } ], "themes": ["light", "dark"] },
     { "name": "02-danh-sach", "url": "index.html?demo=1#/example", "settle": 1200,
       "steps": [ { "hide": "#toasts" }, { "waitFor": ".table tbody tr" }, { "wait": 400 } ] },
     { "name": "03-form", "url": "index.html?demo=1#/example",
@@ -13,6 +15,6 @@
                  { "fill": ["dialog [name=\"name\"]", "Mục demo cho slide"] }, { "select": ["dialog [name=\"status\"]", "doing"] }, { "wait": 400 } ] },
     { "name": "04-ket-qua-ai", "url": "index.html?demo=1#/example",
       "steps": [ { "waitFor": "#ex-ai-go" }, { "fill": ["#ex-ai-form textarea", "Chuẩn bị tài liệu và đặt phòng họp cho buổi gặp đối tác tuần sau"] },
-                 { "click": "#ex-ai-go" }, { "waitFor": ".ai-result" }, { "wait": 600 } ], "devices": ["desktop", "mobile"] }
+                 { "click": "#ex-ai-go" }, { "waitFor": ".ai-result" }, { "wait": 600 } ] }
   ]
 }
