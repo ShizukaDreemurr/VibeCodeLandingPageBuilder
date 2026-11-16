@@ -15,7 +15,7 @@ const TIMEOUT_MS = 25000;
 const WINDOW_MS = 60000;
 const hits = new Map(); // ip -> { n, reset }
 
-function origins(env) { return String(env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean); }
+function origins(env) { return String(env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim().replace(/\/$/, '').toLowerCase()).filter(Boolean); }
 
 function corsHeaders(origin) {
   return {
@@ -42,13 +42,14 @@ function limited(ip, env) {
 
 async function handle(request, env) {
   const url = new URL(request.url);
-  const origin = (request.headers.get('Origin') || '').replace(/\/$/, '');
+  const rawOrigin = (request.headers.get('Origin') || '').trim().replace(/\/$/, '');
+  const origin = rawOrigin.toLowerCase();
 
   if (url.pathname === '/health' && request.method === 'GET') return json(200, { ok: true });
 
   const allowed = origins(env);
   if (!origin || allowed.indexOf(origin) < 0) return json(403, { error: 'origin_not_allowed' });
-  const cors = corsHeaders(origin);
+  const cors = corsHeaders(rawOrigin);
 
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
 
