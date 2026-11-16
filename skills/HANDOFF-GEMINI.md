@@ -20,10 +20,11 @@
 ### Đã test
 - `bash skills/gh-pages-deploy/scripts/preflight.sh skills/vibe-sprint/starter`: đạt (`0 loi, 0 canh bao`, `36 file, ~352 KB`). Đã xóa `.nojekyll` tạm sau khi test để giữ `starter/` sạch.
 - `node skills/firebase-setup/scripts/check-firebase-config.mjs skills/vibe-sprint/starter`: chạy đúng, xác nhận `firestore.rules` đạt và báo đúng 4 trường config trống khi Firebase đang tắt.
-- `node skills/vibe-sprint/scripts/scan-secrets.mjs skills`: sẽ chạy ngay trước khi push `ag/tam-thoi`.
+- `node skills/vibe-sprint/scripts/scan-secrets.mjs skills`: đạt (`114 tệp, Lộ: 0`).
+- **Cloudflare Worker Proxy (`https://vibe-gemini-proxy.xclipse.workers.dev/health`):** Nguyên đã deploy và kiểm tra `/health` trả về `{"ok":true}`.
 
 ### Chưa test (cần Nguyên thao tác / xác nhận)
-- **Cloudflare Worker Proxy (`skills/vibe-sprint/proxy/`):** Nguyên đã đăng nhập Cloudflare, nạp secret và deploy thành công lên `https://vibe-gemini-proxy.xclipse.workers.dev`. Cần kiểm tra mở `https://vibe-gemini-proxy.xclipse.workers.dev/health` trên trình duyệt (`{"ok":true}`) và test gắn `proxyUrl` vào `starter/js/config.js` (nếu chuỗi secret cũ từng lộ lên chat thì nhớ thu hồi và `wrangler secret put GEMINI_API_KEY` lại bằng key mới).
+- **Gọi Gemini qua Proxy từ trình duyệt (`proxyUrl`):** Chưa test gắn `proxyUrl: 'https://vibe-gemini-proxy.xclipse.workers.dev'` vào `starter/js/config.js` để gọi thật từ `https://ShizukaDreemurr.github.io` hoặc `http://localhost:8216` (lưu ý nếu secret cũ từng lộ lên chat thì nhớ thu hồi và `wrangler secret put GEMINI_API_KEY` lại bằng key mới).
 - **Deploy GitHub Pages thật (`skills/gh-pages-deploy`):** Chưa tạo repo nháp để chạy thử đẩy + bật Pages + `verify-pages.sh` vì quy tắc mục 6 của `gh-pages-deploy` yêu cầu hỏi xác nhận trước khi tạo repo public.
 - **Thiết lập Firebase thật (`skills/firebase-setup`):** Chưa chạy thử với tài khoản Google rảnh (cần Nguyên tự đăng nhập Google / Firebase Console).
 
