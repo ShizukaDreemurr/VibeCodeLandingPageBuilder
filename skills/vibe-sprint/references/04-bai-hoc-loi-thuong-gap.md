@@ -31,6 +31,7 @@ Rút từ lịch sử Xclipse. Đọc nhanh trước T+8, dán các dòng liên 
 | Khoảng trắng lạ cuối trang mobile | `min-height`/`100vh` + thanh địa chỉ | Dùng `100dvh`, kiểm tra footer ở 390px |
 
 - **Đổi giao diện (View Transition) bị giật:** snapshot chụp cả `backdrop-filter` và `transition` từng phần tử đang chạy. Khi `html[data-vt="theme"]`: tắt `transition` của mọi phần tử + `backdrop-filter: none` (topbar, hero-flute), callback `startViewTransition` chỉ đổi `data-theme` (lưu/emit/vẽ lại biểu đồ dời sang rAF sau `finished`), bỏ qua click dồn khi đang chạy, clip-path ~480ms `cubic-bezier(.2,.8,.2,1)`; trình duyệt cũ mờ chéo 200ms. Đo bằng rAF delta + CPU 4x, đừng đoán.
+
 ## Cache / triển khai / chia sẻ
 
 | Triệu chứng | Nguyên nhân | Cách sửa |
