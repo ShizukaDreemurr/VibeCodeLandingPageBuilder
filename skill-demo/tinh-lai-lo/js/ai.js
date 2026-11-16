@@ -21,19 +21,12 @@
   var TIMEOUT_MS = 25000;
   // Danh sách model sao chép từ Xclipse (js/ai-service.js). Cập nhật theo tài khoản thật khi đi thi.
   var MODELS = [
-    { id: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash Lite', note: 'Nhanh (~2 giây), miễn phí - khuyên dùng', tier: 'free' },
-    { id: 'gemini-flash-lite-latest', label: 'Gemini Flash-Lite mới nhất', note: 'Luôn trỏ tới bản Flash-Lite mới nhất', tier: 'free' },
-    { id: 'gemini-3.1-flash-lite', label: 'Gemini 3.1 Flash Lite', note: 'Nhanh, tiết kiệm nhất', tier: 'free' },
-    { id: 'gemini-3-flash-preview', label: 'Gemini 3 Flash (preview)', note: 'Bản Flash đời trước', tier: 'free' },
-    { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash', note: 'Viết kỹ hơn, ~10 giây', tier: 'free' },
-    { id: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash', note: 'Thông minh nhất dòng Flash, có thể mất 1-2 phút', tier: 'slow' },
-    { id: 'gemini-flash-latest', label: 'Gemini Flash mới nhất', note: 'Có thể mất 1-2 phút', tier: 'slow' },
-    { id: 'gemini-4-argon', label: 'Gemini 4 Argon', note: 'Mạnh nhất - cần bật thanh toán', tier: 'paid' },
-    { id: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro (preview)', note: 'Cần bật thanh toán', tier: 'paid' },
-    { id: 'gemini-pro-latest', label: 'Gemini Pro mới nhất', note: 'Cần bật thanh toán', tier: 'paid' }
+    { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash', note: 'Nhanh, cân bằng - khuyên dùng', tier: 'free' },
+    { id: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash', note: 'Thông minh nhất dòng Flash, chậm hơn', tier: 'slow' },
+    { id: 'gemini-4-hydrogen', label: 'Gemini 4 Hydrogen', note: 'Thế hệ 4 - thử nếu tài khoản có quyền', tier: 'slow' }
   ];
-  var DEFAULT_MODEL = 'gemini-3.5-flash-lite';
-  var FALLBACKS = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest'];
+  var DEFAULT_MODEL = 'gemini-3.6-flash';
+  var FALLBACKS = ['gemini-3.6-flash', 'gemini-3.8-flash', 'gemini-4-hydrogen'];
   var PLATFORMS = { claude: ['Claude', 'https://claude.ai/new'], chatgpt: ['ChatGPT', 'https://chatgpt.com/'], gemini: ['Gemini', 'https://gemini.google.com/app'] };
   function modelInfo(id) { return MODELS.filter(function (m) { return m.id === id; })[0] || null; }
   function fail(msg, kind) { var e = new Error(msg); e.kind = kind; return e; }

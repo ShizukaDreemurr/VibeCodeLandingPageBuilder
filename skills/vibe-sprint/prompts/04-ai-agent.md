@@ -19,7 +19,7 @@ THE REAL API (js/ai.js; do not invent names)
 - spec = { id, prompt: function (input) -> string | string, schema, mock: function (input) -> object, temperature? }. The framework appends the JSON-shape instructions and the "do not invent numbers/names" line to the prompt automatically, then validates/coerces the result against `schema`, retries once on a bad shape, and falls back to spec.mock with a warning.
 - schema types: string{min,max,enum,optional}, number{min,max,integer}, boolean, array{of,min,max}, object{props}; every field is required unless optional:true.
 - Rendering: `EP.ai.noticeHtml(result)` (mock -> the MOCK_NOTICE pill; gemini/paste -> "kiểm tra lại" note), `EP.ai.mountModePicker(el)`, `EP.ai.mountSettings(el)` (already used in the Cài đặt view), `EP.ai.getMode()`, `EP.ai.validate(value, schema)`, `EP.ai.extractJson(text)`.
-- Gemini key: entered by the user in Cài đặt, kept in page memory (localStorage only if they tick "Nhớ key"); sent in header x-goog-api-key; model list/fallbacks in EP.ai.MODELS / FALLBACKS (default gemini-3.5-flash-lite). Never log, commit or hard-code a key.
+- Gemini key: entered by the user in Cài đặt, kept in page memory (localStorage only if they tick "Nhớ key"); sent in header x-goog-api-key; model list/fallbacks in EP.ai.MODELS / FALLBACKS (default gemini-3.6-flash; list: 3.6 Flash, 3.8 Flash, 4 Hydrogen — no Lite, no Pro). Never log, commit or hard-code a key.
 - Helpers for mocks (js/mock.js): EP.mock.hash / rng / pick / pickN / keywords / sentiment / classify / template; (js/match.js) EP.text.normalize, EP.match.faq / search; (js/metrics.js) EP.metrics.*.
 
 AI INTERACTIONS TO PROVIDE (keep these exact spec names, input shapes and schemas; they are the contract for feature agents):

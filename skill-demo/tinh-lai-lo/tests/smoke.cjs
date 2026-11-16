@@ -211,7 +211,7 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
     return { res, calls, models };
   })().catch((e) => ({ err: String(e) }));
   ok('Gemini: sai định dạng được thử lại + clamp schema', gem.res && gem.res.mode === 'gemini' && gem.res.p === 5, gem);
-  ok('Gemini: header key + đổi model khi 429', gem.models && gem.models[0] === 'gemini-3.5-flash-lite' && gem.models[1] === 'gemini-3.1-flash-lite', gem.models);
+  ok('Gemini: header key + đổi model khi 429', gem.models && gem.models[0] === 'gemini-3.6-flash' && gem.models[1] === 'gemini-3.8-flash', gem.models);
   const fb = await page.evaluate(() => EP.ai.generate({ prompt: 'x', schema: { type: 'object', props: { a: { type: 'string' } } }, mock: () => ({ a: 'mock' }) }, { mode: 'gemini', key: 'SAI', instant: true }).then((r) => ({ mode: r.mode, notice: r.notice, w: r.warnings.length })));
   ok('Gemini lỗi key -> rơi về mock có notice', fb.mode === 'mock' && fb.notice.includes('mô phỏng AI') && fb.w === 1, fb);
   await page.unroute('**/generativelanguage.googleapis.com/**');
