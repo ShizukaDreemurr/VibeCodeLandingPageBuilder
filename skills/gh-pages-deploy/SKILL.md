@@ -72,6 +72,6 @@ gh api -X PUT repos/OWNER/REPO/pages -f "source[branch]=main" -f "source[path]=/
 
 ## Tài liệu & script
 
-- `references/01-route-claude-code.md`, `02-route-mcp-only.md`, `03-route-browser.md`, `04-troubleshooting.md`
+- `references/01-route-claude-code.md`, `02-route-mcp-only.md`, `03-route-browser.md`, `04-troubleshooting.md`, `05-nextjs.md` (Next.js static export + GitHub Actions)
 - `scripts/preflight.sh <dir>`: kiểm tra + tạo `.nojekyll` + in số file/dung lượng.
 - `scripts/verify-pages.sh <url> [giây-tối-đa]`: chờ đến khi HTTP 200 và in `<title>`.
