@@ -1,79 +1,114 @@
 # 05 — Thuyết trình, demo trực tiếp và hỏi đáp
 
-Thời lượng tổng thường ~5–7 phút trình bày + 5 phút hỏi đáp (xác nhận lại với BTC ngay khi bốc đề). Slide dựng từ `deck/` bởi deck agent (`node deck/tools/capture.cjs` chụp ảnh **thật** từ app, `node deck/tools/export.cjs` xuất PDF dự phòng vào `deck/out/`).
+Pitch chung kết **10 phút** (xác nhận lại với BTC ngay khi bốc đề; thời lượng khác thì co giãn theo tỉ lệ ở run-sheet) + hỏi đáp. Đội 3 người, **vai cố định**:
 
-## Cấu trúc 5–7 phút (12 slide của `deck/`, ~6:50)
+| Người | Vị trí | Thời lượng | Slide | Phần việc |
+|---|---|---|---|---|
+| Diệu Anh | Đầu | ~2:30–3:00 | 1–3 | bài toán, nỗi đau, giới thiệu sơ bộ UI/UX |
+| Vũ Trí Dũng | Giữa | ~3:30–4:00 | 4–7 | tính năng chính + demo thao tác |
+| Nguyên (trưởng nhóm) | Cuối | ~3:00–3:30 + Q&A | 8–11 | kỹ thuật (kiến trúc, AI/proxy, kiểm thử, bảo mật), tổng kết, phản biện |
 
-Dựng bằng `deck/` (điền dữ liệu `deck/deck.data.js`, không sửa layout; chi tiết ở `deck/README.md`). Phím: `←/→` chuyển, `N` ghi chú + đồng hồ, `F` toàn màn hình, `Ctrl+P` in PDF.
+Nguyên là **neo dự phòng**: nếu hai bạn trước lố giờ, Nguyên rút gọn phần kỹ thuật bằng bản 3:30 / 2:00 / 1:00 (xem `templates/KICH-BAN-DEMO.md` mục 3).
 
-| # | Slide (`type`) | Nội dung | Giờ |
-|---|---|---|---|
-| 1 | cover | Chào, tên đội + app + khẩu hiệu 1 dòng, đề số, bảng thi | 0:15 |
-| 2 | problem | 1 persona, 1 nỗi đau có số/ví dụ thật | 0:40 |
-| 3 | solution | Giải pháp trong 1 câu, chỉ vào ảnh | 0:30 |
-| 4 | features | 5 tính năng, nhấn 1–2 quy tắc nghiệp vụ | 0:40 |
-| 5 | flow | 3–5 bước dùng | 0:30 |
-| 6 | demo | **Demo trực tiếp** (xem kịch bản); mất mạng thì video/ảnh | 1:30 |
-| 7 | ai | AI để xây vs AI trong sản phẩm; thật vs mô phỏng (nhãn nguyên văn đề/BTC); prompt → kiểm tra → dự phòng | 0:50 |
-| 8 | quality | Bảng ca kiểm thử (số thật), mobile, sáng/tối, nói thẳng lỗi còn lại | 0:40 |
-| 9 | metrics | 3–4 con số kiểm chứng được | 0:25 |
-| 10 | roadmap | Giới hạn thật + bước tiếp theo | 0:20 |
-| 11 | team | Vai trò | 0:15 |
-| 12 | thanks | QR + link, mời "Hỏi đáp" | 0:15 |
+Tài liệu đi kèm: `templates/KICH-BAN-DEMO.md` (run-sheet nguồn sự thật), `templates/CUE-CARDS.md` (thẻ in tay), `templates/HOI-DAP.md` (câu hỏi gắn người trả lời), `prompts/12-claude-design-slide.md` (slide), `deck/` (khung slide).
 
-Chỉ có 5 phút: bỏ slide 5 và 11, rút demo còn 1:00. Slide AI: nếu app dùng mock, ghi đúng câu nhãn mà BTC yêu cầu (chép nguyên văn, không dùng câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI` nếu đề chung kết khác).
+## Vì sao không học thuộc kịch bản dài
 
-Luật slide: một ý mỗi slide, chữ ≥ 28pt, ảnh chụp app thật thay vì minh hoạ chung, tiếng Việt có dấu, không đọc nguyên slide.
+Rehearsal thực tế: một bạn run, vấp khi lạc khỏi bản thuộc, và chậm phản ứng khi đổi slide, nên cả đội lố giờ. Kịch bản thuộc lòng đổ vỡ ngay khi quên một câu. Thay bằng:
 
-## Kịch bản demo trực tiếp (2–2.5 phút)
+1. **Chỉ thuộc 3 thứ**: câu mở của mình, câu chuyền mic, và 3 neo của mỗi slide.
+2. **Nói theo neo**, mỗi lần nói lại một cách khác cũng được, miễn đủ ý.
+3. **Giờ do slide quyết định**, không do lời nói quyết định (mốc cứng bên dưới).
 
-1. Mở **link online** (tab đã tải sẵn, đã tải trước dữ liệu demo). Cửa sổ trình duyệt 100% zoom, đóng thông báo/tab khác.
-2. Nói 1 câu bối cảnh người dùng ("Chị Lan là chủ quán...").
-3. Đi **đúng luồng 5 tính năng theo thứ tự đề**, mỗi cái 20–30 giây, tập trung kết quả thấy được.
-4. Chèn **1 ca đầu vào sai** (email sai → thấy cảnh báo) và **1 ca biên** (trùng/hết hạn) — để lộ nghiệp vụ.
-5. Chỉ nhãn mô phỏng AI (nếu dùng mock; đúng câu BTC yêu cầu) hoặc gọi AI thật bằng key nhập sẵn ở Cài đặt (tick "Nhớ key" chỉ trên máy cá nhân).
-6. Chuyển Sáng/Tối 1 lần, thu nhỏ cửa sổ/điện thoại thật để thấy mobile.
-7. Kết: quay về slide giới hạn.
+## Cue Card: 3 neo mỗi slide
 
-Tập demo **ít nhất 2 lần đầy đủ** ở T+52→58 với đồng hồ. Phân vai: 1 người nói, 1 người thao tác (hoặc 1 người làm cả hai nếu ít người).
+Mỗi slide đúng 3 neo, mỗi neo ≤ 15 giây (slide ≈ 45 giây):
 
-## Phương án dự phòng (chuẩn bị trước T+52)
+| Ký hiệu | Neo | Ví dụ (điền theo app) |
+|---|---|---|
+| **V** | 1 câu vấn đề (vì sao slide này tồn tại) | "Chủ quán mất 40 phút mỗi tối để tính lãi lỗ." |
+| **T** | 1 thao tác hoặc điểm nhấn (chỉ vào đâu, bấm gì) | "Bấm Nhập doanh thu, chỉ ô báo lỗi đỏ." |
+| **S** | 1 con số chứng minh, **đã in to trên slide** | "40 phút xuống còn 3 phút." |
 
-- **Video quay màn hình ≤ 2 phút** (5 tính năng) lưu sẵn trên máy + USB/điện thoại; mở được offline.
-- **Bản local:** `python3 -m http.server 8211` trong thư mục app (rồi mở `http://localhost:8211/?demo=1`) (hoặc mở `index.html` bằng `file://` nếu app không cần server).
-- **Ảnh chụp 5 tính năng** trong slide phụ ("Dự phòng") nếu cả hai đều hỏng.
-- Quy tắc: demo hỏng >10 giây → chuyển sang dự phòng, **đừng sửa trực tiếp trên sân khấu**. Nói bình tĩnh: "Mạng đang chậm, em chuyển sang bản quay sẵn".
-- Dữ liệu demo đặt lại bằng nút "Nạp lại dữ liệu demo" ở Cài đặt (hoặc mở `?demo=1`) trước khi vào phòng.
+Quy tắc viết neo: mỗi neo ≤ 12 từ, là cụm từ không phải câu văn; con số `S` phải có thật trong repo (`BANG-KIEM-THU.md`, đo thời gian thật). Thẻ in sẵn ở `templates/CUE-CARDS.md`; thẻ sinh từ run-sheet, sửa run-sheet trước.
 
-## Hỏi đáp Bảng B (cách dùng, nghiệp vụ, quá trình cải thiện AI)
+## Mốc giờ cứng theo slide
 
-Chuẩn bị 1 câu trả lời 20–30 giây cho từng câu; ai trả lời đã phân sẵn.
+Run-sheet 11 slide: Diệu Anh 00:00–02:30 (slide 1–3), Dũng 02:30–06:15 (slide 4–7), Nguyên 06:15–09:45 (slide 8–11), đệm 15 giây cuối.
 
-**Cách dùng**
-- Người dùng bắt đầu từ đâu, mất bao lâu để hoàn thành việc chính? (đo bằng số thật: "dưới 3 phút")
-- Ai là người dùng chính, họ dùng mỗi ngày/tuần ra sao?
-- Nếu người dùng nhập sai thì sao? (chỉ ca validation đã demo)
+- Mỗi slide có **mốc cứng**; thường ≤ 45 giây, tối đa 60 giây cho slide bài toán/giải pháp/kỹ thuật. Slide demo chia theo thao tác, mỗi thao tác ≤ 25 giây.
+- **Lố mốc cứng là chuyển ngay**, kể cả đang nói dở: nói câu chuyền slide rồi bấm. Ưu tiên giữ neo `S` (con số), bỏ lời giải thích.
+- Người giữ đồng hồ: Nguyên (đồng hồ phím `N` trong `deck.html`, hoặc đồng hồ tay). Điểm kiểm 02:30 và 06:15.
+- Trễ ở điểm kiểm: Diệu Anh trễ > 20 giây thì Dũng gộp slide 5 vào slide 4; vào phần Nguyên trễ thì chọn bản rút gọn theo bảng của run-sheet (≤ 06:30 đủ 3:30 · ≤ 07:45 rút gọn 2:00 · sau đó 1:00).
 
-**Nghiệp vụ**
-- Quy tắc nghiệp vụ chính là gì, vì sao chọn vậy? (nêu theo Input→Quy tắc→Output→Lưu trữ)
-- Xử lý trùng / hết hạn / hết chỗ / dữ liệu rỗng thế nào?
-- Dữ liệu lưu ở đâu, mất khi nào? (nói thật: localStorage trên 1 máy; hướng phát triển: cloud)
-- Khác gì cách làm thủ công / công cụ hiện có? Giá trị đo được?
+## Câu chuyền mic (cố định 1 câu, điền chỗ trống)
 
-**Quá trình cải thiện AI**
-- Prompt đầu tiên là gì, lỗi gì xuất hiện, sửa thế nào? Cho **một ví dụ trước/sau thật** (có ảnh trong minh chứng AI).
-- AI nào dùng để *xây* (Claude Code...) và AI nào dùng *trong sản phẩm*? Phần nào mock?
-- Kiểm soát đầu ra: schema/parse JSON chịu lỗi, thiếu trường thì bù, dữ kiện chính xác lấy từ form không để AI bịa.
-- Khi AI sai thì app xử lý ra sao? Nhãn mô phỏng ở đâu?
-- Cách chia việc cho nhiều agent song song, kiểm chứng bằng test và ảnh chụp.
+Chuyền mic là điểm dễ đứng hình nhất, nên **đúng một câu, thuộc lòng, không ứng biến**:
 
-**Bảng A bổ sung** (nếu thi bảng A): vì sao chọn vanilla/không build; cách tách module; cách test (số ca, e2e); bảo mật key (không vào code, `***`, người dùng tự nhập); xử lý lỗi mạng/AI; thiết kế dữ liệu.
+| Từ → Đến | Mẫu câu (điền `{...}`) |
+|---|---|
+| Diệu Anh → Dũng | "Em xin gửi **Dũng** đi vào {tính năng nổi bật} và làm thử ngay cho mọi người xem." |
+| Dũng (slide 5 → demo) | "Giờ mình **bấm thật**." |
+| Dũng → Nguyên | "Phần bên trong chạy thế nào, mình xin nhường **Nguyên**." |
+| Nguyên → BGK | "Cảm ơn ban giám khảo, đội xin nhận câu hỏi." |
 
-**Mẹo trả lời:** nhận giới hạn trước khi bị hỏi; chỉ nói điều đã chạy thật; "chưa làm, sẽ làm như sau..." tốt hơn nói quá. Không nói "AI làm hết".
+Người nhận mic **luôn bắt đầu bằng câu mở của mình** (1 câu thuộc lòng, ví dụ trong thẻ) rồi mới vào neo. Người vừa nói xong lùi 1 bước, đứng yên nhìn slide.
+
+## Chống run (cho người dễ căng thẳng)
+
+1. **Thở 4-4-4** trước khi nhận mic: hít 4 giây, giữ 4 giây, thở ra 4 giây, lặp 2 vòng (làm được cả lúc đứng chờ).
+2. **Chỉ 1 câu mở thuộc lòng.** Mọi thứ sau đó là nói theo neo.
+3. **Nhìn neo trên slide**, không nhìn giấy dài, không nhìn đồng đội. Slide có số to chính là cue.
+4. **Nếu quên: đọc con số trên slide rồi nói vì sao nó quan trọng** ("con số 3 phút này cho thấy người dùng không phải học gì thêm"). Không xin lỗi, không im lặng quá 3 giây.
+5. Nói chậm hơn bình thường 10%, dừng nửa nhịp sau mỗi con số.
+6. Sai một chữ thì bỏ qua, đi tiếp. Khán giả không biết kịch bản của bạn.
+7. Tập "lạc khỏi kịch bản": mỗi buổi tập, 1 người bị yêu cầu bỏ một câu bất kỳ, cả đội vẫn giữ đúng mốc giờ.
+
+## Bấm chuyển slide (clicker)
+
+- **Người nói tự bấm slide của mình**, bấm ngay khi nói xong câu cuối của neo `S`. Một người một clicker; chuyền clicker cùng lúc với mic.
+- Nếu không có clicker thứ hai: **Nguyên bấm theo hiệu tay** của người nói (người nói giơ 1 ngón tay = "bấm tới", 2 ngón = "lùi"). Hiệu tay thống nhất trước khi vào phòng.
+- Slide đổi, **nói ngay câu đầu của neo `V`** mới (đừng chờ). Tập đúng thao tác "bấm → nhìn slide → nói neo V" 10 lần liền.
+- Mở sẵn `deck.html` toàn màn hình (`F`), kiểm tra phím `←/→` chạy, đã mở PDF dự phòng ở cửa sổ khác.
+- Bấm nhầm: không giải thích, bấm lại, nói neo của slide hiện tại.
+
+## Demo lỗi: phương án dự phòng (chuẩn bị trước T+52)
+
+- **Video quay màn hình 30 giây** (luồng chính) lưu máy + USB/điện thoại, mở sẵn ở tab riêng, mở được offline.
+- **Ảnh chụp** các tính năng trong slide phụ ("Dự phòng") nếu cả hai đều hỏng; chụp từ app thật bằng `deck/tools/capture.cjs`.
+- **Bản local:** `python3 -m http.server 8211` trong thư mục app (mở `http://localhost:8211/?demo=1`) hoặc `file://` nếu app không cần server.
+- Quy tắc: demo hỏng **> 10 giây thì chuyển ngay** sang video/ảnh, **không sửa trên sân khấu**. Câu nói bình tĩnh: "Mạng đang chậm, em chuyển sang bản quay sẵn của đúng bản này."
+- Dữ liệu demo đặt lại bằng "Nạp lại dữ liệu demo" ở Cài đặt (hoặc `?demo=1`) trước khi vào phòng.
+- Luồng demo (slide 6–7): thao tác mỗi cái ≤ 25 giây; luôn có 1 ca nhập sai và 1 ca biên; xem bảng chi tiết ở `KICH-BAN-DEMO.md` mục 4. Nhãn mô phỏng AI chép **nguyên văn** theo đề/BTC (`{{MOCK_NOTICE}}`).
+
+## Luật slide
+
+Một ý mỗi slide, chữ ≥ 28pt (trên 1920×1080 chữ nội dung ≥ 22px), mỗi slide có **1 con số lớn hoặc 1 ảnh chụp app thật** làm điểm tựa thị giác, ghi chú người nói nằm trong notes (không đặt tên người nói lên slide), tiếng Việt có dấu, không đọc nguyên slide. Dựng bằng `deck/` (điền `deck/deck.data.js`; `notes` có người nói + mốc giờ + 3 neo) hoặc `prompts/12-claude-design-slide.md`.
+
+## Hỏi đáp: ai trả lời câu gì
+
+Chuẩn bị mỗi câu: **1 câu trả lời ngắn trước (≤ 10 giây)**, rồi mới bằng chứng và giới hạn (tổng 20–30 giây). `templates/HOI-DAP.md` gắn sẵn người trả lời cho từng câu.
+
+| Loại câu hỏi | Người trả lời | Ví dụ |
+|---|---|---|
+| Người dùng, bối cảnh, nỗi đau, UI/UX | **Diệu Anh** | Ai dùng? Bắt đầu từ đâu? Vì sao giao diện này? |
+| Tính năng, nghiệp vụ, thao tác, xử lý ca sai/biên | **Dũng** | Trùng/hết chỗ/hết hạn xử lý sao? Khác gì làm thủ công? |
+| Kỹ thuật, AI/proxy, kiểm thử, bảo mật, dữ liệu, mở rộng | **Nguyên** | Key lưu ở đâu? AI thật hay mô phỏng? Test bao nhiêu ca? |
+| Câu không rõ của ai, câu "vì sao đội chọn…", câu bẫy, câu ngoài phạm vi | **Nguyên** | Nguyên là **lưới bắt** mọi câu còn lại |
+
+Luật phối hợp:
+- Ai được hỏi trực tiếp thì tự trả lời; không rõ thì nhìn Nguyên, Nguyên chỉ định hoặc nhận luôn.
+- Trả lời xong 20–30 giây là dừng; ai có bổ sung thì nói "em bổ sung một ý" (tối đa 1 người bổ sung).
+- Không hiểu câu hỏi: nhắc lại bằng lời mình ("Em hiểu câu hỏi là … đúng không ạ?") để câu giờ và xác nhận.
+- Nhận giới hạn trước khi bị hỏi; chỉ nói điều đã chạy thật; "chưa làm, sẽ làm như sau…" tốt hơn nói quá. Không nói "AI làm hết".
+
+Các nhóm câu thường gặp (đầy đủ ở `HOI-DAP.md`): cách dùng; nghiệp vụ; dữ liệu thật hay mô phỏng; vòng cải thiện bằng AI (prompt đầu, lỗi, sửa, ví dụ trước/sau thật); giới hạn và mở rộng; bảng A: vì sao vanilla, tách module, số ca test, bảo mật key.
 
 ## Việc cần có trước khi vào phòng
 
 - [ ] Link online mở được trên điện thoại (QR trên slide cuối).
-- [ ] Video dự phòng + bản local chạy.
-- [ ] 1 người học thuộc 3 số: số tính năng đạt, số ca kiểm thử đạt, thời gian hoàn thành luồng chính.
-- [ ] Phân vai nói/thao tác, tập đủ giờ.
+- [ ] Video dự phòng 30 giây + bản local chạy; ảnh dự phòng trong slide phụ.
+- [ ] In `CUE-CARDS.md` (3 thẻ, mỗi người một thẻ), kiểm tra mốc giờ khớp run-sheet.
+- [ ] Mỗi người thuộc: câu mở, câu chuyền, và con số `S` của slide mình; Nguyên thuộc cả ba bản 3:30 / 2:00 / 1:00.
+- [ ] Thống nhất hiệu tay (bấm tới / lùi / cắt) và ai giữ clicker.
+- [ ] Tập đủ 2 lần có đồng hồ, trong đó 1 lần cố ý trễ 40 giây để Nguyên tập chọn bản rút gọn.

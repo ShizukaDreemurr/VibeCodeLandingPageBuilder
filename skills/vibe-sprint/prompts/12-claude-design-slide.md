@@ -5,9 +5,9 @@
 ---
 
 ```markdown
-Bạn là **Chuyên gia Thiết kế Trình chiếu (Slide UI/UX Designer)** của đội **Xclipse (FPT Polytechnic Hà Nội)** tại Chung kết **VIBE-CODING 2026 (Bảng B – Kinh tế)**.
+Bạn là **Chuyên gia Thiết kế Trình chiếu (Slide UI/UX Designer)** của đội **Xclipse** (`{{TRUONG}}`) tại Chung kết **VIBE-CODING 2026 (Bảng B – Kinh tế)**.
 
-Hãy thiết kế một bộ slide thuyết trình **10–12 trang (tỉ lệ 16:9 · 1920×1080px)** cho sản phẩm vừa hoàn thành dưới đây. Yêu cầu **TUÂN THỦ KHẮT KHE** bộ Theme chuẩn hóa và quy tắc trình bày của Xclipse — không tự ý sáng tạo màu hoặc phong cách khác.
+Hãy thiết kế một bộ slide thuyết trình **11 trang (khớp 10 phút) (tỉ lệ 16:9 · 1920×1080px)** cho sản phẩm vừa hoàn thành dưới đây. Yêu cầu **TUÂN THỦ KHẮT KHE** bộ Theme chuẩn hóa và quy tắc trình bày của Xclipse — không tự ý sáng tạo màu hoặc phong cách khác.
 
 ---
 
@@ -44,6 +44,7 @@ Hãy thiết kế một bộ slide thuyết trình **10–12 trang (tỉ lệ 16
 
 ## 2. DỮ LIỆU ĐẦU VÀO CỦA SẢN PHẨM VỪA LÀM
 
+- **Trường / đơn vị của đội:** `{{TRUONG}}` (không dùng tên địa điểm tổ chức chung kết thay cho trường)
 - **Tên sản phẩm:** `{{TEN_APP}}`
 - **Tagline (1 câu):** `{{TAGLINE}}`
 - **Đề bài chung kết (tóm tắt 2–3 dòng):** `{{DE_BAI}}`
@@ -54,6 +55,7 @@ Hãy thiết kế một bộ slide thuyết trình **10–12 trang (tỉ lệ 16
   3. `{{TINH_NANG_3}}`
   4. `{{TINH_NANG_4}}`
   5. `{{TINH_NANG_5}}`
+- **Người nói & mốc giờ:** `{{NGUOI_1}}` (slide 1–3, 00:00–02:30) · `{{NGUOI_2}}` (slide 4–7, 02:30–06:15) · `{{NGUOI_3}}` (slide 8–11, 06:15–09:45)
 - **Điểm AI & Minh bạch:** `{{MO_TA_AI}}` (Nhãn nguyên văn: `{{MOCK_NOTICE}}`)
 - **Kết quả kiểm thử thật (`smoke.cjs` + thủ công):** `{{KET_QUA_TEST}}`
 - **Link demo online & GitHub:** `{{LINK_DEMO}}` · `{{LINK_REPO}}`
@@ -61,19 +63,38 @@ Hãy thiết kế một bộ slide thuyết trình **10–12 trang (tỉ lệ 16
 
 ---
 
-## 3. CẤU TRÚC 11 SLIDE BẮT BUỘC (THỜI LƯỢNG THUYẾT TRÌNH 5–7 PHÚT)
+## 3. CẤU TRÚC 11 SLIDE BẮT BUỘC (THỜI LƯỢNG THUYẾT TRÌNH 10 PHÚT · 3 NGƯỜI NÓI)
 
-1. **Slide 1 — Bìa (Fluted Glass Hero):** Tên sản phẩm (`Be Vietnam Pro` + `Playfair Display` italic), Tagline, Đội Xclipse · FPT Polytechnic Hà Nội · VIBE-CODING 2026.
-2. **Slide 2 — Bài toán & Nỗi đau từ đề bài:** 3 con số/vấn đề thực tế mà người dùng đang gặp phải.
-3. **Slide 3 — Giải pháp & Luồng sử dụng 3 bước:** Sơ đồ 3 bước trực quan (`Nhập/Chọn` → `Xử lý / AI gợi ý` → `Kết quả / Xuất báo cáo`).
-4. **Slide 4 — Tổng quan Giao diện Desktop:** Ảnh chụp màn hình Trang chủ (`#DBF2FC · #072D59 · #FD6E88`) + 3 chú thích điểm nổi bật.
-5. **Slide 5 — Tính năng lõi 1 & 2:** Ảnh chụp màn hình thật + giải thích giá trị kinh doanh (không liệt kê kỹ thuật khô khan).
-6. **Slide 6 — Tính năng lõi 3 & 4:** Ảnh chụp màn hình thật + biểu đồ/số liệu minh họa.
-7. **Slide 7 — Tích hợp AI & Minh bạch dữ liệu:** Cơ chế AI thực chiến (Gemini API + Mock fallback có nhãn `{{MOCK_NOTICE}}`), kèm ảnh chụp kết quả AI.
-8. **Slide 8 — Trải nghiệm Mobile `390px` & Sáng/Tối:** Ảnh chụp mobile song song Light/Dark Mode, nhấn mạnh không tràn ngang & thao tác 1 chạm.
-9. **Slide 9 — Chất lượng & Kiểm thử thực tế:** Kết quả chạy `smoke.cjs` (số ca đạt), quét bảo mật `scan-secrets.mjs`, hiệu năng/offline-ready.
-10. **Slide 10 — Khai báo AI & Phân công phát triển:** Minh bạch quy trình phối hợp **Claude (Opus/Sonnet/Haiku/Design) + Gemini/Antigravity** và giá trị kinh tế thực tế cho doanh nghiệp/người dùng.
-11. **Slide 11 — Kết & Demo trực tiếp (Fluted Glass Navy):** QR code tới `{{LINK_DEMO}}`, thông điệp chốt và lời cảm ơn Ban Giám Khảo.
+**Diệu Anh (slide 1–3, 00:00–02:30): bài toán, nỗi đau, UI/UX sơ bộ**
+1. **Slide 1 — Bìa (Fluted Glass Hero):** Tên sản phẩm (`Be Vietnam Pro` + `Playfair Display` italic), Tagline, Đội Xclipse · `{{TRUONG}}` · VIBE-CODING 2026. Điểm tựa: 1 con số mục tiêu lớn hoặc ảnh màn hình chính.
+2. **Slide 2 — Bài toán & Nỗi đau từ đề bài:** 1 persona + **1 con số nỗi đau lớn** (ví dụ "40 phút/ngày") và tối đa 2 ý phụ.
+3. **Slide 3 — Giải pháp & UI/UX sơ bộ:** 1 câu giải pháp + ảnh chụp màn hình chính (desktop) trong khung thiết bị, 1–2 chú thích điểm UI/UX; số lớn: thời gian/thao tác hoàn thành.
 
-*Lưu ý xuất bản: Giữ đồng nhất header/footer (số trang + tên sản phẩm) ở các slide nội dung, căn lưới thẳng hàng tuyệt đối, và kèm ghi chú thuyết trình ngắn (2–3 câu/slide) cho người nói.*
+**Vũ Trí Dũng (slide 4–7, 02:30–06:15): tính năng chính + demo**
+4. **Slide 4 — Tính năng lõi:** 5 tính năng cùng 1 lưới icon, nhấn 1 quy tắc nghiệp vụ; số lớn: "5/5 tính năng chạy thật".
+5. **Slide 5 — Luồng sử dụng 3 bước:** Sơ đồ (`Nhập/Chọn` → `Xử lý / AI gợi ý` → `Kết quả / Xuất báo cáo`); số lớn: thời gian từ đầu đến kết quả.
+6. **Slide 6 — Demo trực tiếp (ca thường):** khung ảnh app thật + dòng 3 thao tác ngắn + số lớn: giây phản hồi; có QR/link tới `{{LINK_DEMO}}`.
+7. **Slide 7 — Demo ca sai/biên + Mobile `390px` & Sáng/Tối:** ảnh mobile cạnh ảnh báo lỗi; số lớn: số ca lỗi bắt được; không tràn ngang, thao tác 1 chạm.
+
+**Nguyên (slide 8–11, 06:15–09:45): kỹ thuật, tổng kết, phản biện**
+8. **Slide 8 — Kiến trúc & AI/proxy & Minh bạch AI:** 1 sơ đồ duy nhất (UI → logic → AI qua proxy/mô phỏng → lưu trữ), nhãn `{{MOCK_NOTICE}}` nguyên văn, ghi công cụ AI đội dùng (Claude Opus/Sonnet/Haiku/Design cùng Gemini/Antigravity); số lớn: số module hoặc điểm kiểm soát AI.
+9. **Slide 9 — Kiểm thử & Bảo mật:** kết quả `smoke.cjs` (số ca đạt/tổng), quét `scan-secrets.mjs`; **số lớn** "N/M ca đạt".
+10. **Slide 10 — Giá trị đo được & giới hạn:** 3 con số kiểm chứng được, 1 giới hạn nói thẳng, bước tiếp theo.
+11. **Slide 11 — Kết (Fluted Glass Navy):** QR tới `{{LINK_DEMO}}`, 1 câu chốt, lời cảm ơn, mời hỏi đáp.
+
+## 4. YÊU CẦU CHO NGƯỜI NÓI (PITCH 10 PHÚT, 3 NGƯỜI)
+
+- **Số slide khớp 10 phút = 11 slide**, ánh xạ người nói: **Diệu Anh** slide 1–3 (bài toán, nỗi đau, UI/UX sơ bộ) · **Vũ Trí Dũng** slide 4–7 (tính năng + demo) · **Nguyên** slide 8–11 (kỹ thuật, tổng kết). Đổi tên người theo `{{NGUOI_1}}`, `{{NGUOI_2}}`, `{{NGUOI_3}}` nếu cần.
+- **Speaker notes mỗi slide (bắt buộc)** theo đúng khuôn 4 dòng:
+  1. `Người nói: <tên>`
+  2. `Mốc giờ: <mm:ss–mm:ss> (cứng <mm:ss>)`
+  3. `3 neo: V <1 câu vấn đề> · T <1 thao tác/điểm nhấn> · S <1 con số>`
+  4. `Chuyền mic: <1 câu cố định>` (chỉ ở slide cuối của mỗi người; còn lại ghi "—")
+- **KHÔNG đặt tên người nói lên slide** (không name tag ở góc). Giữ slide sạch; tên người chỉ nằm trong speaker notes.
+- **Mỗi slide có đúng 1 điểm tựa thị giác:** hoặc **1 con số lớn** (≥ 120px, `tabular-nums`, màu Navy/Coral) hoặc **1 ảnh chụp app thật**. Con số lớn chính là neo `S` của slide đó; không đặt quá 1 con số to cạnh tranh nhau.
+- Mỗi slide tối đa 3 khối thông tin tương ứng 3 neo; chữ gọn để người nói chỉ cần liếc con số là nhớ ý.
+- Slide 6–7 (demo): khung ảnh app + dòng thao tác ngắn; slide phụ "Dự phòng" ở cuối bộ (ảnh chụp 5 tính năng) không tính vào 11 slide.
+- Xuất kèm PDF dự phòng và ảnh PNG từng slide.
+
+*Lưu ý xuất bản: Giữ đồng nhất header/footer (số trang + tên sản phẩm) ở các slide nội dung, căn lưới thẳng hàng tuyệt đối, và kèm speaker notes theo khuôn ở mục 4.*
 ```

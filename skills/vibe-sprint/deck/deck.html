@@ -600,7 +600,7 @@ function start(deck){
   function renderNotes(){
     var s=slides[cur]||{},nx=slides[cur+1];
     var el=Math.floor((Date.now()-t0)/1000),mm=String(Math.floor(el/60)).padStart(2,'0'),ss=String(el%60).padStart(2,'0');
-    notes.innerHTML='<div class="nh"><span>Slide '+(cur+1)+' / '+n+' · '+esc(s.type)+'</span>'+(s.time?'<span>Gợi ý: '+esc(s.time)+'</span>':'')+'<span class="t">⏱ '+mm+':'+ss+'</span></div><div class="nb">'+(s.notes?esc(s.notes):'(Chưa có ghi chú — thêm field notes cho slide này)')+'</div>'+(nx?'<div class="nx">Tiếp theo: '+esc(nx.type)+(nx.title?' — '+esc(String(nx.title).replace(/\{\{|\}\}|\*\*/g,'')):'')+'</div>':'');
+    notes.innerHTML='<div class="nh"><span>Slide '+(cur+1)+' / '+n+' · '+esc(s.type)+'</span>'+(s.speaker?'<span>Người nói: '+esc(s.speaker)+'</span>':'')+(s.time?'<span>Gợi ý: '+esc(s.time)+'</span>':'')+'<span class="t">⏱ '+mm+':'+ss+'</span></div><div class="nb">'+(s.notes?esc(s.notes):'(Chưa có ghi chú — thêm field notes cho slide này)')+'</div>'+(nx?'<div class="nx">Tiếp theo: '+esc(nx.type)+(nx.title?' — '+esc(String(nx.title).replace(/\{\{|\}\}|\*\*/g,'')):'')+'</div>':'');
   }
   function go(i,dir){
     i=Math.max(0,Math.min(n-1,i));if(i===cur)return;

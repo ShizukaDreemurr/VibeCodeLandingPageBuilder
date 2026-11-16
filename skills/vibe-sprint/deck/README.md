@@ -7,7 +7,7 @@ Phím: `←/→/Space` chuyển slide · `N` ghi chú + đồng hồ · `F` toà
 ## Quy trình 5 phút
 
 1. **Sao chép mẫu**: `cp template.data.js deck.data.js` (xem bản hoàn chỉnh: `deck.html?data=example.data.js`).
-2. **Điền 12 ô** đánh số `[1]`–`[12]` trong `deck.data.js`: tên app · tagline · đề/bảng/đội · persona+nỗi đau · tình huống · giải pháp một câu · 5 tính năng · link live + video · AI thật/mô phỏng/kiểm soát · bảng kiểm thử · 3–4 con số · thành viên. QR tự sinh từ `meta.liveUrl`.
+2. **Điền các ô** đánh số `[1]`–`[11]` trong `deck.data.js`: tên app · tagline · đề/bảng/đội · persona+nỗi đau · tình huống · giải pháp một câu · 5 tính năng · link live + video · AI thật/mô phỏng/kiểm soát · bảng kiểm thử · 3–4 con số. QR tự sinh từ `meta.liveUrl`.
 3. **Chụp ảnh** (app chạy local, ví dụ `python3 -m http.server 8225` (cổng deck trong bảng cổng của skill; không dùng 8000) ở thư mục gốc app):
    `cp tools/capture.example.json tools/capture.json`, sửa `base` (file mẫu ghi `http://localhost:8225/`, đổi thành cổng bạn đang dùng) và `views`, rồi `node tools/capture.cjs tools/capture.json`.
    File mẫu nhắm vào route của starter (`#/home`, `#/example`): đổi `example` thành id feature thật, đổi selector theo form của bạn. Bước (`steps`): `click`, `fill:[sel,text]`, `select:[sel,value]`, `press`, `wait`, `waitFor`, `hide`, `scroll`, `eval`, `optionalClick`, `storage`.
@@ -34,28 +34,27 @@ Yêu cầu: Node + Playwright (`npm i -g playwright && npx playwright install ch
 | team | members[{name,role,did,photo}], stack[] |
 | thanks | title, subtitle, cta, url, videoUrl, qrLabel |
 
-Mọi slide: `eyebrow`, `title`, `notes` (bấm N), `time`. Chữ: `**đậm**`, `{{nhấn gradient}}`. Đổi màu theo đề: `meta.accent` / `meta.accent2`. Dữ liệu cũng có thể dán JSON vào thẻ `<script id="deck-data">` trong `deck.html`. Thứ tự nạp: JSON inline > `?data=` > `deck.data.js` > `example.data.js`.
+Mọi slide: `eyebrow`, `title`, `notes` (bấm N), `time`, và `speaker` (người nói, chỉ hiện trong ghi chú, không lên slide). Khuôn `notes` cho pitch 3 người: dòng `Người nói`, dòng `Mốc giờ`, ba dòng neo `V` (vấn đề) / `T` (thao tác, điểm nhấn) / `S` (con số), dòng `Chuyền mic`; xem `template.data.js` và `templates/KICH-BAN-DEMO.md`. Chữ: `**đậm**`, `{{nhấn gradient}}`. Đổi màu theo đề: `meta.accent` / `meta.accent2`. Dữ liệu cũng có thể dán JSON vào thẻ `<script id="deck-data">` trong `deck.html`. Thứ tự nạp: JSON inline > `?data=` > `deck.data.js` > `example.data.js`.
 
 Demo trực tiếp: `iframe:true` thêm nút "Chạy trực tiếp"; nếu app chặn iframe hoặc mất mạng, ảnh `image` vẫn hiện. Trung thực: không ghi "thật" cho tình huống dựng sẵn, nêu rõ AI mô phỏng.
 
-## Kịch bản thuyết trình 5–7 phút (12 slide, ~6:50)
+## Kịch bản thuyết trình 10 phút (11 slide, 3 người nói)
 
-| Slide | Nội dung | Thời gian |
-|---|---|---|
-| 1 cover | Chào, tên đội, đề, bảng, hứa gì trong 6 phút | 0:15 |
-| 2 problem | Persona + nỗi đau + 1 tình huống cụ thể | 0:40 |
-| 3 solution | Giải pháp một câu, chỉ vào ảnh | 0:30 |
-| 4 features | 5 tính năng, nhấn 1–2 quy tắc nghiệp vụ | 0:40 |
-| 5 flow | 3–5 bước dùng | 0:30 |
-| 6 demo | Demo live (ca thường, ca sai, ca biên); mất mạng thì video/ảnh | 1:30 |
-| 7 ai | Thật vs mô phỏng, prompt→kiểm tra→dự phòng | 0:50 |
-| 8 quality | Bảng ca kiểm thử, nói thẳng lỗi còn lại | 0:40 |
-| 9 metrics | 3–4 con số kiểm chứng được | 0:25 |
-| 10 roadmap | Bước tiếp theo | 0:20 |
-| 11 team | Vai trò | 0:15 |
-| 12 thanks | QR + link, mời "Hỏi đáp" | 0:15 |
+| Slide | Người nói | Nội dung | Mốc giờ |
+|---|---|---|---|
+| 1 cover | Diệu Anh | Chào, tên app, 1 câu hứa | 00:00–00:35 |
+| 2 problem | Diệu Anh | Persona + nỗi đau + 1 con số | 00:35–01:30 |
+| 3 solution | Diệu Anh | Giải pháp một câu, UI/UX sơ bộ | 01:30–02:30 |
+| 4 features | Dũng | 5 tính năng, 1 quy tắc nghiệp vụ | 02:30–03:15 |
+| 5 flow | Dũng | Luồng 3–5 bước | 03:15–03:55 |
+| 6 demo | Dũng | Demo ca thường (mỗi thao tác ≤ 25s) | 03:55–05:10 |
+| 7 demo | Dũng | Ca sai, ca biên, mobile | 05:10–06:15 |
+| 8 ai | Nguyên | Kiến trúc, AI/proxy, nhãn mô phỏng | 06:15–07:15 |
+| 9 quality | Nguyên | Kiểm thử, bảo mật | 07:15–08:15 |
+| 10 metrics | Nguyên | Con số kiểm chứng, giới hạn | 08:15–09:00 |
+| 11 thanks | Nguyên | Tổng kết, QR, mời hỏi đáp | 09:00–09:45 |
 
-Nếu chỉ có 5 phút: bỏ slide 5 và 11, rút demo còn 1:00. Tập nói 2 lần với đồng hồ (phím N).
+Đệm 15 giây cuối. Nguyên rút gọn: bản 2:00 bỏ slide 10, bản 1:00 chỉ slide 9 rồi 11. Bấm `N` để xem người nói, mốc giờ, 3 neo và đồng hồ. Cần slide Roadmap/Team thì thêm loại `roadmap`/`team` vào cuối (ngoài 10 phút) hoặc dùng ở bản dài. Tập nói 2 lần với đồng hồ. Thẻ in tay: `templates/CUE-CARDS.md`.
 
 ## Cấu trúc
 
