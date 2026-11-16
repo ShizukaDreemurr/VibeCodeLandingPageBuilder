@@ -7,3 +7,7 @@ compatibility_date = "2025-01-15"
 ALLOWED_ORIGINS = "https://xclipsex.github.io,http://localhost:8216"
 # Tuỳ chọn: RATE_LIMIT = "30"
 # KHÔNG đặt GEMINI_API_KEY ở đây. Dùng: npx wrangler secret put GEMINI_API_KEY
+
+# Ghim vùng chạy Worker về US East để tránh Cloudflare định tuyến qua POP bị Gemini chặn (vd: HKG)
+[placement]
+region = "aws:us-east-1"
