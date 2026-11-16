@@ -7,12 +7,17 @@
     overflow: hidden;
     overflow-x: clip;
     background:
-      radial-gradient(95% 60% at 12% 108%, var(--hero-navy, #072D59) 0%, #0C4B8E 40%, rgba(33, 124, 224, .52) 62%, rgba(219, 242, 252, 0) 86%),
-      linear-gradient(125deg, var(--surface) 0%, var(--raised) 45%, var(--active) 100%);
+      radial-gradient(88% 42% at 12% 112%, var(--hero-navy, #072D59) 0%, #0C4B8E 32%, rgba(33, 124, 224, .34) 56%, rgba(219, 242, 252, 0) 80%),
+      linear-gradient(125deg, var(--surface) 0%, var(--raised) 48%, var(--active) 100%);
   }
 
   html[data-hero="fluted"] .hero-copy {
     max-width: 520px;
+    text-shadow: 0 1px 12px rgba(255, 255, 255, .72);
+  }
+
+  html[data-hero="fluted"][data-theme="dark"] .hero-copy {
+    text-shadow: 0 2px 14px rgba(3, 21, 43, .78);
   }
 
   html[data-hero="fluted"] .hero-visual {
