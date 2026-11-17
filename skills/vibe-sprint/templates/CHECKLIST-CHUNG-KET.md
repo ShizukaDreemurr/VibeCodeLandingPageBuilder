@@ -19,8 +19,8 @@
 ## C. Dữ liệu và nhãn
 
 - [ ] Mọi số liệu/nội dung mô phỏng hoặc mẫu có nhãn rõ cạnh nơi hiển thị (UI + README).
-- [ ] Phân biệt ba loại: **Dữ liệu BTC** · **Giả định của đội** · **Mô phỏng**.
-- [ ] Đề có đưa câu nhãn thì chép nguyên văn (`mockNotice` trong `js/config.js`, 2 assert `tests/smoke.cjs`, README, bảng kiểm thử, slide khớp nhau).
+- [ ] Phân biệt ba loại: **Dữ liệu mẫu (BTC)** · **Giả định** · **Mô phỏng** (khớp nhãn của `EP.scenario`).
+- [ ] Đề có đưa câu nhãn thì chép nguyên văn (`mockNotice` trong `js/config.js`, README, bảng kiểm thử, slide khớp nhau; `tests/smoke.cjs` tự đọc từ config).
 - [ ] Nút "Điền dữ liệu mẫu" chạy; app mở được từ trạng thái trống.
 - [ ] Không còn API key trong mã/ảnh; `node scripts/scan-secrets.mjs .` sạch.
 
@@ -40,19 +40,19 @@
 Kiểm ở cả hai độ rộng, mọi màn chính:
 Ca thử chi tiết: bảng M1–M5 trong `BANG-KIEM-THU.md`; agent Sonnet thử bằng giả lập điện thoại rồi chụp ảnh dọc.
 - [ ] 1. Không tràn ngang, không cuộn ngang (cả bảng, biểu đồ, dialog).
-- [ ] 2. Nút/ô nhập đủ to cho ngón tay (≥ 44px), không chồng nhau.
+- [ ] 2. Nút/ô nhập đủ to cho ngón tay (≥ 48px, cách nhau ≥ 8px), không chồng nhau.
 - [ ] 3. Chữ đọc được ở zoom mặc định (ô nhập ≥ 16px).
 - [ ] 4. **Mọi luồng chính** làm trọn được trên điện thoại (nhập → kết quả → lưu → xem lại).
 - [ ] 5. Điều hướng/tab rõ, luôn biết đang ở đâu.
 
 ## F. T+50→55: minh chứng thời điểm chốt (món 4)
 
-- [ ] Sau T+50 **không thêm tính năng**; không push sau khi chụp.
-- [ ] **Agent Claude Sonnet chụp** (không chụp tay, không nhờ Gemini): mở web app trên link đã chốt bằng giả lập điện thoại và chụp **ảnh điện thoại DỌC** từng màn chính (mỗi tab), **sáng + tối**, ở **360×780** và **390×844** (DPR 3): `node tools/shots-mobile.cjs <URL> docs/minh-chung-chot/390` và `... --width 360 --height 780` cho bản 360 (hoặc `node deck/tools/capture.cjs`).
+- [ ] Sau T+50 **không thêm tính năng**; không push mã sau khi chụp (chỉ được 1 commit chứa riêng ảnh `docs/minh-chung/`).
+- [ ] **Agent Claude Sonnet chụp** (không chụp tay, không nhờ Gemini): mở web app trên link đã chốt bằng giả lập điện thoại và chụp **ảnh điện thoại DỌC** từng màn chính (mỗi tab), **sáng + tối**, ở **360×780** và **390×844** (DPR 3): `node tools/shots-mobile.cjs <URL> docs/minh-chung/390` và `... docs/minh-chung/360 --width 360 --height 780` cho bản 360 (hoặc `node deck/tools/capture.cjs`); cách gọn hơn là chạy thẳng `node scripts/nop-bai.mjs` ở cuối mục này.
 - [ ] Thêm **1 ảnh desktop** (làm chứng cứ, không đưa vào slide), rồi mở từng ảnh kiểm: không tràn ngang, không banner lỗi, đúng bản đã chốt.
 - [ ] **Hoặc/và** video quay luồng chính **theo chiều dọc** trên điện thoại (không quay ngang), hiển thị rõ phiên bản/ngày giờ.
 - [ ] Ghi **hash commit** đang chạy trên link vào README và `PROGRESS.md`: `git rev-parse --short HEAD`.
-- [ ] Lưu ở `docs/minh-chung-chot/` (và bản sao ngoài repo, đề phòng).
+- [ ] Lưu ở `docs/minh-chung/` (và bản sao ngoài repo, đề phòng).
 - [ ] **Một lệnh chốt bài:** `node scripts/nop-bai.mjs --url <link demo>` kiểm tra git sạch và đã push, in hash + giờ ISO, quét bí mật, kiểm README đủ mục, chụp ảnh minh chứng có thanh chú thích vào `docs/minh-chung/<thời điểm>/`, tạo ZIP mã nguồn và in sẵn 4 món nộp (`--dry-run` để thử, `--no-shots` bỏ chụp).
 
 ## G. T+55→60: nộp 4 món

@@ -45,7 +45,7 @@ SCRIPTS="$SKILL_DIR/scripts"
 STARTER="$SKILL_DIR/starter"
 
 for f in CLAUDE.md README-du-thi.md spec-nhanh.md PROGRESS.md DECISIONS.md BANG-KIEM-THU.md \
-         MINH-CHUNG-AI.md KICH-BAN-DEMO.md HOI-DAP.md CUE-CARDS.md CHECKLIST-CHUNG-KET.md; do
+         MINH-CHUNG-AI.md KICH-BAN-DEMO.md HOI-DAP.md CUE-CARDS.md CHECKLIST-CHUNG-KET.md THE-DIEU-PHOI.md; do
   [ -f "$TPL/$f" ] || { echo "Thiếu mẫu: $TPL/$f" >&2; exit 1; }
 done
 
@@ -61,7 +61,7 @@ mkdir -p "$TARGET/docs/minh-chung-ai" "$TARGET/scripts"
 cp "$TPL/CLAUDE.md" "$TARGET/CLAUDE.md"
 cp "$TPL/README-du-thi.md" "$TARGET/README.md"
 for f in spec-nhanh.md PROGRESS.md DECISIONS.md BANG-KIEM-THU.md MINH-CHUNG-AI.md \
-         KICH-BAN-DEMO.md HOI-DAP.md CUE-CARDS.md CHECKLIST-CHUNG-KET.md; do
+         KICH-BAN-DEMO.md HOI-DAP.md CUE-CARDS.md CHECKLIST-CHUNG-KET.md THE-DIEU-PHOI.md; do
   cp "$TPL/$f" "$TARGET/docs/$f"
 done
 
@@ -148,4 +148,5 @@ Các bước tiếp theo:
   6. Bật GitHub Pages: Settings → Pages → Deploy from a branch → $BRANCH, thư mục /(root).
   7. Điền các mục <…> còn lại trong README.md và docs/ khi có thông tin (lệnh tìm: grep -rn '<' README.md docs).
   8. Bộ slide nằm ở deck/ (xem deck/README.md): cp deck/template.data.js deck/deck.data.js rồi điền.
+  9. Thẻ điều phối theo mốc T+ nằm ở docs/THE-DIEU-PHOI.md; chốt bài: node scripts/nop-bai.mjs --url <link>.
 EOF

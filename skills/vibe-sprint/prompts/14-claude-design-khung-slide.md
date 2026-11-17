@@ -64,11 +64,11 @@ Tuân thủ **nguyên văn** bộ theme, mã CSS và quy tắc dưới đây. Kh
 6. **Tương phản AA:** chữ thường ≥ 4,5:1, chữ lớn (≥ 24px) ≥ 3:1. **Cấm chữ hồng `#FD6E88` nhỏ/mảnh trên nền sáng** — chữ hồng dùng `#C93252`. Không chữ xám nhạt dưới 4,5:1.
 7. **Tiếng Việt có dấu chuẩn 100%**, font Be Vietnam Pro đủ dấu. Không font trang trí thiếu dấu. Kiểm lại: `ệ ữ ặ ẫ ợ ũ` hiển thị đúng, không bị đè dòng (line-height ≥ 1,3 cho tiêu đề, 1,45 cho thân).
 8. **Không đặt tên người nói lên slide** (không name tag). Tên người chỉ nằm trong ghi chú người nói. Chân trang: tên sản phẩm + số trang `NN / NN`.
-9. **Nhãn minh bạch:** số mô phỏng/giả định/dữ liệu BTC gắn nhãn nhỏ ngay cạnh (`Dữ liệu BTC` · `Giả định của đội` · `Mô phỏng`). Slide có kết quả AI/demo mô phỏng ghi `{{MOCK_NOTICE}}` **nguyên văn**. Slide kiến trúc/kết ghi công cụ AI đội dùng: **Claude (Opus, Sonnet, Haiku, Claude Design) và Gemini Antigravity**.
+9. **Nhãn minh bạch:** số mô phỏng/giả định/dữ liệu mẫu BTC gắn nhãn nhỏ ngay cạnh (`Dữ liệu mẫu (BTC)` · `Giả định` · `Mô phỏng`). Slide có kết quả AI/demo mô phỏng ghi `{{MOCK_NOTICE}}` **nguyên văn**. Slide kiến trúc/kết ghi công cụ AI đội dùng: **Claude (Opus, Sonnet, Haiku, Claude Design) và Gemini Antigravity**.
 10. **Không emoji, không ảnh stock, không ảnh người thật, không logo bên thứ ba.** Chỉ dùng logo Xclipse và hệ icon Xclipse (mục 4.4).
 11. **Màu bị cấm:** tím neon, đen tuyền `#000000`, xanh lá/cam ngoài bảng màu, phong cách gaming/cyberpunk, gradient cầu vồng.
 12. **Danh sách từ cấm (khoa trương) trong tiêu đề, phụ đề, gạch đầu dòng:** đột phá · cách mạng · siêu · tuyệt đối · hoàn hảo · số 1 · tốt nhất · vượt trội · đỉnh cao · bùng nổ · thay đổi cuộc chơi · chưa từng có · thần kỳ · "mọi thứ" · "luôn luôn" · "100%" (trừ khi là kết quả kiểm thử đã đo) · "wow" · game changer · "tối ưu" (trừ khi có số đo) · dấu chấm than ở tiêu đề.
-13. **Không bịa số.** Số nào chưa có nguồn thì để `[SỐ: …]`. Số giả định ghi nguồn hoặc nhãn `Giả định của đội`.
+13. **Không bịa số.** Số nào chưa có nguồn thì để `[SỐ: …]`. Số giả định ghi nguồn hoặc nhãn `Giả định`.
 14. **Xuất được:** deck chỉnh sửa trong dự án + **PDF 1 trang/slide** + **PPTX** (mỗi slide giữ ghi chú). Không phụ thuộc hiệu ứng hay font ngoài (nhúng/đổi sang font dự phòng đủ dấu).
 
 ## 3. PHONG CÁCH VIẾT SLIDE (quan trọng nhất sau bố cục)
@@ -104,7 +104,7 @@ Tuân thủ **nguyên văn** bộ theme, mã CSS và quy tắc dưới đây. Kh
 - **Mỗi slide nội dung: 3–5 gạch đầu dòng, mỗi gạch ≤ 14 từ, cộng 1 con số chính.** Không đoạn văn. Không quá 5, không dưới 3 (trừ slide bìa/kết/chỉ ảnh).
 - Gạch đầu dòng là **cụm có thông tin cụ thể** (ai · làm gì · bao nhiêu · nguồn), đọc một mình vẫn hiểu. Ví dụ tốt: "Chủ quán nhập doanh thu bằng Zalo và sổ tay, 40 phút mỗi tối." Ví dụ không dùng: "Quy trình thủ công còn nhiều bất cập."
 - Mỗi gạch bắt đầu bằng **danh từ/động từ chính**, bỏ từ đệm ("việc", "sự", "các", "những" khi không cần). Dùng chữ đời thường; thuật ngữ kỹ thuật chỉ ở phần Nguyên và có giải nghĩa ngắn.
-- Con số chính: **số + đơn vị + nhãn nguồn** ("40 phút/ngày · Giả định của đội"). Có ba loại nhãn: `Dữ liệu BTC`, `Giả định của đội`, `Mô phỏng`.
+- Con số chính: **số + đơn vị + nhãn nguồn** ("40 phút/ngày · Giả định"). Có ba loại nhãn: `Dữ liệu mẫu (BTC)`, `Giả định`, `Mô phỏng`.
 - Người nói nhìn slide phải nhận ra **thứ tự ý** (đánh số 1–2–3 hoặc gạch có icon), vì họ dùng slide như prompter.
 
 ### 3.3. Chiều sâu theo phần của từng người (chữ đơn giản nhưng thể hiện hiểu biết thật)
@@ -118,6 +118,7 @@ Tuân thủ **nguyên văn** bộ theme, mã CSS và quy tắc dưới đây. Kh
 Bảng màu **chốt**: Ice Sky `#DBF2FC` · Deep Navy `#072D59` · Coral `#FD6E88`, kèm biến thể `#F5FBFF` (nền), `#EAF6FD`, `#0E4A8A` (navy giữa), `#041A36` (navy sâu), `#C93252`/`#D93656` (hồng đậm cho chữ), `#0B7A70` (xanh đạt). Font: **Be Vietnam Pro** (tiêu đề đậm 700–800, tracking `-0.025em`; thân 400–500) + **Playfair Display Italic 700** cho 1–2 từ nhấn; số/mã dùng `tabular-nums` / **IBM Plex Mono**. Thêm vào `<head>`:
 
 ```html
+<!-- Chỉ dùng trong dự án Claude Design (bản chiếu cần font đủ dấu). App/starter KHÔNG dùng Google Fonts: font tự host trong starter/fonts/ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600;1,700&family=Playfair+Display:ital,wght@1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -596,7 +597,7 @@ Tên lớp slide: `s-cover` · `s-problem` (bối cảnh) · `s-phone` · `s-pho
   <div class="body">
     <div class="card persona"><div class="who"><div class="avatar">AB</div><div><h3>{{PERSONA}}</h3><p>{{VAI_TRO}}</p></div></div>
       <ul class="pains"><li><svg class="ico"><use href="#xc-info"/></svg><span>B1 ≤ 14 từ</span></li><!-- 3–4 dòng --></ul></div>
-    <div class="card scenario"><div class="lab">Con số chính · Giả định của đội</div><q>Một câu mô tả tình huống có giờ/số</q>
+    <div class="card scenario"><div class="lab">Con số chính · Giả định</div><q>Một câu mô tả tình huống có giờ/số</q>
       <div class="stat"><b>{{SO_NOI_DAU}}</b><span>nhãn số + nguồn</span></div></div>
   </div>
   <footer class="foot"><span><b>{{TEN_APP}}</b></span><span class="num">02 / 11</span></footer>
@@ -656,8 +657,8 @@ Tên lớp slide: `s-cover` · `s-problem` (bối cảnh) · `s-phone` · `s-pho
   <div class="body">
     <div class="card atable">
       <div class="arow th"><span>Giả định</span><span>Giá trị</span><span>Nguồn</span></div>
-      <div class="arow"><span class="k">{{GIA_DINH_1}}</span><span class="v">[SỐ: giá trị]</span><span><span class="badge src-btc">Dữ liệu BTC</span></span></div>
-      <div class="arow"><span class="k">{{GIA_DINH_2}}</span><span class="v">[SỐ: giá trị]</span><span><span class="badge src-team">Giả định của đội</span></span></div>
+      <div class="arow"><span class="k">{{GIA_DINH_1}}</span><span class="v">[SỐ: giá trị]</span><span><span class="badge src-btc">Dữ liệu mẫu (BTC)</span></span></div>
+      <div class="arow"><span class="k">{{GIA_DINH_2}}</span><span class="v">[SỐ: giá trị]</span><span><span class="badge src-team">Giả định</span></span></div>
       <!-- tối đa 4 dòng -->
     </div>
     <div class="card scen"><h3>Ba kịch bản</h3>

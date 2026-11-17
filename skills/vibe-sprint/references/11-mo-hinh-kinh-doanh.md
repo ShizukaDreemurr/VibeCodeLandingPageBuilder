@@ -11,7 +11,7 @@ Tài liệu này không chứa số liệu của đề nào cả. Nó cho bạn 
 3. **Điểm hòa vốn** và **thời gian hoàn vốn** luôn có (hoặc nói thẳng "chưa hòa vốn trong kịch bản xấu").
 4. **Độ nhạy**: chỉ ra 2-3 giả định "đau" nhất, và có kế hoạch cho chúng.
 5. **Dự phòng 10-15%** trên chi phí, nằm trong bảng, không nói miệng.
-6. **Nhãn trung thực**: số mô phỏng ghi "Mô phỏng", số lấy từ file BTC ghi "Dữ liệu mẫu", số tự đặt ghi "Giả định". Không bao giờ để số giả trông như số thật.
+6. **Nhãn trung thực**: số mô phỏng ghi "Mô phỏng", số lấy từ file BTC ghi "Dữ liệu mẫu (BTC)" (nhãn `Dữ liệu mẫu` của `EP.scenario`), số tự đặt ghi "Giả định". Không bao giờ để số giả trông như số thật.
 7. Giờ, địa điểm, giá, tên người lấy từ form/đề, không để AI viết. AI chỉ giải thích và gợi ý.
 
 ## 2. Danh sách giả định cần nêu, theo loại đề

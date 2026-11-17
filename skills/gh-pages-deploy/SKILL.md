@@ -33,7 +33,7 @@ Chạy `bash scripts/preflight.sh <thư-mục-app>` (có shell) hoặc tự ki�
 
 Gói free: repo phải **public** (xác nhận với người dùng trước, xem mục An toàn).
 
-**UI:** repo -> Settings -> Pages -> Build and deployment -> Source: "Deploy from a branch" -> Branch: chọn `main` (hoặc `claude/<x>`) + folder `/ (root)` -> Save.
+**UI:** repo -> Settings -> Pages -> Build and deployment -> Source: "Deploy from a branch" -> Branch: chọn `main` (hoặc `claude/<x>`; ở chung kết vibe-sprint là nhánh nộp `nop-bai`) + folder `/ (root)` -> Save.
 
 **API** (nếu có `gh` hoặc MCP hỗ trợ gọi REST):
 ```bash

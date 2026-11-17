@@ -1,11 +1,11 @@
 # 06 — Hồ sơ nộp và triển khai
 
-## Triển khai GitHub Pages (nhánh `claude/*`)
+## Triển khai GitHub Pages (nhánh nộp `nop-bai` hoặc `claude/*`)
 
-Xclipse chạy GitHub Pages từ nhánh `claude/<tên>`; `scripts/new-project.sh` tạo nhánh mặc định `nop-bai` (đổi bằng `BRANCH=...`). Cách làm nhanh (chi tiết cùng `starter/README.md` mục 5):
+`scripts/new-project.sh` tạo nhánh mặc định `nop-bai` (đổi bằng `BRANCH=...`); Xclipse luyện tập chạy Pages từ nhánh `claude/<tên>`. Skill `gh-pages-deploy` làm các bước dưới nếu bạn muốn tự động. Cách làm nhanh (chi tiết cùng `starter/README.md` mục 5):
 
-1. Repo của đội đã có nhánh làm việc `claude/<tên>` (do Claude Code tạo). Đẩy code app (file `index.html` ở **gốc** repo hoặc thư mục Pages đã chọn).
-2. GitHub → repo → **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*; Branch = `claude/<tên>`, thư mục `/ (root)`; Save. (Nếu repo không cho chọn nhánh này, đội tạo nhánh `main`/`gh-pages` từ nhánh làm việc và chọn nhánh đó.)
+1. Repo của đội đã có nhánh nộp (ở chung kết: `nop-bai`; hoặc nhánh `claude/<tên>` do Claude Code tạo). Đẩy code app (file `index.html` ở **gốc** repo hoặc thư mục Pages đã chọn).
+2. GitHub → repo → **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*; Branch = nhánh nộp (`nop-bai` hoặc `claude/<tên>`), thư mục `/ (root)`; Save. (Nếu repo không cho chọn nhánh này, đội tạo nhánh `main`/`gh-pages` từ nhánh làm việc và chọn nhánh đó.)
 3. Link: `https://<tài-khoản>.github.io/<tên-repo>/`. Lần đầu chờ 1–5 phút; xem tab **Actions** (pages-build-deployment) xanh là xong.
 4. Tạo `.nojekyll` ở gốc: thư mục `features/_example` và `features/_playground` của starter bắt đầu bằng `_` nên Jekyll sẽ bỏ qua (nếu còn giữ). Tốt nhất xoá hai thư mục mẫu đó khi đã có feature thật.
 4b. Chuẩn bị một lần: repo kết nối Claude GitHub App (`claude.ai/connect-github`), mở phiên **mới** có chọn repo; không push được/không thấy repo → làm lại bước này. Claude không tự tạo Pull Request nếu không được yêu cầu (Pages lấy thẳng từ nhánh). Link 404 = sai nhánh/thư mục hoặc không có `index.html` ở gốc; web trắng = app cần build (React/Vite) → làm bản HTML/JS thuần.
@@ -33,7 +33,7 @@ git add -A && git commit -m "..." && git push -u origin <nhánh>
 ## Firebase (tuỳ chọn, chỉ khi đề cần dữ liệu chung nhiều thiết bị)
 
 - 60 phút: **mặc định localStorage**, ghi rõ giới hạn. Firebase chỉ khi đề yêu cầu đồng bộ; cấu hình web Firebase công khai được nhưng phải có rules bảo vệ; tuyệt đối không đưa service account/secret.
-- Repo VibeCodeLandingPageBuilder (không nằm trong skill này) có thư mục `firebase/` (`firestore.rules`, `rules.test.mjs`) để tham khảo; starter KHÔNG có sẵn Firebase, không bắt buộc.
+- Starter có sẵn module Firebase **tuỳ chọn, tắt mặc định** (`js/firebase.js`, `firestore.rules`, `firebase.json`; bật trong `js/config.js`, xem `starter/README.md` mục 5b và skill `firebase-setup`); không bắt buộc. Repo VibeCodeLandingPageBuilder còn có `firebase/` (rules đầy đủ + `rules.test.mjs` 33 ca) để tham khảo, không nằm trong skill.
 - **Làm Firebase từ đầu:** `references/07-cookbook-code-mau.md` mục G (dựng project 6 bước kể cả **Authorized domains = `<tài-khoản>.github.io`**, khởi tạo compat không CDN + emulator `?emulator=1`, đăng nhập Google + dịch lỗi, rules khách-chỉ-gửi/chủ-đọc/chống trùng bằng mã bản ghi = SĐT, ghi batch + thử lại, test rules bằng emulator 33 ca, Publish rules bằng `npx firebase deploy --only firestore:rules` hoặc dán vào Console). Cấu hình web Firebase công khai được; **không** đưa service account, **không** bật billing, **không** dùng Cloud Functions (trả phí).
 - **Đề đã quy định nơi lưu (thường localStorage) thì đó là bản chính**; Firebase/Google Sheet chỉ là tuỳ chọn và phải được nói đúng như vậy trong README và khi trình bày (đã bị nhận xét "chưa đúng tính năng" vì làm ngược).
 - Rules mới phải **Publish lên dự án thật** thì tính năng mới chạy trên web; ghi vào danh sách việc người dùng phải tự làm (đánh số).
@@ -41,7 +41,7 @@ git add -A && git commit -m "..." && git push -u origin <nhánh>
 
 ## Bộ 4 món nộp lúc phút 60 (thể lệ chung kết)
 
-(1) link demo/cách mở (online bắt buộc) · (2) mã nguồn khớp bản demo · (3) README (cài chạy, công nghệ, dữ liệu mẫu/tài khoản, khai báo khung chuẩn bị trước) · (4) minh chứng tại thời điểm chốt: ảnh/quay màn hình + hash commit, làm ở T+50–55 và lưu `docs/minh-chung-chot/`. Nộp ở T+55–60, **không push thêm** sau đó. Chi tiết `references/00`.
+(1) link demo/cách mở (online bắt buộc) · (2) mã nguồn khớp bản demo · (3) README (cài chạy, công nghệ, dữ liệu mẫu/tài khoản, khai báo khung chuẩn bị trước) · (4) minh chứng tại thời điểm chốt: ảnh/quay màn hình + hash commit, làm ở T+50–55 bằng `node scripts/nop-bai.mjs --url <link>` và lưu `docs/minh-chung/<thời điểm>/`. Nộp ở T+55–60, **không push thêm mã** sau đó (chỉ được thêm 1 commit chứa riêng ảnh minh chứng). Chi tiết `references/00`.
 
 ## Hồ sơ nhanh (điền từ `templates/`)
 

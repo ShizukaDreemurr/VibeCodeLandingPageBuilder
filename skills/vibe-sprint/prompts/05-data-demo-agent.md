@@ -13,10 +13,10 @@ Không cần tiết kiệm token: đọc đủ file, chụp ảnh kiểm tra, ch
 SCHEMA CONTRACT (verbatim from docs/spec-nhanh.md section 0; do NOT invent or rename any field, function, collection or EP.* id; if something is missing, stop and report instead of guessing)
 {{SCHEMA_CONTRACT}}
 
-RULE: the app opens EMPTY by default; ship demo rows behind a visible button "Điền dữ liệu mẫu" (calls EP.demo.reset/seed) unless the spec says to preload. Field names exactly as in the contract.
+RULE: per the spec the app opens EMPTY by default with a visible button "Điền dữ liệu mẫu" (the starter has no such button, only "Nạp lại dữ liệu demo" in Cài đặt; the feature adds it and calls EP.demo.reset()); note that EP.demo.register auto-seeds an empty collection on first open, so register demo data only on button press if the spec wants an empty start. Unless the spec says to preload. Field names exactly as in the contract.
 
 CONTEXT
-Contest Đề {{DE_SO}}: {{DE_TEXT}}. App "{{APP_NAME}}", domain {{DOMAIN}}. Opening the app must show realistic Vietnamese demo data on the first visit, and `?demo=1` reseeds it, so judges see a living product in 1 click.
+Contest Đề {{DE_SO}}: {{DE_TEXT}}. App "{{APP_NAME}}", domain {{DOMAIN}}. Follow the empty-vs-preloaded decision in docs/DECISIONS.md: starter's `EP.demo.register` seeds an EMPTY collection on first open (so judges see a living product), `?demo=1` reseeds, and the "Điền dữ liệu mẫu" button (added by the feature, calling `EP.demo.reset()`) fills it on demand. Rows from the BTC file are labelled "Dữ liệu mẫu (BTC)"; generated rows "Mô phỏng".
 
 YOU OWN ONLY: js/demo-data.js (the shell agent creates an empty stub and the script tag after features and before js/app.js; if the tag is missing add exactly ONE line), tests/demo.cjs (new). Do NOT edit js/demo.js, features/*, css, js/ai.js.
 

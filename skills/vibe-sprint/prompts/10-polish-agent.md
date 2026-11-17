@@ -15,13 +15,13 @@ SCHEMA CONTRACT (verbatim from docs/spec-nhanh.md section 0; do NOT invent or re
 
 TIME BOX: 8 minutes. Only low-risk, high-visibility changes. Scope (you may edit only these): {{POLISH_SCOPE}}.
 
-CHECKLIST (do in this order, screenshot before/after at 1440x900 and 390x844, light and dark, and LOOK at each):
-1. Visual hierarchy: one clear primary action per screen, heading sizes (h1 >= 28px desktop), consistent spacing scale (4/8/12/16/24/32), aligned grids, no orphan single-word lines, consistent radius/shadow.
+CHECKLIST (do in this order, screenshot before/after at 390x844 and 360x780 (portrait phone emulation) plus 1440x900, light and dark, and LOOK at each):
+1. Visual hierarchy: one clear primary action per screen, heading sizes (h1 26-28px on phones, larger on desktop), consistent spacing scale (4/8/12/16/24/32), aligned grids, no orphan single-word lines, consistent radius/shadow.
 2. Empty states: every list/table/chart with no data shows an icon-or-illustration (inline SVG), one-line explanation, and a primary button ("Thêm ... đầu tiên" or "Nạp dữ liệu mẫu").
 3. Loading/AI states: skeleton or typing indicator, never a blank flash.
 4. Motion (subtle, 150-300ms, ease-out): button press, card hover lift, list item enter fade/slide, number count-up on KPI, toast slide. Only transform/opacity. Respect `prefers-reduced-motion: reduce` (disable all). No layout-shifting animation.
 5. Copy: Vietnamese, friendly, specific, consistent terms (one word per concept), correct diacritics, sentence case, error messages say how to fix; remove leftover English/lorem/"TODO"/starter names ('Tên ứng dụng', 'Mục', 'Mô-đun mẫu'). Do NOT reword the mock notice: it is the organizers' VERBATIM wording ("{{MOCK_NOTICE}}") from js/config.js.
-6. Details: favicon + title, focus rings, hover/active/disabled states, tap target >= 40px, long-text truncation with title attr, number/date formatting vi-VN (1.250.000 ₫, 13/11/2026), table alignment (numbers right).
+6. Details: favicon + title, focus rings, hover/active/disabled states, tap target >= 48px (8px apart), long-text truncation with title attr, number/date formatting vi-VN (1.250.000 ₫, 13/11/2026), table alignment (numbers right).
 7. Contrast AA in both themes; dark mode has no white flashes or unreadable charts.
 Do NOT change behavior, data schema, IDs/selectors used by tests, or add dependencies. If a change needs more than 3 minutes, skip it and list it.
 

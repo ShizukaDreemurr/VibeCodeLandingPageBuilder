@@ -4,7 +4,7 @@ compatibility_date = "2025-01-15"
 
 [vars]
 # Origin được phép gọi proxy, cách nhau dấu phẩy, KHÔNG có dấu / ở cuối. Sửa trước khi deploy.
-ALLOWED_ORIGINS = "https://xclipsex.github.io,http://localhost:8216"
+ALLOWED_ORIGINS = "https://xclipsex.github.io,http://localhost:8211,http://localhost:8216"
 # Tuỳ chọn: RATE_LIMIT = "30"
 # KHÔNG đặt GEMINI_API_KEY ở đây. Dùng: npx wrangler secret put GEMINI_API_KEY
 

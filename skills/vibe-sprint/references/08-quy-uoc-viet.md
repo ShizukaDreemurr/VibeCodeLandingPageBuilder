@@ -17,7 +17,7 @@ Dán mục liên quan vào prompt mọi agent để code và chữ của 10 agen
 | File test | `tests/<tên>.cjs` (feature) hoặc `e2e-<chủ-đề>.cjs`; nhận URL từ `argv` | `tests/e2e-mobile.cjs [url] [thư-mục-ảnh]` |
 | Mã ca kiểm thử | `TC01…` liên tục, ghi loại ca | `TC05 Biên – trùng` |
 | Tệp ảnh minh chứng | `docs/evidence/kiem-thu/TC05.png`, `docs/evidence/ai/anh-1.png` | |
-| Tên file tài liệu | tiếng Việt không dấu, kebab, **chữ HOA cho tài liệu nộp** | `docs/bang-kiem-thu.md`, `docs/CHECKLIST-NOP-BAI.md` |
+| Tên file tài liệu | tiếng Việt không dấu, kebab, **chữ HOA cho tài liệu nộp** | `docs/BANG-KIEM-THU.md`, `docs/CHECKLIST-CHUNG-KET.md` |
 | Phiên bản | semver `x.y.z` trong `js/version.js`; patch = sửa lỗi/nhỏ, minor = tính năng, major = đổi lớn | `2.9.2` |
 | Cổng | theo bảng cổng của skill; **không 8000** | `8217` |
 
@@ -43,7 +43,7 @@ Dán mục liên quan vào prompt mọi agent để code và chữ của 10 agen
 | Trạng thái rỗng | Giải thích + nút hành động | "Chưa có đơn nào. Bấm “Điền dữ liệu mẫu” hoặc “Thêm đơn”." |
 | Trạng thái thời gian | Không bao giờ số âm | "Sự kiện đã diễn ra" (thay vì "-2 ngày") |
 | Thiếu chỗ | Đếm thật, không khan hiếm giả | "Chỉ còn 12 chỗ" chỉ khi thật |
-| Cảnh báo mô phỏng AI | **Nguyên văn từ đề/BTC**, từng chữ từng dấu | xem `SKILL.md` mục CẢNH BÁO |
+| Cảnh báo mô phỏng AI | **Nguyên văn từ đề/BTC**, từng chữ từng dấu | xem `SKILL.md` mục "Nhãn dữ liệu mẫu/mô phỏng" |
 | Chưa làm | Nói thật | "Chưa kiểm chứng"; không ghi "Đạt" cho ca chưa chạy |
 
 **Định dạng số/ngày (vi-VN, giờ `Asia/Ho_Chi_Minh`):**
@@ -97,8 +97,8 @@ js/                      core, ui, form, charts, export, ai, demo, mô-đun, ver
 features/<tên>/          feature.js (+ tests nhỏ); xoá _example/_playground khi đã có feature thật
 tests/                   *.cjs, nhận URL qua argv; ảnh vào --shots <thư-mục> (git-ignore)
 tools/                   bump-version.cjs, build-*.cjs, make-thumbs.cjs (script chạy ở máy dev, không nạp vào web)
-scripts/                 new-project.sh, scan-secrets.mjs
-docs/                    spec-nhanh.md, PROGRESS.md, DECISIONS.md, bang-kiem-thu.md, minh-chung-ai.md, CHECKLIST-NOP-BAI.md, evidence/{ai,kiem-thu}/
+scripts/                 new-project.sh, scan-secrets.mjs, doctor.mjs, nop-bai.mjs
+docs/                    spec-nhanh.md, PROGRESS.md, DECISIONS.md, BANG-KIEM-THU.md, MINH-CHUNG-AI.md, CHECKLIST-CHUNG-KET.md, minh-chung/ (ảnh chốt, do nop-bai.mjs ghi), minh-chung-ai/, evidence/{ai,kiem-thu}/
 assets/                  favicon, og/<id>.jpg (1200×630), demo/*.webp, templates/*-thumb.jpg
 s/<id>/index.html        trang chia sẻ tĩnh sinh bởi tools/build-share-pages.cjs (commit vào repo)
 firebase/                firestore.rules + rules.test.mjs (+ README chạy emulator), chỉ khi đề cần
@@ -107,7 +107,7 @@ integrations/            mã chạy ở nơi khác (Apps Script Code.gs)
 ```
 
 - **Đường dẫn tương đối** trong HTML/CSS/JS (Pages nằm dưới `/<repo>/`); URL tuyệt đối chỉ ở meta OG/canonical/sitemap.
-- **File sinh ra** (`js/templates-data.js`, `s/*`, thumbnail) không sửa tay: sửa nguồn rồi chạy script, ghi lệnh trong `docs/README` hoặc đầu script.
+- **File sinh ra** (`js/templates-data.js`, `s/*`, thumbnail) không sửa tay: sửa nguồn rồi chạy script, ghi lệnh trong `README.md` hoặc đầu script.
 - **Không commit:** `.env*` (trừ `.env.example` chỉ có tên biến), `node_modules/`, ảnh chụp thử (`shots*/`, `undefined/`), video quay màn hình (`demo-video/`), `deck/out/`, công cụ cài cục bộ của agent (`.agents/`, `.claude/`). Không commit ZIP nộp bài (tạo bằng `git archive HEAD -o app.zip`).
 - **README** ở gốc: đề số + bảng thi + link demo/video; 5 tính năng đúng thứ tự đề **đứng đầu**; tính năng mở rộng ở mục sau; công nghệ; tích hợp AI (thật/mô phỏng + nhãn nguyên văn); chạy trực tuyến/cục bộ; lưu ý khoá (Firebase config công khai là chủ đích; key Gemini không trong code); cấu trúc thư mục; giới hạn thật; nguồn tham khảo/khai báo. **Số liệu trong README (số mẫu, số ca, số tính năng) phải khớp app** (kiểm bằng test, xem `07` H7).
 - **Giới hạn thật** phải có: localStorage một máy, ảnh có giới hạn dung lượng, số lượt xem công khai có thể cộng khống, mô phỏng không phải AI thật, phần "Chưa kiểm chứng".
@@ -125,7 +125,7 @@ integrations/            mã chạy ở nơi khác (Apps Script Code.gs)
 - **Sửa nguyên nhân gốc, không sửa test cho qua:** nếu test hỏng vì bug thật thì sửa app; nếu vì test lỗi thời (đổi tab mặc định...) thì sửa test và ghi rõ vì sao. Báo cáo phải nói đã chọn đường nào.
 - **Hướng dẫn việc người dùng phải tự làm** (bấm GitHub, Firebase, dán key vào ô app): đánh số 1–N, nói rõ bấm đâu, kết quả mong đợi, và cách kiểm tra. Không dùng thuật ngữ trần.
 - **Không bao giờ xin dán key/mật khẩu vào chat.** Người dùng lỡ dán key vào chat: **không ghi vào file/commit/ảnh**, nhắc thu hồi/tạo key mới sau khi dùng xong.
-- Người dùng nhờ "xem file X đã đủ thể lệ chưa / nộp bài cần gì": đối chiếu từng mục thể lệ với repo, lập bảng ✅/⬜ (như `docs/CHECKLIST-NOP-BAI.md`), nêu mâu thuẫn (ví dụ bảng A/B, hạn nộp 23:59 so với 00:30) và đề nghị làm sớm hơn mốc sớm nhất.
+- Người dùng nhờ "xem file X đã đủ thể lệ chưa / nộp bài cần gì": đối chiếu từng mục thể lệ với repo, lập bảng ✅/⬜ (như `docs/CHECKLIST-CHUNG-KET.md`), nêu mâu thuẫn (ví dụ bảng A/B, hạn nộp 23:59 so với 00:30) và đề nghị làm sớm hơn mốc sớm nhất.
 - Giữ `docs/PROGRESS.md` và `docs/DECISIONS.md` cập nhật: phiên làm việc bị nén/khởi động lại thì đó là bộ nhớ duy nhất; mỗi quyết định có mã `Dxx`.
 - Khi nhận phản hồi kiểu "UI đẹp nhưng...": liệt kê từng lỗi người dùng nêu, sửa **cả lớp lỗi tương tự** ở mọi trang ("áp dụng cho tất cả landing page tương tự"), chụp lại cả ba khổ (máy tính, tablet, điện thoại) trước khi báo xong.
 
@@ -133,7 +133,7 @@ integrations/            mã chạy ở nơi khác (Apps Script Code.gs)
 
 - Icon SVG nét (`stroke="currentColor"`), cùng một bộ; mọi mục menu/tab/nút công cụ đều có icon; trạng thái đang chọn (✓) đặt bên phải để icon thẳng cột.
 - Một màu nhấn; nút chính gần đen hoặc accent; viền 1px mờ; không bóng nặng; không gradient/glow trừ nút CTA có chủ đích.
-- Vùng chạm ≥ 44px, ô nhập ≥ 16px, chữ ≥ 14px; chữ thường tương phản ≥ 4.5:1; viền ô nhập ≥ 3:1.
+- Vùng chạm ≥ 48px (cách nhau ≥ 8px), ô nhập ≥ 16px, thân 16px (nội dung ≥ 14px); chữ thường tương phản ≥ 4.5:1; viền ô nhập ≥ 3:1.
 - Chuyển động 120/200/320 ms, `ease-out` mũ; chỉ `transform/opacity`; mọi chức năng có phản hồi; có công tắc hiệu ứng (Bật/Theo máy/Tắt).
 - Mỗi màn: đúng một `h1` + một dòng mô tả; xoá = hộp xác nhận riêng (hoặc giữ-để-xoá), không `confirm()`/`alert()` gốc; lưu tự động có chỉ báo "Đã lưu".
 - Phím tắt: Esc đóng dialog (ưu tiên cao nhất, trả focus), Ctrl+Z/Ctrl+Shift+Z hoàn tác/làm lại, Ctrl+K bảng lệnh, Ctrl+/− thu phóng.

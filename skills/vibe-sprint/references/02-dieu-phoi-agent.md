@@ -61,7 +61,7 @@ Chạy thật: 50 phút, 16 agent, 3 đợt, 60/60 test.
 3. Việc cần làm: trích đoạn spec của tính năng (Input/Quy tắc/Output/Lưu trữ) + nghiệm thu.
 4. **File được sửa / file CẤM đụng** (liệt kê tên). Feature agent chỉ thêm đúng MỘT dòng `<script src="features/<tên>/feature.js"></script>` vào khối FEATURES của `index.html` (trước `js/app.js`), mỗi tag một dòng. Bảng sở hữu file đầy đủ: `prompts/00-README.md`.
 5. **Cổng riêng** (xem bảng), chạy `setsid nohup python3 -m http.server <cổng> &` ở gốc worktree của mình; **tuyệt đối không dùng 8000** và không dùng cổng agent khác.
-6. Cách verify: `node tests/smoke.cjs http://localhost:<cổng>/ [--shots thư-mục]` + Playwright (`require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright')`), viewport 390x844 + desktop, **chụp ảnh và tự xem lại ảnh**, chạy test của mình (`tests/<feature>.cjs`), nêu lệnh.
+6. Cách verify: `node tests/smoke.cjs http://localhost:<cổng>/ [--shots thư-mục]` + Playwright (`require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright')`), viewport 360x780 + 390x844 (+ desktop phụ), **chụp ảnh và tự xem lại ảnh**, chạy test của mình (`tests/<feature>.cjs`), nêu lệnh.
 7. Quy tắc chất lượng: link tới `references/03` (tokens, sáng/tối, trạng thái rỗng/loading/lỗi, validation, mock có nhãn).
 8. Commit (worktree): message ngắn + trailer `Co-Authored-By` theo hệ thống. Không push.
 9. Báo cáo cuối: file đã đổi, lệnh test + kết quả thật, ảnh ở đâu, việc chưa xong/giả định.
@@ -70,7 +70,7 @@ Dùng file trong `prompts/` làm khuôn rồi điền; đừng viết tay từ �
 
 ## Bảng cổng (không bao giờ 8000)
 
-Bảng duy nhất, giống `SKILL.md` và `prompts/00-README.md`:
+Bảng duy nhất, giống `SKILL.md` (nguồn chính) và `prompts/00-README.md`:
 
 | Vai | Cổng |
 |---|---|
@@ -84,6 +84,9 @@ Bảng duy nhất, giống `SKILL.md` và `prompts/00-README.md`:
 | Docs | 8226 |
 | QA #1…#3 | 8227–8229 |
 | Cấp cứu / dự phòng | 8230 |
+| Giả định & mô hình kinh doanh (prompt 13) | 8231 |
+| Gemini Antigravity (`ag/ui` 8240, `ag/data` 8241, `ag/docs` 8242, `ag/biz` 8243, còn lại dự phòng) | 8240–8249 |
+| **8000** | **CẤM** |
 
 `tests/smoke.cjs` nhận URL từ tham số dòng lệnh (`node tests/smoke.cjs http://localhost:8211/`; mặc định `http://localhost:8201/` chỉ để chạy tay, đừng dựa vào). Test viết thêm cho feature cũng phải nhận URL từ `argv`, không hardcode cổng.
 
@@ -105,7 +108,7 @@ Thứ tự: nền (shell/tokens/storage) trước, rồi AI + dữ liệu, rồi
 | `css/*.css` ngoặc `}` | Merge xong thiếu/thừa `}` làm CSS sau không chạy | Đếm `{`/`}` (`python3 -c "s=open('css/app.css').read();print(s.count('{'),s.count('}'))"`) hoặc mở app xem; CSS nằm trong `@layer components {}` (thứ tự layer khai báo ở `css/tokens.css`), kiểm tra khối đóng |
 | `EP.register` trùng `id` | Hai feature cùng tên tab (bản sau thay bản trước) | Đổi `id` cho khác nhau; mỗi `id` = một đường `#/id` |
 | `js/version.js`, `?v=` trong `index.html` | cùng tăng version | Lấy bản cao hơn rồi chạy `node tools/bump-version.cjs` MỘT lần ở cuối (không sửa tay) |
-| `js/config.js` `mockNotice` | khác câu nhãn mock | Giữ câu NGUYÊN VĂN từ đề/BTC (xem cảnh báo ở `prompts/00-README.md`); khớp assert trong `tests/smoke.cjs` |
+| `js/config.js` `mockNotice` | khác câu nhãn mock | Giữ câu NGUYÊN VĂN từ đề/BTC (xem `prompts/00-README.md`); `tests/smoke.cjs` tự đọc `EP.config.mockNotice` nên không cần sửa test |
 | `docs/*` | Hai bản README | Điều phối viên giữ 1 bản, dán mục còn lại |
 
 Conflict phức tạp (>2 file): **không tự vá lâu** — abort merge, spawn agent "rebase nhánh X lên nhánh chính và giải xung đột" với prompt có đúng diff lỗi.
@@ -118,7 +121,7 @@ Trong worktree của agent trước khi làm: `git fetch 2>/dev/null; git reset 
 
 1. `node --check` mọi JS (`js/*.js features/*/feature.js`); app mở không lỗi console.
 2. Chạy toàn bộ test trên cổng 8211: `node tests/smoke.cjs http://localhost:8211/ --shots shots-merge` + `tests/<feature>.cjs`.
-3. Spawn **2 agent QA song song**: (a) luồng 5 tính năng desktop + sáng/tối, (b) mobile 390px + đầu vào sai/biên. Họ chụp ảnh, điều phối viên mở xem ảnh.
+3. Spawn **2 agent QA song song**: (a) luồng 5 tính năng ở **360 và 390px** (điện thoại dọc) + sáng/tối, (b) đầu vào sai/biên + 1 lượt desktop phụ. Họ chụp ảnh, điều phối viên mở xem ảnh.
 4. Tốt nhất 1 agent "ý kiến thứ hai" đọc spec và đối chiếu từng nghiệm thu với app thật.
 5. Chỉ khi xanh mới `node tools/bump-version.cjs`, `node scripts/scan-secrets.mjs .` (sạch) rồi push.
 

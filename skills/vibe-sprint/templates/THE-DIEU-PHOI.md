@@ -1,7 +1,7 @@
 # Thẻ điều phối của Nguyên (1 trang): {{TEN_APP}}
 
 > In khổ A4, đặt cạnh bàn phím. **Một dòng = một việc.** Cột "Gõ cho Claude Code" là câu **copy-dán nguyên văn** (sửa chỗ `{{...}}`). Cột "Gửi đi đâu" chỉ file prompt và nơi gửi. Chi tiết quy trình: `references/14-quy-trinh-slide-song-song.md`.
-> **Giờ T+ tính từ lúc đề công bố.** Cổng: 8211 của Claude (điều phối), 8212–8231 agent Claude, **8240–8249 Gemini**, **8000 cấm**.
+> **Giờ T+ tính từ lúc đề công bố.** Cổng (bảng gốc ở `SKILL.md`): 8211 của Claude (điều phối), 8212–8231 agent Claude, **8240–8249 Gemini**, **8000 cấm**.
 
 ## 1. Mốc giờ, câu gõ, nơi gửi, kiểm
 
@@ -15,12 +15,12 @@
 | **20** | `Báo cáo trạng thái: nhánh Claude nào chạy, nhánh ag/* nào đã push (git branch -a), test hiện tại, cái gì chậm hơn mốc.` | Gemini: nhắc commit đầu tiên | mỗi nhánh có commit chạy được |
 | **25** | `Merge đợt 1 theo thứ tự data → AI → shell → feature (ag/* cuối cùng của từng nhóm), chạy node --check + smoke, chụp ảnh thử, báo 4 mục.` | — | app chạy dù thiếu tính năng |
 | **35** | `Gom chỉnh sửa lời/tiêu đề từ buổi luyện thành 1 danh sách (docs/slide-chinh-sua.md); đưa tôi bản tin để gửi Claude Design.` | **một tin duy nhất → Claude Design** | khung v2 |
-| **40** | `Merge hết nhánh Claude và ag/*, chạy node --check js/*.js features/*/feature.js, smoke, mobile 360 + 390, scan-secrets. Test đỏ thì cô lập tính năng, rút gọn, không sửa lan man.` | — | test xanh, secret sạch |
+| **40** | `Merge hết nhánh Claude và ag/*, đặt showPlayground: false (js/config.js), chạy node --check js/*.js features/*/feature.js, smoke, mobile 360 + 390, scan-secrets. Test đỏ thì cô lập tính năng, rút gọn, không sửa lan man.` | — | test xanh, secret sạch |
 | **44** | `KHÓA GIAO DIỆN từ bây giờ: chỉ sửa lỗi, không đổi bố cục/nhãn/thứ tự tab. Ghi vào docs/DECISIONS.md.` | báo cả đội | — |
 | **45** | `Điền bảng slot của prompts/15 (cột Cách đến trạng thái) từ app thật, đưa tôi khối hoàn chỉnh kèm hash commit. Đồng thời spawn 1 agent Sonnet chạy dự phòng: node tools/shots-mobile.cjs + node deck/tools/capture.cjs theo tên slot, kiểm tỉ lệ 9:19,5, đóng ZIP có manifest.txt.` | **prompts/15 → Claude Sonnet trong Chrome** (link Pages hoặc `http://localhost:8211/`) | 2 ZIP; dùng cái đạt trước |
 | **48** | `node tools/bump-version.cjs, quét secret, push nop-bai, deploy Pages; mở link ẩn danh; báo link + hash commit.` | — | link online chạy |
 | **50** | `Nhận ZIP ảnh: kiểm manifest.txt, 5 ảnh ngẫu nhiên, cỡ 1170×2532, đúng sáng/tối. Rồi tôi gửi Phần 2 cho Claude Design.` | **tải ZIP lên đúng dự án Claude Design → dán prompts/14 Phần 2**; đưa số thật (ca đạt, giây phản hồi, hòa vốn) | báo cáo thiếu ảnh = rỗng |
-| **50–55** | `Chụp minh chứng thời điểm chốt: ảnh điện thoại dọc 360 + 390 (sáng/tối) + 1 desktop + hash commit đang chạy trên link; lưu docs/minh-chung-chot/. Không commit thêm sau khi chụp.` | DA quay video demo dọc 45 giây | ảnh + hash khớp link |
+| **50–55** | `Chụp minh chứng thời điểm chốt: ảnh điện thoại dọc 360 + 390 (sáng/tối) + 1 desktop + hash commit đang chạy trên link; lưu docs/minh-chung/ (node scripts/nop-bai.mjs --url <link>). Không commit mã thêm sau khi chụp.` | DA quay video demo dọc 45 giây | ảnh + hash khớp link |
 | **55** | `Hoàn thiện README (khai báo khung chuẩn bị trước + công cụ AI: Claude, Gemini Antigravity), bảng kiểm thử chỉ ca đã chạy thật. Nộp 4 món: link · mã nguồn · README · minh chứng.` | **xuất PDF + PPTX + PNG từng slide → gửi kỹ thuật viên** kèm bảng ở mục 2 | mở link ẩn danh lần cuối |
 | **60** | — | nghỉ 1 phút; DA, Dũng nói lại trên deck thật cùng Nguyên | **không đẩy thêm commit** |
 

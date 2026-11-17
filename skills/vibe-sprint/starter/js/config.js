@@ -1,6 +1,6 @@
 /* config.js - NƠI DUY NHẤT cần sửa khi bắt đầu đề mới: tên app, tiền tố lưu trữ, câu thông báo mock.
    Phải nạp TRƯỚC mọi file js khác. Nếu đổi `prefix`, đổi luôn khoá '<prefix>theme' (mặc định 'ep_theme') trong <head> của index.html
-   (new-project.sh tự làm việc này). */
+   (làm TAY: new-project.sh KHÔNG tự đổi; nếu bỏ sót thì giao diện đã chọn nháy sáng/tối khi tải lại). */
 (function (root) {
   'use strict';
   root.EP = root.EP || {};

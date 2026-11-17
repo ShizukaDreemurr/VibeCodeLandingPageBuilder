@@ -58,7 +58,7 @@ Người dùng chính: <1 câu>  |  Vấn đề: <1 câu>  |  Giá trị: <1 câ
 
 ## Bẫy khi đọc đề
 
-- **Nhãn dữ liệu mẫu/mô phỏng: ghi rõ ràng.** Thể lệ chung kết không còn câu cố định. Đề/BTC có đưa câu nào thì **chép nguyên văn**; không thì dùng câu rõ nghĩa của đội (ví dụ `Dữ liệu mẫu/mô phỏng, không phải số liệu thật`) và ghi vào `docs/DECISIONS.md`. Đặt vào `mockNotice` trong `js/config.js` (và sửa 2 assert trong `tests/smoke.cjs`). Câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI` không dùng lại.
+- **Nhãn dữ liệu mẫu/mô phỏng: ghi rõ ràng.** Thể lệ chung kết không còn câu cố định. Đề/BTC có đưa câu nào thì **chép nguyên văn**; không thì dùng câu rõ nghĩa của đội (ví dụ `Dữ liệu mẫu/mô phỏng, không phải số liệu thật`) và ghi vào `docs/DECISIONS.md`. Đặt vào `mockNotice` trong `js/config.js` (`tests/smoke.cjs` tự đọc từ đó, không cần sửa test). Câu vòng loại `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là ghi chú lịch sử, không dùng lại.
 - **Không viết sẵn tính năng cho đề** (thể lệ cấm); chỉ dùng khung chung và khai báo trong README.
 
 - **Nơi lưu dữ liệu do đề quy định là bản chính** (vd localStorage). Firebase/Sheet chỉ làm tuỳ chọn và mô tả đúng là tuỳ chọn; mô tả ngược sẽ bị nhận xét "chưa đúng tính năng".

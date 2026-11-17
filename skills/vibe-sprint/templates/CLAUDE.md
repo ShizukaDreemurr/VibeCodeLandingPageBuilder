@@ -14,6 +14,11 @@ Dự án thi sprint 60 phút. Tài liệu nằm trong `docs/`: `spec-nhanh.md` (
 - **Ngày, giờ, địa điểm, giá, tên người:** luôn lấy từ form, không để AI viết.
 - **Giờ hiển thị:** `Asia/Ho_Chi_Minh`.
 
+## Điện thoại (chung kết chấm ở 360-390px dọc)
+- Viết CSS cho điện thoại trước (`css/mobile.css`, mở rộng từ 768px). Không tràn ngang; nút/ô nhập ≥ 48px, cách nhau ≥ 8px; thân 16px, ô nhập ≥ 16px; điều hướng là thanh tab dưới (`EP.register` tự dựng, `aria-current`).
+- Nút chính của màn hình đặt bằng `EP.ui.actionBar(el, [...])` (dính đáy, ngón cái với tới); form/xác nhận dùng `EP.ui.dialog` (tự thành bottom sheet, kéo xuống để đóng); bảng truyền `label` cho cột để tự thành thẻ; `type` đúng cho `EP.form` để có bàn phím đúng.
+- Kiểm tra: `node tests/smoke.cjs ...` đã gồm `tests/mobile-suite.cjs` (360×780 và 390×844). Test đỏ thì sửa giao diện, không nới ngưỡng. Ảnh điện thoại dọc cho slide: `node tools/shots-mobile.cjs http://localhost:8211/ shots-mobile`.
+
 ## Mô phỏng và AI
 - AI chỉ gọi qua `EP.ai.generate({ prompt, schema, mock }, { input })` (`js/ai.js`, một chỗ duy nhất); đặc tả prompt/schema/mock để trong `js/ai-specs.js` hoặc ở đầu feature. Không tự `fetch` tới Gemini.
 - Kết quả AI luôn qua bước kiểm tra cấu trúc (đủ trường, đúng kiểu). Thiếu thì bù bằng bản mô phỏng và báo rõ cho người dùng.
@@ -36,6 +41,7 @@ Dự án thi sprint 60 phút. Tài liệu nằm trong `docs/`: `spec-nhanh.md` (
 
 ## Phiên bản
 - Mỗi lần push lên nhánh nộp: chạy `node tools/bump-version.cjs` (tăng số trong `js/version.js` và gắn `?v=` vào `index.html`).
+- Trước khi nộp: đặt `showPlayground: false` trong `js/config.js` (ẩn tab Mô-đun), rồi chốt bài bằng `node scripts/nop-bai.mjs --url <link demo>` (ảnh minh chứng vào `docs/minh-chung/`).
 
 ## Kiểm thử
 - Kiểm thử luồng chính bằng `node tests/smoke.cjs http://localhost:8211/` trước mỗi lần push.

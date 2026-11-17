@@ -11,9 +11,9 @@
 > 2. Điền **bảng slot** (cột "Cách đến trạng thái") theo app thật: route `#/<id>` của từng tab (`EP.router.list()`), nút/ô cần bấm/điền cho trạng thái bước 1, 2, 3, ca sai, ca biên. Cột này **bắt buộc** cụ thể; chỗ nào để mơ hồ thì Sonnet đoán sai.
 > 3. Mở Chrome **không đăng nhập tài khoản nào quan trọng** (hồ sơ khách hoặc cửa sổ ẩn danh có bật tiện ích). Tắt thông báo hệ thống. Ô khóa API của app **để trống**.
 > 4. Biết sẵn Chrome **không thu cửa sổ nhỏ hơn khoảng 500px**; vì thế phải dùng **thanh thiết bị của DevTools** (cách M1) hay cửa sổ pop-up (cách M2). Nếu tiện ích không điều khiển được DevTools, **Nguyên bật tay 15 giây:** F12 → Ctrl+Shift+M (macOS: ⌥⌘I rồi ⇧⌘M) → chọn **Dimensions: Responsive**, đặt **390 × 844**, bấm ⋮ → bật **Add device pixel ratio** → **3** (và **Add device type → Mobile**); xong nói với Sonnet "đã bật khung 390 × 844".
-> 5. Gửi khối prompt dưới đây, đã thay `{{...}}`. Ghi giờ gửi vào `docs/PROGRESS.md`. Dự kiến 8–12 phút cho ~26 ảnh 390px + 26 ảnh 360px + 1 ảnh desktop.
+> 5. Gửi khối prompt dưới đây, đã thay `{{...}}`. Ghi giờ gửi vào `docs/PROGRESS.md`. Dự kiến 8–12 phút cho ~25 ảnh 390px + 8 ảnh 360px (slot 01, 03, 10, 12 × sáng/tối) + 1 ảnh desktop.
 >
-> **Sau khi nhận ZIP (T+50):** xem nhanh 5 ảnh ngẫu nhiên + `manifest.txt` (có đủ cột kiểm tra không?), rồi chuyển sang Phần 2 của prompt 14. Cũng **lưu ZIP vào `docs/minh-chung-chot/`** làm một phần minh chứng thời điểm chốt (kèm hash commit).
+> **Sau khi nhận ZIP (T+50):** xem nhanh 5 ảnh ngẫu nhiên + `manifest.txt` (có đủ cột kiểm tra không?), rồi chuyển sang Phần 2 của prompt 14. Cũng **lưu bản sao ZIP ngoài repo hoặc trong `docs/minh-chung/`** (nếu đội đồng ý) làm một phần minh chứng thời điểm chốt (kèm hash commit); minh chứng chính do `node scripts/nop-bai.mjs` tạo ở T+50–55.
 
 ---
 
@@ -84,7 +84,7 @@ Với **mỗi ảnh**, theo đúng thứ tự:
 **Ba bộ ảnh:**
 1. **Bộ chính (gốc ZIP): 390×844**, Sáng rồi Tối cho mọi dòng → khoảng 25 ảnh.
 2. **Bộ chứng cứ `360/`: 360×780**, Sáng và Tối, cho **slot 01, 03, 10, 12** (tên `NN-ten-slot-mobile360-light|dark.png`) — dùng ở slide "360px" và làm minh chứng. Đặt lại khung 360×780, kiểm `innerWidth` = 360, tải lại trang rồi chụp.
-3. **Bộ `desktop/`: 1 ảnh** (`00-chung-cu-desktop.png`, màn Tổng quan 1440×900) làm chứng cứ. **Tuyệt đối không dùng ảnh desktop cho slide**; Claude Design sẽ bỏ qua thư mục này.
+3. **Bộ `desktop/`: 1 ảnh** (`00-desktop-tong-quan.png`, màn Tổng quan 1440×900) làm chứng cứ. **Tuyệt đối không dùng ảnh desktop cho slide**; Claude Design sẽ bỏ qua thư mục này.
 
 **Thứ tự làm việc gợi ý (tiết kiệm thao tác):** hết bộ Sáng ở 390px (01→13), bật Tối rồi chạy lại từ 01→12, rồi đổi sang 360px, rồi 1 ảnh desktop. Mỗi lần đổi khung phải kiểm lại `innerWidth`.
 
@@ -123,7 +123,7 @@ Tạo thư mục `{{TEN_APP_SLUG}}-slide-anh/` rồi nén thành **`{{TEN_APP_SL
 
 ## Dự phòng: chạy bằng Claude Code (Playwright, chắc ăn nhất)
 
-Dùng khi Claude in Chrome không lưu được PNG/ZIP, không đặt được khung 390px, hoặc làm **song song** để có bản đối chiếu. Spawn **1 agent Sonnet** (cổng 8225 hoặc dùng thẳng link Pages), chạy trong thư mục dự án (đã có `tools/shots-mobile.cjs` của starter và `deck/tools/capture.cjs`):
+Dùng khi Claude in Chrome không lưu được PNG/ZIP, không đặt được khung 390px, hoặc làm **song song** để có bản đối chiếu. Spawn **1 agent Sonnet** (cổng 8225 theo bảng cổng của skill, hoặc dùng thẳng link Pages), chạy trong thư mục dự án (đã có `tools/shots-mobile.cjs` của starter và `deck/tools/capture.cjs`):
 
 ```bash
 # 1) Chụp mọi tab, sáng + tối, 390x844 @3x -> shots-mobile/NN-<tab>-light|dark.png (chạy nhanh, tên theo tab)
@@ -167,7 +167,7 @@ print(name, "đã tạo")
 PY
 ```
 
-Ghi `manifest.txt` bằng tay hoặc để agent sinh (cùng khuôn ở Bước 5). **Không** commit ZIP vào repo ứng dụng (CLAUDE.md của dự án cấm đưa gói ZIP nộp bài vào repo); chỉ lưu bản sao vào `docs/minh-chung-chot/` khi đội đồng ý.
+Ghi `manifest.txt` bằng tay hoặc để agent sinh (cùng khuôn ở Bước 5). **Không** commit ZIP vào repo ứng dụng (CLAUDE.md của dự án cấm đưa gói ZIP nộp bài vào repo); chỉ lưu bản sao vào `docs/minh-chung/` khi đội đồng ý.
 
 ## Sự cố thường gặp
 

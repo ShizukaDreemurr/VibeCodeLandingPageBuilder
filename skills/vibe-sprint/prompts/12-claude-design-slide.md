@@ -4,7 +4,7 @@
 >
 > **Cách dùng:** Khi app đã hoàn thiện (mốc T+45), điền các biến `{{...}}` bên dưới rồi **copy toàn bộ khối prompt** gửi cho **Claude Design** để xuất bộ slide đồng bộ 100% với giao diện app Xclipse.
 >
-> **Ảnh phải có TRƯỚC khi gửi.** Chung kết chấm app trên điện thoại (360–390px) nên mọi ảnh app là **ảnh điện thoại DỌC**. Ảnh do **agent Claude Sonnet** chụp: agent tự mở web app bằng giả lập điện thoại (Playwright: 390×844 @3x = 1170×2532, kèm 360×780), sáng + tối, bằng `node tools/shots-mobile.cjs <URL> shots-mobile` (starter) hoặc `node deck/tools/capture.cjs deck/tools/capture.json` (hoặc `--starter-shots <URL>`). Không chụp tay, không nhờ Gemini chụp. Đặt tên `NN-ten-mobile-light.png` / `NN-ten-mobile-dark.png` rồi dán danh sách vào `{{DANH_SACH_ANH}}`.
+> **Ảnh phải có TRƯỚC khi gửi.** Chung kết chấm app trên điện thoại (360–390px) nên mọi ảnh app là **ảnh điện thoại DỌC**. Ảnh do **agent Claude Sonnet** chụp: agent tự mở web app bằng giả lập điện thoại (Playwright: 390×844 @3x = 1170×2532, kèm 360×780), sáng + tối, bằng `node tools/shots-mobile.cjs <URL> shots-mobile` (starter) hoặc `node deck/tools/capture.cjs deck/tools/capture.json` (hoặc `--starter-shots <URL>`). Không chụp tay, không nhờ Gemini chụp. Đặt tên theo bảng slot (`NN-ten-slot-mobile-light.png` / `-dark.png`) rồi dán danh sách vào `{{DANH_SACH_ANH}}`.
 
 ---
 
@@ -35,11 +35,11 @@ Hãy thiết kế một bộ slide thuyết trình **`{{SLIDE_COUNT}}` trang (5 
   - Nền chia 2 mảng hoặc chuyển sắc từ `#DBF2FC` sang `#072D59`, kèm họa tiết **kính sọc dọc (*Fluted Glass*) + quả cầu 3D hồng-xanh (`#FD6E88` / `#072D59`)** tinh tế ở nửa phải hoặc góc (tuyệt đối không che chữ).
 - **Slide Nội dung (Slide 2–11):**
   - Lề an toàn tối thiểu **`72px`** ở cả 4 cạnh. Khoảng trắng thoáng đạt (**≥ 30% diện tích slide**).
-  - **Không nhồi chữ:** Mỗi slide tối đa **3–4 khối thông tin**, mỗi gạch đầu dòng **≤ 12 từ**, cỡ chữ nội dung tối thiểu `22px` trên khung 1920×1080 để hội trường nhìn rõ từ xa.
+  - **Không nhồi chữ:** Mỗi slide tối đa **3–4 khối thông tin**, mỗi gạch đầu dòng **≤ 14 từ**, cỡ chữ nội dung tối thiểu `24px` (chú thích ≥ 22px) trên khung 1920×1080 để hội trường nhìn rõ từ xa.
   - Thẻ nội dung bo góc `18px–22px`, nền `#FFFFFF`, viền mảnh `1px solid rgba(7, 45, 89, 0.10)`, bóng đổ cực nhẹ `0 10px 28px rgba(7, 45, 89, 0.08)`.
 - **Trình bày Ảnh chụp App thật: CHỈ ẢNH ĐIỆN THOẠI DỌC (YÊU CẦU CỨNG, thể lệ chấm trên điện thoại):**
   - Mọi ảnh app là **ảnh chụp điện thoại dọc tỉ lệ 9:19,5** (1170×2532px, tức 390×844 @3x; có thể kèm bản 360×780), đặt **bên trong khung điện thoại** (bo góc ~44px, viền Navy `#072D59`, Dynamic Island/notch, bóng đổ nhẹ). Khung điện thoại luôn đứng dọc; ảnh hiển thị đủ chiều dọc của màn hình, bám mép trên, không cắt xén mất thanh tab dưới hay số liệu.
-  - **TUYỆT ĐỐI KHÔNG** cắt ảnh thành ngang/vuông, không kéo giãn, không đặt ảnh app vào khung cửa sổ trình duyệt/laptop, không dùng ảnh desktop. Ảnh desktop chỉ được dùng khi một slide nói riêng về giao diện máy tính của giám khảo (hiếm); khi đó đặt cạnh ảnh dọc và ghi chú rõ "Desktop".
+  - **TUYỆT ĐỐI KHÔNG** cắt ảnh thành ngang/vuông, không kéo giãn, không đặt ảnh app vào khung cửa sổ trình duyệt/laptop, không dùng ảnh desktop. Ảnh desktop **không** đưa vào slide (chỉ làm minh chứng chốt).
   - **Tối đa 3 điện thoại mỗi slide** (1 điện thoại + 3 chú thích đánh số; 2 điện thoại cạnh nhau, ví dụ Sáng/Tối; 3 điện thoại cạnh nhau, ví dụ ca thường/ca sai/ca biên; hoặc luồng 3 bước 1 → 2 → 3 có mũi tên). Phần còn lại của slide chỉ là chữ gọn.
   - Slide có ảnh app dùng bố cục chia ngang: chữ ở một bên, điện thoại dọc ở bên kia, điện thoại cao gần hết chiều cao slide (≥ 640px) để đọc được từ xa.
 - **Minh bạch dữ liệu/AI (Bắt buộc theo thể lệ):**
@@ -70,7 +70,7 @@ Hãy thiết kế một bộ slide thuyết trình **`{{SLIDE_COUNT}}` trang (5 
 - **Kết quả kiểm thử thật (`smoke.cjs` + thủ công):** `{{KET_QUA_TEST}}`
 - **Link demo online & GitHub:** `{{LINK_DEMO}}` · `{{LINK_REPO}}`
 - **Danh sách ảnh chụp màn hình đính kèm (toàn bộ là ảnh dọc, đặt tên `NN-ten-mobile-light|dark.png`):** `{{DANH_SACH_ANH}}`
-  Ví dụ: `01-tong-quan-mobile-light.png` · `02-giai-phap-mobile-light.png` · `04-tinh-nang-1-mobile-light.png` · `05-tinh-nang-2-mobile-light.png` · `06-demo-mobile-light.png` · `07-ca-sai-mobile-light.png` · `08-ca-bien-mobile-light.png` · `09-tong-quan-mobile-dark.png` · `10-ket-qua-ai-mobile-light.png`
+  Tên theo bảng slot 01–13 của `14-claude-design-khung-slide.md` mục 6: `01-tong-quan-mobile-light.png` · `02-nhap-lieu-mobile-light.png` · `03-ket-qua-mobile-light.png` · `04-luu-xem-lai-mobile-light.png` · `05-tinh-nang-1-mobile-light.png` … `09-tinh-nang-5-mobile-light.png` · `10-ca-sai-mobile-light.png` · `11-ca-bien-mobile-light.png` · `01-tong-quan-mobile-dark.png` (đủ cặp light/dark)
 
 ---
 
@@ -81,7 +81,7 @@ Hãy thiết kế một bộ slide thuyết trình **`{{SLIDE_COUNT}}` trang (5 
 ### Slide "Giả định & cách tính" (bắt buộc cho Bảng Kinh tế; Bảng Kỹ thuật dùng chỗ này cho "Quy tắc nghiệp vụ & quyết định kỹ thuật")
 - Tiêu đề: `Giả định & cách tính` (một cụm nhấn bằng Playfair Italic).
 - Bố cục 3 khối: **(a) Bảng giả định** (tối đa 4 dòng: giả định · giá trị · nguồn), **(b) 3 kịch bản** (lạc quan / cơ sở / bi quan: lãi hoặc lỗ, thanh ngang có số) và **(c) điểm hòa vốn + ưu đãi**: 1 công thức dạng chữ (ví dụ `Hòa vốn = Chi phí cố định / (Giá − Biến phí)`) và 1 dòng `Ưu đãi lỗ khi …`.
-- **Điểm tựa thị giác: 1 con số lớn** là điểm hòa vốn (`{{HOA_VON}}`) hoặc lãi kịch bản xấu nhất; chữ gọn, mỗi dòng ≤ 12 từ. Số mô phỏng/giả định gắn nhãn nhỏ ngay cạnh ("Giả định", "Mô phỏng", "Dữ liệu BTC").
+- **Điểm tựa thị giác: 1 con số lớn** là điểm hòa vốn (`{{HOA_VON}}`) hoặc lãi kịch bản xấu nhất; chữ gọn, mỗi dòng ≤ 12 từ. Số mô phỏng/giả định gắn nhãn nhỏ ngay cạnh ("Giả định", "Mô phỏng", "Dữ liệu mẫu (BTC)").
 
 ### Bản 11 slide (10 phút)
 

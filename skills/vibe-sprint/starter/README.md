@@ -5,9 +5,9 @@ Bộ khung web app thuần HTML/CSS/JS (không build, không CDN) cho cuộc thi
 ## 1. Bắt đầu (5 phút)
 
 1. Chép **nội dung thư mục `starter/`** vào gốc repo mới (có `index.html` ở gốc).
-2. Sửa `js/config.js`: `appName`, `brandMark`, `tagline`, `heroLead` + `heroEm` (tiêu đề hero ở Tổng quan, vd `'Mỗi đơn hàng,'` + `'lãi hay lỗ?'`; chữ nhấn gradient là `heroEm`), `prefix` (tiền tố khoá localStorage; khoá giao diện là `<prefix>theme`, nên **đổi `prefix` thì sửa luôn `'ep_theme'` trong đoạn script ở `<head>` của `index.html` thành `'<prefix>theme'`**, nếu không giao diện đã chọn bị nháy sáng/tối khi tải lại), `mockNotice`. **`mockNotice` phải chép NGUYÊN VĂN từ đề/BTC của kỳ thi bạn đang thi.** Giá trị có sẵn `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của vòng loại; chung kết có thể khác, đừng giả định. `tests/smoke.cjs` đọc `EP.config.mockNotice` và `EP.config.prefix` nên không cần sửa test khi đổi hai giá trị này.
+2. Sửa `js/config.js`: `appName`, `brandMark`, `tagline`, `heroLead` + `heroEm` (tiêu đề hero ở Tổng quan, vd `'Mỗi đơn hàng,'` + `'lãi hay lỗ?'`; chữ nhấn gradient là `heroEm`), `prefix` (tiền tố khoá localStorage; khoá giao diện là `<prefix>theme`, nên **đổi `prefix` thì sửa luôn `'ep_theme'` trong đoạn script ở `<head>` của `index.html` thành `'<prefix>theme'`**, nếu không giao diện đã chọn bị nháy sáng/tối khi tải lại), `mockNotice`. **`mockNotice`: nếu đề/BTC đưa câu nhãn thì chép NGUYÊN VĂN; không thì dùng câu rõ nghĩa của đội.** Giá trị có sẵn là `Dữ liệu mô phỏng AI · Dữ liệu mẫu`; câu cũ `Bản demo vòng loại - Dữ liệu mô phỏng AI` là của vòng loại (chỉ là lịch sử). `tests/smoke.cjs` đọc `EP.config.mockNotice` và `EP.config.prefix` nên không cần sửa test khi đổi hai giá trị này.
 3. Sửa `<title>` và `<meta description>` trong `index.html`. Giao diện mặc định là preset **xclipse** (Ice `#DBF2FC` / Navy `#072D59` / Coral `#FD6E88`, có hero kính gân). Đổi sang Lucian bằng `<html data-preset="lucian">` trong `index.html`; tên token giữ nguyên nên feature không phải sửa. Thương hiệu khác: sửa khối xclipse trong `css/tokens.css` (cả 3 khối: sáng, tối theo hệ thống, tối thủ công).
-4. Chạy thử: `python3 -m http.server 8211` rồi mở `http://localhost:8211/` (bảng cổng của skill: 8211 điều phối, 8212-8230 các agent, **không dùng 8000**).
+4. Chạy thử: `python3 -m http.server 8211` rồi mở `http://localhost:8211/` (bảng cổng gốc ở `../SKILL.md`: 8211 điều phối, 8212-8231 các agent Claude, 8240-8249 Gemini Antigravity, **không dùng 8000**).
 5. Nhân bản feature (mục 2). Khi đã có feature thật, xoá `features/_example` và `features/_playground` **cùng với hai dòng `<script src="features/_example/feature.js">` và `<script src="features/_playground/feature.js">` trong `index.html`** (xoá thư mục mà quên dòng script thì trình duyệt báo 404 và smoke test đỏ). Smoke test tự bỏ qua các khối của hai feature này khi tab của chúng không còn.
 
 Thứ tự nạp script trong `index.html`: config, version, **icons**, core, ui, form, charts, export, ai, demo, mô-đun tuỳ chọn (mock, metrics, match, calc, scenario, import, checklist, quiz, chat, timeslot), **lucian, mobile**, features, **app.js cuối cùng**. Mô-đun không dùng thì xoá dòng `<script>` tương ứng.
@@ -90,7 +90,7 @@ Schema: `string{min,max,enum}`, `number{min,max,integer}`, `boolean`, `array{of,
 | Giao diện sáng/tối | biểu tượng xoay vào; **hiệu ứng loang 650ms ở `core.js` giữ nguyên** | `EP.theme.cycle(btn)` |
 | Định dạng vi-VN | | `EP.lucian.fmt.money(1250000)` = `1.250.000 ₫`, `.compact(2.5e9)` = `2,5 tỷ`, `.percent`, `.signed(-3.5,1,'%')`, `.number`, `.parse('1.234,5')` |
 
-Quy tắc đã tuân thủ: sáng/tối, `prefers-reduced-motion` (hoạt ảnh về ~0, không có phần tử bị ẩn chờ), `:focus-visible`, vùng chạm >= 44px khi màn <= 720px hoặc cảm ứng, không tràn ngang ở 390px, không CDN. Gỡ lớp này: xoá `css/lucian.css` + `js/lucian.js` và hai dòng trong `index.html` (form.js vẫn chạy, chỉ mất hiệu ứng). Kiểm thử: khối "Lớp Lucian" trong `tests/smoke.cjs` chạy khi còn tab `playground`.
+Quy tắc đã tuân thủ: sáng/tối, `prefers-reduced-motion` (hoạt ảnh về ~0, không có phần tử bị ẩn chờ), `:focus-visible`, vùng chạm >= 44px khi màn <= 720px hoặc cảm ứng (`css/mobile.css` nạp cuối nâng lên 48px), không tràn ngang ở 390px, không CDN. Gỡ lớp này: xoá `css/lucian.css` + `js/lucian.js` và hai dòng trong `index.html` (form.js vẫn chạy, chỉ mất hiệu ứng). Kiểm thử: khối "Lớp Lucian" trong `tests/smoke.cjs` chạy khi còn tab `playground`.
 
 ## 2c. Chuẩn điện thoại (360-390px dọc; đọc `../references/13-chuan-mobile.md`)
 
@@ -121,7 +121,7 @@ Ra `shots-mobile/NN-<tab>-light.png` và `NN-<tab>-dark.png` (390×844 @3x = 117
 - Mọi kết quả mô phỏng AI phải kèm `MOCK_NOTICE` (cấu hình ở `js/config.js`).
 - Dữ liệu người dùng/AI nhúng vào HTML phải qua `EP.esc()`.
 - Màu, cỡ, khoảng cách chỉ dùng biến trong `tokens.css`; CSS mới đặt trong `@layer components`.
-- Mobile 390px không được cuộn ngang; nút/ô nhập >= 40px; mỗi view đúng một `<h1>`.
+- Điện thoại 360px và 390px không được cuộn ngang; nút/ô nhập >= 48px (cách nhau >= 8px); mỗi view đúng một `<h1>`.
 - Không để key API trong code hoặc repo.
 
 ## 4. Kiểm thử
@@ -133,8 +133,8 @@ Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không
 
 ## 5. Phiên bản và deploy GitHub Pages
 1. `node tools/bump-version.cjs` (tăng patch; hoặc `minor`, `major`, `1.2.3`, `--stamp`): cập nhật `js/version.js` và gắn `?v=` vào mọi js/css trong `index.html` để không dính cache cũ.
-2. Commit và push lên nhánh `main`.
-3. GitHub: Settings -> Pages -> Source: *Deploy from a branch* -> `main` / `(root)`. Đợi ~1 phút, mở `https://<user>.github.io/<repo>/`.
+2. Commit và push lên nhánh nộp (chung kết: `nop-bai`; `main` nếu repo luyện tập).
+3. GitHub: Settings -> Pages -> Source: *Deploy from a branch* -> nhánh nộp / `(root)` (hoặc dùng skill `gh-pages-deploy`). Đợi ~1 phút, mở `https://<user>.github.io/<repo>/`.
 4. Đường dẫn trong app là tương đối nên chạy được ở thư mục con `/<repo>/`. Routing dùng `#/tab` nên không cần cấu hình 404.
 5. Trước khi nộp: đặt `showPlayground: false` trong `js/config.js` (ẩn tab Mô-đun/Thư viện UI và route `#/playground`; view đăng ký bằng `EP.register({ devOnly: true, ... })` cũng bị ẩn theo), rồi chạy smoke test, mở bản deploy trên điện thoại, kiểm tra `?demo=1` nạp lại dữ liệu mẫu.
 
@@ -142,18 +142,18 @@ Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không
 Mặc định app chỉ dùng localStorage và **không gọi mạng**. Chỉ bật khi đề cần dữ liệu theo tài khoản/nhiều máy.
 1. console.firebase.google.com -> Add project (gói Spark, không bật billing) -> Build -> **Firestore Database** (Production mode) và **Authentication -> Sign-in method -> Google -> Enable**.
 2. Authentication -> Settings -> **Authorized domains** -> Add `<tài-khoản>.github.io` (chỉ tên miền, không kèm `/tên-repo`). Thiếu bước này sẽ báo "Tên miền chưa được phép".
-3. Project settings -> Your apps -> Web (`</>`) -> chép `apiKey, authDomain, projectId, appId` vào `js/config.js`: `firebase: { enabled: true, config: {...}, emulator: false }`. Các giá trị này công khai theo thiết kế; dữ liệu được bảo vệ bởi rules.
+3. Project settings -> Your apps -> Web (`</>`) -> chép `apiKey, authDomain, projectId, appId` vào `js/config.js`: `firebase: { enabled: true, config: {...}, emulator: false }`. Các giá trị này công khai theo thiết kế; dữ liệu được bảo vệ bởi rules. Lưu ý: `scripts/scan-secrets.mjs` hiện chỉ cho phép `apiKey` công khai ở `js/firebase-config.js`, nên với `js/config.js` nó báo `[LỘ] google-api-key` (báo động giả khi Firebase bật; xem skill `firebase-setup`).
 4. Firestore -> Rules -> dán `firestore.rules` -> Publish (hoặc `npx firebase-tools deploy --only firestore:rules --project <id>`).
 5. Mở app qua https/localhost (không mở file://): có nút **Đăng nhập** trên thanh trên. Đăng nhập xong, mọi `EP.collection` tự đồng bộ vào `users/{uid}/{collection}/{id}`.
 
-Cách hoạt động: localStorage vẫn là bản chính (offline dùng bình thường); ghi xuôi lên Firestore có thử lại khi mất mạng; khi đăng nhập thì kéo về và gộp theo `updatedAt` (bản mới hơn thắng). Xoá lúc đang đăng xuất không lan lên máy chủ. Bản ghi > 900 KB (thường do ảnh) chỉ ở máy. API: `EP.auth.user() / signIn() / signOut() / onChange(cb)`; SDK compat 10.14.1 nạp từ gstatic chỉ khi bật. Lỗi được dịch ra tiếng Việt (unauthorized-domain, popup-closed, mạng...). Trên điện thoại tự dùng đăng nhập chuyển trang (redirect).
+Cách hoạt động: localStorage vẫn là bản chính (offline dùng bình thường); ghi xuôi lên Firestore có thử lại khi mất mạng; khi đăng nhập thì kéo về và gộp theo `updatedAt` (bản mới hơn thắng). Xoá lúc đang đăng xuất không lan lên máy chủ. Bản ghi > 900 KB (thường do ảnh) chỉ ở máy. API: `EP.auth.user() / signIn() / signOut() / onChange(cb)`; SDK compat 10.14.1 nạp lười từ gstatic chỉ khi bật (ngoại lệ duy nhất của "không CDN"; mạng chặn gstatic thì app vẫn chạy bằng localStorage). Lỗi được dịch ra tiếng Việt (unauthorized-domain, popup-closed, mạng...). Trên điện thoại tự dùng đăng nhập chuyển trang (redirect).
 
 Thử trên máy bằng emulator: copy `.firebaserc.example` -> `.firebaserc`, `npx firebase-tools emulators:start --only auth,firestore`, đặt `emulator: true`.
 
 Kiểm thử:
 ```
-node tests/smoke.cjs http://localhost:8215/         # Firebase tắt: khẳng định 0 request tới googleapis/gstatic/firebase
-node tests/firebase-ui.cjs http://localhost:8215/   # Firebase bật + SDK giả (chặn CDN): nút, dịch lỗi, đồng bộ, retry, mobile 390px
+node tests/smoke.cjs http://localhost:8211/         # Firebase tắt: khẳng định 0 request tới googleapis/gstatic/firebase
+node tests/firebase-ui.cjs http://localhost:8211/   # Firebase bật + SDK giả (chặn CDN): nút, dịch lỗi, đồng bộ, retry, mobile 390px
 npm i -D @firebase/rules-unit-testing firebase
 npx firebase-tools emulators:exec --only firestore --project demo-ep "node tests/firebase-rules.test.mjs"   # cần Java; không có emulator thì tự bỏ qua
 ```

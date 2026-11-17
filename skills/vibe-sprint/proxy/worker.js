@@ -3,7 +3,7 @@
    Worker giữ GEMINI_API_KEY (secret), chỉ chuyển tiếp tới model trong danh sách cho phép, và KHÔNG BAO GIỜ trả key về.
    Biến môi trường:
      GEMINI_API_KEY   (secret, bắt buộc)  wrangler secret put GEMINI_API_KEY
-     ALLOWED_ORIGINS  (var)  danh sách origin cho phép, cách nhau dấu phẩy, vd "https://ten.github.io,http://localhost:8216"
+     ALLOWED_ORIGINS  (var)  danh sách origin cho phép, cách nhau dấu phẩy, vd "https://ten.github.io,http://localhost:8211"
      APP_TOKEN        (secret, tuỳ chọn)  nếu đặt, trình duyệt phải gửi header X-App-Token trùng giá trị.
                       CHỈ LÀ LÀM RÀO: token nằm trong JS của trang nên ai xem mã nguồn cũng thấy. Đừng coi là bảo mật thật.
      RATE_LIMIT       (var, tuỳ chọn)  số request/phút/IP, mặc định 30. Bộ đếm nằm trong RAM của từng isolate nên chỉ là best-effort. */

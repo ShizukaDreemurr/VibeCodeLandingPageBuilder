@@ -72,6 +72,8 @@ Năng lực xuyên suốt (không nằm trong 15 mục trên nhưng đề nào c
 
 ## 3. Gợi ý thứ tự xây sẵn (nếu còn thời gian chuẩn bị)
 
+> Thể lệ chung kết cho chuẩn bị **khung chung** nhưng cấm tính năng/dữ liệu/giao diện viết riêng cho một đề. Mọi module dưới đây phải là mô-đun chung, không chứa logic của đề; phần lớn đã có trong `starter/` (bảng ở đầu file).
+
 1. `form-schema.js` + `collection-store.js` (nền cho hầu hết đề).
 2. `ai-json.js` + `mock-ai.js` (để mọi đề có đường chạy khi không có API).
 3. `metrics.js` + `export.js` (rẻ, dùng được nhiều).

@@ -110,7 +110,7 @@ Chung kết chấm app ở 360–390px, nên slide và demo đều dùng **đi�
 
 **1. Tiêu đề và phụ đề là TÊN GỌI, không phải tuyên bố.** Đặt tên cho nội dung của slide ("Bối cảnh các SME hiện nay"), không viết câu cảm xúc hay khẳng định ("Nỗi đau của các SME hiện nay: tay ngang"). Phụ đề xác định phạm vi ("Chân dung người dùng và cách họ làm việc hiện nay"). Cụm danh từ, ≤ 8 từ, không dấu chấm than. Không từ khoa trương: đột phá, cách mạng, siêu, tuyệt đối, hoàn hảo, số 1, tốt nhất, vượt trội, bùng nổ, thay đổi cuộc chơi, "wow", "100%" (trừ kết quả đã đo). Lý lẽ và cảm xúc để cho gạch đầu dòng và lời nói. 15 cặp trước/sau nằm ở `prompts/14` mục 3.1.
 
-**2. Mật độ: vừa đủ để làm prompt nhắc.** Mỗi slide nội dung **3–5 gạch đầu dòng, mỗi gạch ≤ 14 từ, cộng 1 con số chính** (số + đơn vị + nhãn nguồn: `Dữ liệu BTC` / `Giả định của đội` / `Mô phỏng`). Đủ để người đang run liếc vào là nhớ thứ tự ý; không đủ để đọc thay. Gạch là cụm có thông tin cụ thể (ai · làm gì · bao nhiêu · nguồn), chữ đời thường.
+**2. Mật độ: vừa đủ để làm prompt nhắc.** Mỗi slide nội dung **3–5 gạch đầu dòng, mỗi gạch ≤ 14 từ, cộng 1 con số chính** (số + đơn vị + nhãn nguồn: `Dữ liệu mẫu (BTC)` / `Giả định` / `Mô phỏng`). Đủ để người đang run liếc vào là nhớ thứ tự ý; không đủ để đọc thay. Gạch là cụm có thông tin cụ thể (ai · làm gì · bao nhiêu · nguồn), chữ đời thường.
 
 **3. Chiều sâu theo phần của từng người (chữ đơn giản, hiểu biết thật):**
 - **Diệu Anh:** *ai* (vai trò, quy mô, thiết bị) · *làm gì hằng ngày* (tần suất, công cụ hiện dùng) · *cái giá hiện nay* (thời gian/tiền/sai sót, có nguồn) · *quyết định giao diện = ràng buộc → xử lý* (một tay, 360–390px, vùng ngón cái, tab dưới, tương phản, Sáng/Tối, tiếng Việt có dấu). Không viết "giao diện đẹp, thân thiện".

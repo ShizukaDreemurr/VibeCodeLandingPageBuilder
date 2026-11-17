@@ -10,7 +10,7 @@ Cần Node.js và một tài khoản Cloudflare miễn phí. Chạy trong thư m
 
 1. **Đăng nhập Cloudflare** (bạn tự làm trên trình duyệt): `npx wrangler login`
 2. **Đặt key Gemini làm secret**: `npx wrangler secret put GEMINI_API_KEY`. Dán key vào **ô nhập trong terminal** khi được hỏi. Không dán key vào chat, vào file hay vào lệnh.
-3. **Sửa `ALLOWED_ORIGINS`** trong `wrangler.toml`: danh sách origin được phép, cách nhau dấu phẩy, không có dấu `/` cuối. Ví dụ `https://TEN-GITHUB.github.io,http://localhost:8216`. (Origin chỉ gồm tên miền, không có tên repo.)
+3. **Sửa `ALLOWED_ORIGINS`** trong `wrangler.toml`: danh sách origin được phép, cách nhau dấu phẩy, không có dấu `/` cuối. Ví dụ `https://TEN-GITHUB.github.io,http://localhost:8211` (8211 = cổng điều phối trong bảng cổng; bản Worker đã deploy từ trước chỉ cho 8216 thì phải `npx wrangler deploy` lại mới demo được từ localhost:8211). (Origin chỉ gồm tên miền, không có tên repo.)
 4. **Triển khai**: `npx wrangler deploy`. Kiểm tra: mở `https://vibe-gemini-proxy.<subdomain>.workers.dev/health` thấy `{"ok":true}`.
 5. **Dán URL vào app**: trong `js/config.js` đặt `ai: { proxyUrl: 'https://vibe-gemini-proxy.<subdomain>.workers.dev', appToken: '' }`, chạy `node tools/bump-version.cjs`, rồi push. Tab Cài đặt sẽ hiện "Đang dùng máy chủ trung gian của đội — không cần nhập key".
 
@@ -28,7 +28,7 @@ Cần Node.js và một tài khoản Cloudflare miễn phí. Chạy trong thư m
 GEMINI_API_KEY="$(cat /đường/dẫn/file/key)" node tests/proxy-local.mjs           # kiểm tra logic + 1 lời gọi thật
 GEMINI_API_KEY="$(cat /đường/dẫn/file/key)" node tests/proxy-local.mjs --serve   # proxy ở http://localhost:8787
 ```
-Rồi đặt `proxyUrl: 'http://localhost:8787'` ở bản sao `config.js` và phục vụ app ở cổng 8216 (nằm trong `ALLOWED_ORIGINS` mặc định của harness). Hoặc `npx wrangler dev` với file `.dev.vars` đặt **ngoài repo** (bản sao tạm), không commit.
+Rồi đặt `proxyUrl: 'http://localhost:8787'` ở bản sao `config.js` và phục vụ app ở cổng 8211 (nằm trong `ALLOWED_ORIGINS` mặc định của harness). Hoặc `npx wrangler dev` với file `.dev.vars` đặt **ngoài repo** (bản sao tạm), không commit.
 
 ## Phương án khác
 

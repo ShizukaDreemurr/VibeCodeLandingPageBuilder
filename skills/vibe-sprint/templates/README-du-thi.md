@@ -22,7 +22,7 @@
 | Minh chứng dùng AI | `docs/MINH-CHUNG-AI.md` |
 | Bảng kiểm thử | `docs/BANG-KIEM-THU.md` (mục 11) |
 | Commit đã nộp (hash) | <git rev-parse --short HEAD, khớp bản đang chạy trên link> |
-| Minh chứng thời điểm chốt | `docs/minh-chung-chot/` |
+| Minh chứng thời điểm chốt | `docs/minh-chung/` |
 | Liên hệ | <email> |
 
 ### Phân vai
@@ -129,7 +129,7 @@ Chép bảng từ `docs/BANG-KIEM-THU.md` (ít nhất các ca bắt buộc của
 ## 14. Dữ liệu (file BTC / mẫu / mô phỏng)
 | Bộ dữ liệu | Nguồn | Dùng ở đâu | Nhãn trong app |
 |---|---|---|---|
-| File mẫu BTC phát đầu giờ (sheet: <tên>) | BTC | <màn nhập/nạp: tên nút> | "Dữ liệu BTC" |
+| File mẫu BTC phát đầu giờ (sheet: <tên>) | BTC | <màn nhập/nạp: tên nút> | "Dữ liệu mẫu (BTC)" |
 | Dữ liệu mẫu của đội (nút "<Điền dữ liệu mẫu>") | Đội tự tạo trong giờ thi | <…> | "Dữ liệu mẫu" |
 | Số liệu mô phỏng (AI/công thức) | Sinh bởi <…> | <…> | "<câu nhãn mô phỏng>" |
 - Không có tài khoản đăng nhập / tài khoản demo: <…>.
@@ -140,7 +140,7 @@ Chép bảng từ `docs/BANG-KIEM-THU.md` (ít nhất các ca bắt buộc của
 - Thư viện/công cụ bên ngoài: xem mục 9.
 
 ## 16. Minh chứng thời điểm chốt
-- Ảnh/video: `docs/minh-chung-chot/<tên tệp>` chụp lúc <hh:mm>, màn hình: <danh sách>, kích thước: desktop + 360px + 390px.
+- Ảnh/video: `docs/minh-chung/<thời điểm>/<tên tệp>` (do `node scripts/nop-bai.mjs` ghi) chụp lúc <hh:mm>, màn hình: <danh sách>, kích thước: desktop + 360px + 390px.
 - Commit đang chạy tại thời điểm chốt: `<hash>`; phiên bản hiển thị trên app: `<x.y.z>`.
 
 ## 17. Công cụ AI

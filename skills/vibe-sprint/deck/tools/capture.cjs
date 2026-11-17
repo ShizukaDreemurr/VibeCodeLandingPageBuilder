@@ -6,20 +6,20 @@
  * Ảnh desktop chỉ chụp khi bạn yêu cầu rõ ("devices":["desktop"]) và chỉ dùng làm chứng cứ, KHÔNG đưa vào slide.
  *
  * Cách 1 (nhanh, 1 màn hình, dọc):
- *   node tools/capture.cjs --url http://localhost:8234/ --name 04-tinh-nang-1
- *   node tools/capture.cjs --url http://localhost:8234/ --name 04-tinh-nang-1 --click '#btn-sample' --theme dark
- *   node tools/capture.cjs --url http://localhost:8234/ --name home --desktop      (thêm 1 ảnh desktop làm chứng cứ)
+ *   node tools/capture.cjs --url http://localhost:8225/ --name 05-tinh-nang-1
+ *   node tools/capture.cjs --url http://localhost:8225/ --name 05-tinh-nang-1 --click '#btn-sample' --theme dark
+ *   node tools/capture.cjs --url http://localhost:8225/ --name home --desktop      (thêm 1 ảnh desktop làm chứng cứ)
  *
  * Cách 2 (nhiều màn hình, khuyên dùng): file cấu hình JSON
  *   node tools/capture.cjs tools/capture.example.json
  *
  * Cách 3 (tự chụp từng tab, sáng + tối) bằng công cụ của starter nếu có (tools/shots-mobile.cjs):
- *   node tools/capture.cjs --starter-shots http://localhost:8234/            -> assets/auto/NN-tab-light|dark.png
+ *   node tools/capture.cjs --starter-shots http://localhost:8225/            -> assets/auto/NN-tab-light|dark.png
  *   (hoặc đặt "starterShots": true trong file cấu hình; có thể kết hợp với "views" ở trên)
  *
  * Cấu hình JSON:
  * {
- *   "base": "http://localhost:8234/",        // gốc URL; mỗi view có thể dùng "url" tương đối hoặc tuyệt đối
+ *   "base": "http://localhost:8225/",        // gốc URL; mỗi view có thể dùng "url" tương đối hoặc tuyệt đối
  *   "out": "../assets",                      // thư mục ảnh (tính từ file cấu hình); mặc định deck/assets
  *   "mobile": [390, 844], "scale": 3,        // mặc định; muốn kiểm tra cỡ nhỏ: [360, 780]
  *   "desktop": [1440, 900],                  // chỉ dùng khi view có "desktop" trong devices
@@ -27,7 +27,7 @@
  *   "reduceMotion": true,                    // tắt animation cho ảnh sạch (mặc định true)
  *   "starterShots": false,                   // true = chạy thêm starter/tools/shots-mobile.cjs vào <out>/auto
  *   "views": [
- *     { "name": "04-tinh-nang-1", "url": "index.html?demo=1#/example",
+ *     { "name": "05-tinh-nang-1", "url": "index.html?demo=1#/example",
  *       "steps": [ {"click":"#btn"}, {"fill":["#f-name","Tên"]}, {"select":["select[name=status]","done"]}, {"press":"Enter"}, {"wait":800},
  *                  {"waitFor":".card"}, {"hide":".popup"}, {"scroll":"#section"}, {"eval":"document.title='x'"},
  *                  {"storage":{"key":"value"}} ],       // storage: đặt localStorage TRƯỚC khi mở trang
@@ -135,7 +135,7 @@ async function runSteps(page, steps) {
     const sh = cands.find(f => fs.existsSync(f));
     const base = typeof args['starter-shots'] === 'string' ? args['starter-shots'] : (cfg.base || args.url);
     if (!sh) { console.error('LỖI  không thấy tools/shots-mobile.cjs của starter (đã tìm:', cands.map(f => path.relative(process.cwd(), f)).join(', '), ')'); fail++; }
-    else if (!base) { console.error('LỖI  thiếu URL app: dùng --starter-shots http://localhost:8234/ hoặc "base" trong cấu hình'); fail++; }
+    else if (!base) { console.error('LỖI  thiếu URL app: dùng --starter-shots http://localhost:8225/ hoặc "base" trong cấu hình'); fail++; }
     else {
       const dir = path.join(out, 'auto');
       const r = cp.spawnSync(process.execPath, [sh, base, dir], { stdio: 'inherit' });

@@ -6,7 +6,7 @@ Rút từ lịch sử Xclipse. Đọc nhanh trước T+8, dán các dòng liên 
 
 | Triệu chứng | Nguyên nhân | Cách sửa / phòng |
 |---|---|---|
-| Ảnh chụp của agent không có thay đổi vừa code; "chạy được" mà thật ra sai trang | Nhiều agent cùng dùng cổng 8000, server phục vụ **worktree của người khác** | Mỗi agent cổng riêng (bảng 8211-8230 ở `02`), không bao giờ 8000; kiểm tra `curl localhost:<cổng>/js/version.js` thấy đúng nhánh |
+| Ảnh chụp của agent không có thay đổi vừa code; "chạy được" mà thật ra sai trang | Nhiều agent cùng dùng cổng 8000, server phục vụ **worktree của người khác** | Mỗi agent cổng riêng (bảng cổng ở `SKILL.md`: 8211–8231 Claude, 8240–8249 Gemini), không bao giờ 8000; kiểm tra `curl localhost:<cổng>/js/version.js` thấy đúng nhánh |
 | Agent thấy code cũ / thiếu file | Worktree bắt đầu từ commit cũ | Dòng đầu prompt `git reset --hard <nhánh>`; so `git log -1` |
 | Test fail dù tính năng đúng | Test **hardcode cổng 8000** | Test lấy URL từ `argv` (`node tests/smoke.cjs http://localhost:<cổng>/`); điều phối viên truyền URL |
 | Merge xong app trắng | Xung đột ở `index.html` (hai dòng `<script>` đè nhau / thứ tự sai) | Giữ cả hai script, đúng thứ tự phụ thuộc; mỗi agent thêm script ở neo riêng |
@@ -48,7 +48,7 @@ Rút từ lịch sử Xclipse. Đọc nhanh trước T+8, dán các dòng liên 
 
 | Triệu chứng | Nguyên nhân | Cách sửa |
 |---|---|---|
-| Nhãn mô phỏng bị bác/chấm trừ | Sai câu chữ BTC yêu cầu | Lấy **nguyên văn** từ đề/BTC (từng chữ, từng dấu) và đặt ở `mockNotice` trong `js/config.js`; `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của vòng loại, **chung kết phải kiểm tra lại từ đề, đừng suy diễn**; đổi câu thì sửa luôn 2 assert trong `tests/smoke.cjs` |
+| Nhãn mô phỏng bị bác/chấm trừ | Sai câu chữ BTC yêu cầu | Lấy **nguyên văn** từ đề/BTC (từng chữ, từng dấu) và đặt ở `mockNotice` trong `js/config.js`; `Bản demo vòng loại - Dữ liệu mô phỏng AI` chỉ là câu của vòng loại, **chung kết phải kiểm tra lại từ đề, đừng suy diễn**; `tests/smoke.cjs` tự đọc `EP.config.mockNotice` nên không cần sửa test |
 | Nhãn mô phỏng xuống dòng/che nút | CSS | `flex-wrap`, chạy ảnh mobile |
 | Tạo ảnh bằng Gemini báo 429 `limit: 0` | **Key miễn phí không tạo được ảnh** (cần billing) | Văn bản dùng Flash miễn phí được; ảnh: dùng ảnh có sẵn/SVG/gradient, thông báo rõ trong app |
 | Tên model đổi/gỡ (-preview) | Không ổn định | `EP.ai.MODELS` / `FALLBACKS` trong `js/ai.js` tự thử model kế; cập nhật danh sách theo tài khoản thật; luôn có mock |
@@ -78,7 +78,7 @@ Mã `07-…` = đoạn chép-dán tương ứng trong `references/07-cookbook-co
 |---|---|---|
 | Agent "sửa" bằng cách đổi test cho đi vòng qua lỗi (nút Điền dữ liệu mẫu vẫn bị trang demo ghi đè) | Prompt chỉ yêu cầu "test xanh" | Prompt: "tìm nguyên nhân gốc trước, sửa app; chỉ sửa test khi test lỗi thời và nói rõ". Báo cáo nêu đã chọn đường nào |
 | Test cũ chỉ in kết quả, điều phối viên phải grep "lỗi/fail" mới biết hỏng | Không trả mã thoát | Mọi `tests/*.cjs` kết thúc `process.exit(failed ? 1 : 0)` (`07` H1) |
-| Một loạt test đỏ sau khi đổi tab mặc định / hành vi khách | Test giả định tab đầu cũ | Helper mở đúng tab trước khi thao tác (`tests/auto-tab.cjs`); test không dựa vào trạng thái mặc định |
+| Một loạt test đỏ sau khi đổi tab mặc định / hành vi khách | Test giả định tab đầu cũ | Helper mở đúng tab trước khi thao tác (ví dụ `tests/auto-tab.cjs` của Xclipse, không kèm starter; tự viết 5 dòng); test không dựa vào trạng thái mặc định |
 | Test "Esc đóng xem trước" lúc được lúc không | Chờ khoảng cố định; listener khác nuốt phím | Chờ dialog đóng hẳn bằng `waitForFunction`; Esc xử lý ở listener capture đầu tiên (`07` H3) |
 | Test tự động không thấy dữ liệu mẫu/popup | Code bỏ qua khi `navigator.webdriver` | Đã chủ đích: demo cần `?demo=1`, popup cần `?popup=1`; viết vào comment đầu file để agent sau khỏi tìm |
 | Agent trong sandbox không chạy được test Firebase/emulator | Không có Java/emulator/quyền Firebase | Điều phối viên tự chạy sau merge (`07` G5); báo rõ "phần này chưa chạy" cho đến lúc chạy |
@@ -119,7 +119,7 @@ Mã `07-…` = đoạn chép-dán tương ứng trong `references/07-cookbook-co
 |---|---|---|
 | Link chia sẻ thấy một chút khung builder trước khi trang hiện | Khung app hiện trước khi JS biết đây là link công khai | Script `<head>` gắn class `boot-public` ẩn khung (`07` F3) |
 | Meta OG đúng nhưng Facebook vẫn hiện bản cũ | Facebook/Zalo cache bản xem trước | Dán **link mới** (`/s/<id>/`), Sharing Debugger → Scrape Again; đừng hứa là đã chạy trên Facebook khi chưa thử (`07` F2) |
-| Cần trang chia sẻ riêng nhưng không có máy chủ | Pages tĩnh; Firebase Functions cần trả phí | `tools/build-share-pages.cjs` sinh `s/<id>/index.html` ở máy, commit vào repo; chạy lại khi đổi nội dung |
+| Cần trang chia sẻ riêng nhưng không có máy chủ | Pages tĩnh; Firebase Functions cần trả phí | (script của Xclipse, không kèm starter; mẫu ở `07` F2) `tools/build-share-pages.cjs` sinh `s/<id>/index.html` ở máy, commit vào repo; chạy lại khi đổi nội dung |
 | Ảnh tải lên bị báo "quá lớn/dung lượng đầy" | Giới hạn localStorage ~5MB, tài liệu Firestore 1MB | Tự nén theo trần từng loại ô, nén lại ảnh nặng nhất khi cả trang vượt ngân sách; báo "từ X xuống Y" (`07` D8); kho ảnh lớn dùng IndexedDB (`07` D9) |
 | Tìm "cuoi" không ra "cưới" | So khớp có dấu | Chuẩn hoá `NFD` bỏ dấu + `đ→d` cả hai phía (`07` D10) |
 | Bộ lọc chỉ có một nhãn chiếm 22/25 mẫu | Gán nhãn lệch khi agent sinh hàng loạt | Validator của đợt sinh dữ liệu kiểm phân bố; gán lại nhãn riêng rồi mới bật bộ lọc (`07` I1) |
@@ -134,9 +134,9 @@ Mã `07-…` = đoạn chép-dán tương ứng trong `references/07-cookbook-co
 
 ## Gemini qua proxy của đội (đọc trước khi demo)
 
-- `ai.proxyUrl` trong `starter/js/config.js` đã **điền sẵn Worker của đội**: `https://vibe-gemini-proxy.xclipse.workers.dev` (không cần nhập key khi demo).
+- `ai.proxyUrl` trong `starter/js/config.js` (nhớ thêm origin `http://localhost:8211` vào `ALLOWED_ORIGINS` của Worker nếu demo từ localhost) đã **điền sẵn Worker của đội**: `https://vibe-gemini-proxy.xclipse.workers.dev` (không cần nhập key khi demo).
 - **`ALLOWED_ORIGINS` trên Worker phải chứa origin Pages của chung kết.** `https://xclipsex.github.io` dùng được cho mọi repo dưới tài khoản đó; **tài khoản khác phải thêm origin vào Worker** (xem `proxy/README.md`), không thì trình duyệt báo CORS/403.
-- Model mặc định hiện là **`gemini-4-hydrogen` (~10 giây/lượt)**. Nếu chậm khi demo: vào Cài đặt đổi sang **`gemini-3.6-flash` (~1 giây)**.
+- Model mặc định trong `EP.ai.DEFAULT_MODEL` là **`gemini-4-hydrogen` (~10 giây/lượt)** (danh sách: `gemini-4-hydrogen`, `gemini-3.6-flash`, `gemini-3.8-flash`; không có bản flash-lite). Nếu chậm khi demo: vào Cài đặt đổi sang **`gemini-3.6-flash` (~1 giây)**.
 
 ## Bài học theo thể lệ Chung kết 2026 (xem `references/00-the-le-chung-ket.md`)
 
@@ -146,7 +146,7 @@ Mã `07-…` = đoạn chép-dán tương ứng trong `references/07-cookbook-co
 | Nộp mà thiếu 1 trong 4 món (thường là minh chứng chốt) | Dồn hết vào phút 58 | Chụp minh chứng ở **T+50–55**, nộp T+55–60; checklist 4 món (`templates/CHECKLIST-CHUNG-KET.md`) |
 | Mã nguồn nộp không khớp bản demo | Push thêm sau khi chụp minh chứng | Ghi hash commit; không push sau T+50; kiểm phiên bản hiện trên app = hash trong README |
 | Chấm Kinh tế thấp dù app đẹp | Chỉ làm tính năng, thiếu giả định/kịch bản/hòa vốn (49 điểm nằm ở đó) | Agent riêng "Giả định & mô hình kinh doanh"; danh sách giả định có nguồn; 3 kịch bản; hòa vốn; độ nhạy; dự phòng |
-| Số liệu mô phỏng bị coi là số thật | Không ghi rõ nguồn | Ba loại nhãn: "Dữ liệu BTC", "Giả định của đội", "Mô phỏng"; đề đưa câu nhãn thì chép nguyên văn |
+| Số liệu mô phỏng bị coi là số thật | Không ghi rõ nguồn | Ba loại nhãn: "Dữ liệu mẫu (BTC)", "Giả định", "Mô phỏng"; đề đưa câu nhãn thì chép nguyên văn |
 | Không dùng được file dữ liệu BTC phát đầu giờ | Đọc muộn, cột lệch Schema Contract | T+0 mở file, đưa tên sheet/cột vào Contract; nhập bằng `EP.importer`; "Điền dữ liệu mẫu" lấy từ chính file đó |
 | Bài thuyết trình vỡ vì thời lượng thay đổi | Chỉ tập 1 bản 10 phút | Có 3 bản 10/5/3 phút, mỗi bản có phần "Giả định & cách tính" |
 | Không trả lời được "ưu đãi này có lỗ không" ở vòng phản biện | Chưa tính điểm hòa vốn/biên sau ưu đãi | Mỗi cơ chế ưu đãi có dòng tính biên và điều kiện lỗ; xem `templates/HOI-DAP.md` mục F |

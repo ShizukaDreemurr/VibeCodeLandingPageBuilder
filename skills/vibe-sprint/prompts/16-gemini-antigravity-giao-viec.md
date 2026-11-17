@@ -43,7 +43,7 @@ Bạn là **Gemini Antigravity**, một agent kỹ sư phần mềm làm việc 
 - Đề {{DE_SO}} (nguyên văn): {{DE_TEXT}}
 - Nộp lúc phút 60: **link demo chạy được · mã nguồn · README · minh chứng thời điểm chốt**. App chấm trên **điện thoại dọc 360–390px** (5 tiêu chí: không tràn ngang; nút/ô nhập đủ lớn và không chồng nhau; chữ đọc được ở zoom mặc định; mọi luồng chính làm được trên điện thoại; có tab/điều hướng cho biết đang ở đâu).
 - **Cấm viết sẵn tính năng riêng cho đề trước giờ thi**; mọi thứ theo đề chỉ viết **sau** khi đề công bố, trên khung chung `window.EP` của dự án. Mọi việc bạn làm là mã **mới viết trong cuộc thi**.
-- **Dữ liệu và AI mô phỏng phải nhận diện rõ.** Nhãn nguyên văn: `{{MOCK_NOTICE}}` — chỉ đặt **một chỗ** (`mockNotice` trong `js/config.js`, **do Claude sửa**, bạn không sửa). Số từ file BTC ghi `Dữ liệu BTC`; số đội tự đặt ghi `Giả định của đội`; số sinh ra ghi `Mô phỏng`.
+- **Dữ liệu và AI mô phỏng phải nhận diện rõ.** Nhãn nguyên văn: `{{MOCK_NOTICE}}` — chỉ đặt **một chỗ** (`mockNotice` trong `js/config.js`, **do Claude sửa**, bạn không sửa). Số từ file BTC ghi `Dữ liệu mẫu (BTC)`; số đội tự đặt ghi `Giả định`; số sinh ra ghi `Mô phỏng`.
 - **UI tiếng Việt có dấu**; mã nguồn, tên biến, tên file bằng tiếng Anh; giờ hiển thị `Asia/Ho_Chi_Minh`. Ngày, giờ, địa điểm, giá, tên người luôn lấy từ form, không để AI viết.
 
 ## 2. PHẠM VI VÀ KỸ THUẬT
@@ -124,7 +124,7 @@ Chậm hơn mốc: gửi ngay 2 dòng "đang kẹt ở đâu, cần gì"; **cắ
 3. **Đã chạy và kết quả thật:** từng lệnh ở mục 6 kèm dòng kết quả (ví dụ `smoke: 12/12`), ảnh 390 và 360 đã chụp và nhìn.
 4. **Chưa kiểm hoặc còn mô phỏng:** nói thật.
 5. **Dòng cần thêm vào `index.html`** (nếu việc của bạn là tính năng): đúng một dòng `<script>`/`<link>`.
-6. **Giả định tự đặt** (tên, ngưỡng, số) và **lý do**. Số không có nguồn ghi `Giả định của đội`.
+6. **Giả định tự đặt** (tên, ngưỡng, số) và **lý do**. Số không có nguồn ghi `Giả định`.
 7. **Phát hiện ngoài phạm vi** (file, dòng, mô tả).
 8. **Câu hỏi cho điều phối** (nếu có).
 
@@ -165,7 +165,7 @@ Bây giờ đọc khối TASK bên dưới và làm theo; khi xong gửi báo c�
 1. Dùng `EP.register`, `EP.collection`, `EP.form.render/bind`, `EP.ui.table/dialog/toast`, `EP.charts` — **không tự dựng lại**. Tab hiện trên thanh tab dưới (điện thoại), đúng 1 `<h1>`.
 2. Form có kiểm tra đầu vào (trống, sai định dạng, trùng, biên); thông báo lỗi tiếng Việt dưới từng ô, không lưu dữ liệu sai.
 3. Mọi con số là hàm thuần (đặt trong `feature.js` hoặc `features/{{FEATURE_ID}}/calc.js`), có `tests/{{FEATURE_ID}}.cjs` (node `vm`); mẫu số 0 → `Không đủ dữ liệu`.
-4. Nút `Điền dữ liệu mẫu` đã có ở khung; đăng ký dữ liệu mẫu bằng `EP.demo.register` **chỉ khi hợp đồng cho phép**; không thì dùng dữ liệu của `ag/data`.
+4. Khung chỉ có "Nạp lại dữ liệu demo" (Cài đặt); nút `Điền dữ liệu mẫu` của màn của bạn do bạn thêm (gọi `EP.demo.reset()`). Đăng ký dữ liệu mẫu bằng `EP.demo.register` **chỉ khi hợp đồng cho phép**; không thì dùng dữ liệu của `ag/data`.
 5. Có trạng thái rỗng, đang tải, lỗi; sáng và tối đều đọc được; vùng chạm ≥ 48px.
 6. AI (nếu có): `EP.ai.generate({ prompt, schema, mock }, { input })`, mock có nhãn `EP.ai.noticeHtml`.
 7. Chụp 390×844 và 360×780, sáng + tối, màn chính + ca nhập sai của tính năng; đính tên file vào báo cáo.
@@ -191,7 +191,7 @@ Bây giờ đọc khối TASK bên dưới và làm theo; khi xong gửi báo c�
 1. `js/demo-data.js` gồm các `EP.demo.register('<collection>', { version, seed })`, nạp **sau** `features/` và trước `js/app.js`. Mỗi collection có **version** để `?demo=1` nạp lại đúng.
 2. Dữ liệu **thật về hình thức** nhưng **không phải người thật**: tên Việt giả hợp lý, SĐT dạng `09xx` giả đã che, không email thật, ngày/giờ hợp lý theo `Asia/Ho_Chi_Minh`, tiền VND có dấu chấm ngăn nghìn khi hiển thị.
 3. **Phủ ca:** ≥ 70% dòng ca thường; ≥ 3 ca biên (giá trị biên, trùng, hết hạn…); ≥ 3 ca sai/thiếu dữ liệu để thử kiểm tra đầu vào. Đánh dấu ca bằng trường theo hợp đồng (nếu hợp đồng chưa có thì **không thêm**, hỏi điều phối).
-4. Nếu có file BTC: dùng `EP.importer` (xlsx/csv, chọn sheet, đoán cột, số kiểu Việt Nam) để **ánh xạ cột → trường hợp đồng**; ghi vào `docs/data-mapping.md` bảng `sheet · cột gốc · trường hợp đồng · biến đổi · ghi chú`. Số từ file BTC gắn nhãn nguồn `Dữ liệu BTC`.
+4. Nếu có file BTC: dùng `EP.importer` (xlsx/csv, chọn sheet, đoán cột, số kiểu Việt Nam) để **ánh xạ cột → trường hợp đồng**; ghi vào `docs/data-mapping.md` bảng `sheet · cột gốc · trường hợp đồng · biến đổi · ghi chú`. Số từ file BTC gắn nhãn nguồn `Dữ liệu mẫu (BTC)`.
 5. `tests/demo.cjs` (node `vm`): đủ số dòng, đúng kiểu từng trường, không trùng id, không thiếu trường bắt buộc, không có chuỗi giống khóa API/email thật.
 6. Nhãn: dữ liệu sinh ra là `Mô phỏng`/`Dữ liệu mẫu` — không để chữ nào ngụ ý số thật.
 
@@ -236,7 +236,7 @@ Bây giờ đọc khối TASK bên dưới và làm theo; khi xong gửi báo c�
 2. **Tính lại 3 kịch bản** (lạc quan/cơ sở/bi quan) từ cùng giả định; so với con số trong app; nêu **chênh lệch** nếu có.
 3. **Điểm hòa vốn:** viết công thức, thay số, so với app; nêu mẫu số = 0 xử lý thế nào.
 4. **Ưu đãi/khuyến mãi:** tính biên sau ưu đãi; tìm **điều kiện làm lỗ** (ngưỡng giảm giá, tỉ lệ dùng mã, đơn nhỏ). Nêu 2 ca ưu đãi gây lỗ.
-5. **Số liệu dự phòng:** đề xuất 3 phương án khi thiếu số (dùng trung bình ngành có nguồn, dùng khoảng, dùng hai giá trị); nêu rõ nhãn `Giả định của đội`.
+5. **Số liệu dự phòng:** đề xuất 3 phương án khi thiếu số (dùng trung bình ngành có nguồn, dùng khoảng, dùng hai giá trị); nêu rõ nhãn `Giả định`.
 6. **Câu hỏi phản biện:** soạn 8 câu giám khảo có thể hỏi về giả định/hòa vốn/ưu đãi, mỗi câu kèm câu trả lời ≤ 30 giây, gắn người trả lời (Nguyên trả phần lớn; Dũng hòa vốn và ưu đãi).
 7. Kết luận: **3 điểm yếu lớn nhất** của mô hình và **3 việc sửa nhanh** trong ≤ 10 phút.
 

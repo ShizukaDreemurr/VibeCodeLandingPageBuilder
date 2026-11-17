@@ -185,11 +185,10 @@ Các nguyên nhân khác của dải trắng: `min-height: 100vh` (dùng `100dvh
   dialog.sheet { inset: auto 0 0 0; width: 100%; max-height: 90dvh; border-radius: 16px 16px 0 0; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); overscroll-behavior: contain; overflow-y: auto; }
   .toasts { top: 8px; bottom: auto; }
   input, select, textarea { font-size: 16px; }    /* <16px: iOS tự phóng to khi chạm ô */
-  .btn, .tab { min-height: 44px; }
-  .tabs { overflow-x: auto; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
+  .btn { min-height: 48px; }                    /* chuẩn chung kết: vùng chạm ≥ 48px, cách nhau ≥ 8px (references/13) */
 }
 ```
-Tab đang chọn phải tự cuộn vào giữa dải: `activeTab.scrollIntoView({ inline: 'center', block: 'nearest' })`.
+Điện thoại dùng **thanh tab dưới** do `EP.register` của starter tự dựng (không tự viết tab cuộn ngang trên đầu); chỉ `.seg`/`.chips` con trong view mới cuộn ngang, mục đang chọn tự cuộn vào giữa (`js/mobile.js`).
 
 ### C8. Dấu tiếng Việt chạm nhau: tăng line-height tiêu đề; thanh nổi bo góc khớp khung
 ```css
@@ -369,7 +368,7 @@ Số liệu: số 0 không tô màu, `font-variant-numeric: tabular-nums`, đư�
 ```js
 const res = await EP.ai.generate({
   prompt: (input) => 'Bạn là ... Chỉ dùng dữ kiện dưới đây, KHÔNG bịa ngày, giá, tên.\n' + JSON.stringify(input) + '\nChỉ trả về một khối JSON: {"headline":"...","benefits":["...","...","..."]}',
-  schema: { headline: { type: 'string', max: 90 }, benefits: { type: 'array', of: 'string', min: 3, max: 3 } },
+  schema: { type: 'object', props: { headline: { type: 'string', max: 90 }, benefits: { type: 'array', of: { type: 'string' }, min: 3, max: 3 } } },   // định dạng thật của js/ai.js
   mock: (input) => ({ headline: input.name + ' – ' + input.date, benefits: ['…', '…', '…'] })
 }, { input: formValues });
 el.innerHTML = EP.esc(res.data.headline) + EP.ai.noticeHtml(res);          // mock thì luôn kèm nhãn
@@ -398,7 +397,7 @@ Ca kiểm thử bắt buộc: dán kết quả có lời dẫn + ```json + nháy
 
 ### E4. Nhãn mô phỏng: một nguồn duy nhất, hiển thị ở mọi nơi, không xuống dòng xấu
 ```js
-// js/config.js:  mockNotice: '<CÂU NGUYÊN VĂN TỪ ĐỀ/BTC>'   (vòng loại: 'Bản demo vòng loại - Dữ liệu mô phỏng AI'; chung kết PHẢI kiểm tra lại)
+// js/config.js:  mockNotice: '<CÂU NGUYÊN VĂN TỪ ĐỀ/BTC>'   (lịch sử: vòng loại dùng 'Bản demo vòng loại - Dữ liệu mô phỏng AI'; chung kết PHẢI đọc lại từ đề)
 const noticeHtml = (res) => res.mock ? '<p class="mock-pill" role="note">' + EP.esc(EP.config.mockNotice) + '</p>' : '';
 ```
 ```css
@@ -406,11 +405,11 @@ const noticeHtml = (res) => res.mock ? '<p class="mock-pill" role="note">' + EP.
   background: var(--warn-soft, #fff4e5); color: var(--warn, #8a4b00); font-size: 13px; line-height: 1.35; }
 @media (max-width: 760px) { .toolbar .mock-pill { white-space: normal; } }  /* nhãn ở thanh công cụ: desktop 1 dòng, hẹp thì xuống dòng riêng, đừng để thành 4 dòng nhỏ */
 ```
-Nhãn xuất hiện ở: ghi chú trong app, chân trang, cảnh báo khi fallback, checklist trước xuất bản, README, bảng kiểm thử, slide. Đổi câu → sửa 2 assert trong `tests/smoke.cjs` (starter đã đọc từ `EP.config`).
+Nhãn xuất hiện ở: ghi chú trong app, chân trang, cảnh báo khi fallback, checklist trước xuất bản, README, bảng kiểm thử, slide. Đổi câu → không cần sửa test (`tests/smoke.cjs` của starter đọc từ `EP.config.mockNotice`); chỉ sửa README, bảng kiểm thử, slide.
 
 ### E5. Gọi Gemini bằng key người dùng nhập + dịch lỗi + tự đổi model
 ```js
-const URL_G = 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent', FALLBACKS = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest'];
+const URL_G = 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent', FALLBACKS = ['gemini-4-hydrogen', 'gemini-3.6-flash', 'gemini-3.8-flash'];   // = EP.ai.FALLBACKS của starter; không có bản flash-lite
 const fail = (msg, kind) => Object.assign(new Error(msg), { kind });
 async function call(key, model, prompt, ms = 60000) {
   const ac = new AbortController(), t = setTimeout(() => ac.abort(), ms);
@@ -487,6 +486,8 @@ Mỗi màn đúng một `h1`; ảnh có `alt` mô tả + `width/height`; diễn 
 
 ## G. Firebase, GitHub Pages, Google Sheet
 
+> Lưu ý đường dẫn: mẫu G2 dùng `vendor/firebase/*.js` (tự tải SDK về, **thư mục này không có trong skill**); starter nạp SDK compat 10.14.1 lười từ gstatic và chỉ khi `firebase.enabled`. Emulator Firestore của starter ở cổng 8080 (`firebase.json`), mẫu G2/G5 dùng 8085: chọn một và đồng bộ.
+
 > Bản dựng sẵn, TẮT mặc định: `starter/js/firebase.js` + `starter/firestore.rules` (đăng nhập Google, đồng bộ `EP.collection` -> `users/{uid}/...`, dịch lỗi tiếng Việt). Các mẫu G1-G4 dưới đây dùng cho trường hợp riêng; nếu chỉ cần lưu theo tài khoản thì bật module trong `starter/js/config.js`, xem `starter/README.md` mục "Bật Firebase trong 5 phút".
 
 Mặc định 60 phút: **localStorage**. Chỉ dùng Firebase khi đề cần dữ liệu chung nhiều máy. **Đề đã quy định nơi lưu (vd localStorage) thì đó là bản chính; Firebase/Sheet là tuỳ chọn và phải được mô tả đúng là tuỳ chọn** (Xclipse từng bị cô nhận xét "chưa đúng tính năng" vì giới thiệu Firebase như nơi lưu chính).
@@ -497,8 +498,8 @@ Mặc định 60 phút: **localStorage**. Chỉ dùng Firebase khi đề cần d
 2. Build → Firestore Database → Create database → vị trí asia-southeast1 → Production mode.
 3. Build → Authentication → Get started → Sign-in method → Google → Enable.
 4. Authentication → Settings → Authorized domains → Add domain: <tài-khoản>.github.io   (thiếu bước này: lỗi auth/unauthorized-domain)
-5. Project settings → Your apps → Web (</>) → copy firebaseConfig (apiKey, projectId, appId...) dán vào js/firebase-config.js.
-6. Firestore → Rules → dán nội dung firebase/firestore.rules → Publish   (hoặc: npx firebase deploy --only firestore:rules --project <id>).
+5. Project settings → Your apps → Web (</>) → copy firebaseConfig (apiKey, projectId, appId...) dán vào `firebase.config` trong js/config.js (starter) hoặc js/firebase-config.js (mẫu tự dựng G2).
+6. Firestore → Rules → dán nội dung starter/firestore.rules (hoặc firebase/firestore.rules của Xclipse) → Publish   (hoặc: npx firebase deploy --only firestore:rules --project <id>).
 ```
 `firebaseConfig` là cấu hình web **công khai theo thiết kế**; thứ bảo vệ dữ liệu là rules + Authentication. `scripts/scan-secrets.mjs` sẽ in dòng [CHO PHÉP] cho `js/firebase-config.js`; ghi chú điều này trong README để giám khảo khỏi hiểu nhầm. Không đưa service account/private key.
 
@@ -610,7 +611,7 @@ for (const scheme of ['light', 'dark']) { await p.emulateMedia({ colorScheme: sc
     const o = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
     ok('390 ' + scheme + ' ' + t + ' không tràn ngang (' + o.sw + '/' + o.cw + ')', o.sw <= o.cw, o);
     if (SHOTS) await p.screenshot({ path: SHOTS + '/mobile-' + scheme + '-' + t + '.png', fullPage: true }); } }
-// Thêm: vùng chạm ≥ 44px: await p.$$eval('button,a,input', (n) => n.filter((e) => { const r = e.getBoundingClientRect(); return r.width && r.height < 40; }).length) === 0
+// Thêm: vùng chạm ≥ 48px: await p.$$eval('button,a,input', (n) => n.filter((e) => { const r = e.getBoundingClientRect(); return r.width && r.height < 48; }).length) === 0   // starter đã có sẵn trong tests/mobile-suite.cjs
 // Thử cả 360px và hộp thoại đang mở. Sau khi sửa tràn ngang phải chụp lại ảnh, không chỉ tin con số.
 ```
 

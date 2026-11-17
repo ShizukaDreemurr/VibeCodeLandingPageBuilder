@@ -1,6 +1,6 @@
 # Chuẩn bị hỏi đáp: <Tên sản phẩm> (Bảng B)
 
-> 40 câu hỏi giám khảo hay hỏi (20 câu chung + 10 câu mô hình kinh doanh ở mục F + 14 câu khung kiến thức ở mục G, **Q&A chỉ có ở vòng phản biện; Bảng Kinh tế phải trình bày giả định và cách tính**), với khung trả lời. Mỗi câu gắn người trả lời: `[DA]` Diệu Anh, `[Dũng]` Vũ Trí Dũng, `[Nguyên]` Nguyên. Câu không có chủ hoặc câu bẫy: **Nguyên bắt**. Luôn nói **câu trả lời ngắn (1 câu) trước**, rồi mới bằng chứng. Thay `<…>` bằng số liệu thật của đội. Đừng học thuộc: trả lời theo cấu trúc **Trả lời ngắn 1 câu → Bằng chứng (chỗ trên app hoặc file) → Giới hạn nếu có**.
+> 44 câu hỏi giám khảo hay hỏi (20 câu chung + 10 câu mô hình kinh doanh ở mục F + 14 câu khung kiến thức ở mục G, **Q&A chỉ có ở vòng phản biện; Bảng Kinh tế phải trình bày giả định và cách tính**), với khung trả lời. Mỗi câu gắn người trả lời: `[DA]` Diệu Anh, `[Dũng]` Vũ Trí Dũng, `[Nguyên]` Nguyên. Câu không có chủ hoặc câu bẫy: **Nguyên bắt**. Luôn nói **câu trả lời ngắn (1 câu) trước**, rồi mới bằng chứng. Thay `<…>` bằng số liệu thật của đội. Đừng học thuộc: trả lời theo cấu trúc **Trả lời ngắn 1 câu → Bằng chứng (chỗ trên app hoặc file) → Giới hạn nếu có**.
 > Đừng bịa số. Chưa làm thì nói chưa làm, kèm cách đội sẽ làm.
 
 ## A. Cách dùng
@@ -153,7 +153,7 @@ Cấu trúc: **kết luận 1 câu → số trong app → giới hạn**. Chỉ 
 - Trả lời: <biến phí gồm: giá vốn, phí sàn, ship, QC>; <cố định gồm: …>. Mẫu số 0 thì app báo "Không đủ dữ liệu", không ra số ảo.
 
 **29. Con số nào là thật, con số nào là mô phỏng? Có dùng dữ liệu BTC không?** `[Nguyên]`
-- Trả lời ngắn (nói trước, ≤ 10 giây): Số từ file BTC ghi "Dữ liệu BTC", số đội đặt ghi "Giả định", số sinh ra ghi "Mô phỏng".
+- Trả lời ngắn (nói trước, ≤ 10 giây): Số từ file BTC ghi "Dữ liệu mẫu (BTC)", số đội đặt ghi "Giả định", số sinh ra ghi "Mô phỏng".
 - Trả lời: nạp file BTC (sheet <…>) bằng <nút>; dữ liệu mẫu của đội do <…> tạo trong giờ thi; nhãn: "<câu nhãn>".
 - Bằng chứng: README mục Dữ liệu.
 

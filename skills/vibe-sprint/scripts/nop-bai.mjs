@@ -3,7 +3,7 @@
 //
 // Cách dùng (chạy ở thư mục gốc dự án, sau khi đã commit + push bản cuối):
 //   node scripts/nop-bai.mjs --url https://xclipsex.github.io/Xclipse-ChungKet/
-//   node scripts/nop-bai.mjs --url http://localhost:8236/ --dry-run      thử: không ghi vào repo
+//   node scripts/nop-bai.mjs --url http://localhost:8211/ --dry-run      thử: không ghi vào repo
 //   node scripts/nop-bai.mjs --no-shots                                   bỏ bước chụp ảnh
 //
 // Cờ:

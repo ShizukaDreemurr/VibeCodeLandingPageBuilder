@@ -32,7 +32,7 @@ Thư mục: `skills/vibe-sprint/references/kien-thuc/`. Mục lục + "dùng khi
 ## 3. Phần nào của app/skill dùng kiến thức này
 
 - App (starter): `EP.scenario` (`js/scenario.js`) nhận giả định có `why`/`source`, 3 kịch bản, hòa vốn, độ nhạy; `EP.importer` (`js/import.js`) nạp dữ liệu BTC. Agent 13 điền giả định theo `12`, không sửa module chung.
-- Trên màn hình đề thi: bảng giả định (nhãn Giả định / Dữ liệu BTC / Mô phỏng), thẻ "Cơ chế ưu đãi", ma trận rủi ro, dòng USP, (nếu đề cần) bảng dòng tiền theo tháng và phễu web η.
+- Trên màn hình đề thi: bảng giả định (nhãn Giả định / Dữ liệu mẫu (BTC) / Mô phỏng), thẻ "Cơ chế ưu đãi", ma trận rủi ro, dòng USP, (nếu đề cần) bảng dòng tiền theo tháng và phễu web η.
 - Hồ sơ nộp: `docs/assumptions.md` (mục "Giả định & cách tính") do agent 13 viết; `HOI-DAP.md` do agent docs điền số thật.
 
 ## 4. Lưu ý quan trọng

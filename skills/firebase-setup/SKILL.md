@@ -60,7 +60,7 @@ Kiểm tra: các trường không rỗng, `projectId` hợp lệ, `authDomain = 
 ## 4. Bảo mật
 
 - Rules mẫu owner-only (xem `references/04-rules-va-test.md`): mọi thứ mặc định bị chặn, chỉ `request.auth.uid == uid` được đọc/ghi `users/{uid}/**`. Cấm `allow read, write: if true` (chế độ test hết hạn 30 ngày và ai cũng xoá được dữ liệu).
-- **Không bao giờ** commit service account JSON, private key, token CLI (`firebase login:ci`), `.env` có secret. `apiKey` web thì được. `scripts/scan-secrets.mjs` của vibe-sprint vẫn chạy trước khi đẩy.
+- **Không bao giờ** commit service account JSON, private key, token CLI (`firebase login:ci`), `.env` có secret. `apiKey` web thì được. `scripts/scan-secrets.mjs` của vibe-sprint vẫn chạy trước khi đẩy. **Lưu ý đã biết:** script chỉ cho phép `apiKey` công khai ở `js/firebase-config.js`; dán vào `js/config.js` như bước 4 thì nó báo `[LỘ] google-api-key` (báo động giả, nhưng `nop-bai.mjs` sẽ dừng). Cần người quyết định: thêm allowlist cho `js/config.js` trong `scan-secrets.mjs`, hoặc để config ở `js/firebase-config.js` (chưa có sẵn trong starter). Mặc định Firebase TẮT thì không gặp.
 - App Check (tuỳ chọn): chống lạm dụng quota từ nơi khác; với bài tập/đồ án thì không bắt buộc, ghi một dòng trong README là đủ.
 - Test rules bằng emulator trước khi deploy (`references/04`).
 - Chỉ lưu dữ liệu cá nhân tối thiểu; không lưu mật khẩu hay dữ liệu nhạy cảm tự do trong Firestore.

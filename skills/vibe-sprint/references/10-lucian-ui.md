@@ -33,7 +33,7 @@ Chữ in đậm = phần tử đề vòng chung kết hay "đụng" nhất.
 2. **CSS**: dán khối `<style>` vào cuối `css/lucian.css` hoặc một file `features/<ten>/<ten>.css` (bọc trong `@layer components { ... }` nếu muốn thua utilities). Token `--ux-*` đã trỏ sang token của app, không cần sửa màu.
 3. **Markup**: đưa vào chuỗi HTML của `render(el)` của feature. Chữ Hàn/Anh trong mẫu: đổi sang tiếng Việt có dấu. Dữ liệu tên người, giá, ngày: lấy từ form/collection, **không** để chữ mẫu.
 4. **JS**: dán khối `<script>` vào feature, đổi `document.querySelector(...)` thành `el.querySelector(...)` (el là gốc view) và chạy sau khi gán `innerHTML`. Bỏ phần demo (dữ liệu giả).
-5. Kiểm tra: tối/sáng, bàn phím (Tab, Enter, Esc), 390px không tràn ngang, `prefers-reduced-motion` (tắt hiệu ứng nhưng vẫn dùng được), vùng chạm >= 44px. Chạy `node tests/smoke.cjs`.
+5. Kiểm tra: tối/sáng, bàn phím (Tab, Enter, Esc), 390px không tràn ngang, `prefers-reduced-motion` (tắt hiệu ứng nhưng vẫn dùng được), vùng chạm >= 48px (`references/13`). Chạy `node tests/smoke.cjs`.
 6. Ghi nguồn một dòng ở đầu đoạn đã chép: `/* Lucian #NNN <tên>, MIT (c) 2026 Seokwoooo */`.
 
 ## Quy tắc đưa vào đề thi
