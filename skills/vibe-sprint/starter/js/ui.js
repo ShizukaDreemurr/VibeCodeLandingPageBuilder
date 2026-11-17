@@ -103,19 +103,40 @@
     var resolve, closed = new Promise(function (r) { resolve = r; }), val;
     var api = { el: dlg, body: body, closed: closed, close: function (v) { val = v; if (dlg.open) dlg.close(); else finish(); } };
     function finish() { dlg.remove(); resolve(val); if (o.onClose) o.onClose(val); }
-    /* Bottom sheet trên điện thoại: kéo tay nắm / tiêu đề xuống để đóng */
+    /* Bottom sheet trên điện thoại: kéo tay nắm / tiêu đề xuống để đóng.
+       Bám ngón 1:1 (ghi transform trong rAF, không đọc layout), kéo lên có lực cản, nền mờ theo, thả: đóng theo VẬN TỐC tức thời hoặc quãng kéo, không thì bật về bằng lò xo. */
     (function () {
-      var sy = null, dy = 0, t0 = 0;
+      var sy = null, dy = 0, raf = 0, hist = [], h = 0;
       function phone() { return root.matchMedia && root.matchMedia('(max-width: 767px)').matches; }
-      function down(e) { if (!phone() || (e.target.closest && e.target.closest('button'))) return; sy = e.clientY; dy = 0; t0 = Date.now(); dlg.style.animation = 'none'; dlg.style.transition = 'none'; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) { /* bỏ qua */ } }
-      function move(e) { if (sy == null) return; dy = Math.max(0, e.clientY - sy); dlg.style.transform = 'translateY(' + dy + 'px)'; }
-      function up() {
-        if (sy == null) return; var v = dy / Math.max(1, Date.now() - t0); sy = null;
-        dlg.style.transition = 'transform .22s var(--ease-out)';
-        if (dy > 110 || v > .6) { dlg.style.transform = 'translateY(100%)'; api.close(undefined); } else { dlg.style.transform = ''; }
+      function paint() { raf = 0; dlg.style.transform = 'translate3d(0,' + dy.toFixed(1) + 'px,0)'; dlg.style.setProperty('--sheet-o', String(Math.max(.15, 1 - dy / Math.max(1, h)).toFixed(3))); }
+      function down(e) {
+        if (!phone() || (e.target.closest && e.target.closest('button'))) return;
+        sy = e.clientY; dy = 0; hist = [{ y: e.clientY, t: e.timeStamp }]; h = dlg.offsetHeight;
+        dlg.classList.remove('is-settling'); dlg.classList.add('is-dragging'); dlg.style.animation = 'none'; dlg.style.transition = 'none';
+        try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) { /* bỏ qua */ }
       }
-      [dlg.querySelector('.dlg-grip'), dlg.querySelector('.dlg-head')].forEach(function (h) {
-        h.addEventListener('pointerdown', down); h.addEventListener('pointermove', move); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+      function move(e) {
+        if (sy == null) return;
+        var d = e.clientY - sy; dy = d >= 0 ? d : d / (1 + Math.abs(d) / 60);   /* kéo lên: lực cản dần */
+        hist.push({ y: e.clientY, t: e.timeStamp }); if (hist.length > 6) hist.shift();
+        if (!raf) raf = root.requestAnimationFrame(paint);
+      }
+      function up(e) {
+        if (sy == null) return; sy = null;
+        if (raf) { root.cancelAnimationFrame(raf); raf = 0; paint(); }
+        var a0 = hist[0], a1 = hist[hist.length - 1], v = a1 && a0 && a1.t > a0.t ? (a1.y - a0.y) / (a1.t - a0.t) : 0;   /* px/ms, tức thời ở cuối cử chỉ */
+        dlg.classList.remove('is-dragging');
+        if (dy > Math.min(140, h * .3) || v > .5) {
+          var left = Math.max(0, h - dy), ms = Math.max(120, Math.min(200, left / Math.max(.6, v) ));
+          dlg.style.transition = 'transform ' + Math.round(ms) + 'ms cubic-bezier(.2,.8,.2,1)'; dlg.style.transform = 'translate3d(0,100%,0)';
+          dlg.style.setProperty('--sheet-o', '0'); api.close(undefined);
+        } else {
+          dlg.classList.add('is-settling'); dlg.style.transition = ''; dlg.style.transform = ''; dlg.style.removeProperty('--sheet-o');
+          setTimeout(function () { dlg.classList.remove('is-settling'); }, 360);
+        }
+      }
+      [dlg.querySelector('.dlg-grip'), dlg.querySelector('.dlg-head')].forEach(function (hd) {
+        hd.addEventListener('pointerdown', down); hd.addEventListener('pointermove', move); hd.addEventListener('pointerup', up); hd.addEventListener('pointercancel', up);
       });
     })();
     dlg.addEventListener('close', finish);

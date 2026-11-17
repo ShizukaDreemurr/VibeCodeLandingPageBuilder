@@ -361,6 +361,50 @@ module.exports = async function mobileSuite({ browser, URL, ok, SHOTS, errors, f
         ok(tag + ' gợi ý cạnh bộ đếm: một dòng, không bị cắt chữ (demo)', hints.length > 0 && hints.every((x) => x.h <= 26 && !x.cut), hints);
       }
     }
+    // ---- MỌI thanh chọn / tab (.seg, [role=tablist], thanh tab dưới) ở MỌI view + hộp thoại: chạm từng mục, viên trượt khớp mục đang chọn ±2px ----
+    {
+      const SCAN = () => { window.__sg = window.__sg || 0; return Array.from(document.querySelectorAll('.seg, [role="tablist"]')).map((el) => { if (!el.__sid) el.__sid = ++window.__sg; const r = el.getBoundingClientRect(); return { sid: el.__sid, vis: r.width > 0 && r.height > 0, n: el.querySelectorAll('label, [role="tab"]').length }; }); };
+      const CHECK = (sid) => { const el = Array.from(document.querySelectorAll('.seg, [role="tablist"]')).find((e) => e.__sid === sid); if (!el) return { err: 'mất' }; const ind = el.querySelector('.lx-ind'), act = (el.querySelector('input:checked') && el.querySelector('input:checked').closest('label')) || el.querySelector('[aria-selected="true"]'); if (!ind) return { err: 'không có viên trượt' }; if (!act) return { err: 'không có mục chọn' }; const a = act.getBoundingClientRect(), q = ind.getBoundingClientRect(); return { dx: +(q.left - a.left).toFixed(1), dw: +(q.width - a.width).toFixed(1), dt: +(q.top - a.top).toFixed(1), op: getComputedStyle(ind).opacity }; };
+      const seen = new Set(), bad = []; let total = 0, groups = 0;
+      const sweep = async (where, depth = 0) => {
+        for (let round = 0; round < 6; round++) {
+          const segs = (await page.evaluate(SCAN)).filter((g) => g.vis && !seen.has(g.sid));
+          if (!segs.length) break;
+          for (const g of segs) {
+            seen.add(g.sid); groups++;
+            for (let i = 0; i < g.n; i++) {
+              const h = (await page.evaluateHandle(({ sid, i }) => { const el = Array.from(document.querySelectorAll('.seg, [role="tablist"]')).find((e) => e.__sid === sid); return el && el.querySelectorAll('label, [role="tab"]')[i]; }, { sid: g.sid, i })).asElement();
+              if (!h) continue;
+              try { await h.scrollIntoViewIfNeeded({ timeout: 1500 }); await h.tap({ timeout: 2000 }); } catch (e) { continue; }
+              await page.waitForTimeout(650); total++;
+              const r = await page.evaluate(CHECK, g.sid);
+              if (r.err || Math.abs(r.dx) > 2 || Math.abs(r.dw) > 2 || Math.abs(r.dt) > 2 || +r.op < 0.99) bad.push({ where, sid: g.sid, opt: i, r });
+              if (depth < 3) await sweep(where + '>', depth + 1);
+            }
+          }
+        }
+      };
+      for (const t of tabs) {
+        await page.goto(URL + '#/' + t); await page.waitForSelector('html[data-ready="1"]'); await settle(500);
+        await sweep(t);
+        if (t === 'example') {
+          const nb = await page.$('#view-example [data-act="new"], #view-example [data-act="add"], #view-example .btn-primary');
+          if (nb && await nb.isVisible()) { try { await nb.tap(); await page.waitForSelector('dialog[open]', { timeout: 2000 }); await settle(700); await sweep('example-sheet'); await page.keyboard.press('Escape'); await settle(400); } catch (e) { /* không có form */ } }
+        }
+      }
+      // thanh tab dưới: viên chung khớp biểu tượng của mục đang chọn sau mỗi lần chạm
+      const navItems = await page.$$('#bnav .bnav-item[data-nav]');
+      for (let i = 0; i < navItems.length; i++) {
+        const its = await page.$$('#bnav .bnav-item[data-nav]'); await its[i].tap(); await settle(700); total++;
+        const r = await page.evaluate(() => { const n = document.getElementById('bnav'), a = n.querySelector('.bnav-item[aria-current="page"] .bnav-ic'), ind = n.querySelector('.lx-ind'); if (!a || !ind) return { err: 'thiếu' }; const x = a.getBoundingClientRect(), q = ind.getBoundingClientRect(); return { dx: +(q.left - x.left).toFixed(1), dw: +(q.width - x.width).toFixed(1), dt: +(q.top - x.top).toFixed(1), op: getComputedStyle(ind).opacity }; });
+        if (r.err || Math.abs(r.dx) > 2 || Math.abs(r.dw) > 2 || Math.abs(r.dt) > 2 || +r.op < 0.99) bad.push({ where: 'bnav', opt: i, r });
+      }
+      ok(tag + ' viên trượt dùng chung: ' + groups + ' thanh chọn + thanh tab dưới, ' + total + ' lần chạm, mọi lần khớp mục đang chọn (±2px)', groups > 0 && bad.length === 0, bad.slice(0, 5));
+      // gán .checked bằng JS (EP.ui.segmented().set, đồng bộ giao diện) cũng phải kéo viên trượt theo
+      await page.goto(URL + '#/settings'); await page.waitForSelector('html[data-ready="1"]'); await settle(500);
+      const prog = await page.evaluate(async () => { const s = document.querySelector('#set-theme .seg'); if (!s) return null; const inputs = s.querySelectorAll('input'); inputs[inputs.length - 1].checked = true; await new Promise((r) => setTimeout(r, 650)); const a = s.querySelector('input:checked').closest('label').getBoundingClientRect(), q = s.querySelector('.lx-ind').getBoundingClientRect(); return Math.abs(q.left - a.left); });
+      if (prog !== null) ok(tag + ' gán .checked bằng JS: viên trượt đi theo (lệch ' + prog.toFixed(1) + 'px)', prog <= 2, prog);
+    }
     if (SHOTS) {
       for (const t of tabs) { await page.goto(URL + '#/' + t); await settle(500); await page.screenshot({ path: path.join(SHOTS, 'phone-' + vp.width + '-' + t + '.png') }); }
     }

@@ -3,7 +3,7 @@
    (MIT, (c) 2026 Seokwoooo; xem vendor/lucian/LICENSE). Không phụ thuộc thư viện ngoài. Tôn trọng prefers-reduced-motion.
 
    TỰ ĐỘNG (chỉ cần dùng đúng HTML/API cũ):
-     .seg                       viên trượt lò xo dưới lựa chọn đang chọn
+     .seg, [role=tablist], .bnav, .tabs   viên trượt lò xo dưới lựa chọn đang chọn (MỘT bộ máy: lx.pill)
      .field input[data-max]     bộ đếm ký tự (EP.form tự gắn từ rules.maxLength); textarea tự giãn
      [data-invalid]             rung nhẹ khi vừa báo lỗi và mỗi lần bấm gửi mà còn lỗi
      select.input               hộp chọn tuỳ biến trên máy có chuột (cảm ứng dùng bộ chọn gốc); tắt bằng data-native
@@ -143,32 +143,88 @@
     setTimeout(function () { field.classList.remove('lx-shake'); }, 520);
   };
 
-  /* ============ Viên trượt cho .seg ============ */
-  function segPlace(seg, animate) {
-    var ind = seg._lxInd, c = $('input:checked', seg), lab = c && c.closest('label');
-    if (!ind) return;
-    if (!lab || !lab.offsetWidth) { ind.style.opacity = '0'; return; }
-    /* offsetLeft tính trong chính phần tử cuộn (seg là offsetParent) nên viên trượt nằm trong vùng cuộn và cuộn cùng nhãn */
-    var x = lab.offsetLeft, w = lab.offsetWidth, ox = seg._lxX, ow = seg._lxW;
-    var moved = ox != null && (Math.abs(ox - x) > 1 || Math.abs(ow - w) > 1);
+  /* ============ Viên trượt DÙNG CHUNG (.seg, [role=tablist], thanh tab dưới .bnav, tab máy tính .tabs) ============
+     Một bộ máy duy nhất: tự gắn cho mọi nhóm xuất hiện sau này (MutationObserver ở dưới), đo bằng offsetLeft/offsetTop
+     (không bị ảnh hưởng bởi transform của hộp thoại đang trượt vào), đo lại khi: đổi lựa chọn (change / thuộc tính / .checked gán bằng JS),
+     đổi kích thước (ResizeObserver), vừa hiện ra từ display:none (IntersectionObserver), phông tải xong, đổi giao diện, quay màn hình.
+     Chỉ animate transform trên chính viên trượt (Web Animations, từ vị trí ĐANG HIỂN THỊ nên bấm dồn không bị giật). */
+  var PILL_KINDS = [
+    { sel: '.seg', item: 'label', active: function (g) { var c = $('input:checked', g); return c && c.closest('label'); } },
+    { sel: '.tabs', item: '.tab', active: function (g) { return $('.tab[aria-current="page"]', g); }, cls: 'tabs-pill lx-ind-tab' },
+    { sel: '.bnav', item: '.bnav-item', active: function (g) { return $('.bnav-item[aria-current="page"]', g); }, target: '.bnav-ic', cls: 'lx-ind-nav' },
+    { sel: '[role="tablist"]', item: '[role="tab"]', active: function (g) { return $('[role="tab"][aria-selected="true"], [role="tab"][aria-current]', g); } }
+  ];
+  var pillSet = [];
+  function offsetIn(el, group) { var x = 0, y = 0, n = el; while (n && n !== group) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; } return n === group ? { x: x, y: y } : null; }
+  function curState(ind) { /* vị trí đang hiển thị (kể cả giữa chừng animation) từ ma trận tính toán */
+    try { var m = root.getComputedStyle(ind).transform; if (m && m !== 'none') { var v = m.match(/matrix\(([^)]+)\)/); if (v) { v = v[1].split(',').map(parseFloat); return { x: v[4], sx: v[0] }; } } } catch (e) { /* bỏ qua */ }
+    return null;
+  }
+  function pillPlace(g, animate) {
+    var P = g._lxPill; if (!P) return;
+    var ind = P.ind, k = P.kind, act = k.active(g), tgt = act && (k.target ? $(k.target, act) : act);
+    if (!tgt || !tgt.offsetWidth || !g.offsetWidth) { ind.style.opacity = '0'; P.x = null; return; }
+    var o = offsetIn(tgt, g); if (!o) return;
+    var x = o.x, y = o.y, w = tgt.offsetWidth, h = tgt.offsetHeight, ox = P.x, ow = P.w;
+    var moved = ox != null && (Math.abs(ox - x) > .5 || Math.abs(ow - w) > .5);
+    var from = animate && moved && ind._lxAnim ? curState(ind) : null;
     if (ind._lxAnim) { try { ind._lxAnim.cancel(); } catch (e) { /* bỏ qua */ } ind._lxAnim = null; }
-    ind.style.width = w + 'px'; ind.style.transform = 'translateX(' + x + 'px)'; ind.style.opacity = '1';
-    seg.classList.add('lx-ready');
+    ind.style.width = w + 'px'; ind.style.height = h + 'px'; ind.style.top = y + 'px'; ind.style.transform = 'translateX(' + x + 'px)'; ind.style.opacity = '1';
+    g.classList.add('lx-ready');
     if (animate && moved && !reduced() && ind.animate) {
-      ind._lxAnim = ind.animate([{ transform: 'translateX(' + ox + 'px) scaleX(' + (ow / w) + ')' }, { transform: 'translateX(' + x + 'px) scaleX(1)' }], { duration: 280, easing: 'cubic-bezier(.34,1.45,.64,1)' });
+      var fx = from ? from.x : ox, fs = from ? from.sx : ow / w;
+      /* giữa chặng viên giãn ra phủ cả hai ô (cảm giác "kéo dài" rồi co lại), kết thúc bằng lò xo */
+      var mid = Math.min(1 + Math.abs(x - fx) / w * .5 + .06, 2.4);
+      var a = ind._lxAnim = ind.animate([
+        { transform: 'translateX(' + fx + 'px) scaleX(' + fs + ')', offset: 0, easing: 'cubic-bezier(.3,.7,.3,1)' },
+        { transform: 'translateX(' + (x + (fx - x) * .35) + 'px) scaleX(' + Math.max(mid, 1) + ')', offset: .38, easing: 'cubic-bezier(.34,1.4,.64,1)' },
+        { transform: 'translateX(' + x + 'px) scaleX(1)', offset: 1 }
+      ], { duration: 300 });
+      ind.classList.add('is-moving');
+      a.onfinish = a.oncancel = function () { if (ind._lxAnim === a) ind._lxAnim = null; ind.classList.remove('is-moving'); };
     }
-    seg._lxX = x; seg._lxW = w;
-    if (animate && seg.scrollWidth > seg.clientWidth) { var want = x - (seg.clientWidth - w) / 2; seg.scrollTo({ left: want, behavior: reduced() ? 'auto' : 'smooth' }); }
+    P.x = x; P.w = w;
+    if (animate && g.scrollWidth > g.clientWidth + 1 && k.sel === '.seg') { g.scrollTo({ left: x - (g.clientWidth - w) / 2, behavior: reduced() ? 'auto' : 'smooth' }); }
   }
-  function enhanceSeg(seg) {
-    if (seg._lx) return; seg._lx = 1;
-    var ind = doc.createElement('span'); ind.className = 'lx-ind'; ind.setAttribute('aria-hidden', 'true');
-    seg.insertBefore(ind, seg.firstChild); seg._lxInd = ind;
-    segPlace(seg, false);
-    seg.addEventListener('change', function () { segPlace(seg, true); });
-    if ('ResizeObserver' in root) { var ro = new ResizeObserver(function () { segPlace(seg, false); }); ro.observe(seg); $$('label', seg).forEach(function (l) { ro.observe(l); }); }
-    if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { segPlace(seg, false); });
+  function pillQueue(g, animate) { /* gộp nhiều tín hiệu trong cùng một khung hình thành một lần đo */
+    var P = g._lxPill; if (!P) return; if (animate) P.anim = true;
+    if (P.raf) return;
+    P.raf = root.requestAnimationFrame(function () { P.raf = 0; var an = P.anim; P.anim = false; pillPlace(g, an); });
   }
+  function enhancePill(g) {
+    if (g._lxPill) return;
+    var kind = PILL_KINDS.filter(function (k) { return g.matches(k.sel); })[0]; if (!kind) return;
+    var ind = null;
+    if (!ind) { ind = doc.createElement('span'); ind.className = 'lx-ind' + (kind.cls ? ' ' + kind.cls : ''); g.insertBefore(ind, g.firstChild); } 
+    ind.setAttribute('aria-hidden', 'true');
+    g._lx = 1; g._lxInd = ind;
+    var P = g._lxPill = { kind: kind, ind: ind, x: null, w: 0, raf: 0, anim: false };
+    pillSet.push(g);
+    pillPlace(g, false);
+    g.addEventListener('change', function () { pillQueue(g, true); });
+    g.addEventListener('click', function () { pillQueue(g, true); }, true);
+    if (root.MutationObserver) { P.mo = new MutationObserver(function (ms) { if (!ind.parentNode) g.insertBefore(ind, g.firstChild); if (P.ro) $$(kind.item, g).forEach(function (l) { P.ro.observe(l); }); pillQueue(g, ms.some(function (m) { return m.type === 'attributes'; })); }); P.mo.observe(g, { subtree: true, childList: true, attributes: true, attributeFilter: ['aria-current', 'aria-selected', 'checked', 'hidden'] }); }
+    if ('ResizeObserver' in root) { P.ro = new ResizeObserver(function () { pillQueue(g, false); }); P.ro.observe(g); $$(kind.item, g).forEach(function (l) { P.ro.observe(l); }); }
+    if ('IntersectionObserver' in root) { P.io = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) pillQueue(g, false); }); P.io.observe(g); }
+  }
+  function enhanceSeg(seg) { enhancePill(seg); }
+  /** lx.pill.refresh(root?, animate?) - đo lại mọi viên trượt trong root (đã tự động; gọi tay chỉ khi đổi DOM theo cách lạ) */
+  lx.pill = {
+    refresh: function (r, animate) { pillSet = pillSet.filter(function (g) { return g.isConnected; }); pillSet.forEach(function (g) { if (!r || r === doc || r.contains(g) || r === g) pillQueue(g, !!animate); }); },
+    place: function (g, animate) { if (g._lxPill) pillPlace(g, !!animate); }
+  };
+  /* radio.checked = true gán bằng JS (EP.ui.segmented().set, EP.form.set, đồng bộ nút chọn giao diện) không phát sự kiện: bắt ở setter */
+  try {
+    var cd = Object.getOwnPropertyDescriptor(root.HTMLInputElement.prototype, 'checked');
+    if (cd && cd.set && !cd.set._lx) {
+      var cset = function (v) { cd.set.call(this, v); if (this.type === 'radio') { var g = this.closest && this.closest('.seg'); if (g && g._lxPill) pillQueue(g, true); } };
+      cset._lx = 1; Object.defineProperty(root.HTMLInputElement.prototype, 'checked', { configurable: true, enumerable: cd.enumerable, get: cd.get, set: cset });
+    }
+  } catch (e) { /* bỏ qua */ }
+  if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { lx.pill.refresh(); });
+  if (EP.bus) { EP.bus.on('theme', function () { root.requestAnimationFrame(function () { lx.pill.refresh(); }); }); EP.bus.on('route', function () { lx.pill.refresh(); }); }
+  root.addEventListener('resize', function () { lx.pill.refresh(); });
+  root.addEventListener('orientationchange', function () { setTimeout(function () { lx.pill.refresh(); }, 120); });
 
   /* ============ Ô nhập: bộ đếm, tự giãn, tiền ============ */
   function counterUpdate(inp) {
@@ -412,7 +468,7 @@
   /* ============ Quét và nâng cấp DOM (idempotent) ============ */
   function enhance(r) {
     r = r || doc;
-    all(r, '.seg').forEach(enhanceSeg);
+    all(r, '.seg, .bnav, .tabs, [role="tablist"]').forEach(enhancePill);
     all(r, '.field input, .field textarea, input[data-lx-money]').forEach(enhanceInput);
     all(r, 'select.input').forEach(lx.select);
     all(r, '.btn-cta, .btn[data-roll]').forEach(enhanceRoll);
@@ -436,7 +492,7 @@
     $$('input[data-max], textarea[data-max]', r).forEach(counterUpdate);
     $$('textarea.input', r).forEach(function (t) { if (t._lx && !t.hasAttribute('data-fixed')) grow(t); });
     $$('input[data-lx-money]', r).forEach(money);
-    $$('.seg', r).forEach(function (s) { if (s._lx) segPlace(s, true); });
+    lx.pill.refresh(r, true);
   };
   var pending = [], sched = 0;
   function flush() { sched = 0; var list = pending; pending = []; list.forEach(function (n) { if (n.isConnected) enhance(n); }); }

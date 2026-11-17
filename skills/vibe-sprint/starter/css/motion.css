@@ -1,0 +1,122 @@
+/* motion.css - LỚP CHUYỂN ĐỘNG CUỐI (nạp sau polish.css, KHÔNG nằm trong @layer nên thắng các lớp trước).
+   Quy tắc: chỉ animate transform/opacity (và màu); will-change chỉ bật khi đang chạy (.is-moving, .is-live, :active);
+   mọi thời lượng/độ cong lấy từ token --dur-1/2/3, --ease-out, --ease-spring (tokens.css); không dùng `transition: all`.
+   prefers-reduced-motion: mọi thứ tức thì nhưng TRẠNG THÁI vẫn đổi (viên trượt nhảy tới ô mới, màu đổi, chọn vẫn thấy). */
+
+/* ---------- Viên trượt dùng chung (.seg, tablist, thanh tab dưới, tab máy tính) ---------- */
+.lx-ind { position: absolute; left: 0; top: 0; width: 0; height: 0; opacity: 0; pointer-events: none; z-index: 0; transform-origin: left center; backface-visibility: hidden; transition: opacity var(--dur-1) linear; }
+.lx-ind.is-moving { will-change: transform; }
+.seg .lx-ind { border-radius: calc(var(--r-ctl, 12px) - 1px); background: var(--active, var(--surface)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent), 0 2px 8px -3px var(--ux-shadow); bottom: auto; will-change: auto; }
+.seg .lx-ind.is-moving { will-change: transform; }
+.tabs { position: relative; }
+.tabs .tabs-pill { bottom: auto; transition: opacity var(--dur-1) linear; }
+.tabs .tab { z-index: 1; }
+[role="tablist"] { position: relative; }
+[role="tablist"] > [role="tab"] { position: relative; z-index: 1; transition: color var(--dur-2) var(--ease-out); }
+[role="tablist"] > .lx-ind { border-radius: 999px; background: var(--active); box-shadow: 0 0 0 1px var(--border); }
+/* nhãn: KHÔNG đổi độ đậm khi chọn (đổi độ đậm làm nhãn đổi bề rộng = giật bố cục); chỉ chéo màu */
+.seg > label > span { font-weight: 650; transition: color var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-spring); }
+.seg input:checked + span { font-weight: 650; }
+.seg > label:active > span { transform: scale(.97); transition-duration: var(--dur-1), var(--dur-1); }
+.seg:not(.lx-ready) input:checked + span { transition: none; }
+
+/* thanh tab dưới: một viên chung trượt giữa các ô; biểu tượng nảy khi được chọn */
+.bnav { isolation: isolate; }
+.bnav .lx-ind-nav { border-radius: 999px; background: var(--active); z-index: 0; }
+.bnav .bnav-item { position: relative; z-index: 1; }
+.bnav .bnav-ic { z-index: 1; transition: transform var(--dur-3) var(--ease-spring); }
+.bnav.lx-ready .bnav-ic::before { opacity: 0 !important; transition: none; }
+.bnav-lb { transition: color var(--dur-2) var(--ease-out); }
+.bnav-item[aria-current="page"] .bnav-lb { font-weight: 650; }
+@keyframes lx-bounce { 0% { transform: scale(.82) translateY(2px); } 55% { transform: scale(1.14) translateY(-2px); } 100% { transform: none; } }
+.bnav-item[aria-current="page"] .bnav-ic svg { animation: lx-bounce var(--dur-3) var(--ease-spring) both; }
+
+/* ---------- Nút: nhấn 120ms (scale .97), nhả bằng lò xo; sáng nhẹ khi nhấn; trạng thái tắt/bận mượt ---------- */
+.btn, .btn-sm, .icon-btn, button.chip, .more-row {
+  transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out),
+              box-shadow var(--dur-2) var(--ease-out), opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring), filter var(--dur-2) var(--ease-out);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.btn, .btn-sm, .icon-btn { position: relative; }
+.btn:active:not(:disabled):not([aria-disabled="true"]), .btn-sm:active:not(:disabled), .icon-btn:active:not(:disabled), button.chip:active:not(:disabled) {
+  transform: scale(.97); will-change: transform; transition-duration: var(--dur-1), var(--dur-1), var(--dur-1), var(--dur-1), var(--dur-1), var(--dur-1), var(--dur-1);
+  transition-timing-function: var(--ease-out);
+}
+.btn::after, .icon-btn::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: currentColor; opacity: 0; pointer-events: none; transition: opacity var(--dur-2) var(--ease-out); }
+.btn:active:not(:disabled)::after, .icon-btn:active:not(:disabled)::after { opacity: .08; transition-duration: 60ms; }
+.btn:disabled, .btn[aria-disabled="true"], .btn[aria-busy="true"] { opacity: .55; transform: none; }
+.btn[aria-busy="true"] { cursor: progress; }
+/* vòng focus hiện dần (không đụng bố cục) */
+@keyframes lx-focus { from { outline-color: transparent; outline-offset: 5px; } }
+:focus-visible { animation: lx-focus var(--dur-2) var(--ease-out); }
+input[type="text"]:focus-visible, input[type="number"]:focus-visible, textarea:focus-visible, select:focus-visible, input[type="radio"]:focus-visible, input[type="checkbox"]:focus-visible { animation: none; }
+
+/* ---------- Công tắc (bóp khi nhấn), ô chọn (dấu tích vẽ ra), chip (bật nảy), thẻ vào lần lượt ---------- */
+input[role="switch"] { transition: background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out); }
+input[role="switch"]::after { transition: left var(--dur-3) var(--ease-spring), width var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out); }
+button.chip[aria-pressed="true"] { animation: lx-pop var(--dur-3) var(--ease-spring); }
+.grid > :nth-child(1) { --i: 0; } .grid > :nth-child(2) { --i: 1; } .grid > :nth-child(3) { --i: 2; } .grid > :nth-child(4) { --i: 3; }
+.grid > :nth-child(5) { --i: 4; } .grid > :nth-child(6) { --i: 5; } .grid > :nth-child(n+7) { --i: 6; }
+.grid > .card, .grid > a.card { animation: lx-rise var(--dur-3) var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
+
+/* ---------- Accordion (details) mở/đóng bằng chiều cao nội dung, mũi tên xoay ---------- */
+:root { interpolate-size: allow-keywords; }
+@supports selector(::details-content) {
+  details::details-content { block-size: 0; overflow: clip; opacity: 0; transition: block-size var(--dur-3) var(--ease-out), opacity var(--dur-2) var(--ease-out), content-visibility var(--dur-3) allow-discrete; }
+  details[open]::details-content { block-size: auto; opacity: 1; }
+}
+.sc-explain > summary::after { transition: transform var(--dur-3) var(--ease-spring); }
+.sc-explain[open] > summary::after { transform: rotate(180deg); }
+
+/* ---------- Thanh tiến trình, bubble, bảng: dùng token ---------- */
+.meter > i { transition: width var(--dur-3) var(--ease-out); }
+.table tbody tr { transition: background-color var(--dur-1) var(--ease-out); }
+
+/* ---------- Quả cầu hero: trôi nhẹ + thị sai mượt (hero.js lerp bằng rAF), TẠM DỪNG khi ngoài màn hình / tab ẩn ---------- */
+html:not([data-hero="plain"]) .hero-orb-wrap { transition: none; will-change: auto; }
+html:not([data-hero="plain"]) .hero-orb-wrap.is-live { will-change: transform; }
+html:not([data-hero="plain"]) .hero-orb, html:not([data-hero="plain"]) .hero-streak { will-change: auto; }
+html.is-hidden .hero-orb, html.is-hidden .hero-streak, .hero.is-off .hero-orb, .hero.is-off .hero-streak { animation-play-state: paused; }
+html.is-hidden *, .is-off .sk { animation-play-state: paused; }
+
+/* ---------- Hộp thoại / bottom sheet: lò xo vào, kéo theo ngón, nền mờ theo ---------- */
+dialog.dlg[open] { animation-duration: var(--dur-3); animation-timing-function: var(--ease-spring); }
+dialog.dlg::backdrop { opacity: var(--sheet-o, 1); }
+dialog.dlg.is-dragging { transition: none; animation: none; will-change: transform; }
+dialog.dlg.is-settling { transition: transform var(--dur-3) var(--ease-spring); }
+@media (max-width: 767px) { dialog.dlg[open] { animation-duration: var(--dur-3); } }
+
+/* ---------- Nút giao diện: biểu tượng biến hình mặt trời <-> mặt trăng (chồng lên nhau, xoay + co) ---------- */
+#btn-theme { display: inline-grid; place-items: center; overflow: hidden; }
+#btn-theme svg { display: block !important; grid-area: 1 / 1; opacity: 0; transform: rotate(-80deg) scale(.4); transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring); }
+#btn-theme[data-mode="system"] .i-auto, #btn-theme[data-mode="light"] .i-sun, #btn-theme[data-mode="dark"] .i-moon { opacity: 1; transform: none; }
+#btn-theme[data-mode="light"] .i-moon, #btn-theme[data-mode="system"] .i-moon { transform: rotate(80deg) scale(.4); }
+#btn-theme.lx-spin svg { animation: none; }
+html[data-vt="theme"] #btn-theme svg { transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring) !important; }
+
+/* Đang đổi giao diện: dừng mọi hoạt ảnh nền lặp và bỏ lớp lọc nặng để ảnh chụp rẻ (không đổi hình ảnh cuối) */
+html[data-vt="theme"] .hero-orb, html[data-vt="theme"] .hero-streak, html[data-vt="theme"] .state-ico, html[data-vt="theme"] .lx-ai-ico, html[data-vt="theme"] .sk { animation-play-state: paused !important; }
+html[data-vt="theme"] .bnav, html[data-vt="theme"] .topbar, html[data-vt="theme"] dialog::backdrop { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+html[data-vt="theme"]::view-transition-old(root) { animation: none; }
+html[data-vt="theme"]::view-transition-new(root) { animation: none; }
+html[data-vt="fade"] *, html[data-vt="fade"] *::before, html[data-vt="fade"] *::after { transition: background-color var(--dur-3) var(--ease-in-out), color var(--dur-3) var(--ease-in-out), border-color var(--dur-3) var(--ease-in-out), fill var(--dur-3) var(--ease-in-out), stroke var(--dur-3) var(--ease-in-out) !important; }
+
+/* ---------- Chuyển tab: một lần mờ + trượt nhẹ, thanh tab dưới KHÔNG chéo mờ (viên trượt tự chạy trên bản sống) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-vt="route"]::view-transition-old(bnav), html[data-vt="route"]::view-transition-old(topbar) { animation: none; display: none; }
+  html[data-vt="route"]::view-transition-new(bnav), html[data-vt="route"]::view-transition-new(topbar) { animation: none; }
+  html[data-vt="route"]::view-transition-group(bnav), html[data-vt="route"]::view-transition-group(topbar) { animation: none; }
+  html[data-vt="route"]::view-transition-old(page) { animation: vt-out var(--dur-1) var(--ease-in-out) both; }
+  html[data-vt="route"]::view-transition-new(page) { animation: vt-in var(--dur-2) var(--ease-out) both; }
+}
+
+/* ---------- Giảm chuyển động: tức thì, nhưng vẫn thấy trạng thái ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .lx-ind, .tabs .tabs-pill { transition: none !important; }
+  .bnav-item[aria-current="page"] .bnav-ic svg, button.chip[aria-pressed="true"], :focus-visible, .grid > .card, .grid > a.card { animation: none !important; }
+  .btn:active:not(:disabled), .icon-btn:active, .seg > label:active > span { transform: none !important; }
+  .btn:active:not(:disabled)::after, .icon-btn:active:not(:disabled)::after { opacity: .12; }
+  #btn-theme svg { transition: none !important; }
+  details::details-content { transition: none !important; }
+  html:not([data-hero="plain"]) .hero-orb-wrap { transform: none !important; }
+}

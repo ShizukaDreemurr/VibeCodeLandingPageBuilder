@@ -193,7 +193,7 @@
        actions: function(){ return html }, // nút ở góc phải h1 (tuỳ chọn)
        render: function(el, ctx){ ... }    // vẽ vào el; có thể trả Promise (hiện skeleton khi chờ)
      }); */
-  var views = [], current = null, mounted = false, navEl, hostEl, pillEl, bnavEl, scrollPos = {};
+  var views = [], current = null, mounted = false, navEl, hostEl, bnavEl, scrollPos = {};
   var BNAV_MAX = 5; /* thanh tab dưới: tối đa 5 ô; nhiều hơn thì ô thứ 5 là "Thêm" mở bottom sheet */
   function findView(id) { return views.filter(function (v) { return v.id === id; })[0]; }
   EP.register = function (def) {
@@ -207,11 +207,10 @@
     var m = /^#\/?([\w-]+)/.exec(root.location.hash);
     return m && findView(m[1]) ? m[1] : (findView(cfg.defaultRoute) ? cfg.defaultRoute : (views[0] && views[0].id));
   }
-  function movePill() {
+  function movePill() { /* viên trượt do EP.lucian.pill (lucian.js) lo; ở đây chỉ đưa tab đang chọn vào giữa thanh cuộn */
     var a = navEl && navEl.querySelector('.tab[aria-current="page"]');
-    if (!a || !pillEl) return;
-    pillEl.style.width = a.offsetWidth + 'px';
-    pillEl.style.transform = 'translateX(' + a.offsetLeft + 'px)';
+    if (!a) return;
+    if (EP.lucian && EP.lucian.pill) EP.lucian.pill.refresh(navEl, true);
     var want = a.offsetLeft - (navEl.clientWidth - a.offsetWidth) / 2;
     if (navEl.scrollWidth > navEl.clientWidth) navEl.scrollTo({ left: want, behavior: EP.reduced() ? 'auto' : 'smooth' });
   }
@@ -293,7 +292,6 @@
           if (a && a.getAttribute('aria-current') === 'page') { e.preventDefault(); scrollPos[a.getAttribute('data-nav')] = 0; root.scrollTo({ top: 0, behavior: EP.reduced() ? 'auto' : 'smooth' }); }
         });
       }
-      pillEl = doc.createElement('span'); pillEl.className = 'tabs-pill'; pillEl.setAttribute('aria-hidden', 'true'); navEl.appendChild(pillEl);
       views.forEach(function (v) {
         var a = doc.createElement('a');
         a.className = 'tab'; a.id = 'tab-' + v.id; a.href = '#/' + v.id; a.setAttribute('data-tab', v.id);
@@ -309,6 +307,13 @@
       root.addEventListener('resize', EP.debounce(movePill, 100));
       if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(movePill);
       show(idFromHash(), true);
+      /* Dựng sẵn các tab còn lại lúc rảnh (từng cái một) để lần chuyển tab đầu tiên không bị khựng vì render nặng */
+      var ric = root.requestIdleCallback || function (f) { return setTimeout(function () { f({ timeRemaining: function () { return 8; } }); }, 200); };
+      (function warm() {
+        var v = views.filter(function (x) { return !x._done && !x.always && x.id !== current; })[0];
+        if (!v) return;
+        ric(function () { if (!v._done && v.id !== current && !doc.hidden) { try { renderView(v); } catch (e) { /* đã có báo lỗi trong renderView */ } } warm(); }, { timeout: 1500 });
+      })();
     }
   };
 
