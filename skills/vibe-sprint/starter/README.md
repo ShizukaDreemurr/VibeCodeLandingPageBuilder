@@ -116,6 +116,13 @@ node tools/shots-mobile.cjs http://localhost:8211/ shots-mobile
 ```
 Ra `shots-mobile/NN-<tab>-light.png` và `NN-<tab>-dark.png` (390×844 @3x = 1170×2532, đúng khung điện thoại dọc, có thanh tab dưới), dữ liệu demo tự nạp. Tuỳ chọn: `--width 360 --height 780` (cỡ khác), `--full` (cả trang dài), `--all` (thêm từng mục con của tab Mô-đun), `--sheet` (thêm ảnh bottom sheet của nút `[data-act="add"]`). Dán ảnh vào slide theo khung dọc, đừng kéo giãn; ảnh có số liệu mô phỏng thì giữ nguyên nhãn mô phỏng trong khung.
 
+### Video demo dọc ≤ 2 phút
+
+```
+node tools/demo-video.cjs --url http://localhost:8211/ --storyboard tools/demo-video.example.json
+```
+Quay từng scene trong khung 390×844 (có chấm chạm), ghép vào khung 1080×1920 nền Xclipse, đốt phụ đề tiếng Việt (phông Be Vietnam Pro), thẻ đầu/cuối. Ra `out/demo-<app>.mp4`, `-contact.png`, `.srt` (`out/` và `*.mp4` đã nằm trong `.gitignore`). Cờ: `--voice file.mp3` (chuẩn hoá -16 LUFS), `--max 120`, `--no-cards`, `--out`, `--keep`. Cần ffmpeg + Playwright. Cách điền storyboard từ `docs/spec-nhanh.md`: `prompts/17-claude-demo-video.md`.
+
 ## 3. Quy ước
 - Chữ hiện cho người dùng: **tiếng Việt có dấu**; tên biến, hàm, file, comment code: tiếng Anh hoặc tiếng Việt ngắn gọn, nhưng API công khai dùng tiếng Anh.
 - Mọi kết quả mô phỏng AI phải kèm `MOCK_NOTICE` (cấu hình ở `js/config.js`).
@@ -169,6 +176,7 @@ css/mobile.css        chuẩn điện thoại: tab dưới, sheet, thanh hành �
 js/mobile.js          mờ mép thanh cuộn ngang (.seg), cuộn mục chọn vào giữa
 js/icons.js           bộ icon Xclipse (XcIcons)
 tools/shots-mobile.cjs  chụp ảnh điện thoại dọc cho slide
+tools/demo-video.cjs    dựng video demo dọc ≤ 2 phút từ storyboard JSON (demo-video.example.json)
 tests/mobile-suite.cjs  kiểm thử điện thoại 360/390 (chạy trong smoke.cjs)
 js/                   config, version, core, ui, form, charts, export, ai, demo, app + mô-đun
 features/_example     feature mẫu đầy đủ (CRUD + form + AI + biểu đồ)

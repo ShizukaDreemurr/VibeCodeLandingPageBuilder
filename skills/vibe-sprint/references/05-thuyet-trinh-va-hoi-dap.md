@@ -4,9 +4,9 @@
 
 | Bản | Slide | Diệu Anh | Dũng | Nguyên | Slide Giả định |
 |---|---|---|---|---|---|
-| 10 phút | 11 | 1–3 (00:00–02:30) | 4–7 (02:30–06:15) | 8–11 (06:15–09:45) | slide 10 |
-| 5 phút | 7 | 1–2 (00:00–01:10) | 3–4 (01:10–02:50) | 5–7 (02:50–04:45) | slide 5 |
-| 3 phút | 5 | 1 (00:00–00:35) | 2–3 (00:35–01:40) | 4–5 (01:40–02:45) | slide 4 |
+| 10 phút | 12 | 1–3 (00:00–02:30) | 4–8 (02:30–06:15; slide 4 = video, phát ≈ 45 giây) | 9–12 (06:15–09:45) | slide 11 |
+| 5 phút | 8 | 1–2 (00:00–01:10) | 3–5 (01:10–02:50; slide 3 = video, phát ≈ 30 giây) | 6–8 (02:50–04:45) | slide 6 |
+| 3 phút | 6 | 1 (00:00–00:35) | 2–4 (00:35–01:40; slide 2 = video, phát ≈ 30 giây) | 5–6 (01:40–02:45) | slide 5 |
 
 Phần còn lại của tài liệu này mô tả **bản 10 phút** (co giãn theo tỉ lệ cho bản 5 và 3 phút) + hỏi đáp. Đội 3 người, **vai cố định**:
 
@@ -42,7 +42,7 @@ Quy tắc viết neo: mỗi neo ≤ 12 từ, là cụm từ không phải câu v
 
 ## Mốc giờ cứng theo slide
 
-Run-sheet 11 slide: Diệu Anh 00:00–02:30 (slide 1–3), Dũng 02:30–06:15 (slide 4–7), Nguyên 06:15–09:45 (slide 8–11), đệm 15 giây cuối.
+Run-sheet 12 slide: Diệu Anh 00:00–02:30 (slide 1–3), Dũng 02:30–06:15 (slide 4–8, mở bằng **slide video**), Nguyên 06:15–09:45 (slide 9–12), đệm 15 giây cuối.
 
 - Mỗi slide có **mốc cứng**; thường ≤ 45 giây, tối đa 60 giây cho slide bài toán/giải pháp/kỹ thuật. Slide demo chia theo thao tác, mỗi thao tác ≤ 25 giây.
 - **Lố mốc cứng là chuyển ngay**, kể cả đang nói dở: nói câu chuyền slide rồi bấm. Ưu tiên giữ neo `S` (con số), bỏ lời giải thích.
@@ -89,7 +89,7 @@ Người nhận mic **luôn bắt đầu bằng câu mở của mình** (1 câu 
 
 Chung kết chấm app ở 360–390px, nên slide và demo đều dùng **điện thoại dọc**, không dùng ảnh ngang/desktop làm hình đại diện. **Demo do kỹ thuật viên chiếu**, theo thứ tự ưu tiên:
 
-1. **Video demo dọc 45 giây** (không tiếng, quay từ DevTools 390×844 hoặc ghi hình màn hình điện thoại): cue **"Mời phát video demo."**; người nói thuyết minh đúng nhịp, mỗi thao tác ≤ 25 giây; kết thúc **"Mời quay lại slide."**
+1. **Video demo dọc** (không tiếng; **dựng tự động bằng `tools/demo-video.cjs`, prompts/17**, hoặc quay từ DevTools 390×844; cùng một file ≤ 2:00 **nhúng sẵn trong slide 4** (phát ≈ 45 giây rồi "Mời dừng video.") và là dự phòng toàn màn hình): cue **"Mời phát video demo."**; người nói thuyết minh đúng nhịp, mỗi thao tác ≤ 25 giây; kết thúc **"Mời quay lại slide."**
 2. **Ảnh điện thoại dọc đánh số trong slide 5–7** (luồng 3 bước, ca sai/biên, giao diện tối): kỹ thuật viên không thao tác, người nói đi theo ghim số.
 3. **Bản chạy thật qua link** ("Mời mở bản chạy thật."): chỉ khi BTC cho kỹ thuật viên thao tác theo lời ("Mời bấm Điền dữ liệu mẫu"); rủi ro cao hơn, luôn có 1–2 đứng sau. QR + link luôn có trên slide để giám khảo tự mở.
 
@@ -99,7 +99,7 @@ Chung kết chấm app ở 360–390px, nên slide và demo đều dùng **đi�
 
 ## Demo lỗi: phương án dự phòng (chuẩn bị trước T+52)
 
-- **Video quay màn hình theo chiều DỌC, 30–45 giây** (luồng chính), giao cho kỹ thuật viên cùng PDF/PPTX, mở được offline.
+- **Video quay màn hình theo chiều DỌC, ≤ 2:00** (luồng chính), giao cho kỹ thuật viên cùng PDF/PPTX, mở được offline.
 - **Ảnh chụp dọc** (390×844@3x) các tính năng trong slide phụ ("Dự phòng") nếu cả hai đều hỏng; agent Sonnet chụp từ app thật bằng `deck/tools/capture.cjs` hoặc `starter/tools/shots-mobile.cjs`.
 - **Bản local:** `python3 -m http.server 8211` trong thư mục app (mở `http://localhost:8211/?demo=1`) hoặc `file://` nếu app không cần server.
 - Quy tắc: demo hỏng **> 10 giây thì chuyển ngay** sang video/ảnh, **không sửa trên sân khấu**. Câu nói bình tĩnh: "Mạng đang chậm, mời phát video demo." (nói đúng cue)
@@ -144,7 +144,7 @@ Các nhóm câu thường gặp (đầy đủ ở `HOI-DAP.md`): cách dùng; ng
 
 - [ ] Link online mở được trên điện thoại (QR trên slide cuối).
 - [ ] PDF + PPTX + video dọc đã giao kỹ thuật viên; đã họp 2 phút tập cue "Mời chuyển slide."
-- [ ] Video dọc 30–45 giây + bản local chạy; ảnh dự phòng trong slide phụ P2–P3.
+- [ ] Video dọc ≤ 2:00 + bản local chạy; ảnh dự phòng trong slide phụ P2–P3.
 - [ ] In `CUE-CARDS.md` (3 thẻ, mỗi người một thẻ), kiểm tra mốc giờ khớp run-sheet.
 - [ ] Mỗi người thuộc: câu mở, câu chuyền, và con số `S` của slide mình; Nguyên thuộc cả ba bản 3:30 / 2:00 / 1:00 và khung "Giả định & cách tính".
 - [ ] Đã tập đủ cả ba bản pitch (10 / 5 / 3 phút) ít nhất 1 lần; biết cách chọn bản trong 10 giây khi BTC báo thời lượng.

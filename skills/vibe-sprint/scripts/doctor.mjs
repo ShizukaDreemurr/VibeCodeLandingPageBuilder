@@ -78,6 +78,14 @@ if (pw) {
     : add("WARN", "Playwright", "có thư viện nhưng thiếu Chromium", "npx playwright install chromium");
 } else add("FAIL", "Playwright", "không import được (cần cho kiểm thử và chụp minh chứng)", "npm i -g playwright && npx playwright install chromium");
 
+// 4b. ffmpeg (video demo: tools/demo-video.cjs). Thiếu chỉ WARN: vẫn quay tay được (prompts/17 biến thể B).
+{
+  const ff = run("ffmpeg", ["-version"]);
+  ff.ok
+    ? add("PASS", "ffmpeg", ff.out.split("\n")[0].slice(0, 60))
+    : add("WARN", "ffmpeg", "không thấy ffmpeg (cần để dựng video demo tự động)", "Cài: sudo apt install ffmpeg · brew install ffmpeg · winget install ffmpeg");
+}
+
 // 5. pptxgenjs (chỉ cần khi xuất .pptx từ deck/)
 const pptxCandidates = [
   path.join(process.cwd(), "node_modules/pptxgenjs"),

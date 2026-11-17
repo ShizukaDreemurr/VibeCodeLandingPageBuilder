@@ -42,7 +42,8 @@
 | 7 | 05:10–06:15 | ca sai + ca biên + mobile | {{CA_SAI}}; {{CA_BIEN}}; Sáng/Tối trên điện thoại | {{SO_CA_LOI_BAT_DUOC}} ca lỗi |
 
 **Câu chuyền (cuối slide 5):** "Giờ mình xem **bản chạy thật**." → "Mời chuyển slide."
-**Slide 6 (demo):** sau neo V nói "**Mời phát video demo.**", thuyết minh theo nhịp video (≤ 25s mỗi thao tác), cuối "**Mời quay lại slide.**" rồi "Mời chuyển slide."
+**Slide 4 (VIDEO ≤ 2:00, mở phần của Dũng):** video tự phát; nếu không thì nói "**Mời phát video demo.**"; thuyết minh theo nhịp video; hết ý (≈ 45 giây) nói "**Mời dừng video.**" rồi "Mời chuyển slide." (các slide sau cộng thêm 1 so với bản cũ).
+**Slide 7 (demo trực tiếp):** nói "**Mời mở bản chạy thật.**" (lỗi > 10 giây: "Mời phát video demo." bản đầy đủ), thuyết minh (≤ 25s mỗi thao tác), cuối "**Mời quay lại slide.**" rồi "Mời chuyển slide."
 **Câu chuyền mic (cuối slide 7):** "Phần bên trong chạy thế nào, mình xin nhường **Nguyên**." → "**Mời chuyển slide.**"
 
 **Demo:** kỹ thuật viên chiếu video dọc/ảnh dọc (không ai trong đội cầm điện thoại); Dũng thuyết minh theo thứ tự tab dưới cùng, từ trái sang phải.

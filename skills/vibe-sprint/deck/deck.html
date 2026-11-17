@@ -136,11 +136,11 @@ h2.title em{color:var(--accent)}
 .pcol{display:flex;flex-direction:column;align-items:center;flex:none}
 
 /* ---------- Slide phone (1 điện thoại + 3 chú thích) ---------- */
-.s-phone .inner,.s-phones-2 .inner,.s-phones-3 .inner,.s-demo .inner.dp{flex-direction:row;align-items:center;gap:72px;padding-top:64px;padding-bottom:118px}
-.s-phone .left,.s-phones-2 .left,.s-phones-3 .left,.s-demo .dp .left{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
-.s-phone .right,.s-phones-2 .right,.s-phones-3 .right,.s-demo .dp .right{flex:none;display:flex;align-items:center;justify-content:center}
-.s-phone h2.title,.s-phones-2 h2.title,.s-phones-3 h2.title{font-size:60px;max-width:none}
-.s-phone .head,.s-phones-2 .head,.s-phones-3 .head{margin-bottom:40px}
+.s-phone .inner,.s-video .inner,.s-phones-2 .inner,.s-phones-3 .inner,.s-demo .inner.dp{flex-direction:row;align-items:center;gap:72px;padding-top:64px;padding-bottom:118px}
+.s-phone .left,.s-video .left,.s-phones-2 .left,.s-phones-3 .left,.s-demo .dp .left{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.s-phone .right,.s-video .right,.s-phones-2 .right,.s-phones-3 .right,.s-demo .dp .right{flex:none;display:flex;align-items:center;justify-content:center}
+.s-phone h2.title,.s-video h2.title,.s-phones-2 h2.title,.s-phones-3 h2.title{font-size:60px;max-width:none}
+.s-phone .head,.s-video .head,.s-phones-2 .head,.s-phones-3 .head{margin-bottom:40px}
 .callouts{list-style:none;display:flex;flex-direction:column;gap:22px}
 .callouts li{display:flex;gap:22px;align-items:flex-start;padding:24px 28px}
 .callouts .n{flex:none;width:52px;height:52px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 26px/1 var(--mono);box-shadow:0 12px 22px -10px var(--accent)}
@@ -154,6 +154,14 @@ h2.title em{color:var(--accent)}
 .s-phones-3 .right{gap:36px;align-items:flex-start}
 .s-phones-3 h2.title{font-size:52px}
 .s-phones-3 .pcap{font-size:25px}.s-phones-3 .pcap small{font-size:20px}
+/* ---------- Slide video (video demo dọc 9:16 phát trong slide; xuất PDF/PNG thì hiện ảnh bìa + nút play) ---------- */
+.s-video .right{padding:0 40px 0 30px;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.vbox{position:relative;flex:none;height:790px;width:444px;border-radius:34px;overflow:hidden;background:#041B38;border:3px solid var(--rule,rgba(7,45,89,.25));box-shadow:0 34px 70px -28px rgba(7,45,89,.55)}
+.vbox img,.vbox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#041B38}
+.vbox .playico{position:absolute;left:50%;top:50%;width:132px;height:132px;margin:-66px 0 0 -66px;border-radius:50%;background:rgba(7,45,89,.82);border:4px solid #fff;display:grid;place-items:center;color:#fff;font-size:62px;pointer-events:none}
+.vbox.playing .playico{display:none}
+.vbox.missing::after{content:attr(data-missing);position:absolute;inset:0;display:grid;place-items:center;font:600 22px/1.4 var(--mono);color:#DBF2FC;text-align:center;padding:36px}
+.vcap{font:500 22px/1.35 var(--mono);color:var(--muted);text-align:center;max-width:620px}
 .plist{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:6px}
 .plist li{display:flex;gap:14px;align-items:flex-start;font-size:28px;line-height:1.4;font-weight:500}
 .s-phones-3 .plist li{font-size:25px}
@@ -463,7 +471,7 @@ html.export #progress,html.export #hud,html.export #help,html.export #notes,html
   <button id="b-notes" title="Ghi chú trình bày (N)">N · ghi chú</button>
   <button id="b-full" title="Toàn màn hình (F)">F · toàn màn hình</button>
 </div>
-<div id="help">← → chuyển slide · N ghi chú · F toàn màn hình · Ctrl+P xuất PDF</div>
+<div id="help">← → chuyển slide · N ghi chú · V phát video · F toàn màn hình · Ctrl+P xuất PDF</div>
 <div id="notes" aria-live="polite"></div>
 <div id="err"><div><h2>Chưa có dữ liệu slide</h2><p style="margin-top:12px;color:#625F6B">Tạo <code>deck.data.js</code> (sao chép từ <code>template.data.js</code>) cạnh file này,<br>hoặc mở <code>deck.html?data=example.data.js</code></p></div></div>
 
@@ -658,6 +666,14 @@ phone:function(s){var co=arr(s.callouts||s.bullets).slice(0,3).map(function(b){r
   +'<ul '+rvc('callouts',1)+'>'+co.map(function(b,i){return '<li class="card"><span class="n">'+(b.n||i+1)+'</span><div><h3>'+md(b.title||b.text||'')+'</h3>'+(b.desc?'<p>'+md(b.desc)+'</p>':'')+'</div></li>'}).join('')+'</ul></div>'
   +'<div class="right rv" style="--i:2">'+pframe(s.image,s.title||'Màn hình',{pins:co.map(function(b,i){return {n:b.n||(i+1),y:b.y||ys[i]||'50%'}})})+'</div></div>'},
 
+video:function(s,c){var poster=s.poster||'',file=s.videoFile||'docs/minh-chung/demo-'+((c.meta.app||'app').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''))+'.mp4';
+ var b=arr(s.bullets).slice(0,3).map(function(x,i){return typeof x==='string'?{title:x}:x});
+ var media=(!EXPORT&&s.video)?'<video src="'+esc(s.video)+'" poster="'+esc(poster)+'" muted loop playsinline preload="auto"></video>':(poster?img(poster,s.title||'Video demo'):'');
+ return '<div class="inner"><div class="left">'+head(s,'Video demo')
+  +'<ul '+rvc('callouts',1)+'>'+b.map(function(x,i){return '<li class="card"><span class="n">'+(i+1)+'</span><div><h3>'+md(x.title||x.text||'')+'</h3>'+(x.desc?'<p>'+md(x.desc)+'</p>':'')+'</div></li>'}).join('')+'</ul></div>'
+  +'<div class="right rv" style="--i:2"><div class="vbox'+(poster||s.video?'':' missing')+'" data-missing="Chưa có video (assets/00-demo-video.mp4) / ảnh bìa (assets/00-demo-video-poster.png)">'+media+'<span class="playico">'+icon('play')+'</span></div>'
+  +'<div class="vcap">'+(EXPORT?'Xem video: '+esc(file):'Bấm V hoặc chạm vào video để phát / dừng')+'</div></div></div>'},
+
 'phones-2':function(s){return phonesN(s,2)},
 'phones-3':function(s){return phonesN(s,3)},
 
@@ -781,12 +797,14 @@ function start(deck){
     cur=i;prog.style.width=(n>1?(i/(n-1))*100:100)+'%';pos.textContent=(i+1)+' / '+n;
     try{history.replaceState(null,'','#'+(i+1))}catch(x){}
     e.querySelectorAll('.cnt').forEach(countUp);
+    if(prev>=0&&els[prev])els[prev].querySelectorAll('video').forEach(function(v){v.pause();v.currentTime=0;v.parentNode.classList.remove('playing')});
+    e.querySelectorAll('video').forEach(function(v){v.currentTime=0;var p=v.play();v.parentNode.classList.add('playing');if(p&&p.catch)p.catch(function(){v.parentNode.classList.remove('playing')})});
     e.querySelectorAll('.livebtn[data-auto="1"]').forEach(function(b){live(b)});
     if(prev>=0&&els[prev]){els[prev].querySelectorAll('iframe').forEach(function(f){f.remove()});els[prev].querySelectorAll('.livebtn').forEach(function(b){b.style.display=''})}
     renderNotes();
   }
   function live(btn){var sh=btn.parentNode,f=document.createElement('iframe');f.src=btn.dataset.live;f.setAttribute('loading','eager');f.title='Demo trực tiếp';sh.insertBefore(f,btn);btn.style.display='none'}
-  stage.addEventListener('click',function(e){var b=e.target.closest('.livebtn');if(b){live(b);e.stopPropagation()}},true);
+  stage.addEventListener('click',function(e){var vb=e.target.closest('.vbox');if(vb){var v=vb.querySelector('video');if(v){if(v.paused){v.play();vb.classList.add('playing')}else{v.pause();vb.classList.remove('playing')}}e.stopPropagation();return}var b=e.target.closest('.livebtn');if(b){live(b);e.stopPropagation()}},true);
 
   var next=function(){go(cur+1,1)},prev=function(){go(cur-1,-1)};
   function toggleNotes(){document.body.classList.toggle('notes-on');renderNotes()}
@@ -798,6 +816,7 @@ function start(deck){
       case 'ArrowLeft':case 'ArrowUp':case 'PageUp':case 'Backspace':e.preventDefault();prev();break;
       case 'Home':go(0,-1);break;case 'End':go(n-1,1);break;
       case 'n':case 'N':toggleNotes();break;
+      case 'v':case 'V':var vb0=document.querySelector('.slide.is-active .vbox');if(vb0)vb0.click();break;
       case 'f':case 'F':full();break;
     }
   });

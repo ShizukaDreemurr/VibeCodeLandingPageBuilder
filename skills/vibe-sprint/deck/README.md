@@ -4,7 +4,9 @@ Một file `deck.html` (không phụ thuộc thư viện, 16:9, chạy offline).
 
 **Quy tắc ảnh: chỉ ảnh điện thoại DỌC.** Giám khảo chấm app trên điện thoại (360–390px), nên mọi ảnh app trong slide là ảnh dọc 9:19,5 (390×844 @3x = 1170×2532) đặt trong khung điện thoại; tối đa 3 máy mỗi slide; không dùng ảnh ngang/vuông/desktop. Ảnh do agent Claude Sonnet chụp bằng giả lập điện thoại (không chụp tay).
 
-Bản 7 slide (5 phút) và 5 slide (3 phút): chỉ cần xoá bớt slide trong `deck.data.js` theo `templates/KICH-BAN-DEMO.md` mục 6 (hoặc dùng cue "Mời chuyển đến slide N").
+**Slide video (`type: 'video'`):** đặt ngay trước slide tính năng; khung video dọc 9:16 phát `video` (mp4 ≤ 2:00, tự phát, tắt tiếng, lặp; người nói nói "Mời dừng video" để cắt sớm; chạm hoặc phím `V` để dừng/phát), `poster` là ảnh bìa; xuất PDF/PNG hiện ảnh bìa + nút play + dòng "Xem video: <videoFile>"; xuất PPTX nhúng mp4 nếu có `pptxgenjs`. File do `prompts/17` tạo: `assets/00-demo-video.mp4`, `assets/00-demo-video-poster.png`.
+
+Bản 8 slide (5 phút) và 6 slide (3 phút): chỉ cần xoá bớt slide trong `deck.data.js` theo `templates/KICH-BAN-DEMO.md` mục 6 (hoặc dùng cue "Mời chuyển đến slide N").
 
 Phím: `←/→/Space` chuyển slide · `N` ghi chú + đồng hồ · `F` toàn màn hình · vuốt/bấm trên điện thoại · `Ctrl+P` in PDF. Link thẳng slide: `deck.html#6`.
 
@@ -27,6 +29,7 @@ Yêu cầu: Node + Playwright (`npm i -g playwright && npx playwright install ch
 | type | Trường |
 |---|---|
 | cover | app, tagline, de, bang, event, team, members[], date, image (ảnh dọc, khung điện thoại; `device:'browser'` để dùng khung trình duyệt cũ) |
+| video | title, bullets[] (2–3 dòng), video (mp4 ≤ 2:00), poster (png 1080×1920), videoFile (đường dẫn bản đầy đủ, hiện khi xuất PDF) |
 | problem | title, persona{name,role,photo}, pains[], scenarioLabel, scenario, stat{value,label} |
 | solution | oneLiner, bullets[{icon,text}], image (khung trình duyệt cũ; ảnh dọc thì dùng `phone`) |
 | **phone** | title, eyebrow, image (dọc), callouts[{title,desc,y}] (3, ghim số trên máy tại `y`, ví dụ '48%') |

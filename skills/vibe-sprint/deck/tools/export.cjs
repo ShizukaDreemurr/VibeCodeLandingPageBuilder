@@ -7,7 +7,8 @@
  *
  * Kết quả trong deck/out/ (hoặc --out):  <name>.pdf, png/slide-01.png ..., <name>.pptx (nếu pptxgenjs có sẵn)
  * PNG 1920x1080 (--scale 2 cho 3840x2160). PDF kích thước 1920x1080 px, giữ chữ thật, QR là vector.
- * PPTX: mỗi slide là 1 ảnh PNG (không sửa chữ được) + ghi chú trình bày. Cài: npm i pptxgenjs (trong thư mục deck/).
+ * PPTX: mỗi slide là 1 ảnh PNG (không sửa chữ được) + ghi chú trình bày; slide loại 'video' có thêm mp4 nhúng (cần file trong assets/).
+ * Slide video: PDF/PNG hiện ảnh bìa + nút play + dòng "Xem video: docs/minh-chung/...". Cài: npm i pptxgenjs (trong thư mục deck/).
  */
 const fs = require('fs'), path = require('path'), cp = require('child_process');
 const deckDir = path.resolve(__dirname, '..');
@@ -46,6 +47,12 @@ const args = (() => { const a = { _: [] }, v = process.argv.slice(2); for (let i
 
   const slides = await page.$$('.slide');
   const notes = await page.evaluate(() => (window.DECK && window.DECK.slides || []).map(s => s.notes || ''));
+  // slide video: vị trí khung video (px trên slide 1920x1080) để PPTX nhúng đúng chỗ
+  const vids = await page.evaluate(() => (window.DECK && window.DECK.slides || []).map((s, i) => {
+    if (s.type !== 'video' || !s.video) return null;
+    const sl = document.querySelectorAll('.slide')[i], b = sl.querySelector('.vbox'), r = b.getBoundingClientRect(), r0 = sl.getBoundingClientRect();
+    return { video: s.video, poster: s.poster || '', x: r.left - r0.left, y: r.top - r0.top, w: r.width, h: r.height };
+  }));
   const broken = await page.evaluate(() => [...document.querySelectorAll('.shot.missing')].map(e => e.dataset.missing));
   if (broken.length) console.warn('CẢNH BÁO ảnh thiếu / không tải được:\n  - ' + broken.join('\n  - '));
 
@@ -70,7 +77,14 @@ const args = (() => { const a = { _: [] }, v = process.argv.slice(2); for (let i
     if (!Pptx) console.log('PPTX  bỏ qua: chưa có pptxgenjs (cd deck && npm i pptxgenjs để bật).');
     else {
       const p = new Pptx(); p.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5 in (16:9)
-      pngs.forEach((f, i) => { const s = p.addSlide(); s.addImage({ path: f, x: 0, y: 0, w: 13.333, h: 7.5 }); if (notes[i]) s.addNotes(notes[i]); });
+      pngs.forEach((f, i) => { const s = p.addSlide(); s.addImage({ path: f, x: 0, y: 0, w: 13.333, h: 7.5 }); if (notes[i]) s.addNotes(notes[i]);
+        const v = vids[i];   // slide video: nhúng mp4 vào PPTX (phát khi bấm); thiếu file thì giữ ảnh bìa + dòng "Xem video"
+        if (v && fs.existsSync(path.join(deckDir, v.video))) {
+          const k = 13.333 / 1920, o = { type: 'video', path: path.join(deckDir, v.video), x: v.x * k, y: v.y * k, w: v.w * k, h: v.h * k };
+          if (v.poster && fs.existsSync(path.join(deckDir, v.poster))) o.cover = path.join(deckDir, v.poster);
+          try { s.addMedia(o); console.log('PPTX  nhúng video slide', i + 1); } catch (e) { console.warn('PPTX  không nhúng được video:', e.message); }
+        }
+      });
       const f = path.join(out, name + '.pptx'); await p.writeFile({ fileName: f });
       console.log('PPTX ', path.relative(process.cwd(), f) || f, '(mỗi slide là một ảnh)');
     }

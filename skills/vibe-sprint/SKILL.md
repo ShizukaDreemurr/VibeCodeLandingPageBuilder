@@ -39,6 +39,7 @@ Khi skill này chạy, **usage/token KHÔNG phải ràng buộc. Thời gian là
 | T+40→48 | Merge hết, chạy toàn bộ test, **đặt `showPlayground: false`** (`js/config.js`), `node tools/bump-version.cjs`, `node scripts/scan-secrets.mjs .`, push, deploy Pages | Điều phối + agent QA | Link online chạy |
 | T+44 | **Khóa giao diện** (chỉ sửa lỗi) | Điều phối | Ảnh slide không lỗi thời |
 | T+45 | **Chụp ảnh slot (prompt 15):** gửi `prompts/15` cho **Claude Sonnet trong Chrome** (khung 390×844 sáng/tối, ZIP đặt tên theo bảng slot của prompt 14), **song song** 1 agent Sonnet trong Claude Code làm dự phòng. Bảng slot 01–13 ở `prompts/14` mục 6. **Agent Sonnet chụp ảnh điện thoại dọc:** tự mở web app bằng giả lập điện thoại (390×844 @3x và 360×780, sáng + tối) rồi chụp từng tab bằng `starter/tools/shots-mobile.cjs` hoặc `deck/tools/capture.cjs`. Ảnh dọc này dùng cho slide (khung điện thoại, ≤ 3 máy/slide; không dùng ảnh ngang/desktop) và README | 1 agent Sonnet (deck/QA) | `deck/assets/NN-ten-mobile-light|dark.png` |
+| T+45 (song song) | **Video demo (prompt 17):** nhóm 10 agent chạy song song `node tools/demo-video.cjs` (`--scene`/`--assemble`) → `demo-<app>.mp4` ≤ 2:00 + `00-demo-video.mp4` + poster; T+50 kiểm contact sheet; cùng file (`00-demo-video.mp4` + poster) nhúng vào **slide video** (loại `video` của `deck/`, ngay trước slide tính năng); T+55 giao kỹ thuật viên làm dự phòng | Agent video + Điều phối | Video ≤ 2:00, 1080×1920 |
 | T+48→50 | Polish cuối + kiểm tra **mobile 360px VÀ 390px** (5 tiêu chí), sáng/tối, trạng thái rỗng/lỗi. **Sau T+50 không thêm tính năng** | 2–3 agent polish/QA song song | Ảnh chụp sạch |
 | **T+50→55** | **Minh chứng thời điểm chốt:** ảnh điện thoại dọc từng màn chính (360 và 390, sáng/tối, agent Sonnet chụp bằng giả lập) + 1 ảnh desktop, hoặc quay dọc màn hình luồng chính, **kèm hash commit đang chạy trên link** (`git rev-parse --short HEAD`, hiện cả phiên bản trên app). Một lệnh: `node scripts/nop-bai.mjs --url <link>` (kiểm git sạch + đã push, quét secret, chụp ảnh 390/360 sáng/tối + 1 desktop có thanh chú thích, ZIP mã nguồn, in 4 món) → `docs/minh-chung/<thời điểm>/`. Chỉ được thêm 1 commit **chỉ chứa ảnh** `docs/minh-chung/` (không đổi mã) | QA agent + điều phối | Ảnh/video + hash |
 | T+50→55 | Tải ZIP vào Claude Design, gửi Phần 2 của prompt 14 (chèn ảnh + số); **T+55 xuất PDF/PPTX gửi kỹ thuật viên BTC** (thành viên không tự bấm slide; ghi chú có dòng "Cue kỹ thuật") | Điều phối | Deck có ảnh |
@@ -63,6 +64,7 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 | Docs | Haiku | README, bảng kiểm thử, minh chứng AI, kịch bản demo, hỏi đáp | `prompts/08-docs-agent.md` | 8226 |
 | **Giả định & mô hình kinh doanh** (Bảng Kinh tế, bắt buộc) | Sonnet | Danh sách giả định có nguồn, kịch bản lạc quan/cơ sở/bi quan, hòa vốn, độ nhạy, dự phòng, kiểm ưu đãi có lỗ không; dùng `EP.scenario` (`js/scenario.js`) + `EP.importer` (`js/import.js`) của starter; đọc `references/11-mo-hinh-kinh-doanh.md`; nạp file dữ liệu BTC | `prompts/13-business-agent.md` (+ `references/11`, `12`, `kien-thuc/`) | 8231 |
 | QA / second opinion #1–#3 | Sonnet + Haiku | Chụp ảnh điện thoại dọc (360 + 390), chạy test, thử đầu vào sai, mobile | `prompts/06-qa-agent.md` | 8227–8229 |
+| **Video demo agent** | Sonnet | Dựng video dọc ≤ 2:00 (minh chứng + dự phòng) (chạy song song nhiều agent, mỗi agent 1 scene) + ảnh bìa cho **slide video** (`node tools/demo-video.cjs`, storyboard từ spec) | `prompts/17-claude-demo-video.md` | 8232–8237 |
 | Cấp cứu / dự phòng | Sonnet | Re-spawn bản rút gọn, bản demo dự phòng | `prompts/11-emergency.md` | 8230 |
 | Điều phối (bản merge) | Claude chính | Merge, test, deploy | `prompts/09-merge-deploy.md` | 8211 |
 
@@ -74,8 +76,8 @@ Trễ giờ: **cắt tính năng phụ, không cắt test + deploy + slide.** T�
 | 8212–8216 | Hỗ trợ: 8212 shell/brand · 8213 AI · 8214 data/demo · 8215–8216 polish #1–#2 |
 | 8217–8224 | Feature agent F1…F8 |
 | 8240–8249 | **Gemini Antigravity** (`ag/ui` 8240, `ag/data` 8241, `ag/docs` 8242, `ag/biz` 8243, còn lại dự phòng) |
-| 8225–8231 | 8225 deck · 8226 docs · 8227–8229 QA #1–#3 · 8230 cấp cứu/dự phòng · 8231 giả định & mô hình kinh doanh |
-| 8232–8239 | Chưa gán (không dùng; tránh trùng) |
+| 8225–8237 | 8225 deck · 8226 docs · 8227–8229 QA #1–#3 · 8230 cấp cứu/dự phòng · 8231 giả định & mô hình kinh doanh · 8232–8237 video demo (10 agent song song) |
+| 8238–8239 | Chưa gán (không dùng; tránh trùng) |
 | **8000** | **CẤM** (nhiều agent từng dùng chung, server phục vụ nhầm worktree của nhau) |
 
 Mỗi agent chỉ dùng cổng của mình, kill server khi xong. Xung đột chi tiết xem `prompts/00-README.md` và `references/02`.

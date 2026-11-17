@@ -8,7 +8,7 @@
    Loại slide cho ảnh dọc: cover · phone (1 máy + 3 chú thích) · phones-2 · phones-3 · phone-steps (luồng 1→2→3) · demo với device:'phone'.
    Mỗi slide có:  speaker: 'Tên'  (người nói, chỉ hiện trong ghi chú, KHÔNG hiện lên slide)  ·  time: '0:40'  (thời lượng gợi ý)  ·
    notes: '...'  (bấm N): Người nói · Mốc giờ · V / T / S = 3 neo · Cue kỹ thuật ("Mời chuyển slide.", vì thành viên không tự bấm slide) · Chuyền mic. Chi tiết: templates/KICH-BAN-DEMO.md.
-   Bộ 11 slide cho pitch 10 phút: Diệu Anh 1–3 · Dũng 4–7 · Nguyên 8–11. Đổi tên người nói theo đội. Bản 7 / 5 slide: xem templates/KICH-BAN-DEMO.md mục 6 (Giả định & cách tính = slide 10 / 5 / 4: kit chưa có loại 'assumptions', dùng 'metrics' cho slide đó).
+   Bộ 12 slide cho pitch 10 phút: Diệu Anh 1–3 · Dũng 4–8 (slide 4 = VIDEO demo, mở phần của Dũng) · Nguyên 9–12. Slide video: loại 'video' (video dọc 9:16 + 2–3 dòng định danh); ảnh bìa 00-demo-video-poster.png + video 00-demo-video.mp4 do prompts/17 tạo. Đổi tên người nói theo đội. Bản 7 / 5 slide: xem templates/KICH-BAN-DEMO.md mục 6 (Giả định & cách tính = slide 10 / 5 / 4: kit chưa có loại 'assumptions', dùng 'metrics' cho slide đó).
    ============================================================================ */
 window.DECK = {
   meta: {
@@ -47,7 +47,15 @@ window.DECK = {
       image: 'assets/03-ket-qua-mobile-light.png',
       notes: 'Người nói: Diệu Anh\nMốc giờ: 01:30–02:30 (cứng 02:35)\nV: giải pháp 1 câu\nT: chỉ vào 3 ghim số trên điện thoại, nêu 1 điểm UI/UX\nS: {{SO_THAO_TAC_HOAN_THANH}}\nCue kỹ thuật: Mời chuyển slide. (nói sau câu chuyền mic)\nChuyền mic: Em xin gửi Dũng đi vào {{TINH_NANG_NOI_BAT}} và làm thử ngay cho mọi người xem.' },
 
-    { type: 'features', time: '0:45', speaker: 'Vũ Trí Dũng', eyebrow: 'Tính năng',
+    { type: 'video', time: '0:45', speaker: 'Vũ Trí Dũng', eyebrow: 'Video demo',
+      title: 'Xem app **chạy thật**',
+      bullets: ['Nhập dữ liệu → kết quả → lưu', 'Trên điện thoại, dữ liệu mẫu', 'Có nhãn mô phỏng rõ ràng'],   // 2–3 dòng định danh, ≤ 12 từ mỗi dòng
+      video: 'assets/00-demo-video.mp4',            // video demo ≤ 2:00 (prompts/17). Phát khi tới slide (tắt tiếng, lặp); kỹ thuật viên phát, người nói nói "Mời dừng video" khi hết ý (≈ 45 giây); chạm hoặc bấm V để dừng/phát
+      poster: 'assets/00-demo-video-poster.png',        // ảnh bìa 1080×1920; PDF/PNG xuất ra hiện ảnh này + nút play
+      videoFile: 'docs/minh-chung/demo-TEN-APP.mp4',    // đường dẫn bản đầy đủ ≤ 2:00 (hiện dưới ảnh bìa khi xuất PDF)
+      notes: 'Người nói: Vũ Trí Dũng (mở phần của Dũng)\nMốc giờ: 02:30–03:15 (cứng 03:20)\nV: nhìn app chạy trước khi đi vào tính năng (phát khoảng 45 giây rồi "Mời dừng video."; video đầy đủ ≤ 2:00)\nT: chỉ 1 thao tác trong video; nói thêm 1 số thật\nS: {{SO_GIAY_LUONG_CHINH}} giây từ nhập đến kết quả\nCue kỹ thuật: Mời phát video demo. (video tự phát khi tới slide; nếu không chạy thì bấm V hoặc chạm vào video) … Mời dừng video. → Mời chuyển slide.\nChuyền mic: —' },
+
+    { type: 'features', time: '0:30', speaker: 'Vũ Trí Dũng', eyebrow: 'Tính năng',
       title: 'Đủ **5 tính năng** của đề',
       items: [                                                             // [7] 5 tính năng (icon: xem danh sách cuối file)
         { icon: 'form', title: 'Tính năng 1', desc: 'Mô tả ≤ 15 từ.' },
@@ -56,9 +64,9 @@ window.DECK = {
         { icon: 'users', title: 'Tính năng 4', desc: 'Mô tả ≤ 15 từ.' },
         { icon: 'list', title: 'Tính năng 5', desc: 'Mô tả ≤ 15 từ.' }
       ],
-      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 02:30–03:15 (cứng 03:20)\nV: 5 tính năng giải đúng đề\nT: nhấn 1 quy tắc nghiệp vụ\nS: {{SO_TINH_NANG}} tính năng chạy thật\nCue kỹ thuật: Mời chuyển slide.\nChuyền mic: —' },
+      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 03:15–03:45 (cứng 03:50)\nV: 5 tính năng giải đúng đề\nT: nhấn 1 quy tắc nghiệp vụ\nS: {{SO_TINH_NANG}} tính năng chạy thật\nCue kỹ thuật: Mời chuyển slide.\nChuyền mic: —' },
 
-    { type: 'phone-steps', time: '0:40', speaker: 'Vũ Trí Dũng', eyebrow: 'Luồng sử dụng',
+    { type: 'phone-steps', time: '0:30', speaker: 'Vũ Trí Dũng', eyebrow: 'Luồng sử dụng',
       title: 'Từ A đến B trong **3 bước**',
       steps: [                                                             // 3 ảnh DỌC, thứ tự theo luồng thật
         { image: 'assets/02-nhap-lieu-mobile-light.png', title: 'Bước 1', desc: 'Làm gì' },
@@ -66,18 +74,18 @@ window.DECK = {
         { image: 'assets/04-luu-xem-lai-mobile-light.png', title: 'Bước 3', desc: 'Làm gì' }
       ],
       note: 'Dữ liệu lưu ở đâu / điều cần biết (tuỳ chọn).',
-      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 03:15–03:55 (cứng 04:00)\nV: người dùng đi qua bao nhiêu bước\nT: chỉ đúng các bước trên slide\nS: {{THOI_GIAN_LUONG_CHINH}} từ đầu đến kết quả\nCue kỹ thuật: Mời chuyển slide.\nChuyền mic: Giờ mình xem bản chạy thật.'
+      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 03:45–04:15 (cứng 04:20)\nV: người dùng đi qua bao nhiêu bước\nT: chỉ đúng các bước trên slide\nS: {{THOI_GIAN_LUONG_CHINH}} từ đầu đến kết quả\nCue kỹ thuật: Mời chuyển slide.\nChuyền mic: Giờ mình xem bản chạy thật.'
     },
 
-    { type: 'demo', time: '1:15', speaker: 'Vũ Trí Dũng', eyebrow: 'Demo trực tiếp',
+    { type: 'demo', time: '1:00', speaker: 'Vũ Trí Dũng', eyebrow: 'Demo trực tiếp',
       title: 'Đang chạy **ngay bây giờ**',
       device: 'phone',                                                     // điện thoại dọc + QR bên cạnh
       image: 'assets/03-ket-qua-mobile-light.png',                            // ảnh DỌC dự phòng khi mất mạng
       iframe: true,                                                        // true = có nút "Chạy trực tiếp" nhúng link live ngay trong khung điện thoại (app phải cho phép iframe)
       caption: 'Kịch bản: **bước 1** → **bước 2** → **bước 3**.',
-      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 03:55–05:10 (cứng 05:15)\nV: ca bình thường\nT: {{THAO_TAC_1}} → {{THAO_TAC_2}} → {{THAO_TAC_3}}, mỗi thao tác ≤ 25s\nS: kết quả hiện sau {{GIAY_PHAN_HOI}} giây\nCue kỹ thuật: Mời phát video demo. … Mời quay lại slide. → Mời chuyển slide.\nChuyền mic: —' },
+      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 04:15–05:15 (cứng 05:20)\nV: ca bình thường\nT: {{THAO_TAC_1}} → {{THAO_TAC_2}} → {{THAO_TAC_3}}, mỗi thao tác ≤ 25s\nS: kết quả hiện sau {{GIAY_PHAN_HOI}} giây\nCue kỹ thuật: Mời phát video demo. … Mời quay lại slide. → Mời chuyển slide.\nChuyền mic: —' },
 
-    { type: 'phones-3', time: '1:05', speaker: 'Vũ Trí Dũng', eyebrow: 'Demo: ca sai, ca biên, tối',
+    { type: 'phones-3', time: '1:00', speaker: 'Vũ Trí Dũng', eyebrow: 'Demo: ca sai, ca biên, tối',
       title: 'Nhập sai và ca biên: app **xử lý ra sao**',
       phones: [                                                            // 2–3 ảnh DỌC cạnh nhau (dùng 'phones-2' nếu chỉ có 2)
         { image: 'assets/10-ca-sai-mobile-light.png', label: 'Nhập sai', sub: 'Báo lỗi ngay tại ô' },
@@ -85,7 +93,7 @@ window.DECK = {
         { image: 'assets/01-tong-quan-mobile-dark.png', label: 'Giao diện tối', sub: 'Cùng màn hình, chế độ Tối' }
       ],
       points: ['Ca nhập sai → báo lỗi ngay', 'Ca biên → xử lý đúng', 'Chạy ở 360 và 390 px'],
-      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 05:10–06:15 (cứng 06:20)\nV: ca nhập sai + ca biên + mobile\nT: {{CA_SAI}} báo lỗi ngay; {{CA_BIEN}}; đưa điện thoại ra cho giám khảo thấy giao diện Tối\nS: {{SO_CA_LOI_BAT_DUOC}} ca lỗi bị chặn\nCue kỹ thuật: Mời chuyển slide.\nChuyền mic: Phần bên trong chạy thế nào, mình xin nhường Nguyên.' },
+      notes: 'Người nói: Vũ Trí Dũng\nMốc giờ: 05:15–06:15 (cứng 06:20)\nV: ca nhập sai + ca biên + mobile\nT: {{CA_SAI}} báo lỗi ngay; {{CA_BIEN}}; đưa điện thoại ra cho giám khảo thấy giao diện Tối\nS: {{SO_CA_LOI_BAT_DUOC}} ca lỗi bị chặn\nCue kỹ thuật: Mời chuyển slide.\nChuyền mic: Phần bên trong chạy thế nào, mình xin nhường Nguyên.' },
 
     { type: 'ai', time: '1:00', speaker: 'Nguyên', eyebrow: 'AI trong sản phẩm',
       title: 'AI **làm gì**, kiểm soát thế nào',

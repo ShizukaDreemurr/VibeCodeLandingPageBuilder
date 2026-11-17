@@ -689,6 +689,7 @@ Tên lớp slide: `s-cover` · `s-problem` (bối cảnh) · `s-phone` · `s-pho
 
 | NN | Tên slot | Màn hình / trạng thái chụp | Theme chụp | Dùng ở slide (11 / 7 / 5) |
 |---|---|---|---|---|
+| 00 | `00-demo-video` | **Video demo dọc** `00-demo-video.mp4` (≤ 2:00, cùng file với minh chứng, tự phát trong slide; kỹ thuật viên phát, người nói "Mời dừng video" để cắt sớm) + ảnh bìa `00-demo-video-poster.png` (1080×1920) + bản gốc `demo-<app>.mp4` trong `docs/minh-chung/` (prompts/17); không phải ảnh chụp 390px | video + ảnh bìa | **slide video** (4 / 3 / 2): đặt NGAY TRƯỚC slide tính năng/demo |
 | 01 | `01-tong-quan` | Tab Tổng quan, đã nạp dữ liệu mẫu | sáng + tối | bìa (1 / 1 / 1); máy thứ 3 tối ở slide demo ca sai (7 / 4 / 3) |
 | 02 | `02-nhap-lieu` | Form nhập đã điền dữ liệu mẫu, chưa bấm gửi (bước 1) | sáng + tối | luồng bước 1 (5 / 3 / —) |
 | 03 | `03-ket-qua` | Kết quả xử lý/AI có nhãn mô phỏng (bước 2, màn chính của giải pháp) | sáng + tối | giải pháp (3 / 2 / 1); demo ca thường (6 / 4 / 2); luồng bước 2 |
@@ -705,13 +706,23 @@ Ví dụ tên đủ: `05-tinh-nang-1-mobile-light.png`, `10-ca-sai-mobile-dark.p
 
 **Ký hiệu:** `DA` Diệu Anh · `Dũng` Vũ Trí Dũng · `Ng` Nguyên. **Gạch ≤ N** là giới hạn số từ mỗi gạch đầu dòng. **Số** là điểm tựa; nếu slide có điện thoại, số hiện dạng "số nhấn" 56–72px. Mọi tiêu đề theo kiểu đặt tên (mục 3.1); chỗ có `*từ*` là từ nhấn Playfair italic. Ghi chú người nói theo mục 8. Mốc giờ là **mốc cứng** (xem run-sheet của đội).
 
-### 7A. Bản 11 slide (10 phút)
+### 7.0. SLIDE VIDEO (`s-video`, bắt buộc ở cả ba bản; đặt NGAY TRƯỚC slide tính năng/demo của Dũng; hàng 3b / 2b / 1b trong các bảng dưới, các số slide sau đó cộng thêm 1)
+
+- **Bố cục:** slide 16:9; **khung video dọc 9:16** (cao ≈ 800px, bo 34px) ở bên phải, tiêu đề + 2–3 chú thích đánh số bên trái (dùng lại `.callouts`). Mã mẫu và CSS nằm trong `deck/deck.html` (loại `video`, lớp `.vbox`).
+- **Khi trình chiếu:** video tự phát khi tới slide, **tắt tiếng, lặp**, không hiện thanh điều khiển; chạm vào video hoặc phím V để dừng/phát. Ảnh bìa (`poster`) hiện trước khi phát.
+- **Khi xuất PDF/PNG:** hiện **ảnh bìa + biểu tượng play** và dòng "Xem video: docs/minh-chung/demo-`{{TEN_APP_SLUG}}`.mp4".
+- **Khi xuất PPTX:** **nhúng file mp4** vào đúng khung (chèn dạng media, phát khi bấm) và ảnh bìa làm hình đại diện; nếu công cụ không nhúng được thì để ảnh bìa + liên kết tới file.
+- **File lấy từ ZIP/thư mục `assets/`:** `00-demo-video.mp4` và `00-demo-video-poster.png` (đúng hai tên này). Thiếu file thì để ô trống có chữ nhắc, **không bịa ảnh**.
+- Chú thích ≤ 12 từ mỗi dòng, kiểu định danh; có nhãn `{{MOCK_NOTICE}}` nếu video hiện số mô phỏng. Ghi chú người nói: cue "Mời phát video demo." (nếu video chưa tự chạy); người nói là Dũng.
+
+### 7A. Bản 11 slide (10 phút; thêm slide video thành 12)
 
 | # | Id | Người | Bố cục | Tiêu đề | Phụ đề | Gạch đầu dòng (số gạch · giới hạn · nội dung gợi ý) | Số | Ảnh | Giờ |
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | `bia` | DA | `s-cover fl` | `{{TEN_APP}}` | `{{TAGLINE}}` | 0 gạch; chip: Đề `{{DE_SO}}` · Bảng `{{BANG}}` · Chung kết 60 phút | không (ảnh là điểm tựa) | `01-tong-quan-mobile-light.png` | 00:00–00:35 |
 | 2 | `boi-canh` | DA | `s-problem` | Bối cảnh của *`{{NHOM_NGUOI_DUNG}}`* | Chân dung người dùng và cách họ làm việc hiện nay | 3–4 gạch ≤ 14: Ai (vai trò, quy mô, dùng điện thoại) · Việc hằng ngày và công cụ đang dùng (`{{CONG_CU_HIEN_TAI}}`) · Cái giá hiện nay (thời gian/tiền/sai sót, có nguồn) · Điểm vướng chính | `{{SO_NOI_DAU}}` + nhãn nguồn (≥ 120px) | — | 00:35–01:30 |
 | 3 | `giai-phap` | DA | `s-phone` | Giải pháp và *giao diện chính* | `{{TEN_APP}}` giải quyết việc gì cho ai | 3 chú thích đánh số ≤ 14, mỗi cái dạng **ràng buộc → xử lý** (ví dụ "Một tay trên điện thoại → nút chính ở nửa dưới màn hình"; "Sáng/Tối → chữ đạt tương phản AA"; "Thanh tab dưới → luôn biết đang ở đâu") | `{{SO_THAO_TAC_HOAN_THANH}}` (số nhấn) | `03-ket-qua-mobile-light.png` | 01:30–02:30 |
+| 3b | `video-demo` | Dũng | `s-video` | Xem app *chạy thật* | Video dọc trên điện thoại, dữ liệu mẫu | 2–3 gạch định danh ≤ 12 từ (ví dụ: Nhập, nhờ AI gợi ý, lưu · Trên điện thoại, dữ liệu mẫu · Nhãn mô phỏng rõ ràng) | `{{GIAY_LUONG_CHINH}}` giây | video `00-demo-video.mp4` + ảnh bìa `00-demo-video-poster.png` | slide mở phần của Dũng, 02:30–03:15 |
 | 4 | `tinh-nang` | Dũng | `s-features` | Năm tính năng của *`{{TEN_APP}}`* | Việc từng tính năng đảm nhận | 5 thẻ, mỗi thẻ tên ≤ 4 từ + mô tả ≤ 15 từ theo **đầu vào → quy tắc → kết quả**; thêm 1 dòng quy tắc nghiệp vụ: `{{QUY_TAC_CHINH}}` | `{{SO_TINH_NANG}}` tính năng chạy thật (≥ 120px) | — | 02:30–03:15 |
 | 5 | `luong` | Dũng | `s-phone-steps` | Luồng sử dụng *ba bước* | Từ nhập liệu đến kết quả đã lưu | 3 bước, mỗi bước tên ≤ 4 từ + 1 dòng ≤ 10 từ; 1 ghi chú nơi lưu dữ liệu ≤ 14 từ | `{{THOI_GIAN_LUONG_CHINH}}` (số nhấn) | `02-nhap-lieu` · `03-ket-qua` · `04-luu-xem-lai` (-mobile-light.png) | 03:15–03:55 |
 | 6 | `demo-thuong` | Dũng | `s-demo` | Bản chạy thật: *ca thông thường* | Ba thao tác trên điện thoại | 3 thao tác đánh số ≤ 12 từ (`{{THAO_TAC_1}}`, `{{THAO_TAC_2}}`, `{{THAO_TAC_3}}`); QR + `{{LINK_DEMO}}`; nhãn `{{MOCK_NOTICE}}` | kết quả hiện sau `{{GIAY_PHAN_HOI}}` giây (số nhấn) | `03-ket-qua-mobile-light.png` | 03:55–05:10 |
@@ -730,6 +741,7 @@ Ví dụ tên đủ: `05-tinh-nang-1-mobile-light.png`, `10-ca-sai-mobile-dark.p
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | `bia-boi-canh` | DA | `s-cover fl` | `{{TEN_APP}}` | Bối cảnh của `{{NHOM_NGUOI_DUNG}}` | 3 gạch ≤ 12: ai · việc hằng ngày · cái giá hiện nay (nguồn) | `{{SO_NOI_DAU}}` (số nhấn) | `01-tong-quan-mobile-light.png` | 00:00–00:35 (00:40) |
 | 2 | `giai-phap` | DA | `s-phone` | Giải pháp và *giao diện chính* | `{{TEN_APP}}` giải quyết việc gì cho ai | 3 chú thích ràng buộc → xử lý | `{{SO_THAO_TAC_HOAN_THANH}}` | `03-ket-qua-mobile-light.png` | 00:35–01:10 (01:15) |
+| 2b | `video-demo` | Dũng | `s-video` | Xem app *chạy thật* | Video dọc, dữ liệu mẫu | 2 gạch ≤ 12 từ | `{{GIAY_PHAN_HOI}}` giây | `00-demo-video.mp4` + `00-demo-video-poster.png` | 01:10–01:40 (01:45) |
 | 3 | `tinh-nang-luong` | Dũng | `s-phone-steps` | Năm tính năng và *luồng sử dụng* | Ba bước từ nhập liệu đến kết quả | 3 bước + 1 ghi chú liệt kê 5 tính năng bằng tên ngắn; quy tắc `{{QUY_TAC_CHINH}}` | `{{THOI_GIAN_LUONG_CHINH}}` | `02-nhap-lieu` · `03-ket-qua` · `04-luu-xem-lai` | 01:10–01:50 (01:55) |
 | 4 | `demo` | Dũng | `s-phones-3` | Bản chạy thật: ca thường, ca sai và *360px* | Ba trạng thái trên điện thoại | 3 chú thích ≤ 10 từ; QR + link; nhãn `{{MOCK_NOTICE}}` | `{{GIAY_PHAN_HOI}}` giây | `03-ket-qua-mobile-light.png` · `10-ca-sai-mobile-light.png` · `03-ket-qua-mobile360-light.png` | 01:50–02:50 (02:55) |
 | 5 | `gia-dinh` | Ng | `s-assume` | Giả định và *cách tính* | Bảng giá trị, nguồn và ba kịch bản | như bản 11 | `{{HOA_VON}}` | — | 02:50–03:45 (03:50) |
@@ -743,6 +755,7 @@ Phụ lục (không tính số slide): P1 bảng cue · P2, P3 dự phòng như 
 | # | Id | Người | Bố cục | Tiêu đề | Phụ đề | Gạch (số · giới hạn · nội dung) | Số | Ảnh | Giờ (cứng) |
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | `boi-canh-giai-phap` | DA | `s-cover fl` | `{{TEN_APP}}` | Bối cảnh và giải pháp | 3 gạch ≤ 12: ai · cái giá hiện nay · việc app làm | `{{SO_NOI_DAU}}` → `{{SO_MUC_TIEU}}` (số nhấn) | `01-tong-quan-mobile-light.png` | 00:00–00:35 (00:40) |
+| 1b | `video-demo` | Dũng | `s-video` | Xem app *chạy thật* | Video dọc, thay demo trực tiếp | 2 gạch ≤ 12 từ | `{{GIAY_PHAN_HOI}}` giây | `00-demo-video.mp4` + `00-demo-video-poster.png` | 00:35–01:05 (01:10) |
 | 2 | `demo-thuong` | Dũng | `s-demo` | Bản chạy thật: *ca thông thường* | Thao tác chính trên điện thoại | 3 thao tác ≤ 12 từ; QR + link | `{{GIAY_PHAN_HOI}}` giây | `03-ket-qua-mobile-light.png` | 00:35–01:15 (01:20) |
 | 3 | `ca-sai-360` | Dũng | `s-phones-3` | Ca nhập sai và *360px* | Hai trạng thái và cỡ màn nhỏ | 2 gạch ≤ 12 | `{{SO_CA_LOI_BAT_DUOC}}` | `10-ca-sai-mobile-light.png` · `11-ca-bien-mobile-light.png` · `03-ket-qua-mobile360-light.png` | 01:15–01:40 (01:45) |
 | 4 | `gia-dinh` | Ng | `s-assume` | Giả định và *cách tính* | Bảng giá trị, nguồn và ba kịch bản | như bản 11; **không bao giờ bỏ** | `{{HOA_VON}}` | — | 01:40–02:20 (02:25) |
@@ -779,6 +792,8 @@ Ví dụ ghi chú slide 3 (Diệu Anh): `Người nói: Diệu Anh` / `Mốc gi�
 ---
 
 # PHẦN 2 — CHÈN ẢNH VÀ CẬP NHẬT SỐ (gửi ở T+50, cùng dự án, sau khi tải ZIP lên)
+
+Tôi cũng tải lên **`00-demo-video.mp4`** và **`00-demo-video-poster.png`**: hãy chèn video vào slide `video-demo` (chèn media, tự phát khi chiếu, tắt tiếng, lặp; ảnh bìa làm poster); xuất PDF/PNG phải có ảnh bìa + nút play + dòng "Xem video: docs/minh-chung/demo-{{TEN_APP_SLUG}}.mp4"; PPTX nhúng mp4.
 
 Tôi đã tải lên tệp **`{{TEN_APP}}-slide-anh.zip`** (ảnh chụp thật của app, **chỉ ảnh điện thoại dọc**) và `manifest.txt`. Hãy **chèn ảnh vào đúng ô trong bộ slide hiện có**, theo các quy tắc sau:
 

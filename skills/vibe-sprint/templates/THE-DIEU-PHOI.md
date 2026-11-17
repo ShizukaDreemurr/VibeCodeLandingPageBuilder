@@ -19,23 +19,24 @@
 | **35** | `Gom chỉnh sửa lời/tiêu đề từ buổi luyện thành 1 danh sách (docs/slide-chinh-sua.md); đưa tôi bản tin để gửi Claude Design.` | **một tin duy nhất → Claude Design** | khung v2 |
 | **40** | `Merge hết nhánh Claude và ag/*, đặt showPlayground: false (js/config.js), chạy node --check js/*.js features/*/feature.js, smoke, mobile 360 + 390, scan-secrets. Test đỏ thì cô lập tính năng, rút gọn, không sửa lan man.` | — | test xanh, secret sạch |
 | **44** | `KHÓA GIAO DIỆN từ bây giờ: chỉ sửa lỗi, không đổi bố cục/nhãn/thứ tự tab. Ghi vào docs/DECISIONS.md.` | báo cả đội | — |
-| **45** | `Điền bảng slot của prompts/15 (cột Cách đến trạng thái) từ app thật, đưa tôi khối hoàn chỉnh kèm hash commit. Đồng thời spawn 1 agent Sonnet chạy dự phòng: node tools/shots-mobile.cjs + node deck/tools/capture.cjs theo tên slot, kiểm tỉ lệ 9:19,5, đóng ZIP có manifest.txt.` | **prompts/15 → Claude Sonnet trong Chrome** (link Pages hoặc `http://localhost:8211/`) | 2 ZIP; dùng cái đạt trước |
+| **45** | `Điền bảng slot của prompts/15 (cột Cách đến trạng thái) từ app thật, đưa tôi khối hoàn chỉnh kèm hash commit. Đồng thời spawn **nhóm 10 agent Video demo** (prompts/17: mỗi agent quay 1 scene, cổng 8232–8237, xong T+52 → `demo-<app>.mp4` ≤ 2:00 + `00-demo-video.mp4` + poster) và 1 agent Sonnet chạy dự phòng: node tools/shots-mobile.cjs + node deck/tools/capture.cjs theo tên slot, kiểm tỉ lệ 9:19,5, đóng ZIP có manifest.txt.` | **prompts/15 → Claude Sonnet trong Chrome** (link Pages hoặc `http://localhost:8211/`) | 2 ZIP; dùng cái đạt trước |
 | **48** | `node tools/bump-version.cjs, quét secret, push nop-bai, deploy Pages; mở link ẩn danh; báo link + hash commit.` | — | link online chạy |
 | **50** | `Nhận ZIP ảnh: kiểm manifest.txt, 5 ảnh ngẫu nhiên, cỡ 1170×2532, đúng sáng/tối. Rồi tôi gửi Phần 2 cho Claude Design.` | **tải ZIP lên đúng dự án Claude Design → dán prompts/14 Phần 2**; đưa số thật (ca đạt, giây phản hồi, hòa vốn) | báo cáo thiếu ảnh = rỗng |
+| **50** (song song) | `Kiểm video demo: xem contact sheet + 3 khung hình (phụ đề đủ dấu, thấy chấm chạm, nhãn mô phỏng), ffprobe ≤ 2:00 và 1080×1920; lưu docs/minh-chung/. Chép 00-demo-video.mp4 + 00-demo-video-poster.png vào deck/assets/ và gửi kèm ZIP cho Claude Design (slide video).` | xem video 1 lần | video đạt |
 | **50–55** | `Chụp minh chứng thời điểm chốt: ảnh điện thoại dọc 360 + 390 (sáng/tối) + 1 desktop + hash commit đang chạy trên link; lưu docs/minh-chung/ (node scripts/nop-bai.mjs --url <link>). Không commit mã thêm sau khi chụp.` | DA quay video demo dọc 45 giây | ảnh + hash khớp link |
 | **55** | `Hoàn thiện README (khai báo khung chuẩn bị trước + công cụ AI: Claude, Gemini Antigravity), bảng kiểm thử chỉ ca đã chạy thật. Nộp 4 món: link · mã nguồn · README · minh chứng.` | **xuất PDF + PPTX + PNG từng slide → gửi kỹ thuật viên** kèm bảng ở mục 2 | mở link ẩn danh lần cuối |
 | **60** | — | nghỉ 1 phút; DA, Dũng nói lại trên deck thật cùng Nguyên | **không đẩy thêm commit** |
 
 ## 2. Giao cho kỹ thuật viên của BTC (đưa 1 tờ giấy + file)
 
-**File:** PDF (bản chính) + PPTX (phụ) + video dọc `demo-doc-45s.mp4` (nếu có). **Tờ giấy (in từ bảng dưới, điền số slide cuối):**
+**File:** PDF (bản chính) + PPTX (phụ) + video dọc đầy đủ `demo-<app>.mp4` (≤ 2:00, dự phòng) và `00-demo-video.mp4` (cùng file, đã nhúng trong **slide 4**; kỹ thuật viên phát, người nói nói "Mời dừng video." khi hết ý). **Tờ giấy (in từ bảng dưới, điền số slide cuối):**
 
 | Người nói nói | Anh/chị làm |
 |---|---|
 | **"Mời chuyển slide."** | sang slide kế |
 | **"Mời lùi một slide."** | lùi 1 slide |
 | **"Mời chuyển đến slide N."** | nhảy tới slide N |
-| **"Mời phát video demo."** / **"Mời quay lại slide."** | bật / tắt video (ở slide demo) |
+| **"Mời phát video demo."** / **"Mời quay lại slide."** | slide 4 (video): video **tự phát**; nếu không chạy thì bấm phím **V** hoặc chạm vào video. Dự phòng demo lỗi: phát `demo-<app>.mp4` toàn màn hình, xong thì quay lại slide |
 | **"Mời mở bản chạy thật."** | mở link {{LINK_DEMO}} (nếu cho phép) |
 
 Slide cuối của từng người: **Diệu Anh** → slide {{SLIDE_CUOI_DA}} · **Dũng** → slide {{SLIDE_CUOI_DUNG}} · **Nguyên** → slide {{SLIDE_CUOI_NGUYEN}} (có thêm phụ lục P1–P3 ở cuối, **ẩn khi chiếu**). Nghe không rõ cue thì **giữ nguyên**, người nói nhắc lại. Họp 2 phút trước giờ vào phòng: tập 3 lần "Mời chuyển slide" với mic thật. Liên hệ Nguyên: {{SDT_NGUYEN}}.

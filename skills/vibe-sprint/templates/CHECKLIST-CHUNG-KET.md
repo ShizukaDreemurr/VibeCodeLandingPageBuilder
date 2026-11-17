@@ -53,7 +53,7 @@ Ca thử chi tiết: bảng M1–M5 trong `BANG-KIEM-THU.md`; agent Sonnet thử
 - [ ] Sau T+50 **không thêm tính năng**; không push mã sau khi chụp (chỉ được 1 commit chứa riêng ảnh `docs/minh-chung/`).
 - [ ] **Agent Claude Sonnet chụp** (không chụp tay, không nhờ Gemini): mở web app trên link đã chốt bằng giả lập điện thoại và chụp **ảnh điện thoại DỌC** từng màn chính (mỗi tab), **sáng + tối**, ở **360×780** và **390×844** (DPR 3): `node tools/shots-mobile.cjs <URL> docs/minh-chung/390` và `... docs/minh-chung/360 --width 360 --height 780` cho bản 360 (hoặc `node deck/tools/capture.cjs`); cách gọn hơn là chạy thẳng `node scripts/nop-bai.mjs` ở cuối mục này.
 - [ ] Thêm **1 ảnh desktop** (làm chứng cứ, không đưa vào slide), rồi mở từng ảnh kiểm: không tràn ngang, không banner lỗi, đúng bản đã chốt.
-- [ ] **Hoặc/và** video quay luồng chính **theo chiều dọc** trên điện thoại (không quay ngang), hiển thị rõ phiên bản/ngày giờ.
+- [ ] **Hoặc/và** video quay luồng chính **theo chiều dọc** trên điện thoại (không quay ngang), hiển thị rõ phiên bản/ngày giờ. **Cách nhanh: `node tools/demo-video.cjs` (prompts/17)** ra `docs/minh-chung/demo-<app>.mp4` ≤ 2:00, 1080×1920, phụ đề tiếng Việt; kiểm bằng contact sheet.
 - [ ] Ghi **hash commit** đang chạy trên link vào README và `PROGRESS.md`: `git rev-parse --short HEAD`.
 - [ ] Lưu ở `docs/minh-chung/` (và bản sao ngoài repo, đề phòng).
 - [ ] **Một lệnh chốt bài:** `node scripts/nop-bai.mjs --url <link demo>` kiểm tra git sạch và đã push, in hash + giờ ISO, quét bí mật, kiểm README đủ mục, chụp ảnh minh chứng có thanh chú thích vào `docs/minh-chung/<thời điểm>/`, tạo ZIP mã nguồn và in sẵn 4 món nộp (`--dry-run` để thử, `--no-shots` bỏ chụp).
@@ -65,7 +65,7 @@ Ca thử chi tiết: bảng M1–M5 trong `BANG-KIEM-THU.md`; agent Sonnet thử
 | 1 | **Link demo / cách mở** | Mở ở cửa sổ ẩn danh + điện thoại; bản mới nhất; link online bắt buộc | [ ] |
 | 2 | **Mã nguồn** | Đúng commit đang chạy trên link; không `.env*`, không key, không `.git` nếu nộp ZIP | [ ] |
 | 3 | **README** | Cài đặt/chạy, công nghệ, dữ liệu mẫu/tài khoản, mục Giả định & cách tính, khai báo khung chuẩn bị trước, không còn `<…>` | [ ] |
-| 4 | **Minh chứng chốt** | Ảnh điện thoại dọc 360 + 390 (sáng/tối) + 1 ảnh desktop, hoặc video dọc, thấy sản phẩm lúc chốt + hash commit | [ ] |
+| 4 | **Minh chứng chốt** (video dựng bằng `tools/demo-video.cjs` cũng được) | Ảnh điện thoại dọc 360 + 390 (sáng/tối) + 1 ảnh desktop, hoặc video dọc, thấy sản phẩm lúc chốt + hash commit | [ ] |
 
 - [ ] **Đặt `showPlayground: false` trước khi nộp** (`js/config.js`): ẩn tab "Mô-đun"/Thư viện UI và route `#/playground` khỏi bản nộp; chạy lại smoke (test xử lý cả hai giá trị).
 - [ ] Bản nộp đã chạy `node tools/bump-version.cjs`; phiên bản trên app khớp README.

@@ -85,6 +85,7 @@ Bảng duy nhất, giống `SKILL.md` (nguồn chính) và `prompts/00-README.md
 | QA #1…#3 | 8227–8229 |
 | Cấp cứu / dự phòng | 8230 |
 | Giả định & mô hình kinh doanh (prompt 13) | 8231 |
+| Video demo (prompt 17) | 8232–8237 |
 | Gemini Antigravity (`ag/ui` 8240, `ag/data` 8241, `ag/docs` 8242, `ag/biz` 8243, còn lại dự phòng) | 8240–8249 |
 | **8000** | **CẤM** |
 

@@ -27,11 +27,11 @@ Tài liệu đi cùng: `prompts/14-claude-design-khung-slide.md` (khung + chèn 
 | **T+20→40** | **Luyện nói trên khung** (mục 4). Gemini: T+20 commit đầu, T+30 chạy trọn luồng; Claude: T+25 merge đợt 1 | DA, Dũng (luyện), Claude + Gemini (xây) | 05, KICH-BAN-DEMO | 3 vòng tập |
 | **T+35** | **Một lần duy nhất** gom chỉnh sửa lời/tiêu đề từ buổi tập → gửi Claude Design một tin (đừng gửi từng chỉnh sửa lẻ) | Nguyên | 14 | khung v2 |
 | **T+40→44** | Merge hết (data → AI → shell → feature → polish), test xanh. **T+44: KHÓA GIAO DIỆN** (UI freeze): sau đó polish chỉ sửa lỗi, không đổi bố cục/nhãn/thứ tự tab, để ảnh chụp không lỗi thời | Claude + Nguyên | 09 | test xanh, quét secret sạch |
-| **T+45** | **Gửi prompt 15** cho **Claude Sonnet trong Chrome** (link: Pages nếu đã lên, **hoặc `http://localhost:8211/` trên máy Nguyên**; ghi hash commit). **Song song:** spawn 1 agent Sonnet chạy dự phòng `shots-mobile.cjs`/`capture.cjs` (mục 6) | Nguyên + Claude | 15 | hai ZIP, dùng cái đạt trước |
+| **T+45** | **Gửi prompt 15** cho **Claude Sonnet trong Chrome** (link: Pages nếu đã lên, **hoặc `http://localhost:8211/` trên máy Nguyên**; ghi hash commit). **Song song:** spawn 1 agent Sonnet chạy dự phòng `shots-mobile.cjs`/`capture.cjs` (mục 6) **và nhóm 10 agent Video demo song song** (`prompts/17`, `node tools/demo-video.cjs`, cổng 8232–8237; xong T+52): **một video** `demo-<app>.mp4` ≤ 2:00 (minh chứng + dự phòng) + bản sao `00-demo-video.mp4` và `00-demo-video-poster.png` (cho slide video) | Nguyên + Claude | 15 | hai ZIP, dùng cái đạt trước |
 | **T+48** | Bump version, push, deploy Pages (SKILL.md); mở link ẩn danh | Claude | 09 | link chạy |
 | **T+50** | **Nhận ZIP** (kiểm `manifest.txt`, 5 ảnh ngẫu nhiên, đủ ảnh 390/360/desktop, đúng sáng/tối). Tải ZIP vào **cùng dự án Claude Design**, gửi **Phần 2** (chèn ảnh + cập nhật số). Song song: **Dũng đọc to số thật** (số ca đạt, số giây phản hồi, hòa vốn) để Nguyên điền `{{DANH_SACH_SO_CAP_NHAT}}` | Nguyên, Dũng | 14 (P2) | báo cáo thiếu ảnh = rỗng |
-| **T+50→55** | **Minh chứng thời điểm chốt** (ảnh 360/390 sáng-tối + 1 desktop + hash commit; `docs/minh-chung/`, tạo bằng `node scripts/nop-bai.mjs --url <link>`); quay **video demo dọc 45 giây** (mục 3.3). Claude Design trả deck có ảnh | Claude (QA), DA (video) | 06, SKILL.md | không commit thêm sau khi chụp |
-| **T+55** | **Xuất PDF + PPTX + PNG từng slide** → kiểm 3 phút (đối chiếu số với `BANG-KIEM-THU.md`) → **gửi bộ phận kỹ thuật** kèm "Bảng hiệu lệnh" (`templates/THE-DIEU-PHOI.md`) và video; **nộp 4 món** (link · mã nguồn · README · minh chứng) | Nguyên + Claude | 14, THE-DIEU-PHOI | link ẩn danh mở được |
+| **T+50→55** | **Minh chứng thời điểm chốt** (ảnh 360/390 sáng-tối + 1 desktop + hash commit; `docs/minh-chung/`, tạo bằng `node scripts/nop-bai.mjs --url <link>`); **kiểm video demo** do agent dựng (xem contact sheet, 3 khung hình; mục 3.3); video + ảnh bìa chèn vào **slide video** (đặt ngay trước slide tính năng) cùng đợt chèn ảnh. Claude Design trả deck có ảnh | Claude (QA), DA (video) | 06, SKILL.md | không commit thêm sau khi chụp |
+| **T+55** | **Xuất PDF + PPTX + PNG từng slide** (slide video: PDF/PNG hiện ảnh bìa + nút play, PPTX nhúng mp4) → kiểm 3 phút (đối chiếu số với `BANG-KIEM-THU.md`) → **gửi bộ phận kỹ thuật** kèm "Bảng hiệu lệnh" (`templates/THE-DIEU-PHOI.md`) và video; **nộp 4 món** (link · mã nguồn · README · minh chứng) | Nguyên + Claude | 14, THE-DIEU-PHOI | link ẩn danh mở được |
 | **T+60 → giờ thuyết trình** | BTC báo **thời lượng** → chọn bản 11/7/5 (nếu cần: nhắn Claude Design dựng bản 7 hoặc 5 theo `prompts/14` mục 7B/7C và gửi lại PDF/PPTX; hoặc dùng cue "Mời chuyển đến slide N"). Luyện lại 2 vòng có đồng hồ trên **deck thật**, có Nguyên đóng vai kỹ thuật viên | cả đội | 05, KICH-BAN-DEMO, HOI-DAP | — |
 
 **Lưu ý đồng bộ:** ảnh slide chụp ở T+45 là bản **đã khóa giao diện**. Nếu sau đó polish lỡ đổi bố cục, chụp lại **chỉ các slot bị ảnh hưởng** (bảng slot, prompt 14 mục 6), đừng chụp lại tất cả. **Minh chứng chốt (T+50→55)** luôn là ảnh của bản đang chạy trên link với hash commit thật, không dùng lại ảnh slide.
@@ -69,15 +69,18 @@ Quy tắc: (a) mọi cue nằm ở **dòng 4** của ghi chú người nói và 
 
 Demo do **kỹ thuật viên chiếu** một trong ba thứ, theo thứ tự ưu tiên:
 
-1. **Video demo dọc 45 giây** (không tiếng, quay từ DevTools 390×844 hoặc từ điện thoại ghi hình màn hình) — chiếu bằng cue "Mời phát video demo." Người nói **thuyết minh trực tiếp** đúng nhịp thao tác (mốc ≤ 25 giây mỗi thao tác).
+1. **Video demo dọc (≤ 2:00)** (không tiếng, quay từ DevTools 390×844 hoặc từ điện thoại ghi hình màn hình) — chiếu bằng cue "Mời phát video demo." Người nói **thuyết minh trực tiếp** đúng nhịp thao tác (mốc ≤ 25 giây mỗi thao tác).
 2. **Ảnh điện thoại dọc ở slide 5–7** (các bước đã đánh số) — người nói đi theo ghim số; kỹ thuật viên không cần thao tác gì.
 3. **Bản chạy thật** (`"Mời mở bản chạy thật."`): chỉ dùng nếu BTC cho phép kỹ thuật viên mở link và **làm từng thao tác theo lời** ("Mời bấm Điền dữ liệu mẫu"). Rủi ro cao (độ trễ, lỗi nghe), nên luôn có phương án 1–2 đứng sau.
 
 Slide demo (6, 7) luôn có **QR + link** để giám khảo tự mở trên điện thoại của họ. Dự phòng cuối: ảnh trong slide phụ P2–P3.
 
-### 3.3. Quay video demo dọc (T+50→54)
+### 3.3. Video demo dọc (T+45→55): dựng tự động, quay tay chỉ là dự phòng
 
-Mở link trên Chrome, bật **DevTools → thanh thiết bị 390 × 844**, dữ liệu mẫu (`?demo=1`), zoom 100%. Quay màn hình **chỉ vùng khung điện thoại** (Windows: Win+G; macOS: ⇧⌘5 chọn vùng) trong **45 giây**: luồng chính 3 thao tác + 1 ca sai. Không tiếng, không tên người, không thông báo hệ thống. Lưu `demo-doc-45s.mp4` (tỉ lệ dọc). Người quay: Diệu Anh; người thao tác chuột: Dũng. Đã có ZIP ảnh nên video chỉ là **phương án 1** — nếu quay hỏng, bỏ qua.
+**Cách chính:** agent Video demo chạy `prompts/17` (storyboard JSON → `node tools/demo-video.cjs` → mp4 dọc 1080×1920 có phụ đề tiếng Việt, chấm chạm, thẻ đầu/cuối). Ra **một video ≤ 2:00** (minh chứng thời điểm chốt, lưu `docs/minh-chung/`) và bản sao `00-demo-video.mp4` + `00-demo-video-poster.png` (nhúng vào slide video; người nói nói "Mời dừng video" để cắt sớm). **T+50:** kiểm contact sheet + 3 khung hình; T+55: giao kỹ thuật viên cùng PDF/PPTX làm dự phòng ("Mời phát video demo.").
+
+**Dự phòng quay tay (nếu Playwright/ffmpeg hỏng):** 
+Mở link trên Chrome, bật **DevTools → thanh thiết bị 390 × 844**, dữ liệu mẫu (`?demo=1`), zoom 100%. Quay màn hình **chỉ vùng khung điện thoại** (Windows: Win+G; macOS: ⇧⌘5 chọn vùng) trong **45 giây**: luồng chính 3 thao tác + 1 ca sai. Không tiếng, không tên người, không thông báo hệ thống. Lưu `demo-doc-45s.mp4` (tỉ lệ dọc). Người quay: Diệu Anh; người thao tác chuột: Dũng. Nếu quay hỏng, dùng ảnh dọc trong slide.
 
 ## 4. Luyện nói trên khung (T+20→40)
 
@@ -98,7 +101,7 @@ Mở link trên Chrome, bật **DevTools → thanh thiết bị 390 × 844**, d�
 **Trước prompt 15 (T+45):** [ ] giao diện đã khóa · [ ] link/localhost chạy, `?demo=1` có dữ liệu · [ ] bảng slot đã điền cột "Cách đến trạng thái" · [ ] hash commit ghi lại · [ ] agent dự phòng đã chạy.
 **Khi nhận ZIP (T+50):** [ ] `manifest.txt` đủ cột và không có ảnh "không đạt" · [ ] 5 ảnh ngẫu nhiên đúng theme, không toast, không khóa/email thật · [ ] đủ ảnh 390 (≈25), 360 (8), 1 desktop (desktop chỉ làm minh chứng, không đưa vào slide) · [ ] tên đúng `NN-ten-mobile-light|dark.png`.
 **Khi nhận deck có ảnh (T+55):** [ ] mọi ô ảnh có ảnh (hoặc danh sách thiếu) · [ ] không còn `[ẢNH:`, `[SỐ:`, `{{` · [ ] PDF = số slide + phụ lục · [ ] số khớp `BANG-KIEM-THU.md` · [ ] nhãn mô phỏng đúng nguyên văn · [ ] ghi chú còn nguyên trong PPTX.
-**Giao kỹ thuật viên:** [ ] PDF + PPTX (cả hai) · [ ] video dọc 45 giây (nếu có) · [ ] Bảng hiệu lệnh + số slide cuối của từng người · [ ] họp 2 phút tập cue · [ ] số điện thoại/kênh liên lạc của Nguyên.
+**Giao kỹ thuật viên:** [ ] PDF + PPTX (cả hai) · [ ] video dọc `demo-<app>.mp4` (nếu có) · [ ] Bảng hiệu lệnh + số slide cuối của từng người · [ ] họp 2 phút tập cue · [ ] số điện thoại/kênh liên lạc của Nguyên.
 
 ## 6. Khi sự cố (phương án dự phòng)
 
