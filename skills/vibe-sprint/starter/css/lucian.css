@@ -109,9 +109,11 @@
   .tabs-pill { transition: transform .6s var(--ux-spring), width .45s var(--ux-ease); }
   .seg { position: relative; }
   .seg > label { z-index: 1; }
-  .seg .lx-ind { position: absolute; top: 3px; bottom: 3px; left: 0; width: 0; border-radius: 9px; background: var(--surface); box-shadow: 0 0 0 1px var(--border), 0 2px 8px -2px var(--ux-shadow); pointer-events: none; opacity: 0; z-index: 0; transition: transform .55s var(--ux-spring), width .45s var(--ux-ease), opacity .2s; }
-  .seg .lx-ind.no-anim { transition: none; }
+  .seg .lx-ind { position: absolute; top: 0; bottom: 0; left: 0; width: 0; border-radius: calc(var(--r-ctl, 12px) - 1px); background: var(--active, var(--surface)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent), 0 2px 8px -3px var(--ux-shadow); transform-origin: left center; pointer-events: none; opacity: 0; z-index: 0; will-change: transform; }
   .seg.lx-ready input:checked + span { background: transparent; box-shadow: none; }
+  .seg > label > span { transition: transform .22s var(--ux-ease), color var(--dur-2); }
+  .seg > label:active > span { transform: scale(.97); }
+  @media (prefers-reduced-motion: reduce) { .seg > label > span { transition: none; } .seg > label:active > span { transform: none; } }
   .seg input:checked + span { color: var(--text); }
 
   /* ---------- Ô nhập: nhãn nổi lò xo, rung khi lỗi, dấu hợp lệ, đếm ký tự ---------- */
@@ -124,7 +126,7 @@
   .field[data-invalid] .field-msg { animation: lx-rise .3s var(--ux-ease); }
   .field[data-valid]:not(:has(select, .seg, .check))::after { content: ""; position: absolute; right: 14px; top: calc(var(--field-h) / 2 - 9px); width: 18px; height: 18px; background: var(--success); pointer-events: none; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l5 5 9-10'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l5 5 9-10'/%3E%3C/svg%3E") center / contain no-repeat; animation: lx-pop .45s var(--ux-spring); }
   .field[data-valid]:not(:has(select, .seg, .check), :has(textarea)) .input { padding-right: 40px; }
-  .field.lx-has-counter .field-msg { min-height: 18px; padding-right: 64px; }
+  .field.lx-has-counter .field-msg { min-height: 18px; padding-right: 56px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .lx-counter { position: absolute; right: 4px; bottom: 0; font-size: 12px; color: var(--text-muted); pointer-events: none; transition: color .2s; }
   .lx-counter.is-near { color: var(--warn); font-weight: 600; }
   .lx-counter.is-over { color: var(--danger); font-weight: 700; }

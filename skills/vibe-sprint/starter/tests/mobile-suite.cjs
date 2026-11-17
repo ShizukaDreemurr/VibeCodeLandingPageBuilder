@@ -180,6 +180,21 @@ module.exports = async function mobileSuite({ browser, URL, ok, SHOTS, errors, f
     ok(tag + ' thanh tab dưới có 3 đến 5 mục, tab ngang của máy tính bị ẩn', nav.items >= 3 && nav.items <= 5 && nav.desk === 'none', nav);
     ok(tag + ' thanh tab có đủ icon + nhãn chữ', await page.evaluate(() => Array.from(document.querySelectorAll('.bnav-item')).every((a) => a.querySelector('svg') && a.querySelector('.bnav-lb').textContent.trim().length > 0)));
     ok(tag + ' thanh trên mỏng (<= 64px)', (await page.evaluate(() => document.querySelector('.topbar').getBoundingClientRect().height)) <= 64);
+    // thanh tab: nâng nhãn lên khỏi thanh cử chỉ; thử bình thường và giả lập vùng an toàn 34px (ghi đè --safe-inset)
+    for (const inset of [0, 34]) {
+      const m = await page.evaluate((ins) => {
+        document.documentElement.style.setProperty('--safe-inset', ins + 'px');
+        const n = document.getElementById('bnav'), r = n.getBoundingClientRect(), lb = n.querySelector('.bnav-lb').getBoundingClientRect(), cs = getComputedStyle(n);
+        const out = { h: Math.round(r.height), gap: Math.round(r.bottom - lb.bottom), pad: parseFloat(cs.paddingBottom), bottom: Math.round(innerHeight - r.bottom) };
+        const ab = document.querySelector('.abars'); out.abar = ab ? Math.round(innerHeight - ab.getBoundingClientRect().bottom) : null;
+        document.documentElement.style.removeProperty('--safe-inset');
+        return out;
+      }, inset);
+      const wantPad = Math.max(12, inset + 8);
+      ok(tag + ' thanh tab (vùng an toàn ' + inset + 'px): đệm đáy >= ' + wantPad + 'px, nhãn cách đáy >= 16px, cao 72-84px (+vùng an toàn)', m.pad >= wantPad - 0.5 && m.gap >= 16 && m.h >= 72 && m.h <= 84 + Math.max(0, inset), m);
+      ok(tag + ' thanh tab (vùng an toàn ' + inset + 'px): vẫn dính đáy', m.bottom === 0, m);
+      if (m.abar !== null) ok(tag + ' thanh hành động nằm ngay trên thanh tab (' + inset + 'px)', Math.abs(m.abar - m.h) <= 1, m);
+    }
 
     // ---- mọi view: aria-current + 5 kiểm tra ----
     for (const t of tabs) {
@@ -313,6 +328,37 @@ module.exports = async function mobileSuite({ browser, URL, ok, SHOTS, errors, f
         await page.evaluate(() => document.querySelector('#view-playground [data-act="import"]').scrollIntoView({ block: 'center' }));
         await page.tap('#view-playground [data-act="import"]'); await settle(500);
         ok(tag + ' nhập file xong bằng chạm: có thông báo / dữ liệu vào bộ nhớ', await page.evaluate(() => EP.collection('btc_sample').count() > 0 || !!document.querySelector('.toast')));
+      }
+    }
+    // ---- thanh chọn: viên trượt khớp nút đang chọn (kể cả thanh cuộn ngang); gợi ý 1 dòng khi có bộ đếm ----
+    if (tabs.includes('playground')) {
+      await page.goto(URL + '#/home'); await page.waitForSelector('html[data-ready="1"]'); await tapNav('playground');
+      const align = () => page.evaluate(() => Array.from(document.querySelectorAll('.seg.lx-ready')).filter((s) => s.offsetWidth > 0 && s.querySelector('input:checked')).map((s) => {
+        const l = s.querySelector('input:checked').closest('label').getBoundingClientRect(), i = s.querySelector('.lx-ind').getBoundingClientRect(), sr = s.getBoundingClientRect();
+        return { name: s.getAttribute('aria-label') || s.className, dl: Math.abs(l.left - i.left), dw: Math.abs(l.width - i.width), dt: Math.abs(l.top - i.top), op: getComputedStyle(s.querySelector('.lx-ind')).opacity, inside: i.left >= sr.left - 2 - s.scrollLeft && true };
+      }));
+      let a = await align();
+      ok(tag + ' viên trượt khớp nút đang chọn (±2px) khi mở trang', a.length > 0 && a.every((x) => x.dl <= 2 && x.dw <= 2 && x.dt <= 2 && x.op === '1'), a);
+      const labels = await page.$$('#view-playground [data-slot="pick"] label');
+      if (labels.length > 2) {
+        await labels[labels.length - 1].tap(); await settle(700);
+        a = await align();
+        ok(tag + ' viên trượt khớp sau khi chạm mục cuối (±2px)', a.length > 0 && a.every((x) => x.dl <= 2 && x.dw <= 2 && x.dt <= 2), a);
+        const sc = await page.evaluate(() => { const s = document.querySelector('#view-playground [data-slot="pick"] .seg'); return s ? { scrollable: s.scrollWidth > s.clientWidth + 2, left: s.scrollLeft } : null; });
+        if (sc && sc.scrollable) {
+          await page.evaluate(() => { const s = document.querySelector('#view-playground [data-slot="pick"] .seg'); s.scrollLeft = 0; });
+          await labels[0].tap(); await settle(700);
+          await page.evaluate(() => { const s = document.querySelector('#view-playground [data-slot="pick"] .seg'); s.scrollLeft = s.scrollWidth; });
+          await settle(200);
+          const sa = await page.evaluate(() => { const s = document.querySelector('#view-playground [data-slot="pick"] .seg'), l = s.querySelector('input:checked').closest('label').getBoundingClientRect(), i = s.querySelector('.lx-ind').getBoundingClientRect(); return { dl: Math.abs(l.left - i.left), dw: Math.abs(l.width - i.width), sl: s.scrollLeft }; });
+          ok(tag + ' viên trượt cuộn cùng thanh chọn (đã cuộn ' + Math.round(sa.sl) + 'px, lệch ' + sa.dl.toFixed(1) + 'px)', sa.dl <= 2 && sa.dw <= 2, sa);
+        }
+        const ui = await page.$('#view-playground [data-slot="pick"] label:has-text("Thư viện UI")');
+        if (ui) { await ui.scrollIntoViewIfNeeded(); await ui.tap(); await settle(600); }
+      }
+      if (await page.$('#lx-form')) {
+        const hints = await page.evaluate(() => Array.from(document.querySelectorAll('.field.lx-has-counter .field-msg')).filter((m) => m.offsetWidth > 0).map((m) => ({ t: m.textContent, h: Math.round(m.getBoundingClientRect().height), lh: parseFloat(getComputedStyle(m).lineHeight) || 20, cut: m.scrollWidth > m.clientWidth + 1 })));
+        ok(tag + ' gợi ý cạnh bộ đếm: một dòng, không bị cắt chữ (demo)', hints.length > 0 && hints.every((x) => x.h <= 26 && !x.cut), hints);
       }
     }
     if (SHOTS) {

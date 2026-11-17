@@ -38,7 +38,7 @@
     { id: 10, name: 'Matcha đá xay', cat: 'Đồ uống', qty: 45, price: 52000, day: '2026-11-12' }
   ];
   var UI_SCHEMA = {
-    name: { label: 'Tên khách', type: 'text', rules: { required: true, maxLength: 30 }, hint: 'Gõ quá 30 ký tự để thấy bộ đếm đổi màu.' },
+    name: { label: 'Tên khách', type: 'text', rules: { required: true, maxLength: 30 }, hint: 'Quá 30 ký tự: bộ đếm đổi màu' },
     price: { label: 'Số tiền (₫)', type: 'money', rules: { required: true, min: 1000 }, hint: 'Gõ 1250000 -> 1.250.000 ngay khi gõ.' },
     kind: { label: 'Nhóm khách', type: 'select', rules: { required: true }, options: [{ value: 'new', label: 'Khách mới' }, { value: 'back', label: 'Khách quay lại' }, { value: 'vip', label: 'Khách thân thiết' }] },
     phone: { label: 'Số điện thoại', type: 'tel', rules: { required: true, phone: true } },

@@ -3,7 +3,9 @@
    Gồm: thanh tab dưới, thanh trên mỏng, thanh hành động dính đáy, bottom sheet, cỡ chạm 48px, chữ 16px, hero gọn, chuyển cảnh trượt. */
 
 @layer components {
-  :root { --safe-b: env(safe-area-inset-bottom, 0px); --abar-h: 0px; --lx-touch: 48px; }
+  /* --safe-inset: vùng an toàn đáy của máy (thanh cử chỉ / 3 nút Android); test ghi đè để giả lập.
+     --nav-pad: đệm đáy thanh tab, nâng nhãn lên khỏi thanh cử chỉ; --nav-total: chiều cao thật của thanh tab. */
+  :root { --safe-inset: env(safe-area-inset-bottom, 0px); --safe-b: var(--safe-inset); --nav-pad: max(12px, calc(var(--safe-inset) + 8px)); --nav-total: calc(var(--nav-h) + var(--nav-pad)); --abar-h: 0px; --lx-touch: 48px; }
   html.has-abar { --abar-h: 70px; }
   html { scroll-padding-top: 72px; }
 
@@ -18,7 +20,7 @@
   .topbar-actions .icon-btn { width: var(--touch); height: var(--touch); }
 
   /* ---------- Thanh tab dưới (thumb zone) ---------- */
-  .bnav { position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; display: flex; align-items: stretch; height: calc(var(--nav-h) + var(--safe-b)); padding: 0 4px var(--safe-b); background: var(--surface); border-top: 1px solid var(--border); box-shadow: 0 -6px 20px -14px var(--ux-shadow-strong, rgba(7, 45, 89, .35)); }
+  .bnav { position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; display: flex; align-items: stretch; height: var(--nav-total); padding: 0 4px var(--nav-pad); background: var(--surface); border-top: 1px solid var(--border); box-shadow: 0 -6px 20px -14px var(--ux-shadow-strong, rgba(7, 45, 89, .35)); }
   .bnav-item { flex: 1 1 0; min-width: 0; min-height: var(--touch); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 6px 2px 4px; border: 0; background: transparent; color: var(--text-muted); text-decoration: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .bnav-ic { position: relative; width: 60px; height: 32px; display: grid; place-items: center; border-radius: 999px; transition: transform .38s var(--ux-spring); }
   .bnav-ic::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--active); opacity: 0; transform: scaleX(.35); transition: transform .42s var(--ux-spring), opacity .2s; }
@@ -41,11 +43,11 @@
   .more-row svg { width: 24px; height: 24px; flex: none; }
 
   /* ---------- Chừa chỗ cuối trang cho thanh tab dưới + thanh hành động ---------- */
-  .footer { padding: 20px 16px calc(var(--nav-h) + var(--safe-b) + var(--abar-h) + 20px); font-size: 13px; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .toasts { bottom: calc(var(--nav-h) + var(--safe-b) + var(--abar-h) + 12px); }
+  .footer { padding: 20px 16px calc(var(--nav-total) + var(--abar-h) + 20px); font-size: 13px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .toasts { bottom: calc(var(--nav-total) + var(--abar-h) + 12px); }
 
   /* ---------- Thanh hành động chính, dính ngay trên thanh tab ---------- */
-  .abars { position: fixed; z-index: 55; left: 0; right: 0; bottom: calc(var(--nav-h) + var(--safe-b)); pointer-events: none; }
+  .abars { position: fixed; z-index: 55; left: 0; right: 0; bottom: var(--nav-total); pointer-events: none; }
   .abar { pointer-events: auto; display: flex; gap: 8px; align-items: center; padding: 10px 16px; background: var(--surface); border-top: 1px solid var(--border); }
   .abar .btn { flex: 1 1 0; min-width: var(--touch); min-height: var(--touch); }
   .abar .btn-primary, .abar .btn-cta { flex: 2 1 0; }

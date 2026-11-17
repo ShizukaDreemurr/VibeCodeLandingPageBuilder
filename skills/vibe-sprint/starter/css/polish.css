@@ -62,8 +62,8 @@
   .seg { display: flex; width: 100%; padding: 0; gap: 0; border-radius: var(--r-ctl); border: 1px solid var(--border); background: var(--raised); box-sizing: border-box; }
   .seg > label { flex: 1 0 auto; min-width: 48px; display: flex; }
   .seg > label > span { width: 100%; min-height: var(--touch); padding: 0 12px; border-radius: calc(var(--r-ctl) - 1px); font-size: 15px; line-height: 1.2; text-align: center; }
-  .seg .lx-ind { display: none !important; }
-  .seg input:checked + span, .seg.lx-ready input:checked + span { background: var(--active); box-shadow: inset 0 0 0 1.5px var(--accent); font-weight: 750; color: var(--text); }
+  .seg input:checked + span { font-weight: 750; color: var(--text); }
+  .seg:not(.lx-ready) input:checked + span { background: var(--active); box-shadow: inset 0 0 0 1px var(--border); }
   .seg.fill > label { flex: 1 1 0; }
   .seg.fill > label > span { white-space: normal; padding: 0 8px; }
   .seg.scroll > label > span { padding: 0 8px; font-size: 14px; }

@@ -148,21 +148,25 @@
     var ind = seg._lxInd, c = $('input:checked', seg), lab = c && c.closest('label');
     if (!ind) return;
     if (!lab || !lab.offsetWidth) { ind.style.opacity = '0'; return; }
-    var x = lab.offsetLeft, w = lab.offsetWidth, moved = seg._lxX != null && Math.abs(seg._lxX - x) > 2;
-    ind.classList.toggle('no-anim', !animate);
+    /* offsetLeft tính trong chính phần tử cuộn (seg là offsetParent) nên viên trượt nằm trong vùng cuộn và cuộn cùng nhãn */
+    var x = lab.offsetLeft, w = lab.offsetWidth, ox = seg._lxX, ow = seg._lxW;
+    var moved = ox != null && (Math.abs(ox - x) > 1 || Math.abs(ow - w) > 1);
+    if (ind._lxAnim) { try { ind._lxAnim.cancel(); } catch (e) { /* bỏ qua */ } ind._lxAnim = null; }
     ind.style.width = w + 'px'; ind.style.transform = 'translateX(' + x + 'px)'; ind.style.opacity = '1';
     seg.classList.add('lx-ready');
-    if (animate && moved && !reduced() && ind.animate) ind.animate([{ scale: '1 1' }, { scale: '1.08 .9', offset: .4 }, { scale: '1 1' }], { duration: 460, easing: 'cubic-bezier(.16,1,.3,1)' });
-    seg._lxX = x;
+    if (animate && moved && !reduced() && ind.animate) {
+      ind._lxAnim = ind.animate([{ transform: 'translateX(' + ox + 'px) scaleX(' + (ow / w) + ')' }, { transform: 'translateX(' + x + 'px) scaleX(1)' }], { duration: 280, easing: 'cubic-bezier(.34,1.45,.64,1)' });
+    }
+    seg._lxX = x; seg._lxW = w;
     if (animate && seg.scrollWidth > seg.clientWidth) { var want = x - (seg.clientWidth - w) / 2; seg.scrollTo({ left: want, behavior: reduced() ? 'auto' : 'smooth' }); }
   }
   function enhanceSeg(seg) {
     if (seg._lx) return; seg._lx = 1;
-    var ind = doc.createElement('span'); ind.className = 'lx-ind no-anim'; ind.setAttribute('aria-hidden', 'true');
+    var ind = doc.createElement('span'); ind.className = 'lx-ind'; ind.setAttribute('aria-hidden', 'true');
     seg.insertBefore(ind, seg.firstChild); seg._lxInd = ind;
     segPlace(seg, false);
     seg.addEventListener('change', function () { segPlace(seg, true); });
-    if ('ResizeObserver' in root) new ResizeObserver(function () { segPlace(seg, false); }).observe(seg);
+    if ('ResizeObserver' in root) { var ro = new ResizeObserver(function () { segPlace(seg, false); }); ro.observe(seg); $$('label', seg).forEach(function (l) { ro.observe(l); }); }
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { segPlace(seg, false); });
   }
 

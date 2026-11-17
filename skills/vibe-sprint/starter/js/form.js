@@ -81,7 +81,7 @@
     var id = fid + '-' + name, type = spec.type || 'text', r = spec.rules || {}, v = value == null ? '' : value;
     var req = r.required ? ' <span class="req" aria-hidden="true">*</span>' : '';
     var attrs = ' id="' + id + '" name="' + esc(name) + '" aria-describedby="' + id + '-msg"' + (r.required ? ' required' : '') + (spec.autocomplete ? ' autocomplete="' + esc(spec.autocomplete) + '"' : '');
-    var hint = '<p class="field-msg" id="' + id + '-msg" data-hint="' + esc(spec.hint || '') + '">' + esc(spec.hint || '') + '</p>';
+    var hint = '<p class="field-msg" id="' + id + '-msg" data-hint="' + esc(spec.hint || '') + '"' + (spec.hint ? ' title="' + esc(spec.hint) + '"' : '') + '>' + esc(spec.hint || '') + '</p>';
     var cls = 'field' + (spec.span2 ? ' span-2' : '');
     if (type === 'segmented') {
       return '<fieldset class="' + cls + '" data-field="' + esc(name) + '"><legend class="field-legend">' + esc(spec.label) + req + '</legend><div class="seg block" role="radiogroup">' +
@@ -140,11 +140,11 @@
     if (msg) {
       wrap.setAttribute('data-invalid', ''); wrap.removeAttribute('data-valid');
       inputs.forEach(function (i) { i.setAttribute('aria-invalid', 'true'); });
-      if (m) m.textContent = msg;
+      if (m) { m.textContent = msg; m.title = msg; }
     } else {
       wrap.removeAttribute('data-invalid');
       inputs.forEach(function (i) { i.removeAttribute('aria-invalid'); });
-      if (m) m.textContent = m.getAttribute('data-hint') || '';
+      if (m) { m.textContent = m.getAttribute('data-hint') || ''; if (m.textContent) m.title = m.textContent; else m.removeAttribute('title'); }
     }
   }
 
