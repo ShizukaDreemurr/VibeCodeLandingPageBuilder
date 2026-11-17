@@ -198,6 +198,7 @@
   function findView(id) { return views.filter(function (v) { return v.id === id; })[0]; }
   EP.register = function (def) {
     if (!def || !def.id) throw new Error('EP.register cần id');
+    if (def.devOnly && cfg.showPlayground === false) return; /* view chỉ dùng khi phát triển: bỏ khi showPlayground:false */
     views = views.filter(function (v) { return v.id !== def.id; });
     views.push(Object.assign({ order: 50, label: def.id, title: def.label || def.id }, def));
     views.sort(function (a, b) { return a.order - b.order; });

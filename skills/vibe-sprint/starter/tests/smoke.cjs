@@ -479,6 +479,26 @@ const visibleViews = (page) => page.$$eval('.view:not([hidden])', (n) => n.lengt
 
   await require('./mobile-suite.cjs')({ browser, URL, ok, SHOTS, errors, fixtures: path.join(__dirname, 'fixtures') }); // điện thoại 360x780 + 390x844 (tests/mobile-suite.cjs)
 
+  console.log('# Phông tự host + showPlayground');
+  {
+    const fp = await ctx.newPage(); const fonts = [];
+    fp.on('request', (r) => { if (/\.woff2?(\?|$)/.test(r.url())) fonts.push(r.url()); });
+    await fp.addInitScript(() => { window.__cls = 0; new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: 'layout-shift', buffered: true }); });
+    await fp.goto(URL + '?demo=1', { waitUntil: 'load' }); await fp.waitForSelector('html[data-ready="1"]'); await fp.evaluate(() => document.fonts.ready); await fp.waitForTimeout(800);
+    ok('Be Vietnam Pro là phông giao diện và đã nạp (có dấu tiếng Việt)', await fp.evaluate(() => /Be Vietnam Pro/.test(getComputedStyle(document.body).fontFamily) && [...document.fonts].some((f) => f.family.replace(/"/g, '') === 'Be Vietnam Pro' && f.status === 'loaded')));
+    ok('mọi tệp phông là tệp cùng nguồn (fonts/), chỉ nạp subset cần dùng', fonts.every((u) => u.startsWith(URL + 'fonts/')) && fonts.length <= 16, fonts);
+    ok('CLS = 0 sau khi nạp phông', (await fp.evaluate(() => window.__cls)) < 0.001, await fp.evaluate(() => window.__cls));
+    await fp.close();
+    // showPlayground:false => tab/route playground không được đăng ký (ghi đè config.js tại chỗ)
+    const np = await ctx.newPage();
+    await np.route(/\/js\/config\.js(\?.*)?$/, async (route) => { const r = await route.fetch(); const t = (await r.text()).replace(/showPlayground: true,/, 'showPlayground: false,'); await route.fulfill({ response: r, body: t }); });
+    await np.goto(URL + '#/playground', { waitUntil: 'load' }); await np.waitForSelector('html[data-ready="1"]');
+    const t2 = await np.$$eval('.tab', (a) => a.map((x) => x.dataset.tab));
+    ok('showPlayground:false -> không có tab/view playground', !t2.includes('playground') && (await np.$$('#view-playground')).length === 0 && (await np.evaluate(() => EP.config.showPlayground === false)), t2);
+    ok('showPlayground:false -> route #/playground rơi về view mặc định, vẫn còn tab khác', t2.length >= 2 && (await np.$$('.view:not([hidden])')).length === 1, t2);
+    await np.close();
+  }
+
   console.log('# Lỗi console');
   // Các lỗi 4xx cố ý từ Gemini giả (route) ở bước trên không tính
   const real = errors.filter((e) => !/generativelanguage|fake-proxy\.test|status of (429|403)/.test(e));

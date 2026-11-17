@@ -284,7 +284,7 @@
   ];
 
   EP.register({
-    id: 'playground', label: 'Mô-đun', icon: 'calc', order: 30,
+    id: 'playground', devOnly: true, label: 'Mô-đun', icon: 'calc', order: 30,
     title: 'Mô-đun tiện ích', desc: 'Máy tính, mô hình kinh doanh, nhập Excel/CSV, chấm điểm, đố vui, chatbot và Thư viện UI (lớp Lucian) dựng sẵn để chép vào đề.',
     render: function (el) {
       el.innerHTML = '<div data-slot="pick"></div><div data-slot="demo" id="pg-demo"></div>';

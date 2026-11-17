@@ -11,6 +11,9 @@
     heroEm: 'thông minh',
     tagline: 'Mô tả ngắn một dòng về ứng dụng.',
     prefix: 'ep_',                         // tiền tố mọi khoá localStorage (đổi theo từng đề để khỏi lẫn dữ liệu)
+    /* showPlayground: true = đăng ký tab dev-only ("Mô-đun"/Thư viện UI, view `playground`) để chép mẫu khi làm bài.
+       ĐẶT false TRƯỚC KHI NỘP: tab biến mất khỏi thanh tab dưới và route #/playground (view nào đăng ký với devOnly:true đều bị bỏ). Test tự xử lý cả hai giá trị. */
+    showPlayground: true,
     defaultRoute: 'home',                  // view mở đầu tiên
     defaultAiMode: 'mock',                 // 'mock' | 'gemini' | 'paste'
     /* Proxy Gemini TUỲ CHỌN (xem proxy/README.md). Điền URL worker (vd 'https://vibe-gemini-proxy.ten.workers.dev') => chế độ Gemini không cần nhập key,

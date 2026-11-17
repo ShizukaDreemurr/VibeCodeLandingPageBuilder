@@ -136,7 +136,7 @@ Cần Playwright (`npm i -D playwright` hoặc cài global). Test kiểm: không
 2. Commit và push lên nhánh `main`.
 3. GitHub: Settings -> Pages -> Source: *Deploy from a branch* -> `main` / `(root)`. Đợi ~1 phút, mở `https://<user>.github.io/<repo>/`.
 4. Đường dẫn trong app là tương đối nên chạy được ở thư mục con `/<repo>/`. Routing dùng `#/tab` nên không cần cấu hình 404.
-5. Trước khi nộp: chạy smoke test, mở bản deploy trên điện thoại, kiểm tra `?demo=1` nạp lại dữ liệu mẫu.
+5. Trước khi nộp: đặt `showPlayground: false` trong `js/config.js` (ẩn tab Mô-đun/Thư viện UI và route `#/playground`; view đăng ký bằng `EP.register({ devOnly: true, ... })` cũng bị ẩn theo), rồi chạy smoke test, mở bản deploy trên điện thoại, kiểm tra `?demo=1` nạp lại dữ liệu mẫu.
 
 ## 5b. Bật Firebase trong 5 phút (tuỳ chọn, TẮT mặc định)
 Mặc định app chỉ dùng localStorage và **không gọi mạng**. Chỉ bật khi đề cần dữ liệu theo tài khoản/nhiều máy.

@@ -64,6 +64,7 @@ Ca thử chi tiết: bảng M1–M5 trong `BANG-KIEM-THU.md`; agent Sonnet thử
 | 3 | **README** | Cài đặt/chạy, công nghệ, dữ liệu mẫu/tài khoản, mục Giả định & cách tính, khai báo khung chuẩn bị trước, không còn `<…>` | [ ] |
 | 4 | **Minh chứng chốt** | Ảnh điện thoại dọc 360 + 390 (sáng/tối) + 1 ảnh desktop, hoặc video dọc, thấy sản phẩm lúc chốt + hash commit | [ ] |
 
+- [ ] **Đặt `showPlayground: false` trước khi nộp** (`js/config.js`): ẩn tab "Mô-đun"/Thư viện UI và route `#/playground` khỏi bản nộp; chạy lại smoke (test xử lý cả hai giá trị).
 - [ ] Bản nộp đã chạy `node tools/bump-version.cjs`; phiên bản trên app khớp README.
 - [ ] Đã chạy `node scripts/nop-bai.mjs` và dán 4 món nó in ra (lỗi [ LỖI ] thì sửa, chạy lại).
 - [ ] Đã nộp đủ 4 món trước 14:15. Chụp màn hình xác nhận nộp.

@@ -109,6 +109,13 @@ else {
   else { fail("scan-secrets báo có chỗ giống bí mật, dừng và báo đội:"); console.log(text.split("\n").slice(0, 12).map((l) => "           " + l).join("\n")); }
 }
 
+// ---- 3b. showPlayground
+try {
+  const cfgSrc = fs.readFileSync(path.join(ROOT, "js/config.js"), "utf8");
+  if (/^\s*showPlayground:\s*true/m.test(cfgSrc)) warn("js/config.js còn showPlayground: true; đặt showPlayground: false trước khi nộp (ẩn tab Mô-đun/Thư viện UI), rồi chạy lại smoke");
+  else ok("showPlayground đã tắt (hoặc không dùng)");
+} catch (e) { /* không có js/config.js: bỏ qua */ }
+
 // ---- 4. README
 step("4. README đủ mục bắt buộc");
 const readmePath = path.join(ROOT, "README.md");
