@@ -106,7 +106,7 @@ Tạo thư mục `{{TEN_APP_SLUG}}-slide-anh/` rồi nén thành **`{{TEN_APP_SL
 
 ```
 {{TEN_APP_SLUG}}-slide-anh.zip
-├─ 00-demo-video-poster.png (ảnh bìa video demo 1080×1920 hoặc 1170×2532: Chụp tab Tổng quan sáng, dữ liệu mẫu; nếu `prompts/17` đã dựng video thì dùng khung hình từ video)
+├─ 00-demo-video-poster.png (ảnh bìa video demo, cùng độ phân giải video: 1170×2532: Chụp tab Tổng quan sáng, dữ liệu mẫu; nếu `prompts/17` đã dựng video thì dùng khung hình từ video)
 ├─ 00-demo-video.mp4 (nếu đã có từ prompts/17: chép vào ZIP, KHÔNG tự quay)
 ├─ 01-tong-quan-mobile-light.png … (bộ chính 390px, tất cả ở gốc)
 ├─ 360/            (bộ 360px)

@@ -154,10 +154,10 @@ h2.title em{color:var(--accent)}
 .s-phones-3 .right{gap:36px;align-items:flex-start}
 .s-phones-3 h2.title{font-size:52px}
 .s-phones-3 .pcap{font-size:25px}.s-phones-3 .pcap small{font-size:20px}
-/* ---------- Slide video (video demo dọc 9:16 phát trong slide; xuất PDF/PNG thì hiện ảnh bìa + nút play) ---------- */
+/* ---------- Slide video (video demo dọc 9:19,5 (gốc 390×844, không cắt) phát trong slide; xuất PDF/PNG thì hiện ảnh bìa + nút play) ---------- */
 .s-video .right{padding:0 40px 0 30px;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-.vbox{position:relative;flex:none;height:790px;width:444px;border-radius:34px;overflow:hidden;background:#041B38;border:3px solid var(--rule,rgba(7,45,89,.25));box-shadow:0 34px 70px -28px rgba(7,45,89,.55)}
-.vbox img,.vbox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#041B38}
+.vbox{position:relative;flex:none;height:790px;width:365px;aspect-ratio:390/844;border-radius:34px;overflow:hidden;background:#041B38;border:3px solid var(--rule,rgba(7,45,89,.25));box-shadow:0 34px 70px -28px rgba(7,45,89,.55)}
+.vbox img,.vbox video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;background:#041B38}
 .vbox .playico{position:absolute;left:50%;top:50%;width:132px;height:132px;margin:-66px 0 0 -66px;border-radius:50%;background:rgba(7,45,89,.82);border:4px solid #fff;display:grid;place-items:center;color:#fff;font-size:62px;pointer-events:none}
 .vbox.playing .playico{display:none}
 .vbox.missing::after{content:attr(data-missing);position:absolute;inset:0;display:grid;place-items:center;font:600 22px/1.4 var(--mono);color:#DBF2FC;text-align:center;padding:36px}

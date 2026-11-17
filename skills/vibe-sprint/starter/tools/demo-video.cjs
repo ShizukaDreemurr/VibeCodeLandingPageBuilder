@@ -10,9 +10,9 @@
 //   node tools/demo-video.cjs --url http://localhost:8232/ --storyboard docs/storyboard-demo.json --scene home        (ra out/scenes/home.mp4 + home.json)
 //   node tools/demo-video.cjs --storyboard docs/storyboard-demo.json --cards-only                                   (ra out/scenes/title.mp4, end.mp4)
 //   node tools/demo-video.cjs --storyboard docs/storyboard-demo.json --assemble [--voice x.mp3]                      (ghép các scene có sẵn; scene thiếu thì bỏ qua + cảnh báo)
-//   --assemble cũng ra 00-demo-video.mp4 (bản sao để nhúng vào slide video của deck) + 00-demo-video-poster.png (ảnh bìa 1080x1920); chỉ MỘT video <= 2 phút.
-// Cờ: --scene <id[,id]> · --assemble · --cards-only · --url <gốc app> · --storyboard <file> · --voice <mp3/wav, tuỳ chọn> · --max <giây, mặc định 120> · --no-cards · --out <thư mục, mặc định out> · --keep (giữ file tạm)
-// Ra: out/demo-<app>.mp4 (1080x1920, 30fps) · out/demo-<app>-contact.png · out/demo-<app>.srt
+//   --assemble cũng ra 00-demo-video.mp4 (bản sao để nhúng vào slide video của deck) + 00-demo-video-poster.png (ảnh bìa cùng độ phân giải); chỉ MỘT video <= 2 phút.
+// Cờ: --scene <id[,id]> · --assemble · --cards-only · --url <gốc app> · --storyboard <file> · --voice <mp3/wav, tuỳ chọn> · --max <giây, mặc định 120> · --no-cards · --out <thư mục, mặc định out> · --scale <1-4, mặc định 3: độ nét> · --keep (giữ file tạm)
+// Ra: out/demo-<app>.mp4 (độ phân giải gốc 390x844 x scale: scale 3 = 1170x2532, scale 4 = 1560x3376; tỉ lệ 9:19.5 giữ nguyên, KHÔNG đệm/cắt/phóng to; H.264 high, crf 18, 30fps) · out/demo-<app>-contact.png · out/demo-<app>.srt
 //
 // Storyboard (JSON):
 //   { "app": "Xclipse", "tagline": "...", "link": "https://...", "notice": "Dữ liệu mô phỏng AI · Dữ liệu mẫu",
@@ -20,6 +20,7 @@
 //     "scenes": [ { "id": "home", "hash": "#/home", "colorScheme": "light", "caption": "Dòng định danh <= 12 từ", "minDuration": 5,
 //        "actions": [ {"tap": "selector"} | {"type": ["selector", "text"]} | {"scroll": 600} | {"wait": 800} | {"theme": "dark"} | {"eval": "js"} ] } ] }
 // Chú thích: scene đầu tự thêm ?demo=1 (nạp dữ liệu mẫu); các scene sau giữ trạng thái trình duyệt của scene trước (localStorage) nên dữ liệu vừa thêm vẫn còn.
+// Quay bằng CDP screencast (Page.startScreencast) ở deviceScaleFactor = --scale nên nét; nếu CDP lỗi thì lùi về recordVideo (phóng lên bằng lanczos, kém nét hơn).
 // Chữ phụ đề được dựng bằng Chromium (phông Be Vietnam Pro trong fonts/) rồi ghép bằng ffmpeg, nên không cần cài phông vào hệ thống.
 const fs = require('fs');
 const path = require('path');
@@ -43,11 +44,12 @@ const SCENE_ARG = val('--scene', '');
 const ASSEMBLE_ONLY = flag('--assemble'), CARDS_ONLY = flag('--cards-only');
 const SCENES = path.join(OUT, 'scenes');
 
-// Khung hình đích và vị trí điện thoại trong khung (tỉ lệ 1.85 từ 390x844).
-const FW = 1080, FH = 1920, PW = 722, PH = 1562, PX = (FW - PW) / 2, PY = 112;
-const REC_W = 390, REC_H = 844;    // Playwright không phóng to video: quay đúng cỡ khung nhìn rồi phóng vào khung 1080x1920
+// Độ phân giải gốc = khung nhìn 390x844 x SCALE (giữ tỉ lệ ~9:19.5, không đệm, không cắt, không phóng to).
+const VW = 390, VH = 844;
+const SCALE = Math.max(1, Math.min(4, +val('--scale', 3) || 3));
+const W = Math.round(VW * SCALE / 2) * 2, H = Math.round(VH * SCALE / 2) * 2;
 const FPS = 30;
-const CAP_Y = PY + PH + 10, CAP_H = 160;   // dải chữ phụ đề dưới khung điện thoại
+const CAP_BOX = 190;   // dải chữ phụ đề (px CSS) sát đáy khung nhìn, nằm trên thanh tab dưới
 
 const sb = JSON.parse(fs.readFileSync(SB_FILE, 'utf8'));
 const appName = sb.app || 'App';
@@ -77,38 +79,28 @@ const fontCss = fontsDir ? [400, 600, 700, 800].map((w) => {
   return [f, ext, l].filter(fs.existsSync).map((p) => `@font-face{font-family:'BVP';font-weight:${w};src:url('file://${p}') format('woff2')}`).join('');
 }).join('') : '';
 const BRAND = { navy: '#072D59', ice: '#DBF2FC', coral: '#FD6E88' };
-const BASE_CSS = `${fontCss}*{box-sizing:border-box;margin:0}html,body{width:${FW}px;height:${FH}px}body{font-family:'BVP','Be Vietnam Pro',system-ui,sans-serif;color:#fff;overflow:hidden}`;
-const bgGradient = `radial-gradient(900px 700px at 85% 8%, rgba(253,110,136,.28), transparent 60%), radial-gradient(1000px 900px at 5% 95%, rgba(219,242,252,.16), transparent 60%), linear-gradient(165deg, #0B3A73 0%, ${BRAND.navy} 55%, #041B38 100%)`;
+const BASE_CSS = `${fontCss}*{box-sizing:border-box;margin:0}html,body{width:${VW}px;height:${VH}px}body{font-family:'BVP','Be Vietnam Pro',system-ui,sans-serif;color:#fff;overflow:hidden}`;
+const bgGradient = `radial-gradient(320px 250px at 85% 8%, rgba(253,110,136,.28), transparent 60%), radial-gradient(360px 320px at 5% 95%, rgba(219,242,252,.16), transparent 60%), linear-gradient(165deg, #0B3A73 0%, ${BRAND.navy} 55%, #041B38 100%)`;
 
+// Mọi trang dựng ở khung nhìn 390x844 với deviceScaleFactor = SCALE nên ảnh ra đúng WxH.
 async function renderHtml(browser, html, file, transparent, clip) {
-  const page = await browser.newPage({ viewport: { width: FW, height: FH }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: VW, height: VH }, deviceScaleFactor: SCALE });
   await page.setContent(html, { waitUntil: 'load' });
   await page.evaluate(() => document.fonts && document.fonts.ready);
   await page.waitForTimeout(150);
   await page.screenshot(Object.assign({ path: file, omitBackground: !!transparent }, clip ? { clip } : {}));
   await page.close();
 }
-const cardHtml = (kind, c) => `<style>${BASE_CSS}body{background:${bgGradient};display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 90px}
-.mark{width:180px;height:180px;border-radius:50%;background:${BRAND.coral};color:${BRAND.navy};font-weight:800;font-size:110px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 22px rgba(253,110,136,.18);margin-bottom:70px}
-h1{font-size:${kind === 'title' ? 92 : 80}px;line-height:1.12;font-weight:800;letter-spacing:-1px}p{margin-top:36px;font-size:42px;line-height:1.4;color:${BRAND.ice};font-weight:500}
-.link{margin-top:70px;padding:22px 44px;border-radius:999px;background:${BRAND.ice};color:${BRAND.navy};font-size:40px;font-weight:700}
-.note{position:absolute;bottom:120px;left:0;right:0;font-size:30px;color:rgba(219,242,252,.75)}</style>
+const cardHtml = (kind, c) => `<style>${BASE_CSS}body{background:${bgGradient};display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 32px}
+.mark{width:66px;height:66px;border-radius:50%;background:${BRAND.coral};color:${BRAND.navy};font-weight:800;font-size:40px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 8px rgba(253,110,136,.18);margin-bottom:26px}
+h1{font-size:${kind === 'title' ? 33 : 29}px;line-height:1.12;font-weight:800;letter-spacing:-.4px}p{margin-top:13px;font-size:16px;line-height:1.4;color:${BRAND.ice};font-weight:500}
+.link{margin-top:26px;padding:9px 18px;border-radius:999px;background:${BRAND.ice};color:${BRAND.navy};font-size:15px;font-weight:700}
+.note{position:absolute;bottom:44px;left:0;right:0;font-size:12px;color:rgba(219,242,252,.75)}</style>
 <div class="mark">${esc((appName[0] || 'X').toUpperCase())}</div><h1>${esc(c.text || appName)}</h1>${c.sub ? `<p>${esc(c.sub)}</p>` : ''}
 ${kind === 'end' && sb.link ? `<div class="link">${esc(sb.link.replace(/^https?:\/\//, ''))}</div>` : ''}
 ${NOTICE ? `<div class="note">${esc(NOTICE)}</div>` : ''}`;
-const frameHtml = () => `<style>${BASE_CSS}body{background:transparent}
-.hole{position:absolute;left:${PX}px;top:${PY}px;width:${PW}px;height:${PH}px;border-radius:70px;box-shadow:0 0 0 2000px transparent}
-.top{position:absolute;top:0;left:0;right:0;height:${PY}px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:34px;font-weight:700;color:${BRAND.ice}}
-.dot{width:16px;height:16px;border-radius:50%;background:${BRAND.coral}}
-.notice{position:absolute;left:0;right:0;bottom:34px;text-align:center;font-size:26px;font-weight:500;color:rgba(219,242,252,.8)}</style>
-<div class="top"><span class="dot"></span>${esc(appName)}<span style="font-weight:500;opacity:.7">· Video demo</span></div>
-<svg width="${FW}" height="${FH}" style="position:absolute;inset:0"><defs><mask id="m"><rect width="100%" height="100%" fill="white"/><rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" rx="64" fill="black"/></mask>
-<linearGradient id="g" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#0B3A73"/><stop offset=".55" stop-color="${BRAND.navy}"/><stop offset="1" stop-color="#041B38"/></linearGradient></defs>
-<rect width="100%" height="100%" fill="url(#g)" mask="url(#m)"/><rect x="${PX - 7}" y="${PY - 7}" width="${PW + 14}" height="${PH + 14}" rx="71" fill="none" stroke="${BRAND.ice}" stroke-opacity=".55" stroke-width="7"/></svg>
-<div class="top"><span class="dot"></span>${esc(appName)}<span style="font-weight:500;opacity:.7">· Video demo</span></div>
-${NOTICE ? `<div class="notice">${esc(NOTICE)}</div>` : ''}`;
-const captionHtml = (t) => `<style>${BASE_CSS}body{background:transparent}.c{position:absolute;left:70px;right:70px;top:${PY + PH + 22}px;height:150px;display:flex;align-items:center;justify-content:center}
-.c span{background:rgba(4,27,56,.88);border:2px solid rgba(219,242,252,.35);color:#fff;font-size:46px;font-weight:700;line-height:1.3;text-align:center;padding:14px 34px;border-radius:30px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+const captionHtml = (t) => `<style>${BASE_CSS}body{background:transparent}.c{position:absolute;left:14px;right:14px;top:${VH - CAP_BOX}px;height:${CAP_BOX - 84}px;display:flex;align-items:flex-end;justify-content:center}
+.c span{background:rgba(4,27,56,.88);border:1px solid rgba(219,242,252,.35);color:#fff;font-size:17px;font-weight:700;line-height:1.3;text-align:center;padding:8px 16px;border-radius:14px}
 .c b{color:${BRAND.coral}}</style><div class="c"><span>${esc(t).replace(/\[(.+?)\]/g, '<b>$1</b>')}</span></div>`;
 
 // ---- Chấm chạm hiện rõ trên video ----
@@ -150,34 +142,70 @@ async function runAction(page, a) {
 }
 
 // ---- Quay 1 scene -> out/scenes/<id>.mp4 (cắt phần tải trang) + <id>.json ----
-async function recordScene(browser, i, storage, standalone) {
+// mode "cdp": CDP screencast ở deviceScaleFactor = SCALE (nét, WxH gốc). mode "video": lùi về recordVideo của Playwright (390x844, phóng lên WxH).
+async function recordScene(browser, i, storage, standalone, mode = 'cdp') {
   const scenes = sb.scenes, s = scenes[i], id = s.id || 'scene' + i, vdir = path.join(TMP, 'rec-' + id);
-  const ctx = await browser.newContext({
-    viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, locale: 'vi-VN', timezoneId: 'Asia/Ho_Chi_Minh',
-    colorScheme: s.colorScheme || 'light', recordVideo: { dir: vdir, size: { width: REC_W, height: REC_H } }, storageState: standalone ? undefined : storage
-  });
+  fs.rmSync(vdir, { recursive: true, force: true }); fs.mkdirSync(vdir, { recursive: true });
+  const cdpMode = mode === 'cdp';
+  const ctx = await browser.newContext(Object.assign({
+    viewport: { width: VW, height: VH }, deviceScaleFactor: cdpMode ? SCALE : 1, isMobile: true, hasTouch: true, locale: 'vi-VN', timezoneId: 'Asia/Ho_Chi_Minh',
+    colorScheme: s.colorScheme || 'light', storageState: standalone ? undefined : storage
+  }, cdpMode ? {} : { recordVideo: { dir: vdir, size: { width: VW, height: VH } } }));
   const created = Date.now();
   await ctx.addInitScript(TAP_INIT);
   const page = await ctx.newPage();
+  const frames = [];   // { t: giây (đồng hồ máy), f: file jpg }
+  let cdp = null;
+  if (cdpMode) {
+    try {
+      cdp = await ctx.newCDPSession(page);
+      let n = 0, chain = Promise.resolve();
+      cdp.on('Page.screencastFrame', (ev) => {
+        const f = path.join(vdir, 'f' + String(n++).padStart(6, '0') + '.jpg');
+        fs.writeFileSync(f, Buffer.from(ev.data, 'base64'));
+        frames.push({ t: ev.metadata && ev.metadata.timestamp ? ev.metadata.timestamp : Date.now() / 1000, f });
+        chain = chain.then(() => cdp.send('Page.screencastFrameAck', { sessionId: ev.sessionId })).catch(() => {});   // báo đã nhận để Chrome gửi tiếp
+      });
+      await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 90, maxWidth: VW * SCALE, maxHeight: VH * SCALE, everyNthFrame: 1 });
+    } catch (e) { warn(`scene ${id}: CDP screencast lỗi (${e.message.split('\n')[0]}), lùi về recordVideo`); await ctx.close(); return recordScene(browser, i, storage, standalone, 'video'); }
+  }
   const url = s.url ? (/^https?:/.test(s.url) ? s.url : BASE + s.url.replace(/^\//, '')) : BASE + (i === 0 || s.demo || standalone ? '?demo=1' : '') + (s.hash || '');
   try { await page.goto(url, { waitUntil: 'load', timeout: 20000 }); await page.waitForSelector('html[data-ready="1"]', { timeout: 8000 }).catch(() => {}); }
   catch (e) { warn(`scene ${id}: không mở được ${url} (${e.message.split('\n')[0]})`); }
   await page.evaluate(() => document.fonts && document.fonts.ready);
   await page.waitForTimeout(700);
-  const tStart = (Date.now() - created) / 1000;
+  const tStart = (Date.now() - created) / 1000, tStartWall = Date.now() / 1000;
   const tAct = Date.now();
   for (const a of s.actions || []) {
     try { await runAction(page, a); } catch (e) { warn(`scene ${id}: hành động ${JSON.stringify(a)} lỗi: ${e.message.split('\n')[0]}`); }
   }
   const spent = (Date.now() - tAct) / 1000, minD = s.minDuration || 4;
   if (spent < minD) await page.waitForTimeout((minD - spent) * 1000 + 300); else await page.waitForTimeout(700);
-  const dur = (Date.now() - created) / 1000 - tStart;
+  const dur = (Date.now() - created) / 1000 - tStart, tEndWall = Date.now() / 1000;
   const st = await ctx.storageState();
+  if (cdp) { await cdp.send('Page.stopScreencast').catch(() => {}); await page.waitForTimeout(150); }
   await ctx.close();
-  const webm = fs.readdirSync(vdir).filter((f) => f.endsWith('.webm'))[0];
-  ff(['-ss', tStart.toFixed(3), '-i', path.join(vdir, webm), '-t', dur.toFixed(3), '-vf', `fps=${FPS},format=yuv420p`, '-an', '-c:v', 'libx264', '-preset', 'fast', '-crf', '16', path.join(SCENES, id + '.mp4')]);
-  fs.writeFileSync(path.join(SCENES, id + '.json'), JSON.stringify({ id, caption: s.caption || '', dur: probeDur(path.join(SCENES, id + '.mp4')) }));
-  log(`scene ${id}: ${dur.toFixed(1)}s -> scenes/${id}.mp4`);
+  const outMp4 = path.join(SCENES, id + '.mp4');
+  const enc = ['-an', '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'fast', '-crf', '16', '-pix_fmt', 'yuv420p'];
+  if (cdpMode) {
+    if (frames.length < 2) { warn(`scene ${id}: CDP không trả khung hình, lùi về recordVideo`); return recordScene(browser, i, storage, standalone, 'video'); }
+    // Chrome chỉ gửi khung khi màn hình đổi (tốc độ biến thiên): dựng danh sách concat theo mốc thời gian rồi ép 30fps cố định.
+    let k = 0; while (k + 1 < frames.length && frames[k + 1].t <= tStartWall) k++;
+    const use = frames.slice(k), list = [];
+    use.forEach((fr, j) => {
+      const a = Math.max(fr.t, tStartWall), b = j + 1 < use.length ? use[j + 1].t : tEndWall;
+      list.push(`file '${fr.f}'`, `duration ${Math.max(0.001, b - a).toFixed(4)}`);
+    });
+    list.push(`file '${use[use.length - 1].f}'`);   // dòng cuối lặp lại để duration cuối được tính
+    const lf = path.join(vdir, 'list.txt'); fs.writeFileSync(lf, list.join('\n'));
+    ff(['-f', 'concat', '-safe', '0', '-i', lf, '-vf', `scale=${W}:${H}:flags=lanczos,fps=${FPS},format=yuv420p`, '-fps_mode', 'cfr', '-r', String(FPS), ...enc, outMp4]);
+    log(`scene ${id}: ${use.length} khung CDP`);
+  } else {
+    const webm = fs.readdirSync(vdir).filter((f) => f.endsWith('.webm'))[0];
+    ff(['-ss', tStart.toFixed(3), '-i', path.join(vdir, webm), '-t', dur.toFixed(3), '-vf', `scale=${W}:${H}:flags=lanczos,fps=${FPS},format=yuv420p`, ...enc, outMp4]);
+  }
+  fs.writeFileSync(path.join(SCENES, id + '.json'), JSON.stringify({ id, caption: s.caption || '', dur: probeDur(outMp4), w: W, h: H, mode }));
+  log(`scene ${id}: ${dur.toFixed(1)}s -> scenes/${id}.mp4 (${mode}, ${W}x${H})`);
   return st;
 }
 
@@ -187,7 +215,7 @@ async function renderCards(browser) {
   const mk = async (kind, secs, c) => {
     const png = path.join(SCENES, kind + '.png'), mp4 = path.join(SCENES, kind + '.mp4');
     await renderHtml(browser, cardHtml(kind, c), png, false);
-    ff(['-loop', '1', '-t', String(secs), '-i', png, '-vf', `fade=t=in:st=0:d=0.4,fade=t=out:st=${secs - 0.4}:d=0.4,fps=${FPS},format=yuv420p`, '-c:v', 'libx264', '-crf', '18', mp4]);
+    ff(['-loop', '1', '-t', String(secs), '-i', png, '-vf', `fade=t=in:st=0:d=0.4,fade=t=out:st=${secs - 0.4}:d=0.4,fps=${FPS},format=yuv420p`, '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'fast', '-crf', '18', mp4]);
   };
   if (sb.title !== false) await mk('title', tTitle, Object.assign({ text: appName, sub: sb.tagline || '' }, sb.title || {}));
   if (sb.end !== false) await mk('end', tEnd, Object.assign({ text: appName, sub: sb.tagline || '' }, sb.end || {}));
@@ -224,7 +252,7 @@ async function assemble(browser, o) {
   const parts = [];
   for (let i = 0; i < clips.length; i++) {
     const c = clips[i], f = path.join(TMP, `${tag}-scene-${i}.mp4`);
-    ff(['-i', c.src, '-vf', `setpts=PTS/${speed},scale=${PW}:${PH}:flags=lanczos,fps=${FPS},format=yuv420p`, '-an', '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', f]);
+    ff(['-i', c.src, '-vf', `setpts=PTS/${speed},scale=${W}:${H}:flags=lanczos,fps=${FPS},format=yuv420p`, '-an', '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'fast', '-crf', '18', f]);
     c.out = probeDur(f); parts.push(f);
   }
   let totalBody = clips.reduce((a, c) => a + c.out, 0);
@@ -238,19 +266,18 @@ async function assemble(browser, o) {
   const bodyFile = path.join(TMP, tag + '-body.mp4');
   fs.writeFileSync(path.join(TMP, tag + '-list.txt'), parts.map((p) => `file '${p}'`).join('\n'));
   ff(['-f', 'concat', '-safe', '0', '-i', path.join(TMP, tag + '-list.txt'), '-c', 'copy', bodyFile]);
-  const frame = path.join(TMP, 'frame.png');
-  if (!fs.existsSync(frame)) await renderHtml(browser, frameHtml(), frame, true);
   const caps = []; let tcur = 0;
   clips.forEach((c) => { if (c.caption) caps.push({ text: c.caption, a: tcur + 0.3, b: tcur + c.out - 0.2 }); tcur += c.out; });
-  const capPngs = [];
-  for (let i = 0; i < caps.length; i++) { const p = path.join(TMP, `${tag}-cap-${i}.png`); await renderHtml(browser, captionHtml(caps[i].text), p, true, { x: 0, y: CAP_Y, width: FW, height: CAP_H }); capPngs.push(p); }
-  const inputs = ['-framerate', String(FPS), '-loop', '1', '-i', frame, '-i', bodyFile];
+  // Chữ phụ đề: ảnh PNG trong suốt cùng độ phân giải (dải đáy khung nhìn), chồng thẳng lên video gốc, không khung đệm.
+  const capPngs = [], capY = (VH - CAP_BOX) * SCALE;
+  for (let i = 0; i < caps.length; i++) { const p = path.join(TMP, `${tag}-cap-${i}.png`); await renderHtml(browser, captionHtml(caps[i].text), p, true, { x: 0, y: VH - CAP_BOX, width: VW, height: CAP_BOX }); capPngs.push(p); }
+  const inputs = ['-i', bodyFile];
   capPngs.forEach((p) => inputs.push('-framerate', String(FPS), '-loop', '1', '-i', p));
-  let fc = `[1:v]setpts=PTS-STARTPTS,pad=${FW}:${FH}:${PX}:${PY}:black[b];[b][0:v]overlay=0:0:shortest=1[l0]`, last = 'l0';
-  caps.forEach((c, i) => { fc += `;[${last}][${2 + i}:v]overlay=0:${CAP_Y}:enable='between(t,${c.a.toFixed(2)},${c.b.toFixed(2)})'[l${i + 1}]`; last = 'l' + (i + 1); });
+  let fc = '[0:v]setpts=PTS-STARTPTS[l0]', last = 'l0';
+  caps.forEach((c, i) => { fc += `;[${last}][${1 + i}:v]overlay=0:${capY}:enable='between(t,${c.a.toFixed(2)},${c.b.toFixed(2)})'[l${i + 1}]`; last = 'l' + (i + 1); });
   fc += `;[${last}]format=yuv420p[vout]`;
   const main = path.join(TMP, tag + '-main.mp4');
-  ff([...inputs, '-filter_complex', fc, '-map', '[vout]', '-t', totalBody.toFixed(3), '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', main]);
+  ff([...inputs, '-filter_complex', fc, '-map', '[vout]', '-t', totalBody.toFixed(3), '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'fast', '-crf', '18', '-r', String(FPS), main]);
   const seq = [title, main, end].filter(Boolean);
   fs.writeFileSync(path.join(TMP, tag + '-seq.txt'), seq.map((p) => `file '${p}'`).join('\n'));
   const silent = path.join(TMP, tag + '-all.mp4');
@@ -265,7 +292,7 @@ async function assemble(browser, o) {
   const tc = (t) => { const ms = Math.round(t * 1000), h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, sec = Math.floor(ms / 1000) % 60; return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')},${String(ms % 1000).padStart(3, '0')}`; };
   fs.writeFileSync(path.join(OUT, tag + '.srt'), caps.map((c, i) => `${i + 1}\n${tc(c.a + tTitle)} --> ${tc(c.b + tTitle)}\n${c.text.replace(/[\[\]]/g, '')}\n`).join('\n'));
   const cols = 8, every = Math.max(1, total / cols);
-  ff(['-i', outMp4, '-vf', `fps=1/${every.toFixed(3)},scale=270:480,tile=${cols}x1:padding=8:color=0x072D59`, '-frames:v', '1', path.join(OUT, tag + '-contact.png')]);
+  ff(['-i', outMp4, '-vf', `fps=1/${every.toFixed(3)},scale=200:432,tile=${cols}x1:padding=8:color=0x072D59`, '-frames:v', '1', path.join(OUT, tag + '-contact.png')]);
   const w = execFileSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0:s=x', outMp4]).toString().trim();
   log(`XONG: ${outMp4}  ${w}  ${total.toFixed(1)}s  (${clips.length}/${wanted.length} scene)`);
   if (total > o.max + 0.05) warn(`Video dài hơn ${o.max}s.`);

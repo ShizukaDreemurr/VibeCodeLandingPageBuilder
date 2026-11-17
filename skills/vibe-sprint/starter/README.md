@@ -121,7 +121,7 @@ Ra `shots-mobile/NN-<tab>-light.png` và `NN-<tab>-dark.png` (390×844 @3x = 117
 ```
 node tools/demo-video.cjs --url http://localhost:8211/ --storyboard tools/demo-video.example.json
 ```
-Quay từng scene trong khung 390×844 (có chấm chạm), ghép vào khung 1080×1920 nền Xclipse, đốt phụ đề tiếng Việt (phông Be Vietnam Pro), thẻ đầu/cuối. Ra `out/demo-<app>.mp4`, `-contact.png`, `.srt` (`out/` và `*.mp4` đã nằm trong `.gitignore`). Cờ: `--voice file.mp3` (chuẩn hoá -16 LUFS), `--max 120`, `--no-cards`, `--out`, `--keep`. Cần ffmpeg + Playwright. Cách điền storyboard từ `docs/spec-nhanh.md`: `prompts/17-claude-demo-video.md`.
+Quay từng scene bằng CDP screencast ở deviceScaleFactor 3 (có chấm chạm; `--scale 4` nét hơn), **giữ nguyên độ phân giải gốc 1170×2532** (tỉ lệ 9:19,5, không đệm/cắt/phóng to), đốt phụ đề tiếng Việt (phông Be Vietnam Pro), thẻ đầu/cuối cùng độ phân giải. H.264 high crf 18. CDP lỗi thì lùi về recordVideo (kém nét). Ra `out/demo-<app>.mp4`, `-contact.png`, `.srt` (`out/` và `*.mp4` đã nằm trong `.gitignore`). Cờ: `--voice file.mp3` (chuẩn hoá -16 LUFS), `--max 120`, `--scale 3|4`, `--no-cards`, `--out`, `--keep`. Cần ffmpeg + Playwright. Cách điền storyboard từ `docs/spec-nhanh.md`: `prompts/17-claude-demo-video.md`.
 
 ## 3. Quy ước
 - Chữ hiện cho người dùng: **tiếng Việt có dấu**; tên biến, hàm, file, comment code: tiếng Anh hoặc tiếng Việt ngắn gọn, nhưng API công khai dùng tiếng Anh.

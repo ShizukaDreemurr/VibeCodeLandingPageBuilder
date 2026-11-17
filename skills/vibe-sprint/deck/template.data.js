@@ -51,7 +51,7 @@ window.DECK = {
       title: 'Xem app **chạy thật**',
       bullets: ['Nhập dữ liệu → kết quả → lưu', 'Trên điện thoại, dữ liệu mẫu', 'Có nhãn mô phỏng rõ ràng'],   // 2–3 dòng định danh, ≤ 12 từ mỗi dòng
       video: 'assets/00-demo-video.mp4',            // video demo ≤ 2:00 (prompts/17). Phát khi tới slide (tắt tiếng, lặp); kỹ thuật viên phát, người nói nói "Mời dừng video" khi hết ý (≈ 45 giây); chạm hoặc bấm V để dừng/phát
-      poster: 'assets/00-demo-video-poster.png',        // ảnh bìa 1080×1920; PDF/PNG xuất ra hiện ảnh này + nút play
+      poster: 'assets/00-demo-video-poster.png',        // ảnh bìa cùng độ phân giải video (vd 1170×2532, tỉ lệ 9:19,5); PDF/PNG xuất ra hiện ảnh này + nút play
       videoFile: 'docs/minh-chung/demo-TEN-APP.mp4',    // đường dẫn bản đầy đủ ≤ 2:00 (hiện dưới ảnh bìa khi xuất PDF)
       notes: 'Người nói: Vũ Trí Dũng (mở phần của Dũng)\nMốc giờ: 02:30–03:15 (cứng 03:20)\nV: nhìn app chạy trước khi đi vào tính năng (phát khoảng 45 giây rồi "Mời dừng video."; video đầy đủ ≤ 2:00)\nT: chỉ 1 thao tác trong video; nói thêm 1 số thật\nS: {{SO_GIAY_LUONG_CHINH}} giây từ nhập đến kết quả\nCue kỹ thuật: Mời phát video demo. (video tự phát khi tới slide; nếu không chạy thì bấm V hoặc chạm vào video) … Mời dừng video. → Mời chuyển slide.\nChuyền mic: —' },
 

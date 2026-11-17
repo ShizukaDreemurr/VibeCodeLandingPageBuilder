@@ -29,7 +29,7 @@ Yêu cầu: Node + Playwright (`npm i -g playwright && npx playwright install ch
 | type | Trường |
 |---|---|
 | cover | app, tagline, de, bang, event, team, members[], date, image (ảnh dọc, khung điện thoại; `device:'browser'` để dùng khung trình duyệt cũ) |
-| video | title, bullets[] (2–3 dòng), video (mp4 ≤ 2:00), poster (png 1080×1920), videoFile (đường dẫn bản đầy đủ, hiện khi xuất PDF) |
+| video | title, bullets[] (2–3 dòng), video (mp4 ≤ 2:00), poster (png cùng độ phân giải video, vd 1170×2532, tỉ lệ 9:19,5), videoFile (đường dẫn bản đầy đủ, hiện khi xuất PDF) |
 | problem | title, persona{name,role,photo}, pains[], scenarioLabel, scenario, stat{value,label} |
 | solution | oneLiner, bullets[{icon,text}], image (khung trình duyệt cũ; ảnh dọc thì dùng `phone`) |
 | **phone** | title, eyebrow, image (dọc), callouts[{title,desc,y}] (3, ghim số trên máy tại `y`, ví dụ '48%') |
