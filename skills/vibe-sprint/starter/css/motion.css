@@ -75,8 +75,9 @@ button.chip[aria-pressed="true"] { animation: lx-pop var(--dur-3) var(--ease-spr
 /* ---------- Quả cầu hero: trôi nhẹ + thị sai mượt (hero.js lerp bằng rAF), TẠM DỪNG khi ngoài màn hình / tab ẩn ---------- */
 html:not([data-hero="plain"]) .hero-orb-wrap { transition: none; will-change: auto; }
 html:not([data-hero="plain"]) .hero-orb-wrap.is-live { will-change: transform; }
-html:not([data-hero="plain"]) .hero-orb, html:not([data-hero="plain"]) .hero-streak { will-change: auto; }
-html.is-hidden .hero-orb, html.is-hidden .hero-streak, .hero.is-off .hero-orb, .hero.is-off .hero-streak { animation-play-state: paused; }
+/* Hoạt ảnh nhàn rỗi (nổi, thở, ánh sáng xoay, vệt hồng, quét sáng): tạm dừng + bỏ will-change khi hero ngoài màn hình / tab ẩn */
+html.is-hidden .hero-orb, html.is-hidden .hero-orb::before, html.is-hidden .hero-streak, html.is-hidden .hero-flutes::after,
+.hero.is-off .hero-orb, .hero.is-off .hero-orb::before, .hero.is-off .hero-streak, .hero.is-off .hero-flutes::after { animation-play-state: paused; will-change: auto; }
 html.is-hidden *, .is-off .sk { animation-play-state: paused; }
 
 /* ---------- Hộp thoại / bottom sheet: lò xo vào, kéo theo ngón, nền mờ theo ---------- */
@@ -95,7 +96,7 @@ dialog.dlg.is-settling { transition: transform var(--dur-3) var(--ease-spring); 
 html[data-vt="theme"] #btn-theme svg { transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring) !important; }
 
 /* Đang đổi giao diện: dừng mọi hoạt ảnh nền lặp và bỏ lớp lọc nặng để ảnh chụp rẻ (không đổi hình ảnh cuối) */
-html[data-vt="theme"] .hero-orb, html[data-vt="theme"] .hero-streak, html[data-vt="theme"] .state-ico, html[data-vt="theme"] .lx-ai-ico, html[data-vt="theme"] .sk { animation-play-state: paused !important; }
+html[data-vt="theme"] .hero-orb, html[data-vt="theme"] .hero-orb::before, html[data-vt="theme"] .hero-streak, html[data-vt="theme"] .hero-flutes::after, html[data-vt="theme"] .state-ico, html[data-vt="theme"] .lx-ai-ico, html[data-vt="theme"] .sk { animation-play-state: paused !important; }
 html[data-vt="theme"] .bnav, html[data-vt="theme"] .topbar, html[data-vt="theme"] dialog::backdrop { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 html[data-vt="theme"]::view-transition-old(root) { animation: none; }
 html[data-vt="theme"]::view-transition-new(root) { animation: none; }

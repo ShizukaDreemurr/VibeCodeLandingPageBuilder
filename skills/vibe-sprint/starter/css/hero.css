@@ -90,16 +90,31 @@
       inset 11px 11px 28px rgba(253, 110, 136, .55),
       0 0 60px rgba(253, 110, 136, .28),
       -18px 12px 48px rgba(14, 77, 146, .55);
-    animation: hero-float 7s ease-in-out infinite alternate; will-change: transform;
+    position: relative; --fy: 14px; --fx: 6px;
+    animation: hero-float 8s ease-in-out infinite alternate, hero-breathe 9.5s ease-in-out infinite alternate; will-change: translate, scale;
+  }
+  /* Lớp sáng xoay bên trong quả cầu (chỉ transform): ánh hồng/xanh dịch chậm quanh mặt cầu nên màu "thở" theo ánh sáng */
+  html:not([data-hero="plain"]) .hero-orb::before {
+    content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+    background:
+      radial-gradient(circle at 74% 24%, rgba(255, 190, 208, .62) 0%, rgba(255, 190, 208, 0) 38%),
+      radial-gradient(circle at 24% 78%, rgba(90, 180, 255, .50) 0%, rgba(90, 180, 255, 0) 40%);
+    animation: hero-hue 8.5s ease-in-out infinite alternate; will-change: transform;
   }
   /* Vệt hồng: radial-gradient (đã mờ sẵn) thay cho filter: blur */
   html:not([data-hero="plain"]) .hero-streak {
     position: absolute; z-index: 2; width: 250px; height: 300px; left: 4%; top: 50%; margin-top: -150px;
     background: radial-gradient(ellipse at center, rgba(253, 110, 136, .80) 0%, rgba(253, 110, 136, .42) 26%, rgba(253, 110, 136, .12) 52%, transparent 74%);
-    animation: hero-pulse 6s ease-in-out infinite alternate; will-change: opacity;
+    animation: hero-pulse 6.5s ease-in-out infinite alternate, hero-drift 9s ease-in-out -3s infinite alternate; will-change: opacity, translate;
   }
   /* 8 thanh kính sọc dọc: giả lập kính mờ bằng gradient xếp lớp (sáng ở mép, tối ở lưng, viền + highlight trong) */
-  html:not([data-hero="plain"]) .hero-flutes { position: absolute; z-index: 3; inset: 0 auto 0 0; width: 70%; display: grid; grid-template-columns: repeat(8, 1fr); }
+  html:not([data-hero="plain"]) .hero-flutes { position: absolute; z-index: 3; inset: 0 auto 0 0; width: 70%; display: grid; grid-template-columns: repeat(8, 1fr); overflow: hidden; }
+  /* Vệt sáng quét ngang các thanh kính ~6s một lần (transform trên lớp gradient) */
+  html:not([data-hero="plain"]) .hero-flutes::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 38%; pointer-events: none;
+    background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .26) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: translate3d(-130%, 0, 0); animation: hero-sweep 6.5s ease-in-out 1.2s infinite; will-change: transform;
+  }
   html:not([data-hero="plain"]) .hero-flute {
     display: block; height: 100%;
     background:
@@ -108,8 +123,13 @@
     border-right: 1px solid rgba(255, 255, 255, .17);
     box-shadow: inset 2px 0 5px rgba(255, 255, 255, .15);
   }
-  @keyframes hero-float { from { transform: translate3d(0, -5px, 0); } to { transform: translate3d(-6px, 7px, 0); } }
-  @keyframes hero-pulse { from { opacity: .82; } to { opacity: 1; } }
+  /* translate / scale / rotate là thuộc tính riêng nên các lớp chuyển động chồng lên nhau, không ghi đè transform của thị sai (hero.js ghi lên .hero-orb-wrap) */
+  @keyframes hero-float { from { translate: calc(var(--fx) * -1) calc(var(--fy) * -.5); } to { translate: var(--fx) calc(var(--fy) * .5); } }
+  @keyframes hero-breathe { from { scale: .98; } to { scale: 1.03; } }
+  @keyframes hero-hue { from { transform: rotate(-35deg); opacity: .55; } to { transform: rotate(45deg); opacity: 1; } }
+  @keyframes hero-pulse { from { opacity: .66; } to { opacity: 1; } }
+  @keyframes hero-drift { from { translate: -10px 8px; } to { translate: 12px -10px; } }
+  @keyframes hero-sweep { 0% { transform: translate3d(-130%, 0, 0); } 45%, 100% { transform: translate3d(330%, 0, 0); } }
 
   /* ---- Hàng công cụ trên sóng/dải xanh (chữ trắng đậm, nhãn viết hoa nhỏ) ---- */
   html:not([data-hero="plain"]) .hero-tools { position: relative; z-index: 5; margin-top: auto; padding: 190px 20px 22px; }
@@ -131,7 +151,7 @@
       -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .6) 60px, #000 140px); mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .6) 60px, #000 140px);
     }
     html:not([data-hero="plain"]) .hero-orb-wrap { width: 400px; height: 400px; right: -40px; top: 50%; margin-top: -200px; }
-    html:not([data-hero="plain"]) .hero-orb { box-shadow: inset -26px -30px 56px rgba(3, 21, 43, .85), inset 17px 17px 42px rgba(253, 110, 136, .55), 0 0 90px rgba(253, 110, 136, .28), -30px 20px 80px rgba(14, 77, 146, .55); }
+    html:not([data-hero="plain"]) .hero-orb { --fy: 22px; --fx: 9px; box-shadow: inset -26px -30px 56px rgba(3, 21, 43, .85), inset 17px 17px 42px rgba(253, 110, 136, .55), 0 0 90px rgba(253, 110, 136, .28), -30px 20px 80px rgba(14, 77, 146, .55); }
     html:not([data-hero="plain"]) .hero-streak { width: 300px; height: 440px; left: 12%; margin-top: -220px; }
     html:not([data-hero="plain"]) .hero-flutes { width: 58%; }
     html:not([data-hero="plain"]) .hero-tools { padding: 120px 40px 30px; }
@@ -144,7 +164,7 @@
 
   /* ---- Giảm chuyển động: đứng yên hoàn toàn ---- */
   @media (prefers-reduced-motion: reduce) {
-    html:not([data-hero="plain"]) .hero-orb, html:not([data-hero="plain"]) .hero-streak { animation: none !important; }
+    html:not([data-hero="plain"]) .hero-orb, html:not([data-hero="plain"]) .hero-orb::before, html:not([data-hero="plain"]) .hero-streak, html:not([data-hero="plain"]) .hero-flutes::after { animation: none !important; will-change: auto; }
     html:not([data-hero="plain"]) .hero-orb-wrap { transition: none !important; transform: none !important; will-change: auto; }
     html:not([data-hero="plain"]) .btn-cta { transition: none !important; }
   }
