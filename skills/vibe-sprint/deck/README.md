@@ -1,0 +1,72 @@
+# Deck kit — slide pitch cho chung kết 60 phút
+
+Một file `deck.html` (không phụ thuộc thư viện, 16:9, chạy offline). Bạn **chỉ sửa dữ liệu**, không sửa layout.
+
+**Quy tắc ảnh: chỉ ảnh điện thoại DỌC.** Giám khảo chấm app trên điện thoại (360–390px), nên mọi ảnh app trong slide là ảnh dọc 9:19,5 (390×844 @3x = 1170×2532) đặt trong khung điện thoại; tối đa 3 máy mỗi slide; không dùng ảnh ngang/vuông/desktop. Ảnh do agent Claude Sonnet chụp bằng giả lập điện thoại (không chụp tay).
+
+**Slide video (`type: 'video'`):** đặt ngay trước slide tính năng; khung video dọc 9:16 phát `video` (mp4 ≤ 2:00, tự phát, tắt tiếng, lặp; người nói nói "Mời dừng video" để cắt sớm; chạm hoặc phím `V` để dừng/phát), `poster` là ảnh bìa; xuất PDF/PNG hiện ảnh bìa + nút play + dòng "Xem video: <videoFile>"; xuất PPTX nhúng mp4 nếu có `pptxgenjs`. File do `prompts/17` tạo: `assets/00-demo-video.mp4`, `assets/00-demo-video-poster.png`.
+
+Bản 8 slide (5 phút) và 6 slide (3 phút): chỉ cần xoá bớt slide trong `deck.data.js` theo `templates/KICH-BAN-DEMO.md` mục 6 (hoặc dùng cue "Mời chuyển đến slide N").
+
+Phím: `←/→/Space` chuyển slide · `N` ghi chú + đồng hồ · `F` toàn màn hình · vuốt/bấm trên điện thoại · `Ctrl+P` in PDF. Link thẳng slide: `deck.html#6`.
+
+## Quy trình 5 phút
+
+1. **Sao chép mẫu**: `cp template.data.js deck.data.js` (xem bản hoàn chỉnh: `deck.html?data=example.data.js`).
+2. **Điền các ô** đánh số `[1]`–`[11]` trong `deck.data.js`: tên app · tagline · đề/bảng/đội · persona+nỗi đau · tình huống · giải pháp một câu · 5 tính năng · link live + video · AI thật/mô phỏng/kiểm soát · bảng kiểm thử · 3–4 con số. QR tự sinh từ `meta.liveUrl`.
+3. **Chụp ảnh** (app chạy local, ví dụ `python3 -m http.server 8225` (cổng deck trong bảng cổng của skill; không dùng 8000) ở thư mục gốc app):
+   `cp tools/capture.example.json tools/capture.json`, sửa `base` (file mẫu ghi `http://localhost:8225/`, đổi thành cổng bạn đang dùng) và `views`, rồi `node tools/capture.cjs tools/capture.json`.
+   File mẫu nhắm vào route của starter (`#/home`, `#/example`): đổi `example` thành id feature thật, đổi selector theo form của bạn. Bước (`steps`): `click`, `fill:[sel,text]`, `select:[sel,value]`, `press`, `wait`, `waitFor`, `hide`, `scroll`, `eval`, `optionalClick`, `storage`.
+   Mặc định đã là giả lập điện thoại: 390×844, `deviceScaleFactor` 3, `isMobile` + `hasTouch` (PNG 1170×2532). Nhanh 1 ảnh: `node tools/capture.cjs --url http://localhost:8225/ --name 05-tinh-nang-1 --theme both` → `assets/05-tinh-nang-1-mobile-light.png` và `-mobile-dark.png` (tên slot theo bảng ở `prompts/14` mục 6). Cỡ nhỏ: `"mobile": [360, 780]` trong cấu hình. Ảnh desktop chỉ khi yêu cầu rõ (`--desktop` / `"devices":["desktop"]`), dùng làm chứng cứ, không đưa vào slide.
+   Chụp mọi tab sáng + tối một lần bằng công cụ của starter: `node tools/capture.cjs --starter-shots http://localhost:8225/` (chạy `tools/shots-mobile.cjs` nếu có, ảnh vào `assets/auto/NN-tab-light|dark.png`; hoặc đặt `"starterShots": true` trong cấu hình).
+4. **Xem thử**: mở `deck.html`; ảnh thiếu hiện khung nhắc.
+5. **Xuất**: `node tools/export.cjs` (dùng `deck.data.js`) → `out/<tên>.pdf` (1 trang/slide), `out/png/slide-NN.png` (1920x1080, `--scale 2` cho 4K). Có `pptxgenjs` (`npm i pptxgenjs` trong `deck/`) thì ra thêm `.pptx` (mỗi slide là ảnh PNG 16:9 chứa sẵn các điện thoại dọc + ghi chú, nên tỉ lệ dọc của ảnh app luôn đúng). Mang theo cả PDF dự phòng khi trình chiếu.
+
+Yêu cầu: Node + Playwright (`npm i -g playwright && npx playwright install chromium`). `out/` đã được git-ignore. PDF ví dụ: `example/Xclipse-example.pdf`; ảnh của ví dụ nằm ở `example/assets/` (thư mục `deck/assets/` dành cho ảnh của đội bạn, ban đầu trống; `new-project.sh` không chép `example/`).
+
+## Loại slide (`type`) và trường chính
+
+| type | Trường |
+|---|---|
+| cover | app, tagline, de, bang, event, team, members[], date, image (ảnh dọc, khung điện thoại; `device:'browser'` để dùng khung trình duyệt cũ) |
+| video | title, bullets[] (2–3 dòng), video (mp4 ≤ 2:00), poster (png cùng độ phân giải video, vd 1170×2532, tỉ lệ 9:19,5), videoFile (đường dẫn bản đầy đủ, hiện khi xuất PDF) |
+| problem | title, persona{name,role,photo}, pains[], scenarioLabel, scenario, stat{value,label} |
+| solution | oneLiner, bullets[{icon,text}], image (khung trình duyệt cũ; ảnh dọc thì dùng `phone`) |
+| **phone** | title, eyebrow, image (dọc), callouts[{title,desc,y}] (3, ghim số trên máy tại `y`, ví dụ '48%') |
+| **phones-2** / **phones-3** | title, phones[{image,label,sub}] (2 hoặc 3 máy cạnh nhau, ví dụ Sáng/Tối hoặc ca thường/sai/biên), points[], note |
+| **phone-steps** | title, steps[{image,title,desc}] (3 máy, mũi tên 1 → 2 → 3), note |
+| features | title, items[{icon,title,desc}] (5) |
+| demo | title, url, image (dọc), device:'phone' (điện thoại + QR bên cạnh; để trống = khung trình duyệt cũ), iframe:true (chạy trực tiếp trong khung điện thoại), live:'auto', caption, qrLabel |
+| flow | title, steps[{icon,title,desc}] (3–5), note |
+| ai | real[], mock[], controls[], pipeline{steps[{label,sub,kind}], fallbackAt, fallback{label,sub}} |
+| quality | rows[{id,kind,case,result,status:pass/warn/fail,label}], summary{value,label}, legend[] |
+| metrics | items[{value,prefix,suffix,decimals,label,sub}] (đếm lên), note |
+| roadmap | items[{when,title,desc,tag}] (≤4) |
+| team | members[{name,role,did,photo}], stack[] |
+| thanks | title, subtitle, cta, url, videoUrl, qrLabel |
+
+Mọi slide: `eyebrow`, `title`, `notes` (bấm N), `time`, và `speaker` (người nói, chỉ hiện trong ghi chú, không lên slide). Khuôn `notes` cho pitch 3 người (5 dòng thông tin): `Người nói`, `Mốc giờ`, ba dòng neo `V` (vấn đề) / `T` (thao tác, điểm nhấn) / `S` (con số), `Cue kỹ thuật: Mời chuyển slide.` (thành viên không tự bấm slide; kỹ thuật viên BTC đổi slide khi nghe cue), `Chuyền mic`; xem `template.data.js` và `templates/KICH-BAN-DEMO.md`. Chữ: `**đậm**`, `{{nhấn gradient}}`. Giao diện mặc định là Xclipse (Ice `#DBF2FC` · Navy `#072D59` · Coral `#FD6E88`, bìa kính sọc + quả cầu 3D); `meta.theme: 'classic'` (hoặc `?theme=classic`) quay về bảng màu tím cũ; đổi màu riêng: `meta.accent` / `meta.accent2`. Từ nhấn Playfair italic: `*từ*`. Dữ liệu cũng có thể dán JSON vào thẻ `<script id="deck-data">` trong `deck.html`. Thứ tự nạp: JSON inline > `?data=` > `deck.data.js` > `example.data.js`.
+
+Demo trực tiếp: `iframe:true` thêm nút "Chạy trực tiếp"; nếu app chặn iframe hoặc mất mạng, ảnh `image` vẫn hiện. Trung thực: không ghi "thật" cho tình huống dựng sẵn, nêu rõ AI mô phỏng.
+
+## Kịch bản thuyết trình 10 phút (11 slide, 3 người nói)
+
+| Slide | Người nói | Nội dung | Mốc giờ |
+|---|---|---|---|
+| 1 cover | Diệu Anh | Chào, tên app, 1 câu hứa | 00:00–00:35 |
+| 2 problem | Diệu Anh | Persona + nỗi đau + 1 con số | 00:35–01:30 |
+| 3 solution | Diệu Anh | Giải pháp một câu, UI/UX sơ bộ | 01:30–02:30 |
+| 4 features | Dũng | 5 tính năng, 1 quy tắc nghiệp vụ | 02:30–03:15 |
+| 5 flow | Dũng | Luồng 3–5 bước | 03:15–03:55 |
+| 6 demo | Dũng | Demo ca thường (mỗi thao tác ≤ 25s) | 03:55–05:10 |
+| 7 demo | Dũng | Ca sai, ca biên, mobile | 05:10–06:15 |
+| 8 ai | Nguyên | Kiến trúc, AI/proxy, nhãn mô phỏng | 06:15–07:15 |
+| 9 quality | Nguyên | Kiểm thử, bảo mật | 07:15–08:15 |
+| 10 metrics | Nguyên | **Giả định & cách tính** (bắt buộc Bảng Kinh tế; kit chưa có loại `assumptions`, dùng `metrics`: giá trị + nhãn nguồn, hòa vốn, giới hạn) | 08:15–09:00 |
+| 11 thanks | Nguyên | Tổng kết, QR, mời hỏi đáp | 09:00–09:45 |
+
+Đệm 15 giây cuối. Nguyên rút gọn: bản 2:00 bỏ slide 10, bản 1:00 chỉ slide 9 rồi 11. Bấm `N` để xem người nói, mốc giờ, 3 neo và đồng hồ. Cần slide Roadmap/Team thì thêm loại `roadmap`/`team` vào cuối (ngoài 10 phút) hoặc dùng ở bản dài. Tập nói 2 lần với đồng hồ. Thẻ in tay: `templates/CUE-CARDS.md`.
+
+## Cấu trúc
+
+`deck.html` · `template.data.js` · `example.data.js` (Xclipse, Đề 8 Bảng B) · `assets/` (ảnh của bạn) · `tools/capture.cjs`, `tools/capture.example.json`, `tools/export.cjs` · `example/` (PDF + ảnh của bản ví dụ Xclipse).

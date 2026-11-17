@@ -1,0 +1,174 @@
+{
+  "app": "Tên ứng dụng",
+  "tagline": "Nhập, nhờ AI gợi ý, xem kết quả, lưu và xem lại",
+  "link": "",
+  "notice": "Dữ liệu mô phỏng AI · Dữ liệu mẫu",
+  "title": {
+    "text": "Tên ứng dụng",
+    "sub": "Video demo trên điện thoại",
+    "seconds": 3
+  },
+  "end": {
+    "text": "Cảm ơn đã xem",
+    "sub": "Giao diện chấm trên điện thoại 360 đến 390 px",
+    "seconds": 4
+  },
+  "scenes": [
+    {
+      "id": "home",
+      "hash": "#/home",
+      "caption": "Trang chủ: số liệu tổng quan, dữ liệu mẫu",
+      "minDuration": 6,
+      "actions": [
+        {
+          "wait": 1200
+        },
+        {
+          "scroll": 500
+        },
+        {
+          "wait": 800
+        },
+        {
+          "scroll": 0
+        }
+      ]
+    },
+    {
+      "id": "item-add",
+      "hash": "#/example",
+      "caption": "Thêm mục mới bằng biểu mẫu kéo lên từ đáy",
+      "minDuration": 14,
+      "actions": [
+        {
+          "wait": 800
+        },
+        {
+          "tap": "[data-act=\"add\"]"
+        },
+        {
+          "wait": 700
+        },
+        {
+          "type": [
+            "input[name=\"name\"]",
+            "Gửi báo giá cho khách mới"
+          ]
+        },
+        {
+          "tap": "button#ex-save"
+        },
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "hash": "#/example",
+      "caption": "AI gợi ý mục mới: kết quả có nhãn mô phỏng",
+      "minDuration": 12,
+      "actions": [
+        {
+          "scroll": 900
+        },
+        {
+          "wait": 500
+        },
+        {
+          "type": [
+            "#ex-ai-form textarea",
+            "Chuẩn bị buổi họp khách hàng đầu tuần"
+          ]
+        },
+        {
+          "tap": "#ex-ai-go"
+        },
+        {
+          "wait": 2500
+        },
+        {
+          "eval": "document.querySelector('[data-slot=\"ai-out\"]').scrollIntoView({block:'center',behavior:'smooth'})"
+        },
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "id": "biz",
+      "hash": "#/playground/biz",
+      "caption": "Kinh doanh: ba kịch bản, điểm hòa vốn, độ nhạy",
+      "minDuration": 14,
+      "actions": [
+        {
+          "wait": 1200
+        },
+        {
+          "scroll": 700
+        },
+        {
+          "wait": 1200
+        },
+        {
+          "scroll": 1500
+        },
+        {
+          "wait": 1200
+        },
+        {
+          "scroll": 2300
+        },
+        {
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "id": "import",
+      "hash": "#/playground/import",
+      "caption": "Nhập file Excel hoặc CSV, xem trước rồi lưu",
+      "minDuration": 10,
+      "actions": [
+        {
+          "wait": 1200
+        },
+        {
+          "tap": "[data-act=\"sample\"]"
+        },
+        {
+          "wait": 1500
+        },
+        {
+          "scroll": 600
+        },
+        {
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "id": "theme",
+      "hash": "#/home",
+      "caption": "Đổi giao diện sáng và tối chỉ một chạm",
+      "minDuration": 8,
+      "actions": [
+        {
+          "wait": 600
+        },
+        {
+          "theme": "dark"
+        },
+        {
+          "wait": 1800
+        },
+        {
+          "theme": "light"
+        },
+        {
+          "wait": 800
+        }
+      ]
+    }
+  ]
+}

@@ -637,6 +637,7 @@
     mark(statusBadge, 'hero.badge', 'Nhãn trạng thái', 'box', { required: true });
     var ctaText = txt('hero.cta', (st.ctaText || '').trim() || L.submit);
     var cta = mark(h('a', { class: 'lp-cta', href: '#lp-register', text: ctaText }), 'hero.cta', 'Nút chính', 'button', { def: L.submit });
+    var ctaEnded = h('span', { class: 'lp-cta-ended', text: 'Sự kiện đã diễn ra', hidden: true });
     // Ảnh bìa: ảnh người dùng tải lên, không có thì dùng ảnh vẽ sẵn của mẫu
     var heroArt = !images.hero && !images.noTplHero && tpl.hero ? new URL(tpl.hero, document.baseURI).href : ''; // đường dẫn tuyệt đối: url() trong biến CSS tính theo file CSS
     var heroSrc = images.hero || heroArt;
@@ -648,7 +649,7 @@
         h('span', { class: 'lp-meta-item' }, [ico('calendar'), TX('span', {}, 'hero.date', 'Thời gian', fmtDate(ev.startAt))]),
         h('span', { class: 'lp-meta-item' }, [ico('pin'), TX('span', {}, 'hero.location', 'Địa điểm', ev.location)])
       ]), 'hero.meta', 'Dòng thời gian & địa điểm', 'box'),
-      h('div', { class: 'lp-hero-action' }, [cta, statusBadge, proofChip]),
+      h('div', { class: 'lp-hero-action' }, [cta, ctaEnded, statusBadge, proofChip]),
       imageButton('hero', images.hero || heroArt ? 'Đổi ảnh bìa' : 'Thêm ảnh bìa'),
       heroSrc ? editButton('hero') : null
     ]);
@@ -1014,10 +1015,12 @@
       TX('p', { class: 'lp-map-addr' }, 'map.addr', 'Địa chỉ hiển thị', ev.location),
       mark(h('div', { class: 'lp-map' }, [mapQ ? h('iframe', { src: 'https://maps.google.com/maps?q=' + encodeURIComponent(mapQ) + '&output=embed', title: 'Bản đồ ' + mapQ, loading: 'lazy', referrerpolicy: 'no-referrer-when-downgrade' }) : null]), 'map.frame', 'Khung bản đồ', 'box')
     ]);
+    var cta2Btn = mark(h('a', { class: 'lp-cta', href: '#lp-register', text: txt('cta2.btn', 'Đăng ký ngay') }), 'cta2.btn', 'Nút kêu gọi cuối trang', 'button', { def: 'Đăng ký ngay' });
+    var cta2Ended = h('span', { class: 'lp-cta-ended', text: 'Sự kiện đã diễn ra', hidden: true });
     var cta2 = h('section', { class: 'lp-section lp-cta2' }, [
       TX('h2', {}, 'cta2.title', 'Tiêu đề kêu gọi', 'Chỉ còn {con_cho} chỗ – giữ chỗ ngay'),
       TX('p', {}, 'cta2.text', 'Nội dung kêu gọi', 'Đã có {so_dang_ky} người đăng ký. Sự kiện diễn ra sau {dem_nguoc} ngày nữa.', { multiline: true }),
-      mark(h('a', { class: 'lp-cta', href: '#lp-register', text: txt('cta2.btn', 'Đăng ký ngay') }), 'cta2.btn', 'Nút kêu gọi cuối trang', 'button', { def: 'Đăng ký ngay' })
+      cta2Btn, cta2Ended
     ]);
 
     // CHÂN TRANG: ghi nguồn studio (thiệp cưới) + đường dẫn "Tạo trang như thế này" (phễu lan truyền)
@@ -1085,6 +1088,9 @@
       var now = opts.now();
       var count = opts.getCount();
       var status = ES.getStatus(ev, count, now);
+      var ended = status.code === 'ended'; // đã qua: thay nút đăng ký bằng nhãn "Sự kiện đã diễn ra" (cả file xuất)
+      cta.hidden = ended; ctaEnded.hidden = !ended;
+      cta2Btn.hidden = ended; cta2Ended.hidden = !ended;
       statusBadge.textContent = status.label;
       statusBadge.className = 'lp-badge is-' + status.code;
       if (lastCount != null && count > lastCount) retrigger(countText, 'bump');
@@ -1125,9 +1131,10 @@
       } else offerLeft.hidden = true;
       var cdn = ES.countdown(ev, now), short = '';
       if (cdn) short = cdn.days > 0 ? 'Còn ' + cdn.days + ' ngày' : (cdn.hours > 0 ? 'Còn ' + cdn.hours + ' giờ' : 'Còn ' + cdn.minutes + ' phút');
-      stickyInfo1.textContent = seats && left > 0 ? seats : (status.code === 'ended' ? 'Sự kiện đã diễn ra' : (seats || ev.name));
-      stickyInfo2.textContent = status.code === 'ended' ? '' : short;
-      stickyBtn.textContent = status.code === 'ended' ? 'Xem thông tin' : (status.waitlist ? 'Vào danh sách chờ' : ctaText);
+      stickyInfo1.textContent = seats && left > 0 ? seats : (ended ? ev.name : (seats || ev.name));
+      stickyInfo2.textContent = ended ? '' : short;
+      stickyBtn.disabled = ended;
+      stickyBtn.textContent = ended ? 'Sự kiện đã diễn ra' : (status.waitlist ? 'Vào danh sách chờ' : ctaText);
       if (regInst) { /* popup đang mở: form/closed đã cập nhật ở trên */ }
     }
 

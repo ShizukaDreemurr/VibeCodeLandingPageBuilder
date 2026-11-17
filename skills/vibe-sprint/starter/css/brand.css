@@ -1,0 +1,45 @@
+/* brand.css - Chi tiết thành phần của "Tầm nhìn Thông minh" áp toàn app (thẻ bo 20, thẻ tag viên thuốc, nút chính san hô, brand pill, backdrop navy mờ, ô nhập nền băng, tiêu đề mục).
+   Nạp sau lucian.css, TRƯỚC mobile.css. Giữ chuẩn điện thoại: nút >= 48px, ô nhập 16px. Chỉ áp khi preset xclipse. */
+@layer components {
+  /* Thẻ: bo 20, bóng navy nhẹ, nhấc nhẹ khi rê (chỉ thiết bị có chuột) */
+  html[data-preset="xclipse"] .card { border-radius: 20px; box-shadow: 0 10px 28px rgba(7, 45, 89, .10); transition: border-color var(--dur-2), transform .2s var(--ux-ease), box-shadow .2s var(--ux-ease); }
+  html[data-preset="xclipse"][data-theme="dark"] .card { box-shadow: 0 10px 28px rgba(0, 0, 0, .35); }
+  @media (hover: hover) { html[data-preset="xclipse"] a.card:hover, html[data-preset="xclipse"] .card.kpi:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(7, 45, 89, .22); } }
+
+  /* Tag viên thuốc: băng (mặc định) và hồng (.accent) */
+  html[data-preset="xclipse"] .badge { background: #DBF2FC; color: #072D59; }
+  html[data-preset="xclipse"] .badge.accent { background: #FFF0F3; color: #B42A47; border: 1px solid #FFC2CE; }
+  html[data-preset="xclipse"][data-theme="dark"] .badge { background: #173A66; color: #DBF2FC; }
+  html[data-preset="xclipse"][data-theme="dark"] .badge.accent { background: rgba(253, 110, 136, .16); color: #FFB3C1; border-color: rgba(253, 110, 136, .4); }
+
+  /* Nút chính: viên thuốc san hô (chữ navy, đạt AA) cho .btn-primary ở thanh hành động + hộp thoại; bóng phát sáng, nảy khi bấm */
+  html[data-preset="xclipse"] .btn-primary, html[data-preset="xclipse"] .btn-cta {
+    background: linear-gradient(135deg, #FF93A8 0%, #FD6E88 55%, #FA6783 100%); border-color: transparent; color: #072D59; border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(253, 110, 136, .38);
+  }
+  html[data-preset="xclipse"] .btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #FF93A8 0%, #FD6E88 55%, #FA6783 100%); filter: brightness(1.05); }
+  html[data-preset="xclipse"] .btn-primary:disabled { background: var(--disabled-bg); color: var(--disabled-ink); box-shadow: none; }
+
+  /* Brand pill ở thanh trên */
+  html[data-preset="xclipse"] .brand { padding: 0 14px 0 6px; border-radius: 999px; background: rgba(255, 255, 255, .72); border: 1px solid var(--border); align-self: center; }
+  html[data-preset="xclipse"][data-theme="dark"] .brand { background: rgba(219, 242, 252, .08); }
+  @media (prefers-color-scheme: dark) { html[data-preset="xclipse"]:not([data-theme="light"]) .brand { background: rgba(219, 242, 252, .08); } }
+  html[data-preset="xclipse"] .brand-mark { width: 28px; height: 28px; border-radius: 50%; font-size: 14px; background: linear-gradient(135deg, #FD6E88, #072D59); }
+  html[data-preset="xclipse"] .brand-name { font-size: 15px; font-weight: 700; }
+
+  /* Tiêu đề mục: đậm, chặt chữ, có thanh nhấn san hô nhỏ */
+  html[data-preset="xclipse"] .section-title { font-weight: 800; letter-spacing: -.02em; }
+  html[data-preset="xclipse"] .view-title { font-weight: 800; letter-spacing: -.025em; }
+
+  /* Ô nhập: nền băng, vòng focus navy/hồng */
+  html[data-preset="xclipse"] .input { background: #F5FBFF; border-radius: 12px; }
+  html[data-preset="xclipse"][data-theme="dark"] .input { background: var(--raised); }
+  @media (prefers-color-scheme: dark) { html[data-preset="xclipse"]:not([data-theme="light"]) .input { background: var(--raised); } }
+  html[data-preset="xclipse"] .input:focus { border-color: #072D59; box-shadow: 0 0 0 3px rgba(7, 45, 89, .14); }
+  html[data-preset="xclipse"][data-theme="dark"] .input:focus { border-color: #FD6E88; box-shadow: 0 0 0 3px rgba(253, 110, 136, .22); }
+
+  /* Hộp thoại / sheet: lớp phủ navy mờ */
+  html[data-preset="xclipse"] dialog.dlg::backdrop { background: rgba(7, 45, 89, .55); }
+  @media (hover: hover) and (min-width: 768px) { html[data-preset="xclipse"] dialog.dlg::backdrop { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); } }
+  html[data-preset="xclipse"] dialog.dlg { box-shadow: 0 28px 64px rgba(7, 45, 89, .32); }
+}

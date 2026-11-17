@@ -1,0 +1,47 @@
+  // ===== Mẫu kiểm thử cho MỘT feature thật. Sao chép vào tests/smoke.cjs, chỗ đánh dấu "FEATURE TESTS". =====
+  // Thay: TAB (id đăng ký trong EP.register), COL (tên collection), #xx-save (id nút lưu trong dialog), các name="..." của form.
+  // Chạy được ngay vì smoke.cjs đã có sẵn: page, URL, ok(), CFG (= EP.config.prefix / mockNotice), SHOTS.
+  {
+    const TAB = 'don-hang', COL = 'orders';
+    console.log('# ' + TAB + ': CRUD + kiểm tra form + dữ liệu biên');
+    await page.goto(URL + '#/' + TAB); await page.waitForSelector('html[data-ready="1"]');
+    await page.waitForSelector('#view-' + TAB + ' .table tbody tr');
+    const rowCount = () => page.$$eval('#view-' + TAB + ' .table tbody tr', (r) => r.length);
+    const n0 = await rowCount();
+    ok('có dữ liệu demo (' + n0 + ' dòng)', n0 >= 3);                         // đúng số dòng demo bạn khai báo thì viết === N
+
+    // 1) Form rỗng -> lỗi tiếng Việt, aria-invalid, focus vào ô lỗi đầu tiên
+    await page.click('[data-act="add"]'); await page.waitForSelector('dialog[open]');
+    await page.click('#xx-save');
+    ok('form rỗng hiện lỗi', (await page.textContent('dialog [data-field="name"] .field-msg')).includes('Vui lòng nhập'));
+    ok('lỗi gắn aria-invalid', (await page.getAttribute('dialog [name="name"]', 'aria-invalid')) === 'true');
+
+    // 2) Giá trị biên / sai: 0, âm, vượt khoảng, số lẻ. Mỗi quy tắc nghiệp vụ trong spec = một dòng ok().
+    await page.fill('dialog [name="name"]', 'Mục kiểm thử');
+    await page.fill('dialog [name="qty"]', '-1');
+    await page.click('#xx-save');
+    ok('số âm bị từ chối', (await page.textContent('dialog [data-field="qty"] .field-msg')).length > 0);
+
+    // 3) Nhập đúng -> thêm được, còn sau reload
+    await page.fill('dialog [name="qty"]', '5');
+    await page.click('#xx-save'); await page.waitForSelector('dialog[open]', { state: 'detached' });
+    ok('thêm: +1 dòng', (await rowCount()) === n0 + 1);
+    await page.reload(); await page.waitForSelector('#view-' + TAB + ' .table tbody tr');
+    ok('còn sau khi tải lại', (await rowCount()) === n0 + 1);
+
+    // 4) Xoá (xác nhận bằng nút nguy hiểm trong dialog)
+    await page.click('#view-' + TAB + ' tr:has-text("Mục kiểm thử") [data-act="delete"]');
+    await page.click('#confirm-ok'); await page.waitForSelector('dialog[open]', { state: 'detached' });
+    await page.waitForFunction((a) => document.querySelectorAll('#view-' + a[0] + ' .table tbody tr').length === a[1], [TAB, n0]);
+    ok('xoá: về số dòng cũ', (await rowCount()) === n0);
+
+    // 5) Khoá lưu trữ dùng đúng tiền tố của đề (không hardcode 'ep_')
+    ok('collection lưu dưới tiền tố ' + CFG.prefix, await page.evaluate((a) => localStorage.getItem(a[0] + 'c_' + a[1]) !== null, [CFG.prefix, COL]));
+
+    // 6) Kết quả AI mock (nếu feature có AI): phải kèm câu mock notice của đề
+    // await page.click('#xx-ai-go'); await page.waitForSelector('.ai-result');
+    // ok('mock kèm notice', (await page.textContent('.ai-result [data-ai-notice]')).includes(CFG.notice));
+
+    // 7) Con số hiển thị đúng công thức (ví dụ lãi/đơn): so với giá trị tính tay, không chỉ "có chữ"
+    // ok('lãi/đơn = 47.920', (await page.textContent('[data-calc-out]')).includes('47.920'));
+  }

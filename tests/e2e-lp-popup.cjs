@@ -111,9 +111,10 @@ const SUCCESS = 'dialog.lp-pop[open]';
 
   // 8. Sự kiện đã diễn ra → thông báo đóng
   await mount({ days: -1 });
-  await p.click('#lp-test .lp-hero .lp-cta'); await p.waitForSelector(REG);
-  ok('đã diễn ra: popup hiện thông báo đóng, không có form', await p.evaluate(() => { const d = document.querySelector('dialog.lp-reg'); const f = d.querySelector('form'); const c = d.querySelector('.lp-closed'); return f.hidden && !c.hidden && /đã diễn ra/.test(c.textContent); }));
-  await p.keyboard.press('Escape'); await p.waitForTimeout(250);
+  // Đã qua: nút đăng ký ẩn, thay bằng nhãn không bấm được; thanh dính bị vô hiệu
+  ok('đã diễn ra: ẩn nút hero, hiện nhãn "Sự kiện đã diễn ra"', await p.evaluate(() => { const c = document.querySelector('#lp-test .lp-hero .lp-cta'); const l = document.querySelector('#lp-test .lp-hero .lp-cta-ended'); return c.hidden && getComputedStyle(c).display === 'none' && !l.hidden && /đã diễn ra/.test(l.textContent); }));
+  ok('đã diễn ra: thanh dính vô hiệu', await p.evaluate(() => { const b = document.querySelector('#lp-test .lp-sticky-btn'); return !b || b.disabled; }));
+  ok('đã diễn ra: không có popup đăng ký mở ra', (await p.locator(REG).count()) === 0);
 
   // 9. Chip + thẻ ưu đãi + thẻ lợi ích
   await mount({});

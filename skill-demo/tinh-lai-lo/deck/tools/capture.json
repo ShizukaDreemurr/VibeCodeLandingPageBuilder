@@ -1,0 +1,61 @@
+{
+ "base": "http://localhost:8217/",
+ "out": "../assets",
+ "desktop": [
+  1600,
+  1000
+ ],
+ "mobile": [
+  390,
+  844
+ ],
+ "views": [
+  {
+   "name": "01-man-hinh-chinh",
+   "url": "index.html?demo=1",
+   "settle": 800,
+   "devices": [
+    "desktop",
+    "mobile"
+   ]
+  },
+  {
+   "name": "02-giai-phap",
+   "url": "index.html?demo=1#/san-pham",
+   "settle": 800
+  },
+  {
+   "name": "03-demo",
+   "url": "index.html?demo=1#/tinh-nhanh",
+   "settle": 1000
+  },
+  {
+   "name": "04-so-sanh",
+   "url": "index.html?demo=1#/so-sanh",
+   "settle": 1200
+  },
+  {
+   "name": "05-ai",
+   "url": "index.html?demo=1#/ai-gia",
+   "steps": [
+    {
+     "eval": "(function(){var s=document.querySelector('#ag-pick');s.selectedIndex=3;})()"
+    },
+    {
+     "click": "#ag-go"
+    },
+    {
+     "waitFor": ".ai-result"
+    },
+    {
+     "wait": 400
+    }
+   ],
+   "settle": 500,
+   "devices": [
+    "desktop",
+    "mobile"
+   ]
+  }
+ ]
+}

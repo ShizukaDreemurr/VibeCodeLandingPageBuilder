@@ -1,0 +1,26 @@
+rules_version = '2';
+// Mỗi người dùng chỉ đọc/ghi dữ liệu của chính mình: users/{uid}/{collection}/{id}. Mọi đường dẫn khác bị từ chối.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Ví dụ kiểm tra kích thước/trường: bản ghi là map, có id khớp mã tài liệu, <= 60 trường,
+    // và nếu có updatedAt/createdAt thì phải là số. Siết thêm theo đề (độ dài chữ, danh sách trường cho phép...).
+    function validRow(id) {
+      let d = request.resource.data;
+      return d is map
+        && d.keys().size() <= 60
+        && d.id == id
+        && (!('updatedAt' in d) || d.updatedAt is number)
+        && (!('createdAt' in d) || d.createdAt is number);
+    }
+
+    match /users/{uid}/{collection}/{id} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid && validRow(id);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -787,3 +787,12 @@ html.motion-off .lp-progress, .st-motion-off .lp-progress, .is-editable .lp-prog
 html.motion-off .lp-wall-tr, .st-motion-off .lp-wall-tr { animation: none; }
 
 .lp-gallery.lp-acc-init .lp-gallery-item { transition: none !important; }
+
+/* Sự kiện đã diễn ra: nút đăng ký thay bằng nhãn không bấm được (renderer bật/tắt .lp-cta-ended) */
+.lp-cta-ended { display: inline-block; padding: 12px 22px; border-radius: var(--lp-btn-radius); font-weight: 700; background: color-mix(in srgb, var(--lp-hero-text) 16%, transparent); color: var(--lp-hero-text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-hero-text) 32%, transparent); cursor: default; user-select: none; }
+.lp-cta2 .lp-cta-ended { background: rgba(255, 255, 255, 0.18); color: #fff; }
+.lp-cta[hidden], .lp-cta-ended[hidden] { display: none; }
+.lp-sticky-btn:disabled { opacity: 0.6; cursor: default; }
+/* Phần tử có thuộc tính hidden (ví dụ khối ưu đãi, đồng hồ khi sự kiện đã qua) phải ẩn cả khi CSS khác đặt display (grid/flex);
+   trang xem đã có quy tắc này trong app.css, file HTML xuất thì chỉ có landing.css nên cần khai báo ở đây. */
+.landing [hidden] { display: none !important; }
