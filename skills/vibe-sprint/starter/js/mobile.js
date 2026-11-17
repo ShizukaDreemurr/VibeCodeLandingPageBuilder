@@ -10,7 +10,25 @@
     if (max > 4) f = x > 4 ? (x < max - 4 ? 'both' : 'start') : 'end';
     if (f) el.setAttribute('data-fade', f); else el.removeAttribute('data-fade');
   }
-  function scan() { Array.prototype.forEach.call(doc.querySelectorAll('.seg'), function (el) { fade(el); }); }
+  /* Giá trị KPI không bao giờ xuống dòng: thu cỡ chữ vừa đủ để vừa thẻ (tối thiểu 14px); cả lưới dùng CHUNG một cỡ để các thẻ cân nhau */
+  function fitKpi(el) {
+    el.style.fontSize = '';
+    var size = parseFloat(root.getComputedStyle(el).fontSize), guard = 0;
+    while (el.scrollWidth > el.clientWidth + 1 && size > 14 && guard++ < 30) { size -= 1; el.style.fontSize = size + 'px'; }
+    return size;
+  }
+  function fitGrid(grid) {
+    var els = Array.prototype.slice.call(grid.querySelectorAll('.kpi-value:not(.kpi-nodata)'));
+    if (!els.length) return;
+    els.forEach(function (e) { e.style.fontSize = ''; });
+    var base = parseFloat(root.getComputedStyle(els[0]).fontSize), min = base;
+    els.forEach(function (e) { min = Math.min(min, fitKpi(e)); });
+    els.forEach(function (e) { if (min < base) e.style.fontSize = min + 'px'; else e.style.fontSize = ''; });
+  }
+  function scan() {
+    Array.prototype.forEach.call(doc.querySelectorAll('.seg'), function (el) { fade(el); });
+    Array.prototype.forEach.call(doc.querySelectorAll('.grid.kpis'), fitGrid);
+  }
   doc.addEventListener('scroll', function (e) { if (e.target && e.target.classList && e.target.classList.contains('seg')) fade(e.target); }, true);
   doc.addEventListener('change', function (e) {
     var t = e.target, seg = t && t.closest && t.closest('.seg');
@@ -25,4 +43,5 @@
   root.addEventListener('resize', later);
   if (EP && EP.bus) EP.bus.on('route', later);
   later();
+  if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(later);
 })(window);

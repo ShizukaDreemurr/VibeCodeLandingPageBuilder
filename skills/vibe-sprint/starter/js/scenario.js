@@ -174,7 +174,7 @@
     el.innerHTML =
       '<div class="card sc-head"><div class="card-head"><h2 class="section-title">' + esc(cfg.title || 'Mô hình kinh doanh') + '</h2><div class="row" data-slot="tags"></div></div>' +
       '<p class="muted" data-slot="note"></p>' +
-      '<div class="row mt-3"><button class="btn btn-sm" type="button" data-act="reset">' + EP.ui.icon('refresh') + 'Đặt lại giả định</button>' +
+      '<div class="row mt-3"><button class="btn btn-sm" type="button" data-act="reset" aria-label="Đặt lại giả định">' + EP.ui.icon('refresh') + 'Đặt lại</button>' +
       '<button class="btn btn-sm" type="button" data-act="csv">' + EP.ui.icon('download') + 'Xuất CSV</button>' +
       '<button class="btn btn-sm" type="button" data-act="copy">' + EP.ui.icon('copy') + 'Sao chép cho slide</button></div></div>' +
       '<div class="card"><div class="card-head"><h2 class="section-title">Bảng giả định (sửa được)</h2><label class="sc-spread muted" for="' + uid + '-spread">Biên độ kịch bản Xấu/Tốt <input class="sc-spread-in" id="' + uid + '-spread" type="number" min="0" max="50" step="1" inputmode="numeric"> %</label></div>' +
@@ -192,13 +192,15 @@
     $('note').textContent = cfg.note || 'Mọi con số là giả định minh hoạ để trình bày logic, không phải số liệu thật. Thay bằng số liệu của đề hoặc của BTC.';
 
     /* --- bảng giả định --- */
-    function inputValue(a, v) { return kindOf(a) === 'money' ? EP.fmt.number(v, 0) : String(Math.round(v * 1e6) / 1e6); }
+    /* Số nguyên lớn (lượt truy cập, ₫...) hiện có dấu chấm nghìn kiểu vi-VN; số nhỏ / có phần thập phân giữ ô số thường */
+    function grouped(a) { var k = kindOf(a); return k === 'money' || (k === 'number' && Math.max(Math.abs(a.max || 0), Math.abs(a.value || 0)) >= 10000 && !(a.step && a.step % 1)); }
+    function inputValue(a, v) { return grouped(a) ? EP.fmt.number(v, 0) : String(Math.round(v * 1e6) / 1e6); }
     $('assump').innerHTML = A.map(function (a) {
       var k = kindOf(a), iid = uid + '-' + a.key, t = srcOf(a.key);
-      var inp = k === 'money'
+      var inp = grouped(a)
         ? '<input class="input" id="' + iid + '" data-key="' + esc(a.key) + '" type="text" inputmode="numeric" data-lx-money placeholder=" " autocomplete="off" value="' + esc(inputValue(a, st.values[a.key])) + '">'
         : '<input class="input" id="' + iid + '" data-key="' + esc(a.key) + '" type="number" inputmode="decimal" placeholder=" " step="' + esc(a.step || 'any') + '" value="' + esc(inputValue(a, st.values[a.key])) + '">';
-      return '<div class="sc-row" data-row="' + esc(a.key) + '"><div class="field">' + inp + '<label class="label" for="' + iid + '">' + esc(a.label + (a.unit ? ' (' + a.unit + ')' : '')) + '</label></div>' +
+      return '<div class="sc-row" data-row="' + esc(a.key) + '"><div class="field">' + inp + '<label class="label" for="' + iid + '">' + esc(a.label) + (a.unit ? '<span class="sr-only"> (' + esc(a.unit) + ')</span>' : '') + '</label>' + (a.unit ? '<span class="sc-unit" aria-hidden="true">' + esc(a.unit) + '</span>' : '') + '</div>' +
         (isNum(a.min) && isNum(a.max) ? '<input class="sc-range" type="range" data-range="' + esc(a.key) + '" min="' + a.min + '" max="' + a.max + '" step="' + (a.step || 'any') + '" value="' + st.values[a.key] + '" aria-label="Kéo để chỉnh ' + esc(a.label) + '">' : '') +
         '<div class="sc-why"><span data-tag>' + EP.ui.badge(TAGS[t], TONES[t]) + '</span><span class="muted">' + esc(a.why || '') + '</span></div><div class="field-msg" data-msg></div></div>';
     }).join('');
@@ -208,7 +210,7 @@
     function readInput(a, inp) {
       var raw = inp.value;
       if (raw === '' || raw == null) return NaN;
-      return kindOf(a) === 'money' ? Number(String(raw).replace(/[^\d]/g, '')) : Number(String(raw).replace(',', '.'));
+      return grouped(a) ? Number(String(raw).replace(/[^\d]/g, '')) : Number(String(raw).replace(',', '.'));
     }
     function checkMsg(a, v, row) {
       var m = row.querySelector('[data-msg]'), txt = '';

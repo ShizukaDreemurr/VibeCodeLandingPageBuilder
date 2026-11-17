@@ -203,7 +203,7 @@
   ui.kpi = function (k) {
     var d = '';
     if (k.delta != null && isFinite(k.delta)) d = '<span class="delta ' + (k.delta >= 0 ? 'up' : 'down') + '">' + (k.delta >= 0 ? '▲ ' : '▼ ') + Math.abs(k.delta).toLocaleString('vi-VN', { maximumFractionDigits: 1 }) + '%</span>';
-    return '<div class="card kpi"><div class="kpi-label">' + esc(k.label) + '</div><div class="kpi-value">' + esc(k.value) + '</div><div class="kpi-foot">' + d + (k.hint ? '<span>' + esc(k.hint) + '</span>' : '') + '</div></div>';
+    return '<div class="card kpi"><div class="kpi-label">' + esc(k.label) + '</div><div class="kpi-value' + (/^Không đủ dữ liệu/.test(String(k.value)) ? ' kpi-nodata' : '') + '">' + esc(k.value) + '</div><div class="kpi-foot">' + d + (k.hint ? '<span>' + esc(k.hint) + '</span>' : '') + '</div></div>';
   };
   /** tone: positive | negative | warning | accent | (rỗng = trung tính) */
   ui.badge = function (text, tone) { return '<span class="badge ' + (tone || '') + '">' + esc(text) + '</span>'; };
@@ -219,7 +219,7 @@
      var s = EP.ui.segmented(el, { label, name, options: [{value,label}], value, onChange(v) }); s.get(); s.set(v) */
   ui.segmented = function (el, o) {
     var name = o.name || 'seg-' + EP.uid();
-    el.innerHTML = '<div class="seg" role="radiogroup" aria-label="' + esc(o.label || '') + '">' + o.options.map(function (op) {
+    el.innerHTML = '<div class="seg ' + (o.options.length <= 3 ? 'fill' : 'scroll') + '" role="radiogroup" aria-label="' + esc(o.label || '') + '">' + o.options.map(function (op) {
       return '<label><input type="radio" name="' + esc(name) + '" value="' + esc(op.value) + '"' + (String(op.value) === String(o.value) ? ' checked' : '') + '><span>' + esc(op.label) + '</span></label>';
     }).join('') + '</div>';
     el.addEventListener('change', function (e) { if (e.target.name === name && o.onChange) o.onChange(e.target.value); });

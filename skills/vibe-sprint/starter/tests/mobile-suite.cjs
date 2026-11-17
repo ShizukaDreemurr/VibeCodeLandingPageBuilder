@@ -98,6 +98,37 @@ function heroCheck() {
     orbAnim: orb ? orb.animationName : '', headRatio: bgWorst, ctaRatio: ctaWorst, hw: Math.round(r.width), vw: document.documentElement.clientWidth };
 }
 
+/* Chạy trong trang: cân bằng thị giác (thanh chọn đầy hàng + không bị cắt chữ, KPI một dòng, số có dấu chấm nghìn, không phần tử vượt thẻ). */
+function balanceCheck() {
+  const vis = (el) => { const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden') return false; for (let n = el; n && n !== document.documentElement; n = n.parentElement) if (n.hidden) return false; const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const out = { segFill: [], segClip: [], kpiWrap: [], rawNum: [], overCard: [] };
+  document.querySelectorAll('.seg').forEach((s) => {
+    if (!vis(s) || s.closest('dialog:not([open])')) return;
+    const p = s.parentElement, cs = getComputedStyle(p), inner = p.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const name = (s.getAttribute('aria-label') || '?') + ' ' + Math.round(s.getBoundingClientRect().width) + '/' + Math.round(inner);
+    if (s.getBoundingClientRect().width < inner - 2 && getComputedStyle(p).display !== 'flex') out.segFill.push(name);
+    const scrollable = s.scrollWidth > s.clientWidth + 1;
+    if (!scrollable) s.querySelectorAll('label > span').forEach((sp) => { if (sp.scrollWidth > sp.clientWidth + 1) out.segClip.push(name + ' "' + sp.textContent.trim() + '"'); });
+  });
+  document.querySelectorAll('.kpi-value:not(.kpi-nodata)').forEach((k) => {
+    if (!vis(k)) return;
+    if (k.scrollWidth > k.clientWidth + 1) { out.kpiWrap.push('tràn: ' + k.textContent.trim()); return; }
+    const rg = document.createRange(); rg.selectNodeContents(k);
+    const tops = new Set(Array.from(rg.getClientRects()).map((r) => Math.round(r.top / 4))); if (tops.size > 1) out.kpiWrap.push('xuống dòng: ' + k.textContent.trim());
+  });
+  document.querySelectorAll('.sc-row input[data-key], [data-calc-form] input.input').forEach((i) => { if (vis(i) && /^\d{4,}$/.test(i.value)) out.rawNum.push(i.id + '=' + i.value); });
+  document.querySelectorAll('.card').forEach((c) => {
+    if (!vis(c)) return; const cr = c.getBoundingClientRect();
+    c.querySelectorAll('*').forEach((e) => {
+      if (e.closest('.sr-only, svg, dialog:not([open])') || !vis(e)) return;
+      const pos = getComputedStyle(e).position; if (pos === 'fixed' || pos === 'absolute') return;
+      for (let n = e.parentElement; n && n !== c; n = n.parentElement) { const o = getComputedStyle(n); if (/(auto|scroll|hidden|clip)/.test(o.overflowX)) return; }
+      const r = e.getBoundingClientRect(); if (r.right > cr.right + 1 || r.left < cr.left - 1) out.overCard.push((e.className && e.className.baseVal === undefined ? e.className : e.tagName) + ' ' + Math.round(r.left - cr.left) + '..' + Math.round(r.right - cr.right));
+    });
+  });
+  return out;
+}
+
 function overlaps(list) {
   const bad = [];
   for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
@@ -134,6 +165,12 @@ module.exports = async function mobileSuite({ browser, URL, ok, SHOTS, errors, f
       ok(tag + ' ' + name + ': chữ nội dung >= 14px, chú thích >= 12px', tiny.length === 0, tiny.slice(0, 6));
       const smallIn = d.inputs.filter((t) => t.fs < MIN_INPUT_FONT).map((t) => t.id + ' ' + t.fs + 'px');
       ok(tag + ' ' + name + ': ô nhập >= 16px (không bị iOS phóng to)', smallIn.length === 0, smallIn);
+      const b = await page.evaluate(balanceCheck);
+      ok(tag + ' ' + name + ': thanh chọn (seg) đầy bề ngang khung chứa', b.segFill.length === 0, b.segFill.slice(0, 4));
+      ok(tag + ' ' + name + ': thanh chọn không cắt chữ (vừa hàng hoặc cuộn được)', b.segClip.length === 0, b.segClip.slice(0, 4));
+      ok(tag + ' ' + name + ': giá trị KPI một dòng, không tràn thẻ', b.kpiWrap.length === 0, b.kpiWrap.slice(0, 4));
+      ok(tag + ' ' + name + ': ô số hiện dấu chấm nghìn (không "400000")', b.rawNum.length === 0, b.rawNum.slice(0, 4));
+      ok(tag + ' ' + name + ': không phần tử nào vượt mép thẻ', b.overCard.length === 0, b.overCard.slice(0, 4));
     };
     const tapNav = async (id) => { await page.tap('#bt-' + id); await page.waitForFunction((i) => !document.getElementById('view-' + i).hidden && document.getElementById('view-' + i).querySelector('.view-body').children.length > 0, id); await settle(); };
 
@@ -154,6 +191,17 @@ module.exports = async function mobileSuite({ browser, URL, ok, SHOTS, errors, f
       // cuối trang không bị thanh tab dưới / thanh hành động che
       const cover = await page.evaluate(() => { window.scrollTo(0, document.documentElement.scrollHeight); const last = document.querySelector('.footer'); const fixed = Array.from(document.querySelectorAll('.bnav, .abar')).filter((e) => e.offsetParent !== null || getComputedStyle(e).position === 'fixed').map((e) => e.getBoundingClientRect().top).filter((v) => v > 0); const lastChild = Array.from(last.querySelectorAll('span')).filter((s) => s.offsetParent).pop() || last; return { bottom: lastChild.getBoundingClientRect().bottom, nav: Math.min.apply(null, fixed) }; });
       ok(tag + ' tab ' + t + ': cuối trang không bị thanh dưới che', cover.bottom <= cover.nav + 1, cover);
+    }
+    // tab Mục: lần lượt từng bộ lọc trạng thái, không tràn ngang cả trang
+    if (tabs.includes('example')) {
+      await tapNav('example');
+      const fv = await page.$$eval('#view-example [data-slot="filter"] input', (r) => r.map((x) => x.value));
+      for (const v of fv) {
+        await page.tap('#view-example [data-slot="filter"] label:has(input[value="' + v + '"])'); await settle(300);
+        const d = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+        ok(tag + ' tab example, lọc "' + v + '": không tràn ngang trang (' + d.sw + '/' + d.cw + ')', d.sw <= d.cw);
+      }
+      await page.tap('#view-example [data-slot="filter"] label:has(input[value="all"])'); await settle(200);
     }
     // phân đoạn của sân chơi
     if (tabs.includes('playground')) {

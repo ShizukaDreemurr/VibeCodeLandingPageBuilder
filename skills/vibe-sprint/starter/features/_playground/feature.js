@@ -64,7 +64,7 @@
         '<div class="mt-3" data-slot="chips"></div><div class="mt-3" data-slot="seg"></div>' +
         code("{ type: 'checkbox', switch: true }          // EP.form: công tắc\n<input type=\"checkbox\" role=\"switch\">          // HTML thuần\nEP.ui.segmented(el, { options, value, onChange })   // viên trượt tự gắn")) +
       sec('in', 'Ô nhập', 'Nhãn nổi, kiểm tra ngay, rung khi lỗi, đếm ký tự, tiền vi-VN, hộp chọn tuỳ biến, textarea tự giãn.',
-        '<form class="form" id="lx-form" novalidate>' + EP.form.render(UI_SCHEMA, { kind: 'new' }) + '<div class="row"><button type="submit" class="btn btn-primary">Gửi thử (để trống cho thấy hiệu ứng rung)</button></div></form>' +
+        '<form class="form" id="lx-form" novalidate>' + EP.form.render(UI_SCHEMA, { kind: 'new' }) + '<div class="row"><button type="submit" class="btn btn-primary">Gửi thử</button></div><p class="muted" style="margin-top:8px">Để trống rồi bấm Gửi thử để thấy hiệu ứng rung.</p></form>' +
         code("{ type: 'money', rules: { min: 1000 } }       // đọc về là Number\n{ type: 'text', rules: { maxLength: 30 } }     // tự có bộ đếm 12/30\n{ type: 'select', options }                    // hộp chọn Lucian trên chuột"), 'span-2') +
       sec('kpi', 'KPI đếm lên và định dạng vi-VN', 'Số đếm từ 0, nội dung thật không đổi (đọc màn hình và kiểm thử vẫn thấy giá trị cuối).',
         '<div class="grid kpis" data-slot="kpis"></div><div class="row mt-3"><button type="button" class="btn btn-sm" data-act="recount">' + EP.ui.icon('refresh') + 'Đếm lại</button></div>' +
@@ -163,15 +163,15 @@
 
   /* ---------- Kinh doanh: EP.scenario (giả định -> 3 kịch bản -> hòa vốn -> độ nhạy -> cách tính) ---------- */
   var SHOP = {
-    id: 'shop-demo', title: 'Shop online: lãi hay lỗ mỗi tháng?', tag: 'assumption', unitLabel: 'đơn', kpi: 'profit',
+    id: 'shop-demo2', title: 'Shop online: lãi hay lỗ mỗi tháng?', tag: 'assumption', unitLabel: 'đơn', kpi: 'profit', spread: 5,
     note: 'Ví dụ GENERIC (shop online / quán cà phê), không phải số liệu thật. Mọi con số là giả định có lý do đi kèm; đổi số bên dưới và xem kết quả đổi theo.',
     assumptions: [
-      { key: 'traffic', label: 'Lượt truy cập mỗi tháng', unit: 'lượt', value: 20000, min: 2000, max: 100000, step: 500, better: 'up', why: 'Giả định: từ kênh tự nhiên + quảng cáo, thay bằng số đo thật của đề.' },
-      { key: 'paid', label: 'Tỉ lệ truy cập từ quảng cáo', unit: '%', value: 50, min: 0, max: 100, step: 5, why: 'Giả định: một nửa lượt truy cập phải mua bằng quảng cáo.' },
-      { key: 'cpc', label: 'Chi phí mỗi lượt nhấp (CPC)', unit: '₫', value: 2000, min: 500, max: 8000, step: 100, better: 'down', why: 'Giả định: mức giữa của quảng cáo mạng xã hội cho ngành hàng tiêu dùng.' },
+      { key: 'traffic', label: 'Lượt truy cập mỗi tháng', unit: 'lượt', value: 25000, min: 2000, max: 100000, step: 500, better: 'up', why: 'Giả định: từ kênh tự nhiên + quảng cáo, thay bằng số đo thật của đề.' },
+      { key: 'paid', label: 'Tỉ lệ truy cập từ quảng cáo', unit: '%', value: 60, min: 0, max: 100, step: 5, why: 'Giả định: khoảng 60% lượt truy cập đến từ quảng cáo trả phí, phần còn lại là tự nhiên.' },
+      { key: 'cpc', label: 'Chi phí mỗi lượt nhấp (CPC)', unit: '₫', value: 2500, min: 500, max: 8000, step: 100, better: 'down', why: 'Giả định: mức giữa của quảng cáo mạng xã hội cho ngành hàng tiêu dùng.' },
       { key: 'cr', label: 'Tỉ lệ chuyển đổi (CR)', unit: '%', value: 3, min: 0.5, max: 8, step: 0.1, better: 'up', why: 'Giả định: 2-4% là khoảng thường gặp của shop online nhỏ.' },
-      { key: 'price', label: 'Giá bán trung bình mỗi đơn (AOV)', unit: '₫', value: 180000, min: 50000, max: 600000, step: 5000, better: 'up', why: 'Giả định: mỗi đơn 1 sản phẩm; có thể thay bằng giá trung bình từ dữ liệu BTC.' },
-      { key: 'cogs', label: 'Giá vốn mỗi đơn', unit: '₫', value: 90000, min: 20000, max: 400000, step: 5000, better: 'down', why: 'Giả định: giá vốn bằng một nửa giá bán (biên gộp 50%).' },
+      { key: 'price', label: 'Giá bán trung bình mỗi đơn (AOV)', unit: '₫', value: 200000, min: 50000, max: 600000, step: 5000, better: 'up', why: 'Giả định: mỗi đơn 1 sản phẩm; có thể thay bằng giá trung bình từ dữ liệu BTC.' },
+      { key: 'cogs', label: 'Giá vốn mỗi đơn', unit: '₫', value: 85000, min: 20000, max: 400000, step: 5000, better: 'down', why: 'Giả định: giá vốn khoảng 42% giá bán (biên gộp khoảng 58%).' },
       { key: 'fee', label: 'Phí sàn + thanh toán', unit: '%', value: 6, min: 0, max: 20, step: 0.5, better: 'down', why: 'Giả định: tổng phí cổng thanh toán và sàn tính trên doanh thu.' },
       { key: 'fixed', label: 'Chi phí cố định mỗi tháng', unit: '₫', value: 25000000, min: 5000000, max: 80000000, step: 500000, better: 'down', why: 'Giả định: thuê chỗ, nhân sự cơ bản, phần mềm.' },
       { key: 'reserve', label: 'Quỹ dự phòng trên tổng chi phí', unit: '%', value: 10, min: 0, max: 30, step: 1, sens: false, why: 'Quy tắc: trích 10-15% tổng chi phí cho rủi ro (hàng lỗi, đổi trả, tăng giá quảng cáo).' },
@@ -252,10 +252,10 @@
       EP.calc.mount(el, {
         title: 'Tính lợi nhuận đơn hàng',
         schema: {
-          price: { label: 'Giá bán (₫)', type: 'number', rules: { required: true, min: 0 } },
-          cost: { label: 'Giá vốn (₫)', type: 'number', rules: { required: true, min: 0 } },
+          price: { label: 'Giá bán (₫)', type: 'money', rules: { required: true, min: 0 } },
+          cost: { label: 'Giá vốn (₫)', type: 'money', rules: { required: true, min: 0 } },
           qty: { label: 'Số lượng', type: 'number', rules: { required: true, min: 1, integer: true } },
-          ads: { label: 'Chi phí quảng cáo (₫)', type: 'number', rules: { min: 0 } }
+          ads: { label: 'Chi phí quảng cáo (₫)', type: 'money', rules: { min: 0 } }
         },
         defaults: { price: 250000, cost: 150000, qty: 20, ads: 400000 },
         compute: function (v) {

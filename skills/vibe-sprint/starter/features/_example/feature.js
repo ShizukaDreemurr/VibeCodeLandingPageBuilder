@@ -130,10 +130,10 @@
     function refresh() {
       var s = stats(), all = items.list();
       $slot('kpi').innerHTML = [
-        { label: 'Tổng số mục', value: EP.fmt.number(s.total), hint: 'đang lưu trong trình duyệt' },
-        { label: 'Đang làm', value: EP.fmt.number(s.doing) },
+        { label: 'Tổng số mục', value: EP.fmt.number(s.total), hint: 'lưu trong trình duyệt' },
+        { label: 'Đang làm', value: EP.fmt.number(s.doing), hint: 'đang xử lý' },
         { label: 'Tỉ lệ hoàn thành', value: EP.fmt.percent(s.doneRate, 0), hint: 'trên tổng số mục' },
-        { label: 'Tổng số lượng', value: EP.fmt.number(s.qty) }
+        { label: 'Tổng số lượng', value: EP.fmt.number(s.qty), hint: 'cộng dồn các mục' }
       ].map(EP.ui.kpi).join('');
       table.setRows(visible());
       EP.charts.bar($slot('bar'), EP.charts.countBy(all, 'category', CATEGORY), { unit: 'mục' });
