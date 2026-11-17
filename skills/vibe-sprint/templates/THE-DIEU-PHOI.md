@@ -3,6 +3,8 @@
 > In khổ A4, đặt cạnh bàn phím. **Một dòng = một việc.** Cột "Gõ cho Claude Code" là câu **copy-dán nguyên văn** (sửa chỗ `{{...}}`). Cột "Gửi đi đâu" chỉ file prompt và nơi gửi. Chi tiết quy trình: `references/14-quy-trinh-slide-song-song.md`.
 > **Giờ T+ tính từ lúc đề công bố.** Cổng (bảng gốc ở `SKILL.md`): 8211 của Claude (điều phối), 8212–8231 agent Claude, **8240–8249 Gemini**, **8000 cấm**.
 
+> **12:40–13:00 (trước T+0):** xác nhận với BTC kênh và định dạng nộp bài (giới hạn dung lượng ZIP), trình duyệt giám khảo dùng chấm, và thử link trên mạng phòng thi (`*.workers.dev`, `xclipsex.github.io`).
+
 ## 1. Mốc giờ, câu gõ, nơi gửi, kiểm
 
 | T+ | Gõ cho Claude Code | Gửi đi đâu (file → nơi) | Kiểm trước khi sang mốc sau |

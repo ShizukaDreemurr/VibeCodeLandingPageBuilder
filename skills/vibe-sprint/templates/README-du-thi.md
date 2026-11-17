@@ -94,6 +94,7 @@ Cách nhanh nhất để thử: mở trực tiếp `index.html` trên trình duy
 ```
 
 ## 7. Truy cập và phân quyền
+- **Giám khảo mở link dùng ngay, không cần đăng nhập cá nhân hay API key.**
 - <Người tạo trang có cần đăng nhập không>
 - <Vai trò, trang quản trị nếu có>
 
@@ -137,6 +138,7 @@ Chép bảng từ `docs/BANG-KIEM-THU.md` (ít nhất các ca bắt buộc của
 ## 15. Khung chuẩn bị trước (khai báo theo thể lệ)
 - Trước giờ thi chỉ chuẩn bị **khung chung `vibe-sprint`**: token giao diện, hàm form/bảng/biểu đồ, `EP.ai` (một cửa AI + mô phỏng), `EP.scenario`, `EP.importer`, công cụ kiểm thử và quét key. Khung **không chứa logic, dữ liệu hay giao diện riêng cho đề**.
 - **Toàn bộ tính năng, dữ liệu mẫu, giao diện và nội dung theo đề được xây trong 60 phút thi** (13:15–14:15, ngày <dd/mm/yyyy>). Lịch sử commit và `docs/MINH-CHUNG-AI.md` thể hiện quá trình.
+- Chế độ thử nghiệm nội bộ (`showPlayground`) đã được tắt (`false`) trước khi nộp bài; các mô-đun `EP.ai`, `EP.scenario`, `EP.importer` và thư mục mẫu khung `features/_example`, `features/_playground` thuộc bộ khung kỹ thuật chung `vibe-sprint` (tương đương thư viện UI/tiện ích), không chứa công thức, dữ liệu, giả định hay giao diện nào viết riêng cho đề thi trước 13:15.
 - Thư viện/công cụ bên ngoài: xem mục 9.
 
 ## 16. Minh chứng thời điểm chốt

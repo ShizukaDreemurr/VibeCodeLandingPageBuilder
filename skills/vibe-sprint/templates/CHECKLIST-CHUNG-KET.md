@@ -8,6 +8,7 @@
 - [ ] Tài khoản cần dùng (GitHub, hosting, AI) đã đăng nhập sẵn; không cần nhớ mật khẩu lúc thi.
 - [ ] Khung `vibe-sprint` chung đã sẵn sàng. **Trong khung KHÔNG có mã, dữ liệu hay giao diện viết riêng cho một đề cụ thể** (thể lệ cấm chuẩn bị sẵn tính năng cho đề).
 - [ ] Chạy `node scripts/doctor.mjs`: không còn dòng [ LỖI ] (node, git, Playwright, nhánh `nop-bai`); dòng [ LƯU Ý ] về mạng thì thử lại khi có mạng.
+- [ ] **12:40–13:00:** thử link demo trên mạng phòng thi, xác nhận tải được `*.workers.dev` (proxy AI) và `xclipsex.github.io`; nếu bị chặn thì dùng chế độ mô phỏng + copy prompt. Xác nhận kênh/định dạng nộp bài của BTC.
 - [ ] Đã đọc `references/00`; cả đội biết phân vai (điều phối, agent giả định/mô hình, QA, nộp bài).
 
 ## B. T+0→5 (đọc đề)
@@ -22,6 +23,8 @@
 - [ ] Phân biệt ba loại: **Dữ liệu mẫu (BTC)** · **Giả định** · **Mô phỏng** (khớp nhãn của `EP.scenario`).
 - [ ] Đề có đưa câu nhãn thì chép nguyên văn (`mockNotice` trong `js/config.js`, README, bảng kiểm thử, slide khớp nhau; `tests/smoke.cjs` tự đọc từ config).
 - [ ] Nút "Điền dữ liệu mẫu" chạy; app mở được từ trạng thái trống.
+- [ ] **UI 100% tiếng Việt**: không sót nhãn tiếng Anh từ khung mẫu (`Playground`, `Import`, `Export`, `Error`, `Loading`...); `showPlayground: false` trong `js/config.js`.
+- [ ] **Mở cửa sổ ẩn danh dùng được ngay**, không đòi đăng nhập cá nhân hay nhập API key.
 - [ ] Không còn API key trong mã/ảnh; `node scripts/scan-secrets.mjs .` sạch.
 
 ## D. Bảng Kinh tế: mô hình và giả định (49/100 điểm)

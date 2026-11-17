@@ -3,6 +3,7 @@
 > Đọc file này trước khi đọc bất cứ thứ gì khác. Sau 13:15 thì dùng `templates/THE-DIEU-PHOI.md` (bản đã copy sang `docs/THE-DIEU-PHOI.md` nếu có) để biết từng mốc phải gõ gì.
 
 ## A. Chuẩn bị máy (12:40–13:05), tick từng ô
+- [ ] **12:40–13:00:** xác nhận với BTC kênh và định dạng nộp bài (dung lượng ZIP), trình duyệt giám khảo dùng chấm, và mạng phòng thi (thử `*.workers.dev` + `xclipsex.github.io`).
 - [ ] Sạc laptop, có wifi BTC và **điểm phát 4G dự phòng**.
 - [ ] Cài skill (nếu máy chưa có): giải nén `xclipse-skills-final.zip` vào `~/.claude/skills/` → có `vibe-sprint/`, `gh-pages-deploy/`, `firebase-setup/`.
 - [ ] Repo thi: `git clone https://github.com/XclipseX/Xclipse-ChungKet.git && cd Xclipse-ChungKet && git checkout nop-bai && git pull` (hoặc `git pull` nếu đã clone).
